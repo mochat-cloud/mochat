@@ -1,0 +1,102 @@
+@import "~ant-design-vue/es/style/themes/default.less";
+.breadcrumb-wrapper {
+  // background: #fff;
+  height: 40px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+}
+.chunk {
+  width: 5px;
+  height: 20px;
+  margin-right: 5px;
+  display: inline-block;
+  background: #1890ff;
+}
+.breadcrumb {
+  font-size: 15px;
+}
+.ant-pro-global-header-index-right {
+  margin-right: 8px;
+
+  &.ant-pro-global-header-index-dark {
+    .ant-pro-global-header-index-action {
+      color: hsla(0, 0%, 100%, .85);
+
+      &:hover {
+        background: #1890ff;
+      }
+    }
+  }
+
+  .ant-pro-account-avatar {
+    .antd-pro-global-header-index-avatar {
+      margin: ~'calc((@{layout-header-height} - 24px) / 2)' 0;
+      margin-right: 8px;
+      color: @primary-color;
+      vertical-align: top;
+      background: rgba(255, 255, 255, 0.85);
+    }
+  }
+
+  .menu {
+    .anticon {
+      margin-right: 8px;
+    }
+
+    .ant-dropdown-menu-item {
+      min-width: 100px;
+    }
+  }
+}
+.ant-layout.sidemenu{
+  .ant-layout-header{
+    .ant-pro-global-header{
+      display: flex;
+      align-content: center;
+      justify-content: center;
+      background: #001529;
+      // #fff #001529
+      // 控制菜单开关
+      .ant-pro-global-header-trigger{
+        display: flex;
+        flex: 0 0 68px;
+        padding-top: 23px;
+        .anticon.anticon-menu-fold{
+          // display: block;
+          color: #fff;
+        }
+        .anticon.anticon-menu-unfold{
+          color: #fff;
+        }
+      }
+      // 头部路由
+      .header.ant-layout-header{
+        flex: 1;
+        padding: 0;
+        .ant-menu-item.ant-menu-item-selected{
+          color: #fff;
+        }
+      }
+      // 右侧功能组件
+      .ant-pro-global-header-index-right.ant-pro-global-header-index-light{
+        flex: 0 0 300px;
+        margin: 0;
+        color: #fff;
+        .select{
+          max-width: 180px;
+        }
+      }
+    }
+  }
+}
+.footer {
+  text-align: center;
+  color: #212943;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.logo {
+  background: #212943;
+}

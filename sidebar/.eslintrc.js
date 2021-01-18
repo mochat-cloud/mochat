@@ -1,0 +1,89 @@
+module.exports = {
+  root: true,
+  env: {
+    node: true,
+    browser: true,
+    es6: true
+  },
+  extends: [
+    'plugin:vue/vue3-essential',
+    '@vue/standard'
+  ],
+  parserOptions: {
+    parser: 'babel-eslint'
+  },
+  rules: {
+    'no-console': 'off',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    indent: ['error', 2, { SwitchCase: 1 }],
+    'vue/html-indent': ['error', 2, {
+      attribute: 1,
+      baseIndent: 1,
+      closeBracket: 0,
+      alignAttributesVertically: true,
+      ignores: []
+    }],
+    'vue/html-quotes': ['error', 'double'],
+    'vue/no-dupe-keys': ['error', {
+      groups: []
+    }],
+    'vue/no-duplicate-attributes': ['error', {
+      allowCoexistClass: true,
+      allowCoexistStyle: true
+    }],
+    "vue/mustache-interpolation-spacing": ["error", "always"],
+    'vue/return-in-computed-property': ['error', {
+      treatUndefinedAsUnspecified: true
+    }],
+    'generator-star-spacing': 'off',
+    'no-mixed-operators': 1,
+    'vue/max-attributes-per-line': [
+      2,
+      {
+        singleline: 5,
+        multiline: {
+          max: 1,
+          allowFirstLine: false
+        }
+      }
+    ],
+    'vue/attribute-hyphenation': 0,
+    'vue/html-self-closing': 0,
+    'vue/component-name-in-template-casing': 0,
+    'vue/html-closing-bracket-spacing': 0,
+    'vue/singleline-html-element-content-newline': 0,
+    'vue/no-unused-components': 0,
+    'vue/multiline-html-element-content-newline': 0,
+    'vue/no-use-v-if-with-v-for': 0,
+    'vue/html-closing-bracket-newline': 0,
+    'vue/no-parsing-error': 0,
+    'no-tabs': 0,
+    "vue/no-multi-spaces": [1, {
+      "ignoreProperties": false
+    }],
+    quotes: [
+      2,
+      'single',
+      {
+        avoidEscape: true,
+        allowTemplateLiterals: true
+      }
+    ],
+    semi: [
+      2,
+      'never',
+      {
+        beforeStatementContinuationChars: 'never'
+      }
+    ],
+    'no-delete-var': 2,
+    'prefer-const': [
+      2,
+      {
+        ignoreReadBeforeAssign: false
+      }
+    ],
+    'template-curly-spacing': 'off',
+    eqeqeq: 'off'
+  }
+}

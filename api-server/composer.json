@@ -1,0 +1,87 @@
+{
+    "name": "mochat/mochat",
+    "type": "project",
+    "keywords": [
+        "php",
+        "swoole",
+        "framework",
+        "hyperf",
+        "mochat"
+    ],
+    "description": "a crm sys which is based on wework",
+    "require": {
+        "php": ">=7.2",
+        "ext-json": "*",
+        "ext-swoole": ">=4.5",
+        "96qbhy/hyperf-auth": "^2.2",
+        "hyperf/async-queue": "^2.0",
+        "hyperf/cache": "~2.0.0",
+        "hyperf/command": "~2.0.0",
+        "hyperf/config": "~2.0.0",
+        "hyperf/constants": "~2.0.0",
+        "hyperf/crontab": "^2.0",
+        "hyperf/database": "~2.0.0",
+        "hyperf/db-connection": "~2.0.0",
+        "hyperf/filesystem": "^2.0",
+        "hyperf/framework": "~2.0.0",
+        "hyperf/guzzle": "^2.0",
+        "hyperf/http-server": "~2.0.0",
+        "hyperf/logger": "~2.0.0",
+        "hyperf/memory": "~2.0.0",
+        "hyperf/process": "~2.0.0",
+        "hyperf/redis": "^2.0",
+        "hyperf/validation": "^2.0",
+        "mochat/framework": "^1.0",
+        "mochat/wework-finance-sdk": "^1.0",
+        "overtrue/pinyin": "^4.0",
+        "overtrue/wechat": "~4.0",
+        "php-ffmpeg/php-ffmpeg": "^0.16.0",
+        "xxtime/flysystem-aliyun-oss": "^1.5"
+    },
+    "require-dev": {
+        "swoole/ide-helper": "^4.5",
+        "friendsofphp/php-cs-fixer": "^2.14",
+        "mockery/mockery": "^1.0",
+        "phpstan/phpstan": "^0.12",
+        "hyperf/devtool": "~2.0.0",
+        "hyperf/testing": "~2.0.0",
+        "symfony/var-dumper": "^5.1",
+        "hyperf/watcher": "^2.0"
+    },
+    "suggest": {
+        "ext-openssl": "Required to use HTTPS.",
+        "ext-json": "Required to use JSON.",
+        "ext-pdo": "Required to use MySQL Client.",
+        "ext-pdo_mysql": "Required to use MySQL Client.",
+        "ext-redis": "Required to use Redis Client."
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        },
+        "files": [
+          "app/Tool/Functions.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "HyperfTest\\": "test/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": [],
+    "scripts": {
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-autoload-dump": [
+            "rm -rf runtime/container"
+        ],
+        "test": "co-phpunit -c phpunit.xml --colors=always",
+        "cs-fix": "php-cs-fixer fix $1",
+        "analyse": "phpstan analyse --memory-limit 300M -l 0 -c phpstan.neon ./app config",
+        "start": "php bin/hyperf.php start",
+        "apidoc": "apidoc -i storage/apidoc"
+    }
+}
