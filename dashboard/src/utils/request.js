@@ -14,7 +14,7 @@ const request = axios.create({
 
 const newRequest = axios.create({
   // API 请求的默认前缀
-  baseURL: process.env.VUE_APP_API_NEW_BASE_URL,
+  baseURL: '//api.mo.chat',
   timeout: 15000 // 请求超时时间
 })
 
