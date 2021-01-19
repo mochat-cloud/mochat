@@ -1,6 +1,5 @@
 <template>
   <pro-layout
-    :title="title"
     :menus="sideMenus"
     :collapsed="sideCollapsed"
     :mediaQuery="query"
@@ -45,7 +44,6 @@ export default {
     return {
       // 侧栏收起状态
       collapsed: false,
-      title: 'MoChat',
       settings: {
         // 布局类型
         layout: 'sidemenu', // 'sidemenu', 'topmenu'
