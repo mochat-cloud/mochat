@@ -114,6 +114,7 @@ class WorkEmployeeStatisticService extends AbstractService implements WorkEmploy
     {
         $model = $this->model::query()
             ->select('id', Db::raw('MAX(id) as id'))
+            ->addSelect($columns)
             ->whereIn('employee_id', $employeeIds);
         if (! empty($options['groupBy'])) {
             $model = $model->groupBy($options['groupBy']);
