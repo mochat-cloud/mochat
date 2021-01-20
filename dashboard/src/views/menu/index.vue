@@ -531,11 +531,11 @@ export default {
         if (props.expanded) {
           return <a class="expand-wrapper" onClick={e => {
             props.onExpand(props.record, e)
-          }}><span class="expand">收起</span></a>
+          }}>收起</a>
         } else {
           return <a class="expand-wrapper" onClick={e => {
             props.onExpand(props.record, e)
-          }}><span class="expand">展开</span></a>
+          }}>展开</a>
         }
       }
     },
@@ -703,16 +703,9 @@ export default {
   }
 }
 .expand-wrapper {
-  width: 100px;
-  position: relative;
+  width: 60px;
+  padding: 0 16px;
   display: inline-block;
-  .expand {
-    position: absolute;
-    top: 10px;
-    left: 80px;
-    display: inline-block;
-    width: 50px;
-  }
 }
 .footer {
   text-align: left;
