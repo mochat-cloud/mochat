@@ -113,9 +113,11 @@ class WorkEmployeeStatisticService extends AbstractService implements WorkEmploy
     public function getEmployeeStatisticIdsByEmployeeIds(array $employeeIds, array $columns = ['*'], array $options = []): array
     {
         $model = $this->model::query()
-            ->select('id', Db::raw('MAX(id) as id'))
-            ->addSelect($columns)
-            ->whereIn('employee_id', $employeeIds);
+            ->select(Db::raw('MAX(id) as id'))
+            ->addSelect($columns);
+        if (! empty($employeeIds)) {
+            $model = $model->whereIn('employee_id', $employeeIds);
+        }
         if (! empty($options['groupBy'])) {
             $model = $model->groupBy($options['groupBy']);
         }
