@@ -54,7 +54,7 @@ class SynContactApply
 
         //获取客户列表
         $listRes = $this->getList($employee);
-        $this->logger->debug(sprintf('%s [%s]', '同步客户列表', date('Y-m-d H:i:s')), json_encode(['list' => $listRes, 'employee' => $employee, 'corp' => $this->corp]));
+        $this->logger->debug(sprintf('%s [%s]', '同步客户列表', date('Y-m-d H:i:s')), ['list' => $listRes, 'employee' => $employee, 'corp' => $this->corp]);
 
         if (empty($listRes)) {
             return;

@@ -19,6 +19,7 @@ use Hyperf\Di\Annotation\Inject;
 use Hyperf\Redis\Redis;
 use Psr\Container\ContainerInterface;
 use Qbhy\HyperfAuth\AuthManager;
+use Swoole\Coroutine\System;
 use Symfony\Component\Console\Question\Question;
 
 /**
@@ -81,6 +82,13 @@ class McInitCommand extends HyperfCommand
 
     public function handle(): void
     {
+        ## 创建.env
+        if (! file_exists(BASE_PATH . '/.env')) {
+            $content = '';
+            file_exists(BASE_PATH . '/.env.example') && $content = file_get_contents(BASE_PATH . '/.env.example');
+            file_put_contents(BASE_PATH . '/.env', $content);
+        }
+
         $this->setDomain();
         $this->mysqlInit();
 
@@ -97,7 +105,7 @@ class McInitCommand extends HyperfCommand
         $this->adminRegister();
         $this->tenant();
 
-        $this->line('项目初始化完成', 'info');
+        $this->line('项目初始化完成，请登陆后，在', 'info');
     }
 
     /**
@@ -146,7 +154,7 @@ class McInitCommand extends HyperfCommand
         }
 
         $this->table(['属性名称', '属性值'], $rows);
-        $this->info('写入成功');
+        $this->info('重载配置成功');
     }
 
     /**
@@ -214,14 +222,12 @@ class McInitCommand extends HyperfCommand
         ## 密码
         $password  = $this->secret('输入管理员密码', false);
         $encrypted = $this->authManager->guard('jwt')->getJwtManager()->getEncrypter()->signature($password);
-        $res       = Db::table('user')->insert([
+        return Db::table('user')->insert([
             'phone'        => $phone,
             'password'     => $encrypted,
             'status'       => 1,
             'isSuperAdmin' => 1,
         ]);
-
-        return (bool) $res;
     }
 
     /**
@@ -256,6 +262,8 @@ class McInitCommand extends HyperfCommand
             $this->setEnvs($data);
             Db::select('show databases like \'' . $data['databases.default.database'][1] . '\'');
             $this->mysqlDatabase = $data['databases.default.database'][1];
+
+
         } catch (\Exception $e) {
             $this->error(sprintf('mysql设置错误:%s,请重新填写', $e->getPrevious()->getMessage()));
             $this->mysqlInit();
@@ -286,7 +294,8 @@ class McInitCommand extends HyperfCommand
             $this->setEnvs($data);
             $this->container->get(Redis::class)->ping('demo');
         } catch (\Exception $e) {
-            $this->error(sprintf('redis设置错误:%s,请重新填写', $e->getPrevious()->getMessage()));
+            $falseMsg = $e->getPrevious() ? $e->getPrevious()->getMessage() : '';
+            $this->error(sprintf('redis设置错误:%s,请重新填写', $falseMsg));
             $this->redisInit();
         }
     }
@@ -294,10 +303,8 @@ class McInitCommand extends HyperfCommand
     protected function tenant(): void
     {
         ## 租户-服务器实例IP
-        $cli = new \Swoole\Coroutine\Http\Client('https://www.cip.cc', 80);
-        $cli->get('/');
-        $ipInfo = "当前IP:\n" . $cli->body;
-        $cli->close();
+        $curlIp = System::exec('curl cip.cc');
+        $ipInfo = empty($curlIp['output']) ? '' : "当前IP:\n" . $curlIp['output'];
         $this->line($ipInfo, 'info');
 
         $ips = $this->ask('输入各个开发、生产阶段的服务器IP(用来设置微信白名单:以英文逗号隔开)', '');
@@ -308,11 +315,21 @@ class McInitCommand extends HyperfCommand
         ]);
 
         ## 企业应用信息
-        $this->warn('注意: 开启聊天侧边栏功能，需要设置企业应用信息->mc_work_agent，请自行添加');
+        $this->warn('注意: 开启聊天侧边栏功能，需要设置企业应用信息->mc_work_agent，请自行添加表信息(future: 下一个版本将会有应用管理模块)');
     }
 
     private function mysqlDataInit(): void
     {
+        $version = Db::select('select VERSION() AS version;');
+        $version = empty($version[0]->version) ? 5.6 : (float) $version[0]->version;
+        if ($version < 5.7) {
+            throw new \RuntimeException('mysql版本号错误，需要版本号 >= 5.7');
+        }
+
+        if (! empty(Db::select('SHOW TABLES LIKE "mc_user"'))) {
+            $this->info('sql初始化已经完成，无需再重新初始化');
+            return;
+        }
         $this->sqlFile = BASE_PATH . '/storage/install/mochat.sql';
         if (file_exists($this->sqlFile)) {
             $sqlArr = explode(';', file_get_contents($this->sqlFile));

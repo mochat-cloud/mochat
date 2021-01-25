@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Model\Corp;
+use App\Model\WorkAgent;
 use MoChat\Framework\Contract\WeWork\AgentConfigurable;
 use MoChat\Framework\Contract\WeWork\AppConfigurable;
 use MoChat\Framework\Contract\WeWork\ExternalContactConfigurable;
@@ -53,8 +54,8 @@ class CorpProvidersService implements AppConfigurable, UserConfigurable, Externa
     public function agentConfig(?string $wxCorpId = null, ?array $agentId = null): array
     {
         return array_merge($this->appConfig($wxCorpId, $agentId), [
-            'agent_id' => 1000005,
-            'secret'   => 'elh78M0rRdjZkqnpykS4eKS8N2M9TtT42U3jcvWq94g',
+            'agent_id' => empty($agentId) ? '' : (string) $agentId[0],
+            'secret'   => empty($agentId) ? '' : self::getWorkAgentByCorpIdWxAgentId((string) $agentId[0])['secret'],
         ]);
     }
 
@@ -83,5 +84,21 @@ class CorpProvidersService implements AppConfigurable, UserConfigurable, Externa
             }
         }
         return $corpId;
+    }
+
+    private function getWorkAgentByCorpIdWxAgentId(?string $agentId = null): array
+    {
+        if (empty($this->corpData)) {
+            return ['secret' => ''];
+        }
+        $workAgentData = make(WorkAgent::class)::query()
+            ->where('corp_id', $this->corpData['id'])
+            ->where('wx_agent_id', $agentId)
+            ->first(['wx_secret']);
+
+        $workAgentData || $workAgentData = collect([]);
+        $workAgentData                   = $workAgentData->toArray();
+
+        return ['secret' => empty($workAgentData) ? '' : $workAgentData['wxSecret']];
     }
 }
