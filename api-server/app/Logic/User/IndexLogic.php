@@ -21,7 +21,6 @@ use Hyperf\Di\Annotation\Inject;
 
 /**
  * 子账户管理-列表.
- * @author fengxiaobo1292
  *
  * Class IndexLogic
  */
