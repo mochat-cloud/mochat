@@ -47,11 +47,6 @@ class Store extends AbstractAction
     public function handle(): array
     {
         $user = user();
-        ## 判断用户绑定企业信息
-        if (! isset($user['corpIds']) || count($user['corpIds']) != 1) {
-            throw new CommonException(ErrorCode::INVALID_PARAMS, '未选择登录企业，不可操作');
-        }
-
         ## 参数验证
         $params = $this->request->all();
         $this->validated($params, 'store');
