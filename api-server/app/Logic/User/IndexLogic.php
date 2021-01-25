@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 /**
- * This file is part of MaoChat.
- * @link     https://www.emao.com
- * @document ./doc/index.html(生成命令: composer apidoc)
- * @contact  maxincai326@emao.com/liuxiufang595@emao.com
+ * This file is part of MoChat.
+ * @link     https://mo.chat
+ * @document https://mochat.wiki
+ * @contact  group@mo.chat
+ * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
 namespace App\Logic\User;
 
