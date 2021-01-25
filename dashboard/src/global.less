@@ -1,0 +1,152 @@
+@import '~ant-design-vue/es/style/themes/default.less';
+
+html,
+body,
+#app, #root {
+  height: 100%;
+}
+
+.colorWeak {
+  filter: invert(80%);
+}
+
+.ant-layout.layout-basic {
+  height: 100vh;
+  min-height: 100vh;
+}
+
+canvas {
+  display: block;
+}
+
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+// 数据列表 样式
+.table-alert {
+  margin-bottom: 16px;
+}
+// 数据列表 操作
+.table-operator {
+  margin-bottom: 18px;
+
+  button {
+    margin-right: 8px;
+  }
+}
+// 数据列表 搜索条件
+.table-page-search-wrapper {
+
+  .ant-form-inline {
+    .ant-form-item {
+      display: flex;
+      margin-bottom: 24px;
+      margin-right: 0;
+
+      .ant-form-item-control-wrapper {
+        flex: 1 1;
+        display: inline-block;
+        vertical-align: middle;
+      }
+
+      > .ant-form-item-label {
+        line-height: 32px;
+        padding-right: 8px;
+        width: auto;
+      }
+      .ant-form-item-control {
+        height: 32px;
+        line-height: 32px;
+      }
+    }
+  }
+
+  .table-page-search-submitButtons {
+    display: block;
+    margin-bottom: 24px;
+    white-space: nowrap;
+  }
+}
+
+.ant-layout-content {
+  margin-top: 0;
+}
+@media (max-width: @screen-xs) {
+  .ant-table {
+    width: 100%;
+    overflow-x: auto;
+    &-thead > tr,
+    &-tbody > tr {
+      > th,
+      > td {
+        white-space: pre;
+        > span {
+          display: block;
+        }
+      }
+    }
+  }
+}
+.login-wrapper {
+  .user-layout-login {
+    .ant-input.ant-input-lg {
+      padding-left: 50px;
+      font-size: 16px;
+    }
+    .ant-input-prefix {
+      width: 20px;
+      height: 20px
+    }
+  }
+  .ant-input.ant-input-lg {
+    min-height: 100%;
+    background: #3e4665;
+    border-color: #3e4665
+  }
+}
+
+.ant-pro-sider-menu-logo {
+  background:#212943;
+}
+.ant-layout.sidemenu .ant-layout-header .ant-pro-global-header {
+  background: #212943
+}
+.ant-menu-dark{
+  background: #212943;
+  .ant-menu-inline.ant-menu-sub {
+    background: #212943;
+    box-shadow: none;
+  }
+}
+.header-wrapper {
+  .ant-menu-item.ant-menu-item-selected {
+    background: none;
+    .title {
+      display: inline-block;
+      border-bottom: 4px solid#1890ff;
+      padding: 0 8px
+    }
+  }
+  .ant-menu-item {
+    background: none;
+    .title {
+      display: inline-block;
+      border-bottom: 4px solid #212943;
+      padding: 0 8px
+    }
+  }
+  .ant-menu-item {
+    padding: 0 12px
+  }
+}
+.ant-layout.sidemenu .ant-layout-header .ant-pro-global-header .ant-pro-global-header-trigger {
+  display: none;
+}
