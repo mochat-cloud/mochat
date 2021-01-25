@@ -119,4 +119,12 @@ interface UserServiceInterface
      * @return array 数组
      */
     public function getUsers(array $columns = ['*']): array;
+
+    /**
+     * 查询多条 - 根据租户ID.
+     * @param int $tenantId 手机号
+     * @param array $columns 查询字段
+     * @return array 响应数组
+     */
+    public function getUsersByTenantId(int $tenantId, array $columns = ['*']): array;
 }
