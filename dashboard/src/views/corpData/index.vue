@@ -227,10 +227,10 @@ export default {
           data: ['新增客户数', '新增入群数', '流失客户', '退群人数']
         },
         grid: {
-          left: '4%',
-          right: '4%',
+          left: '10%',
+          right: '10%',
           bottom: '10%',
-          width: '180%'
+          width: '80%'
         },
         xAxis: {
           type: 'category',
