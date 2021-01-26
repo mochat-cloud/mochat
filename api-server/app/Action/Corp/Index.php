@@ -66,8 +66,8 @@ class Index extends AbstractAction
             'orderByRaw' => 'id desc',
         ];
         empty($corpName) || $where[] = ['name', 'LIKE', '%' . $corpName . '%'];
-        ## 限定查询企业范围-只可检索当前登录用户归属的企业
-        $where[] = ['id', 'IN', $user['corpIds']];
+        ## 限定查询企业范围
+        $user['isSuperAdmin'] == 1 || $where[] = ['id', 'IN', $user['corpIds']];
         ## 查询字段
         $columns = [
             'id',
