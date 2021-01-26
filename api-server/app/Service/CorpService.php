@@ -141,7 +141,7 @@ class CorpService extends AbstractService implements CorpServiceInterface
     }
 
     /**
-     * 查询多条 - 根据ID.
+     * 查询多条
      * @param array|string[] $columns 查询字段
      * @return array 数组
      */
@@ -149,6 +149,20 @@ class CorpService extends AbstractService implements CorpServiceInterface
     {
         $res = $this->model::query()
             ->get($columns);
+
+        if (empty($res)) {
+            return [];
+        }
+
+        return $res->toArray();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCorpsByTenantId(int $tenantId, array $columns = ['*']): array
+    {
+        $res = $this->model::query()->where('tenant_id', $tenantId)->get($columns);
 
         if (empty($res)) {
             return [];

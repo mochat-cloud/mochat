@@ -47,23 +47,26 @@ class Bind extends AbstractAction
         ## 获取登录用户信息
         $user = user();
         ## 接收参数
-        $corpId = $this->request->input('corpId');
+        $corpId     = $this->request->input('corpId');
+        $employeeId = 0;
 
         ## 验证当前用户是否归属绑定企业
-        ## 查询当前用户归属的公司
-        $employees = $this->workEmployeeService->getWorkEmployeesByLogUserId((int) $user['id'], ['corp_id']);
-        $corpIds   = array_column($employees, 'corpId');
-
-        if (! in_array($corpId, $corpIds)) {
-            throw new CommonException(ErrorCode::INVALID_PARAMS, '当前用户不归属该企业，不可操作');
+        if (! $user['isSuperAdmin']) {
+            ## 查询当前用户归属的公司
+            $employees = $this->workEmployeeService->getWorkEmployeesByLogUserId((int) $user['id'], ['corp_id']);
+            $corpIds   = array_column($employees, 'corpId');
+            if (! in_array($corpId, $corpIds)) {
+                throw new CommonException(ErrorCode::INVALID_PARAMS, '当前用户不归属该企业，不可操作');
+            }
+            ## 查询登录用户通讯录信息
+            $employee   = $this->workEmployeeService->getWorkEmployeeByCorpIdLogUserId((int) $corpId, (int) $user['id'], ['id']);
+            $employeeId = $employee['id'];
         }
-        ## 查询登录用户通讯录信息
-        $employee = $this->workEmployeeService->getWorkEmployeeByCorpIdLogUserId((int) $corpId, (int) $user['id'], ['id']);
 
         ## 存入缓存(key:mc:user.userId   value:corpId-workEmployeeId
         $container = ApplicationContext::getContainer();
         $redis     = $container->get(\Hyperf\Redis\Redis::class);
-        $redis->set('mc:user.' . $user['id'], $corpId . '-' . $employee['id']);
+        $redis->set('mc:user.' . $user['id'], $corpId . '-' . $employeeId);
 
         return $data = [];
     }
