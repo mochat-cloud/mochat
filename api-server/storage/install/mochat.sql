@@ -134,6 +134,7 @@ create table if not exists mc_corp
     contact_secret char(43) default '' not null comment '企业外部联系人secret',
     token char(32) default '' not null comment '回调token',
     encoding_aes_key char(43) default '' not null comment '回调消息加密串',
+    tenant_id int(11) DEFAULT '0' COMMENT '租户ID',
     created_at timestamp null,
     updated_at timestamp default CURRENT_TIMESTAMP null,
     deleted_at timestamp null

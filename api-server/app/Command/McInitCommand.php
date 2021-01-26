@@ -84,7 +84,7 @@ class McInitCommand extends HyperfCommand
     {
         ## 创建.env
         if (! file_exists(BASE_PATH . '/.env')) {
-            $content = '';
+            $content                                             = '';
             file_exists(BASE_PATH . '/.env.example') && $content = file_get_contents(BASE_PATH . '/.env.example');
             file_put_contents(BASE_PATH . '/.env', $content);
         }
@@ -262,8 +262,6 @@ class McInitCommand extends HyperfCommand
             $this->setEnvs($data);
             Db::select('show databases like \'' . $data['databases.default.database'][1] . '\'');
             $this->mysqlDatabase = $data['databases.default.database'][1];
-
-
         } catch (\Exception $e) {
             $this->error(sprintf('mysql设置错误:%s,请重新填写', $e->getPrevious()->getMessage()));
             $this->mysqlInit();
