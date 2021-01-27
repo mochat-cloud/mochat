@@ -18,8 +18,6 @@ use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use MoChat\Framework\Action\AbstractAction;
-use MoChat\Framework\Constants\ErrorCode;
-use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
 
 /**

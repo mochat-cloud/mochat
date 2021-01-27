@@ -59,7 +59,7 @@ class Index extends AbstractAction
         $perPage  = $this->request->input('perPage', 10);
 
         ## 组织查询条件
-        $where   = [];
+        $where   = ['tenant_id' => $user['tenantId']];
         $options = [
             'page'       => $page,
             'perPage'    => $perPage,
