@@ -41,11 +41,11 @@ class OssUpload
 
             ## url资源
             if (strpos($localPath, 'http') === 0) {
-                $ctx = stream_context_create(array('http'=>
-                    array(
-                        'timeout' => 180
-                    )
-                ));
+                $ctx = stream_context_create([
+                    'http' => [
+                        'timeout' => 180,
+                    ],
+                ]);
                 $fileSystem->write($ossPath, file_get_contents($localPath, false, $ctx));
             } else {
                 if (filesize($localPath) >= 10 * 1024 * 1024) {
