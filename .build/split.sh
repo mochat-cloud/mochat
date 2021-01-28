@@ -3,7 +3,7 @@
 set -e
 set -x
 
-# 在mochat目录下运行 ./build/split.sh (无commit的情况下，无需运行)
+# 在mochat目录下运行 ./.build/split.sh (无commit的情况下，无需运行)
 
 CURRENT_BRANCH="master"
 BASEPATH=$(cd `dirname $0`; cd ../; pwd)
@@ -17,7 +17,7 @@ workbench
 
 function split()
 {
-    SHA1=`./build/splitsh-lite --prefix=$1`
+    SHA1=`./.build/splitsh-lite --prefix=$1`
     git push $2 "$SHA1:refs/heads/$CURRENT_BRANCH" -f
 }
 
