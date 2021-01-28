@@ -10,7 +10,7 @@
 
 <a href="https://www.php.net"><img src="https://img.shields.io/badge/php-%3E=7.3-brightgreen.svg?maxAge=2592000" alt="Php Version"></a>
   <a href="https://github.com/swoole/swoole-src"><img src="https://img.shields.io/badge/swoole-%3E=4.5-brightgreen.svg?maxAge=2592000" alt="Swoole Version"></a>
-  <a href="https://github.com/mochat-cloud/mochat/blob/master/LICENSE"><img src="https://img.shields.io/github/license/mochatcloud/mochat.svg?maxAge=2592000" alt="MoChat License"></a>
+  <a href="https://github.com/mochat-cloud/mochat/blob/master/LICENSE"><img src="https://img.shields.io/github/license/mochat-cloud/mochat.svg?maxAge=2592000" alt="MoChat License"></a>
 
 </div>
 
@@ -56,7 +56,7 @@ MoChat 是开源的企业微信应用开发框架&引擎，是一套通用的企
 #### 准备工作
 
 ```
-PHP >= 7.2 (推荐7.4版本)
+PHP >= 7.3 (推荐7.4版本)
 Swoole >= 4.5
 Composer
 MySQL >= 5.7
