@@ -98,6 +98,7 @@ class AdminSynContactApply
             });
         }
 
+        $results = [];
         try {
             $results = $parallel->wait();
         } catch (ParallelExecutionException $e) {
