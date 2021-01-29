@@ -10,10 +10,10 @@ declare(strict_types=1);
  */
 namespace App\Action\Agent;
 
-use Hyperf\Filesystem\FilesystemFactory;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use League\Flysystem\FileExistsException;
+use League\Flysystem\Filesystem;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
@@ -24,20 +24,19 @@ use MoChat\Framework\Exception\CommonException;
 class TxtVerifyUpload extends AbstractAction
 {
     /**
+     * @deprecated
      * @RequestMapping(path="/agent/txtVerifyUpload", methods="POST")
      * @return array ...
      */
-    public function handle(FilesystemFactory $factory): array
+    public function handle(Filesystem $filesystem): array
     {
         $file = $this->request->file('file');
         if ($file->getMimeType() !== 'text/plain') {
             throw new CommonException(ErrorCode::INVALID_PARAMS, '文件类型错误');
         }
-        $local = $factory->get('local');
-        $local->getAdapter()->setPathPrefix(BASE_PATH . '/public');
 
         try {
-            $local->write($file->getClientFilename(), $file->getStream());
+            $filesystem->write('wx_txt_verify/' . $file->getClientFilename(), $file->getStream());
         } catch (FileExistsException $e) {
             throw new CommonException(ErrorCode::INVALID_PARAMS, '上传失败:已经存在此文件名的文件');
         } catch (\Exception $e) {
