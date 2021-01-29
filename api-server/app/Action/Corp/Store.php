@@ -97,6 +97,7 @@ class Store extends AbstractAction
         $params['encoding_aes_key'] = $this->getAesKeyStr();
 
         $params['created_at'] = date('Y-m-d H:i:s');
+        $params['tenant_id']  = user('tenantId');
 
         ## 数据操作
         Db::beginTransaction();

@@ -90,7 +90,7 @@ class IndexLogic
             // 已回复聊天占比
             $employeeData['data'][$key]['replyMessageRatio'] = 0;
             if (! empty($employeeStatistics[$employee['id']]['replyPercentage'])) {
-                $employeeData['data'][$key]['replyMessageRatio'] = bcdiv((string)$employeeStatistics[$employee['id']]['replyPercentage'], '100', 2);
+                $employeeData['data'][$key]['replyMessageRatio'] = bcdiv((string) $employeeStatistics[$employee['id']]['replyPercentage'], '100', 2);
             }
             // 新增客户数
             $employeeData['data'][$key]['addNums'] = 0;

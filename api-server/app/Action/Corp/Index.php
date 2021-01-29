@@ -59,15 +59,15 @@ class Index extends AbstractAction
         $perPage  = $this->request->input('perPage', 10);
 
         ## 组织查询条件
-        $where   = [];
+        $where   = ['tenant_id' => $user['tenantId']];
         $options = [
             'page'       => $page,
             'perPage'    => $perPage,
             'orderByRaw' => 'id desc',
         ];
         empty($corpName) || $where[] = ['name', 'LIKE', '%' . $corpName . '%'];
-        ## 限定查询企业范围-只可检索当前登录用户归属的企业
-        $where[] = ['id', 'IN', $user['corpIds']];
+        ## 限定查询企业范围
+        $user['isSuperAdmin'] == 1 || $where[] = ['id', 'IN', $user['corpIds']];
         ## 查询字段
         $columns = [
             'id',

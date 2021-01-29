@@ -91,9 +91,17 @@ interface CorpServiceInterface
     public function getCorpsByWxCorpId(string $wxCorpId, array $columns = ['*']): array;
 
     /**
-     * 查询多条 - 根据ID.
+     * 查询多条
      * @param array|string[] $columns 查询字段
      * @return array 数组
      */
     public function getCorps(array $columns = ['*']): array;
+
+    /**
+     * 获取企业 - 根据租户.
+     * @param int $tenantId 租户ID
+     * @param array|string[] $columns 字段
+     * @return array ...
+     */
+    public function getCorpsByTenantId(int $tenantId, array $columns = ['*']): array;
 }

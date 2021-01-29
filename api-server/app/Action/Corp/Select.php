@@ -53,10 +53,18 @@ class Select extends AbstractAction
         ## 接收参数
         $corpName = $this->request->input('corpName', '');
 
-        ## 获取当前登录用户所归属的所有企业通讯录信息
-        $employeeList = $this->getEmployeeList((int) $user['id']);
+        ## 超级管理员
+        if ($user['isSuperAdmin']) {
+            $tenantCorps = $this->corpService->getCorpsByTenantId($user['tenantId'], ['id']);
+            $corpIds     = array_column($tenantCorps, 'id');
+        } else {
+            ## 获取当前登录用户所归属的所有企业通讯录信息
+            $employeeList = $this->getEmployeeList((int) $user['id']);
+            $corpIds      = array_column($employeeList, 'corpId');
+        }
 
-        $res = $this->corpService->getCorpsByIdName(array_column($employeeList, 'corpId'), $corpName, ['id', 'name']);
+        ## 企业详情
+        $res = $this->corpService->getCorpsByIdName($corpIds, $corpName, ['id', 'name']);
 
         ## 组织响应数据
         $data = [];
