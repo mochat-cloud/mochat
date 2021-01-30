@@ -168,4 +168,21 @@ class UserService extends AbstractService implements UserServiceInterface
     {
         return $this->model::query()->get($columns)->toArray();
     }
+
+    /**
+     * 查询多条 - 根据租户ID.
+     * @param int $tenantId 手机号
+     * @param array $columns 查询字段
+     * @return array 响应数组
+     */
+    public function getUsersByTenantId(int $tenantId, array $columns = ['*']): array
+    {
+        $res = $this->model::query()
+            ->where('tenant_id', $tenantId)
+            ->get($columns);
+
+        $res || $res = collect([]);
+
+        return $res->toArray();
+    }
 }

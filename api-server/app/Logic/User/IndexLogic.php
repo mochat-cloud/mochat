@@ -70,8 +70,7 @@ class IndexLogic
     public function handle(array $params, array $user): array
     {
         ## 数据权限
-        $employeeList = $this->getEmployeeList($user);
-        $userIds      = array_filter(array_unique(array_column($employeeList, 'logUserId')));
+        $userIds = $user['isSuperAdmin'] == 1 ? $this->getUserListByTenantId((int) $user['tenantId']) : $this->getEmployeeList($user);
         ## 统计用户状态
         $notEnabledNum = 0;
         $normalNum     = 0;
@@ -123,16 +122,27 @@ class IndexLogic
 
         ## 处理数据
         foreach ($res['data'] as &$v) {
+            $corpId          = empty($user['corpIds']) ? 0 : $user['corpIds'][0];
             $v['userId']     = $v['id'];
             $v['userName']   = $v['name'];
             $v['statusText'] = Status::getMessage($v['status']);
             $v['roleName']   = isset($userRoleList[$v['id']]) ? $userRoleList[$v['id']] : '';
-            $v['department'] = $this->getDepartmentList((int) $v['id'], (int) $user['corpIds'][0]);
+            $v['department'] = $this->getDepartmentList((int) $v['id'], (int) $corpId);
             unset($v['id'], $v['name'], $v['password'], $v['position'], $v['updatedAt'], $v['deletedAt']);
         }
         $data['list'] = $res['data'];
 
         return $data;
+    }
+
+    /**
+     * @param int $tenantId 租户ID
+     * @return array 响应数组
+     */
+    private function getUserListByTenantId(int $tenantId): array
+    {
+        $list = $this->userService->getUsersByTenantId($tenantId, ['id']);
+        return empty($list) ? [] : array_column($list, 'id');
     }
 
     /**
@@ -142,11 +152,12 @@ class IndexLogic
     private function getEmployeeList(array $user): array
     {
         if ($user['dataPermission'] == 0) {
-            $data = $this->workEmployeeService->getWorkEmployeesByCorpId((int) $user['corpIds'][0], ['log_user_id']);
+            $corpId = empty($user['corpIds']) ? 0 : $user['corpIds'][0];
+            $data   = $this->workEmployeeService->getWorkEmployeesByCorpId((int) $corpId, ['log_user_id']);
         } else {
             $data = $this->workEmployeeService->getWorkEmployeesById($user['deptEmployeeIds'], ['log_user_id']);
         }
-        return $data ?? [];
+        return empty($data) ? [] : array_filter(array_unique(array_column($data, 'logUserId')));
     }
 
     /**

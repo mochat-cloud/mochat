@@ -16,12 +16,12 @@ return [
 
     // MoChat\Framework\Middleware\JwtAuthMiddleware jwt路由验证白名单
     'auth_white_routes' => [
-        '/user/auth', '/weWork/callback', '/agent/oauth',
+        '/user/auth', '/weWork/callback', '/agent/oauth', '/', '/{wxVerifyTxt}',
     ],
 
     // MoChat\Framework\Middleware\ResponseMiddleware 原生响应格式的路由
     'response_raw_routes' => [
-        '/weWork/callback',
+        '/weWork/callback', '/', '/{wxVerifyTxt}',
     ],
 
     // 会话内容存档

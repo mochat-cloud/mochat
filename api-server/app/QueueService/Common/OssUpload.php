@@ -41,7 +41,12 @@ class OssUpload
 
             ## url资源
             if (strpos($localPath, 'http') === 0) {
-                $fileSystem->write($ossPath, file_get_contents($localPath));
+                $ctx = stream_context_create([
+                    'http' => [
+                        'timeout' => 180,
+                    ],
+                ]);
+                $fileSystem->write($ossPath, file_get_contents($localPath, false, $ctx));
             } else {
                 if (filesize($localPath) >= 10 * 1024 * 1024) {
                     $fileSystem->getAdapter()->multipartUpload($localPath, $ossPath);

@@ -4,9 +4,9 @@ services:
   mochat:
     build:
       context: ./
-      args:
-        ## 1、项目环境 - 开发环境时改为dev
-        APP_ENV: production
+    environment:
+      ## 1、项目环境 - 开发环境时为dev
+      - APP_ENV=production
     container_name: mochat
     ## 2、端口映射 - 开发环境时去掉注释，并修改宿主机相应的端口
     ports:
@@ -17,7 +17,7 @@ services:
       ## 3、项目挂载 - 开发环境时去掉注释
 #      - ./:/opt/www/:rw
       ## 4、日志挂载 - 开发环境时删除或注释掉
-    - /var/log/docker/mochat:/var/www-log/:rw
+      - /var/log/docker/mochat:/var/www-log/:rw
     cap_add:
       - SYS_PTRACE
     stdin_open: true
