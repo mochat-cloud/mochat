@@ -13,7 +13,7 @@ namespace App\Task\SensitiveWordsMonitor;
 use App\QueueService\SensitiveWordsMonitor\MonitorMessage as MonitorMessageQueue;
 use Hyperf\Crontab\Annotation\Crontab;
 use Hyperf\Di\Annotation\Inject;
-use Psr\SimpleCache\CacheInterface;
+use Hyperf\Redis\Redis;
 
 /**
  * @Crontab(name="monitorMessage", rule="*\/1 * * * *", callback="execute", singleton=true, memo="企业微信-敏感词监控")
@@ -29,12 +29,12 @@ class MonitorMessage
     public function execute(): void
     {
         ## 读取缓存中的企业会话信息
-        $cacheClient = make(CacheInterface::class);
+        $redisClient = make(Redis::class);
         ## 企业会话信息
         $wxMsgArr = [];
         for ($i = 0; $i < 5; ++$i) {
-            $message = $cacheClient->lPop('sensitiveMonitor', 0);
-            if (empty($message)) {
+            $message = $redisClient->lPop('sensitiveMonitor');
+            if (false === $message) {
                 break;
             }
             $message = json_decode($message, true);
