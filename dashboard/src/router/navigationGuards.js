@@ -39,8 +39,6 @@ router.beforeEach(async (to, from, next) => {
           next()
         } else {
           next({ path: loginRoutePath, replace: true })
-          NProgress.done()
-          return
         }
       }
     } else {
@@ -48,9 +46,9 @@ router.beforeEach(async (to, from, next) => {
         const defaultRoutePath = store.getters.defaultRoutePath || loginRoutePath
         to = { ...to, path: defaultRoutePath }
       }
+      exChangeMenu(to.path)
+      next()
     }
-    exChangeMenu(to.path)
-    next()
   } else {
     if (whiteList.includes(to.name)) {
       // 在免登录白名单，直接进入
@@ -60,6 +58,7 @@ router.beforeEach(async (to, from, next) => {
       NProgress.done() // if current page is login will not trigger afterEach hook, so manually handle it
     }
   }
+  NProgress.done()
 })
 router.afterEach((to, from) => {
   setBreadcrumb(to.path)
