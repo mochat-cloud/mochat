@@ -103,26 +103,13 @@ if (! function_exists('rsa_keys')) {
 
 if (! function_exists('file_full_url')) {
     /**
+     * 获取文件完整URL
      * @param string $path 文件的路径
-     * @param string $adapter 适配器
      * @return string 上传文件的url
      */
-    function file_full_url(string $path, string $adapter = 'oss'): string
+    function file_full_url(string $path): string
     {
-        if (! $path) {
-            return $path;
-        }
-        /** @var \Hyperf\Filesystem\FilesystemFactory $factory */
-        $factory = \Hyperf\Utils\ApplicationContext::getContainer()->get(\Hyperf\Filesystem\FilesystemFactory::class);
-        $client  = $factory->get($adapter);
-
-        switch ($adapter) {
-            case 'oss':
-                return $client->getAdapter()->getSignedUrl($path, 60 * 60 * 24);
-            default:
-                $config = $client->getConfig();
-                return 'https://' . $config->get('bucket') . '.' . $config->get('endpoint') . $path;
-        }
+        return \Hyperf\Utils\ApplicationContext::getContainer()->get(\App\Utils\FilesystemExt::class)->getFullUrl($path);
     }
 }
 
