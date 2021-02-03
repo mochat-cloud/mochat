@@ -139,6 +139,7 @@ export default {
             }
             await addChatTool(params)
             this.confirmLoading = false
+            this.addShow = false
             this.getData()
           } catch (e) {
             console.log(e)
