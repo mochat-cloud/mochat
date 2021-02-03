@@ -37,8 +37,8 @@ return [
         'buffer_output_size'  => 2 * 1024 * 1024,
         'package_max_length'  => 10 * 1024 * 1024,
         'log_file'            => env('LOG_FILE', BASE_PATH . '/runtime/swoole.log'),
-        //        'document_root'         => BASE_PATH . '/public',
-        //        'enable_static_handler' => true,
+        'document_root'         => BASE_PATH . '/runtime',
+        'enable_static_handler' => true,
     ],
     'callbacks' => [
         SwooleEvent::ON_WORKER_START => [Hyperf\Framework\Bootstrap\WorkerStartCallback::class, 'onWorkerStart'],
