@@ -21,6 +21,5 @@ class ExampleTest extends HttpTestCase
     public function testExample()
     {
         self::assertTrue(true);
-        self::assertIsArray($this->get('/'));
     }
 }
