@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 return [
     'default' => [
-        'driver' => App\Tool\Cache\RedisDriver::class,
+        'driver' => Hyperf\Cache\Driver\RedisDriver::class,
         'packer' => Hyperf\Utils\Packer\PhpSerializerPacker::class,
         'prefix' => 'mc:',
     ],

@@ -23,15 +23,15 @@ use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use League\Flysystem\Filesystem;
 use MoChat\WeWorkFinanceSDK\WxFinanceSDK;
-use Psr\SimpleCache\CacheInterface;
+use Hyperf\Redis\Redis;
 
 class Store
 {
     /**
      * @Inject
-     * @var CacheInterface
+     * @var Redis
      */
-    protected $cache;
+    protected $redis;
 
     /**
      * @Inject
@@ -153,7 +153,7 @@ class Store
      */
     protected function sensitiveMonitor(int $corpId, array $msgIds): void
     {
-        $this->cache->rPush('sensitiveMonitor', json_encode([
+        $this->redis->rPush('sensitiveMonitor', json_encode([
             'corpId' => $corpId,
             'msgIds' => $msgIds,
         ], JSON_UNESCAPED_UNICODE));

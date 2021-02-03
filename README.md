@@ -25,7 +25,7 @@
 
 > MoChat, easy way to WeWork
 
-MoChat 是开源的企业微信应用开发框架&引擎，是一套通用的企业微信管理系统，得益于 `Hyperf` 框架的优秀，MoChat 可提供超高性能的同时，也保持着极其灵活的可扩展性。
+MoChat 是开源的企业微信应用开发框架&引擎，是一套通用的企业微信管理系统，得益于 `Swoole` 和 `Hyperf` 框架的优秀，MoChat 可提供超高性能的同时，也保持着极其灵活的可扩展性。
 
 #### 应用场景
 
@@ -49,15 +49,26 @@ MoChat 是开源的企业微信应用开发框架&引擎，是一套通用的企
 
 #### 核心技术
 * 前端技术栈: `Vue`、`Vuex`、`Vant`、`Ant Design of Vue`
-* 后端技术栈: `PHP`、`MySQL`、`Redis`、`Hyperf`
+* 后端技术栈: `PHP`、`MySQL`、`Redis`、 `Swoole`、`Hyperf`
+
+### 特此鸣谢
+MoChat 的诞生离不开社区其他优秀的开源项目，在此特别鸣谢：
+
+[![Swoole](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/Swoole-mini.png)](https://www.swoole.com/)
+[![Hyperf](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/Hyperf-mini.png)](https://www.hyperf.io/)
+[![EasyWechat](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/EasyWeChat-mini.png)](https://www.easywechat.com)
+[![Vue](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/Vue-mini.png)](https://cn.vuejs.org)
+[![Vant](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/Vant-mini.png)](https://vant-contrib.gitee.io/vant/#/zh-CN/)
+[![Ant](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/Antdv-mini.png)](https://antdv.com)
+
 
 ### 环境部署
-
 #### 准备工作
 
 ```
 PHP >= 7.3 (推荐7.4版本)
 Swoole >= 4.5
+Wxwork_finance_sdk(so扩展)
 Composer
 MySQL >= 5.7
 Redis
@@ -132,6 +143,8 @@ yarn run build
 构建打包成功之后，会在根目录生成 `dist` 文件夹，里面就是构建打包好的文件，通常是 `.js` 、`.css`、`index.html` 等静态文件。
 
 通常情况下 `dist` 文件夹的静态文件发布到你的 `nginx` 或者静态服务器即可，其中的 `index.html` 是后台服务的入口页面。
+
+##### 更详细安装见: [传送门](https://mochat.wiki/quick-start/install.html)
 
 ### 项目介绍
 

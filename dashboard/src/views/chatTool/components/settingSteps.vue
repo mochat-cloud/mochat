@@ -37,51 +37,27 @@
       </div>
       <div class="content">
         <div>
-          {{ `在应用设置页，将 ${whiteDomains.join(',  ')} 设置为可信域名，并下载校验文件保存到电脑本地后，在此处上传。` }}
+          {{ `在应用设置页，将 ${whiteDomains.join(',  ')} 设置为可信域名。` }}
         </div>
       </div>
-      <div v-permission="'/chatTool/config@upload'" class="upload">
-        <upload
-          @success="uploadSuccess"
-        >
-          <a-button type="primary" size="large">上传文件</a-button>
-        </upload>
-      </div>
-      <div>请上传txt格式的校验文件，用于完成域名归属验证，否则无法正常使用聊天侧边栏。</div>
     </div>
   </div>
 </template>
 
 <script>
-import upload from './components/upload'
-import { chatTool } from '@/api/chatTool'
 export default {
-  components: {
-    upload
-  },
-  data () {
-    return {
-      chatTools: [],
-      agents: [],
-      whiteDomains: []
-    }
-  },
-  created () {
-    this.getData()
-  },
-  methods: {
-    async getData () {
-      const { data: { agents, whiteDomains } } = await chatTool()
-      if (agents) {
-        this.agents = agents
-        agents.forEach(item => {
-          this.chatTools = this.chatTools.concat(item.chatTools)
-        })
-      }
-      this.whiteDomains = whiteDomains || []
+  props: {
+    chatTools: {
+      type: Array,
+      default: () => []
     },
-    uploadSuccess (data) {
-
+    agents: {
+      type: Array,
+      default: () => []
+    },
+    whiteDomains: {
+      type: Array,
+      default: () => []
     }
   }
 }

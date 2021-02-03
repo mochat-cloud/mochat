@@ -11,3 +11,16 @@ export function isIE () {
   const ie11 = (() => 'ActiveXObject' in window)()
   return compare('MSIE') || ie11
 }
+export const createValidate = (callback, value, message) => {
+  if (!value) {
+    return callback(new Error(message))
+  } else {
+    callback()
+  }
+}
+export const createFunc = (func, change) => {
+  return {
+    validator: func,
+    trigger: change || 'blur'
+  }
+}
