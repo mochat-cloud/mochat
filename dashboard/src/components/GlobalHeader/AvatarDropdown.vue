@@ -61,9 +61,13 @@ export default {
           corpName = this.userInfo.corpName
         } else {
           const { data } = await corpSelect()
-          corpName = data[0].corpName
-          corpId = data[0].corpId
-          await corpBind({ corpId })
+          if (data[0]) {
+            corpName = data[0].corpName
+            corpId = data[0].corpId
+            await corpBind({ corpId })
+          } else {
+            this.$router.push('/corp/index')
+          }
         }
         store.commit('SET_CORP_ID', corpId)
         store.commit('SET_CORP_NAME', corpName)
