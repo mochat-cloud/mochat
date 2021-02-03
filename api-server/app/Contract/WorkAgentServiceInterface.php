@@ -80,4 +80,28 @@ interface WorkAgentServiceInterface
      * @return array ...
      */
     public function getWorkAgentByCorpIdClose(int $corpId, array $columns = ['*']): array;
+
+    /**
+     * 根据id和企业id获取应用.
+     * @param int $id  应用ID
+     * @param int $corpId 企业ID
+     * @param array $columns ...
+     * @return array ...
+     */
+    public function getWorkAgentByIdCorpId(int $id, int $corpId, array $columns = ['*']): array;
+
+    /**
+     * 获取所有应用.
+     * @param array $columns ...
+     * @return array ...
+     */
+    public function getWorkAgents(array $columns = ['*']): array;
+
+    /**
+     * 获取单条 - 根据微信应用id.
+     * @param string $wxAgentId 微信应用ID
+     * @param array $columns ...
+     * @return array ...
+     */
+    public function getWorkAgentByWxAgentId(string $wxAgentId, array $columns = ['*']): array;
 }
