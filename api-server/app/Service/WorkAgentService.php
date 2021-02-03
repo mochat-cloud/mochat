@@ -96,4 +96,44 @@ class WorkAgentService extends AbstractService implements WorkAgentServiceInterf
         }
         return $data->toArray();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getWorkAgentByIdCorpId(int $id, int $corpId, array $columns = ['*']): array
+    {
+        $data = $this->model::query()
+            ->where('id', $id)
+            ->where('corp_id', $corpId)
+            ->get($columns);
+        if (! $data) {
+            return [];
+        }
+        return $data->toArray();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getWorkAgents(array $columns = ['*']): array
+    {
+        $data = $this->model::query()->get($columns);
+        if (! $data) {
+            return [];
+        }
+        return $data->toArray();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getWorkAgentByWxAgentId(string $wxAgentId, array $columns = ['*']): array
+    {
+        $data = $this->model::query()->where('wx_agent_id', $wxAgentId)->get($columns);
+        if (! $data) {
+            return [];
+        }
+        return $data->toArray();
+    }
+
 }
