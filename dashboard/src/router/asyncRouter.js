@@ -43,11 +43,17 @@ export const routeList = {
     component: () => import('@/views/role/permissionShow'),
     meta: { title: '权限设置' }
   },
-  '/chatTool/config': {
-    path: '/chatTool/config',
-    name: 'chatTool',
-    component: () => import('@/views/chatTool/config'),
-    meta: { title: '聊天侧边栏' }
+  '/chatTool/enhance': {
+    path: '/chatTool/enhance',
+    name: 'chatEnhance',
+    component: () => import('@/views/chatTool/enhance'),
+    meta: { title: '聊天增强' }
+  },
+  '/chatTool/customer': {
+    path: '/chatTool/customer',
+    name: 'customer',
+    component: () => import('@/views/chatTool/customer'),
+    meta: { title: '用户画像' }
   },
   '/menu/index': {
     path: '/menu/index',
@@ -188,5 +194,11 @@ export const routeList = {
     name: 'systemHomePage',
     component: () => import('@/views/corpData/index'),
     meta: { title: '系统首页' }
+  },
+  '/greeting/userSearch': {
+    path: '/greeting/userSearch',
+    name: 'userSearch',
+    component: () => import('@/views/greeting/userSearch'),
+    meta: { title: '用户搜索添加' }
   }
 }
