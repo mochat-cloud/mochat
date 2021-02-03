@@ -80,22 +80,40 @@ class SynLogic
         $this->workDepartmentService         = make(WorkDepartmentServiceInterface::class);
         $this->workEmployeeDepartmentService = make(WorkEmployeeDepartmentServiceInterface::class);
         $this->workUpdateTimeService         = make(WorkUpdateTimeServiceInterface::class);
+        //处理成员
+        $this->dealEmployee($corpIds);
+        //同步时间
+        $this->getSysTime($corpIds);
+        //上传图片
+        if (! empty($ossData)) {
+            oss_up_queue($ossData);
+        }
+        return true;
+    }
+
+    /**
+     * 处理成员信息.
+     * @param $corpIds
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
+     * @throws \League\Flysystem\FileExistsException
+     * @return bool
+     */
+    protected function dealEmployee($corpIds)
+    {
         //成员基础信息
         $corpData           = $this->getCorpData($corpIds);
-        $createEmployeeData = $updateEmployeeDepartment = $createEmployeeDepartmentData = $userIds = $createData = $ossData = $phones = [];
+        $createEmployeeData = $updateEmployeeDepartment = $createEmployeeDepartmentData = $userIds = $updateEmployee = $createData = $ossData = $phones = [];
         foreach ($corpData as $corpId => $cdv) {
-            //成员基础信息
             $employeeData = $departments = $userList = $employeeDepartment = $employee = [];
-            $employeeData = $this->getEmployeeData($corpId);
-            //成员部门关系
-            $employeeArr        = ! empty($employeeData['employee']) ? $employeeData['employee'] : [];
-            $wxEmployeeArr      = ! empty($employeeData['wxEmployee']) ? $employeeData['wxEmployee'] : [];
-            $employeeDepartment = $this->getEmployeeDepartment($employeeArr, $wxEmployeeArr);
             //公司下的所有部门
             $departments = $this->getDepartmentIds($corpId);
             if (empty($departments)) {
                 continue;
             }
+            //成员基础信息
+            $employeeData = $this->getEmployeeData($corpId);
+            //成员部门关系
+            $employeeDepartment = $this->getEmployeeDepartment($employeeData['employee'], $employeeData['wxEmployee']);
             //处理部门关系数据
             $employeeDepartmentData = $this->handleEmployeeDepartment($employeeDepartment, $departments);
             //组装数据
@@ -114,12 +132,12 @@ class SynLogic
                     $updateEmployeeDepartment,
                     $createEmployeeDepartmentData,
                     $createEmployeeData,
+                    $updateEmployee,
                     $userIds,
                     $phones,
                     $ossData
                 );
             }
-
             if (! empty($createEmployeeData[$corpId])) {
                 //根据手机号查询子账户信息
                 $createData[$corpId] = $this->getUserData($phones, $createEmployeeData[$corpId]);
@@ -129,7 +147,6 @@ class SynLogic
                 $createData[$corpId] = $this->getContactAuth($cdv, $createData[$corpId]);
             }
         }
-
         //处理成员基础信息
         $createEmployee = $this->handleEmployee($createData);
         //创建成员基础信息
@@ -153,11 +170,11 @@ class SynLogic
                 $this->logger->error('WorkEmployeeSynLogic->handle同步删除成员部门关系失败:' . json_encode($updateEmployeeDepartment));
             }
         }
-        //同步时间
-        $this->getSysTime($corpIds);
-        //上传图片
-        if (! empty($ossData)) {
-            oss_up_queue($ossData);
+        if (! empty($updateEmployee)) {
+            $updateResult = $this->workEmployeeService->updateWorkEmployeesCaseIds($updateEmployee);
+            if (empty($updateResult)) {
+                $this->logger->error('WorkEmployeeSynLogic->handle同步头像失败:' . json_encode($updateEmployee));
+            }
         }
         unset($departments, $employee, $userList);
         return true;
@@ -172,6 +189,7 @@ class SynLogic
      * @param $updateEmployeeDepartment
      * @param $createEmployeeDepartmentData
      * @param $createEmployeeData
+     * @param $updateEmployee
      * @param $userIds
      * @param $phones
      * @param mixed $ossData
@@ -185,6 +203,7 @@ class SynLogic
         &$updateEmployeeDepartment,
         &$createEmployeeDepartmentData,
         &$createEmployeeData,
+        &$updateEmployee,
         &$userIds,
         &$phones,
         &$ossData
@@ -198,6 +217,14 @@ class SynLogic
                     //删掉成员绑定的部门关系
                     if (! empty($user['department']) && ! in_array($ek, $user['department']) && ! empty($ek)) {
                         $updateEmployeeDepartment[$ev['employeeDepartmentId']] = $ev['employeeDepartmentId'];
+                    }
+                    //更新头像
+                    if (empty($ev['avatar']) && ! empty($user['avatar']) && empty($updateEmployee[$ev['id']])) {
+                        $updateEmployee[$ev['id']] = [
+                            'id'           => $ev['id'],
+                            'avatar'       => $this->ossUp($user['avatar'], 'avatar', $ossData),
+                            'thumb_avatar' => $this->ossUp($user['thumb_avatar'], 'thumb_avatar', $ossData),
+                        ];
                     }
                 }
                 foreach ($user['department'] as $dk => $dv) {
@@ -266,15 +293,18 @@ class SynLogic
     }
 
     /**
-     * 上传.
-     * @param mixed $ossData
+     * 上传文件
+     * @param string $url
+     * @param string $prefix
+     * @param $ossData
+     * @return string
      */
     protected function ossUp(string $url, string $prefix = '', &$ossData): string
     {
         if (! $url) {
             return '';
         }
-        $pathUrl   = 'mochat/employee/' . $prefix . microtime(true) * 10000 . '.png';
+        $pathUrl   = 'maochat/employee/' . $prefix . microtime(true) * 10000 . '.png';
         $ossData[] = [$url, $pathUrl];
         return $pathUrl;
     }
@@ -304,27 +334,21 @@ class SynLogic
      */
     protected function getEmployeeData($corpId)
     {
-        $returnData   = $wxEmployeeData   = [];
-        $employeeData = $this->workEmployeeService->getWorkEmployeesByCorpId($corpId, ['id', 'wx_user_id']);
+        $returnData = $wxEmployeeData = [];
+        //公司成员信息
+        $employeeData = $this->workEmployeeService->getWorkEmployeesByCorpId($corpId, ['id', 'wx_user_id', 'avatar', 'thumb_avatar']);
         if (empty($employeeData)) {
-            return $returnData;
+            return ['employee' => $returnData, 'wxEmployee' => $wxEmployeeData];
         }
         foreach ($employeeData as $ek => $ev) {
-            $employeeIds[]         = $ev['id'];
-            $employee[$ev['id']]   = $ev['wxUserId'];
-            $returnData[$ev['id']] = [
+            $returnData[$ev['id']] = $wxEmployeeData[$ev['wxUserId']][0] = [
                 'id'                   => $ev['id'],
                 'wxUserId'             => $ev['wxUserId'],
                 'employeeDepartmentId' => 0,
                 'workDepartmentId'     => 0,
                 'wxDepartmentId'       => 0,
-            ];
-            $wxEmployeeData[$ev['wxUserId']][0] = [
-                'id'                   => $ev['id'],
-                'wxUserId'             => $ev['wxUserId'],
-                'employeeDepartmentId' => 0,
-                'workDepartmentId'     => 0,
-                'wxDepartmentId'       => 0,
+                'avatar'               => $ev['avatar'],
+                'thumbAvatar'          => $ev['thumbAvatar'],
             ];
         }
         return ['employee' => $returnData, 'wxEmployee' => $wxEmployeeData];
@@ -333,43 +357,40 @@ class SynLogic
     /**
      * 获取成员和部门关系.
      * @param $employeeData
-     * @param mixed $wxEmployeeArr
+     * @param mixed $wxEmployeeDepartment
      * @return array
      */
-    protected function getEmployeeDepartment($employeeData, $wxEmployeeArr)
+    protected function getEmployeeDepartment($employeeData, $wxEmployeeDepartment)
     {
-        $returnEmployeeDepartment = $wxUserIds = [];
+        $employeeDepartment = $wxUserIds = [];
         if (empty($employeeData)) {
-            return $returnEmployeeDepartment;
+            return [];
         }
-        $employeeIds        = array_column($employeeData, 'id');
-        $employeeDepartment = $this->workEmployeeDepartmentService->getWorkEmployeeDepartmentsByEmployeeIds($employeeIds, ['employee_id', 'department_id', 'id']);
-        if (empty($employeeDepartment)) {
-            return $wxEmployeeArr;
+        $employeeIds = array_column($employeeData, 'id');
+        //获取成员部门关系信息
+        $employeeDepartmentData = $this->workEmployeeDepartmentService->getWorkEmployeeDepartmentsByEmployeeIds($employeeIds, ['employee_id', 'department_id', 'id']);
+        if (empty($employeeDepartmentData)) {
+            return $wxEmployeeDepartment;
         }
-        foreach ($employeeDepartment as $edk => $edv) {
-            $wxUserIds[]                                                                                   = $employeeData[$edv['employeeId']]['wxUserId'];
-            $returnEmployeeDepartment[$employeeData[$edv['employeeId']]['wxUserId']][$edv['departmentId']] = [
+        foreach ($employeeDepartmentData as $edk => $edv) {
+            $wxUserIds[]                                                                             = $employeeData[$edv['employeeId']]['wxUserId'];
+            $employeeDepartment[$employeeData[$edv['employeeId']]['wxUserId']][$edv['departmentId']] = [
                 'id'                   => $edv['employeeId'],
                 'wxUserId'             => $employeeData[$edv['employeeId']]['wxUserId'],
                 'employeeDepartmentId' => $edv['id'],
                 'workDepartmentId'     => $edv['departmentId'],
                 'wxDepartmentId'       => 0,
+                'avatar'               => $employeeData[$edv['employeeId']]['avatar'],
+                'thumbAvatar'          => $employeeData[$edv['employeeId']]['thumbAvatar'],
             ];
         }
         foreach ($employeeData as $wek => $wev) {
             if (! in_array($wev['wxUserId'], $wxUserIds)) {
-                $returnEmployeeDepartment[$wev['wxUserId']][0] = [
-                    'id'                   => $wev['id'],
-                    'wxUserId'             => $wev['wxUserId'],
-                    'employeeDepartmentId' => 0,
-                    'workDepartmentId'     => 0,
-                    'wxDepartmentId'       => 0,
-                ];
+                $employeeDepartment[$wev['wxUserId']][0] = $wev;
             }
         }
-        unset($employeeData, $employeeIds, $employeeDepartment, $wxEmployeeArr, $wxUserIds);
-        return $returnEmployeeDepartment;
+        unset($employeeIds, $employeeDepartmentData, $wxUserIds);
+        return $employeeDepartment;
     }
 
     /**
