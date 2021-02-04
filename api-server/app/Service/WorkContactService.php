@@ -267,4 +267,12 @@ class WorkContactService extends AbstractService implements WorkContactServiceIn
         $data || $data = collect([]);
         return $data->toArray();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function updateWorkContactsCaseIds(array $data): int
+    {
+        return $this->model->batchUpdateByIds($data);
+    }
 }

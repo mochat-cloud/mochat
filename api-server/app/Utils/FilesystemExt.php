@@ -4,6 +4,7 @@
 namespace App\Utils;
 
 
+use League\Flysystem\Filesystem;
 use OSS\OssClient;
 
 class FilesystemExt
@@ -18,8 +19,14 @@ class FilesystemExt
      */
     protected $config;
 
-    public function __construct()
+    /**
+     * @var Filesystem
+     */
+    protected $filesystem;
+
+    public function __construct(Filesystem $filesystem)
     {
+        $this->filesystem = $filesystem;
         $this->adapterName = config('file.default', '');
         $this->config = config('file.storage.' . $this->adapterName, []);
     }
@@ -31,7 +38,7 @@ class FilesystemExt
      */
     public function getFullUrl(string $path): string
     {
-        if (!$path) {
+        if (!$path || !$this->filesystem->has($path)) {
             return '';
         }
 

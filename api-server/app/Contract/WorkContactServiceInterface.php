@@ -146,4 +146,11 @@ interface WorkContactServiceInterface
      * @return array 响应数组
      */
     public function getWorkContactByCorpIdWxExternalUserIds(int $corpId, $wxExternalUserIds, array $columns = ['*']): array;
+
+    /**
+     * 批量修改 - 根据IDs.
+     * @param array $data 数据
+     * @return int 修改条数
+     */
+    public function updateWorkContactsCaseIds(array $data): int;
 }
