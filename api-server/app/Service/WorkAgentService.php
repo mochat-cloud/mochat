@@ -135,5 +135,4 @@ class WorkAgentService extends AbstractService implements WorkAgentServiceInterf
         }
         return $data->toArray();
     }
-
 }

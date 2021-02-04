@@ -11,20 +11,15 @@ declare(strict_types=1);
 namespace App\Action\Agent;
 
 use App\Action\Corp\Traits\RequestTrait;
-use App\Contract\WorkAgentServiceInterface;
+use App\Logic\Agent\StoreLogic;
 use App\Logic\User\Traits\UserTrait;
-use App\Middleware\PermissionMiddleware;
-use Hyperf\Contract\StdoutLoggerInterface;
-use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use App\Logic\Agent\StoreLogic;
 
 /**
  * 企业应用 - 创建提交.
@@ -38,7 +33,6 @@ class Store extends AbstractAction
     use ValidateSceneTrait;
     //use RequestTrait;
     use UserTrait;
-
     use ValidateSceneTrait;
 
     /**
@@ -48,9 +42,7 @@ class Store extends AbstractAction
     protected $storeLogic;
 
     /**
-     *
      * @RequestMapping(path="/agent/store", methods="post")
-     * @return array
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
      */
     public function handle(): array
@@ -61,9 +53,9 @@ class Store extends AbstractAction
             throw new CommonException(ErrorCode::INVALID_PARAMS, '未选择登录企业，不可操作');
         }
         ## 参数验证
-        $params['wxAgentId']      = $this->request->input('wxAgentId');
-        $params['wxSecret']       = $this->request->input('wxSecret');
-        $params['type']           = $this->request->input('type');
+        $params['wxAgentId'] = $this->request->input('wxAgentId');
+        $params['wxSecret']  = $this->request->input('wxSecret');
+        $params['type']      = $this->request->input('type');
         $this->validated($params);
 
         return $this->storeLogic->handle($params, $user);
@@ -77,9 +69,9 @@ class Store extends AbstractAction
     protected function rules(): array
     {
         return [
-            'wxAgentId'    => 'required | string | bail',
-            'wxSecret'     => 'required | string | bail',
-            'type'         => 'required | integer | bail',
+            'wxAgentId' => 'required | string | bail',
+            'wxSecret'  => 'required | string | bail',
+            'type'      => 'required | integer | bail',
         ];
     }
 
@@ -90,14 +82,12 @@ class Store extends AbstractAction
     protected function messages(): array
     {
         return [
-            'wxAgentId.required'    => '企业应用ID 必填',
-            'wxAgentId.string'      => '企业应用ID 必须为字符串',
-            'wxSecret.required'     => '企业应用secret 必填',
-            'wxSecret.string'       => '企业应用secret 必须为字符串',
-            'type.required'         => '企业应用类型 必填',
-            'type.integer'          => '企业应用类型 必须为整型',
+            'wxAgentId.required' => '企业应用ID 必填',
+            'wxAgentId.string'   => '企业应用ID 必须为字符串',
+            'wxSecret.required'  => '企业应用secret 必填',
+            'wxSecret.string'    => '企业应用secret 必须为字符串',
+            'type.required'      => '企业应用类型 必填',
+            'type.integer'       => '企业应用类型 必须为整型',
         ];
     }
-
-
 }
