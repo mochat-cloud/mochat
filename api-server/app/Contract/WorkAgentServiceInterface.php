@@ -83,7 +83,7 @@ interface WorkAgentServiceInterface
 
     /**
      * 根据id和企业id获取应用.
-     * @param int $id  应用ID
+     * @param int $id 应用ID
      * @param int $corpId 企业ID
      * @param array $columns ...
      * @return array ...
