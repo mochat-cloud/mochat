@@ -11,17 +11,15 @@ declare(strict_types=1);
 namespace App\Task\WorkAgent;
 
 use App\Contract\WorkAgentServiceInterface;
+use App\Logic\Agent\StoreLogic;
 use Hyperf\Crontab\Annotation\Crontab;
 use Hyperf\Di\Annotation\Inject;
-use Psr\SimpleCache\CacheInterface;
-use App\Logic\Agent\StoreLogic;
 
 /**
  * @Crontab(name="pullAgent", rule="*\/30 * * * * *", callback="execute", singleton=true, memo="企业微信应用-同步应用")
  */
 class SynWorkAgent
 {
-
     /**
      * @Inject
      * @var WorkAgentServiceInterface
@@ -40,6 +38,6 @@ class SynWorkAgent
      */
     public function execute(): void
     {
-       $this->storeLogic->updateAgents();
+        $this->storeLogic->updateAgents();
     }
 }

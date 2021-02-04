@@ -67,8 +67,8 @@ class WxAvatarVerifyLogicTest extends TestCase
         $contactServiceStub = $this->createMock(WorkContactServiceInterface::class);
         $contactServiceStub->method('getWorkContactList')
             ->willReturnCallback(function () {
-                                return self::fakeContactList(func_get_args());
-                            });
+                return self::fakeContactList(func_get_args());
+            });
         $contactServiceStub->method('updateWorkContactsCaseIds')->willReturn(true);
 
         ## wxApp替身
@@ -78,14 +78,14 @@ class WxAvatarVerifyLogicTest extends TestCase
         ## 替换
         $container->getDefinitionSource()
             ->addDefinition(WorkEmployeeServiceInterface::class, function () use ($employeeServiceStub) {
-                    return $employeeServiceStub;
-                })
+                return $employeeServiceStub;
+            })
             ->addDefinition(WorkContactServiceInterface::class, function () use ($contactServiceStub) {
-                    return $contactServiceStub;
-                })
+                return $contactServiceStub;
+            })
             ->addDefinition(WxApp::class, function () use ($wxAppStub) {
-                    return $wxAppStub;
-                });
+                return $wxAppStub;
+            });
         return $container;
     }
 

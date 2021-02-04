@@ -293,11 +293,8 @@ class SynLogic
     }
 
     /**
-     * 上传文件
-     * @param string $url
-     * @param string $prefix
+     * 上传文件.
      * @param $ossData
-     * @return string
      */
     protected function ossUp(string $url, string $prefix = '', &$ossData): string
     {

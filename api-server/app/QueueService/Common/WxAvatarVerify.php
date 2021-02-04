@@ -1,8 +1,14 @@
 <?php
 
-
+declare(strict_types=1);
+/**
+ * This file is part of MoChat.
+ * @link     https://mo.chat
+ * @document https://mochat.wiki
+ * @contact  group@mo.chat
+ * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
+ */
 namespace App\QueueService\Common;
-
 
 use App\Logic\WeWork\WxAvatarVerifyLogic;
 use Hyperf\AsyncQueue\Annotation\AsyncQueueMessage;
@@ -10,7 +16,7 @@ use Hyperf\AsyncQueue\Annotation\AsyncQueueMessage;
 class WxAvatarVerify
 {
     /**
-     * @AsyncQueueMessage(pool="wxAvatarVerify", maxAttempts=1)
+     * @AsyncQueueMessage(pool="coOSS", maxAttempts=1)
      * @param int $corpId 企业ID
      * @param string $type 类型
      */
