@@ -23,7 +23,7 @@ use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
 
 /**
- * 敏感词词库- 更新提交.
+ * 角色- 更新提交.
  *
  * Class Update.
  * @Controller

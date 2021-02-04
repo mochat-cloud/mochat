@@ -255,7 +255,9 @@ export default {
   display: flex;
   .img{
     width:128px;
-    height:128px
+    height:128px;
+    border-radius: 8px;
+    overflow: hidden;
   }
   .detail {
     padding-left: 28px;
@@ -305,7 +307,15 @@ export default {
   }
 }
 .tag {
-  margin-right: 20px
+  height: 34px;
+  margin-right: 20px;
+  font-size: 26px;
+  font-weight: 400;
+  text-align: left;
+  color: #5981b4;
+  background: #eff5fe;
+  border-radius: 17px;
+  line-height: 37px;
 }
 .cell {
   min-height: 110px;
@@ -376,6 +386,7 @@ export default {
       font-size: 28px;
       background: #f2f3f7;
       line-height: 40px;
+      margin-top: 10px;
     }
   }
 }
