@@ -905,7 +905,7 @@ create table if not exists mc_work_room
     wx_chat_id varchar(255) default '' not null comment '客户群ID',
     name varchar(255) default '' not null comment '客户群名称',
     owner_id int(11) unsigned default 0 not null comment '群主ID（work_employee.id）',
-    notice varchar(255) default '' not null comment '群公告',
+    notice text not null comment '群公告',
     status tinyint(4) unsigned default 0 not null comment '客户群状态（0 - 正常 1 - 跟进人离职 2 - 离职继承中 3 - 离职继承完成）',
     create_time timestamp default CURRENT_TIMESTAMP not null comment '群创建时间',
     room_max int(10) default 0 not null comment '群成员上限',

@@ -21,9 +21,9 @@ use App\Contract\WorkRoomServiceInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
+use Hyperf\Redis\Redis;
 use League\Flysystem\Filesystem;
 use MoChat\WeWorkFinanceSDK\WxFinanceSDK;
-use Hyperf\Redis\Redis;
 
 class Store
 {
