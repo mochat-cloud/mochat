@@ -16,7 +16,7 @@ use Hyperf\Crontab\Annotation\Crontab;
 use Hyperf\Di\Annotation\Inject;
 
 /**
- * @Crontab(name="pullAgent", rule="*\/30 * * * * *", callback="execute", singleton=true, memo="企业微信应用-同步应用")
+ * @Crontab(name="pullAgent", rule="* *\/6 * * *", callback="execute", singleton=true, memo="企业微信应用-同步应用")
  */
 class SynWorkAgent
 {
