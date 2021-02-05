@@ -47,6 +47,10 @@ export default {
         }
       } else if (callValues) {
         this.getToken(callValues)
+      } else {
+        this.loading = false
+        this.btnShow = false
+        this.message = '页面参数错误'
       }
     },
     getToken (callValues) {
@@ -85,6 +89,12 @@ export default {
           case 100013:
             message = msg
             break
+          case 100012:
+            message = msg
+            break
+          case 100016:
+            message = msg
+            break
           default:
             message = `登录失败请重新登录`
         }
@@ -107,6 +117,8 @@ export default {
         this.$router.push({ path: `/${this.pageFlag}` })
       } catch (e) {
         console.log(e)
+        this.loading = false
+        this.message = ''
       }
     },
     async agent () {
@@ -119,6 +131,8 @@ export default {
         }
       } catch (e) {
         console.log(e)
+        this.loading = false
+        this.message = ''
       }
     }
   }
