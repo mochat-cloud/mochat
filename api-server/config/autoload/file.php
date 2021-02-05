@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
 return [
-    'default' => 'local',
+    'default' => env('FILE_DRIVER', 'local'),
     'storage' => [
         'local' => [
             'driver' => \Hyperf\Filesystem\Adapter\LocalAdapterFactory::class,
