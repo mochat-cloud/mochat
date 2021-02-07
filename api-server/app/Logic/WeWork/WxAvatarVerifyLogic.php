@@ -124,6 +124,7 @@ class WxAvatarVerifyLogic
             ['id', 'wx_external_userid', 'avatar'],
             ['perPage' => $perPage, 'page' => $page]
         );
+
         if (empty($contactList['data'])) {
             return true;
         }
