@@ -229,7 +229,7 @@ export default {
         grid: {
           left: '10%',
           right: '10%',
-          bottom: '10%',
+          bottom: '20%',
           width: '80%'
         },
         xAxis: {
@@ -237,7 +237,7 @@ export default {
           boundaryGap: false,
           data: [],
           axisLabel: {
-            interval: 0,
+            interval: 2,
             rotate: 0,
             color: 'blue',
             margin: 20
@@ -363,7 +363,7 @@ export default {
         const quitRoomNum = []
         const time = []
         line.map(item => {
-          time.push(item.date)
+          time.push(item.date.substr(5, 5))
           addContactNum.push(item.addContactNum)
           addIntoRoomNum.push(item.addIntoRoomNum)
           lossContactNum.push(item.lossContactNum)
@@ -619,7 +619,7 @@ export default {
     }
   }
   .right {
-    width: 22%;
+    min-width: 310px;
     .QR-code {
       width: 100%;
       display: flex;
@@ -656,8 +656,8 @@ export default {
       .code-img {
         height: 250px;
         img {
-          width: 100%;
-          height: 100%;
+          width: 250px;
+          height: 250px;
         }
       }
       .code-detail {
