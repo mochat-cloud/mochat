@@ -41,7 +41,7 @@
               <img slot="prefix" :src="require('@/assets/lock.png')" alt="">
             </a-input-password>
           </a-form-item>
-          <a-alert v-if="isLoginError" type="error" show-icon message="账户或密码错误" />
+          <a-alert v-if="isLoginError" type="error" show-icon message="登录失败" />
         </div>
         <div v-if="customActiveKey == 'tab2'">
           <a-form-item>

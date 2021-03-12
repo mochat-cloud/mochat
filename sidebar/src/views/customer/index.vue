@@ -384,7 +384,6 @@ export default {
     }
     .track-content {
       font-size: 28px;
-      background: #f2f3f7;
       line-height: 40px;
       margin-top: 10px;
     }
