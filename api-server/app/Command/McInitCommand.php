@@ -99,7 +99,7 @@ class McInitCommand extends HyperfCommand
         }
 
         $this->redisInit();
-        $this->ossInit();
+//        $this->ossInit();
 
         $this->userClient = $this->container->get(UserServiceInterface::class);
         $this->adminRegister();
@@ -162,19 +162,25 @@ class McInitCommand extends HyperfCommand
      */
     protected function setDomain(): void
     {
-        $this->setEnvs([
-            [
-                'APP_DOMAIN',
-                $this->ask('输入后端接口域名', env('APP_DOMAIN', 'http://api.mo.chat')),
-            ],
-            [
-                'JS_DOMAIN',
-                $this->ask('输入H5侧边工具栏前端域名', env('JS_DOMAIN', 'http://h5.mo.chat')),
-            ],
-        ]);
+        appDomain:
+        $appDomain = $this->ask('输入后端接口域名', env('APP_DOMAIN', 'http://api.mo.chat'));
+        if (false === strpos($appDomain, 'http')) {
+            $this->warn('后端接口域名请添加 http(s)://');
+            goto appDomain;
+        }
+        $this->setEnvs([['APP_DOMAIN', $appDomain]]);
+
+        jsDomain:
+        $jsDomain  = $this->ask('输入H5侧边工具栏前端域名', env('JS_DOMAIN', 'http://h5.mo.chat'));
+        if (false === strpos($jsDomain, 'http')) {
+            $this->warn('H5侧边工具栏前端域名请添加 http(s)://');
+            goto jsDomain;
+        }
+        $this->setEnvs([['JS_DOMAIN', $jsDomain]]);
     }
 
     /**
+     * @deprecated
      * 设置阿里云OSS.
      */
     protected function ossInit(): void
@@ -311,9 +317,6 @@ class McInitCommand extends HyperfCommand
         Db::table('tenant')->insert([
             'server_ips' => $ips,
         ]);
-
-        ## 企业应用信息
-        $this->warn('注意: 开启聊天侧边栏功能，需要设置企业应用信息->mc_work_agent，请自行添加表信息(future: 下一个版本将会有应用管理模块)');
     }
 
     private function mysqlDataInit(): void
