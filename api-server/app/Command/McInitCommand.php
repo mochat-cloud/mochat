@@ -99,7 +99,6 @@ class McInitCommand extends HyperfCommand
         }
 
         $this->redisInit();
-//        $this->ossInit();
 
         $this->userClient = $this->container->get(UserServiceInterface::class);
         $this->adminRegister();
