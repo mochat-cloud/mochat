@@ -13,7 +13,7 @@ return [
     'storage' => [
         'local' => [
             'driver' => \Hyperf\Filesystem\Adapter\LocalAdapterFactory::class,
-            'root'   => __DIR__ . '/../../runtime',
+            'root'   => __DIR__ . '/../../storage/upload/static',
         ],
         'ftp' => [
             'driver'   => \Hyperf\Filesystem\Adapter\FtpAdapterFactory::class,
