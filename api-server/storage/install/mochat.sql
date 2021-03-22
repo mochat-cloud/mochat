@@ -970,6 +970,49 @@ CREATE TABLE `mc_corp_day_data`  (
  PRIMARY KEY (`id`)
 ) COMMENT = '企业日数据';
 
+CREATE TABLE `mc_contact_batch_add_allot` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `import_id` int(11) NOT NULL DEFAULT '0' COMMENT '客户账号表ID',
+    `employee_id` int(11) NOT NULL DEFAULT '0' COMMENT '跟进员工ID',
+    `type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态 0回收 1分配',
+    `operate_id` int(11) NOT NULL DEFAULT '0' COMMENT '操作人ID（如果有）',
+    `created_at` timestamp NULL DEFAULT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='批量新增客户分配记录表';
+
+CREATE TABLE `mc_contact_batch_add_config` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `corp_id` int(11) NOT NULL DEFAULT '0' COMMENT '企业ID',
+    `pending_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '待处理客户提醒开关 0关 1开',
+    `pending_time_out` int(11) NOT NULL DEFAULT '0' COMMENT '待处理客户提醒超时天数',
+    `pending_reminder_time` time NOT NULL DEFAULT '00:00:00' COMMENT '待处理客户提醒时间',
+    `undone_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '成员未添加客户提醒开关 0关 1开',
+    `undone_time_out` int(11) NOT NULL DEFAULT '0' COMMENT '成员未添加客户提醒超时天数',
+    `undone_reminder_time` time NOT NULL DEFAULT '00:00:00' COMMENT '成员未添加客户提醒时间',
+    `recycle_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '回收客户开关 0关 1开',
+    `recycle_time_out` int(11) NOT NULL DEFAULT '0' COMMENT '客户超过天数回收',
+    `created_at` timestamp NULL DEFAULT NULL,
+    `updated_at` timestamp NULL DEFAULT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='批量新增客户配置表';
+
+CREATE TABLE `mc_contact_batch_add_import` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `record_id` int(11) NOT NULL DEFAULT '0' COMMENT '导入记录ID',
+    `phone` varchar(255) NOT NULL DEFAULT '' COMMENT '客户手机号',
+    `upload_at` timestamp NULL DEFAULT NULL COMMENT '导入时间',
+    `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '添加状态 0待分配 1待添加 2待通过 3已添加',
+    `add_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '添加时间',
+    `employee_id` int(11) NOT NULL DEFAULT '0' COMMENT '分配员工',
+    `allot_num` int(11) NOT NULL DEFAULT '0' COMMENT '分配次数',
+    `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
+    `tags` json NOT NULL COMMENT '添加成功后标签',
+    `created_at` timestamp NULL DEFAULT NULL,
+    `updated_at` timestamp NULL DEFAULT NULL,
+    `deleted_at` timestamp NULL DEFAULT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='批量新增客户账号表';
+
 ## 高级属性
 INSERT INTO mc_contact_field (id, name, label, type, options, `order`, status, is_sys, created_at, updated_at, deleted_at) VALUES (1, 'phone', '手机号', 9, '[]', 0, 1, 1, '2020-12-29 19:39:45', null, null);
 INSERT INTO mc_contact_field (id, name, label, type, options, `order`, status, is_sys, created_at, updated_at, deleted_at) VALUES (2, 'name', '姓名', 0, '[]', 0, 1, 1, '2020-12-29 19:39:45', null, null);
