@@ -153,4 +153,12 @@ interface WorkContactServiceInterface
      * @return int 修改条数
      */
     public function updateWorkContactsCaseIds(array $data): int;
+
+    /**
+     * 获取过滤后的多条
+     * @param  int  $employeeId
+     * @param  array  $params 过滤参数
+     * @return array  响应数组
+     */
+    public function getWorkContactsByEmployeeFilterParams(int $employeeId, array $params);
 }
