@@ -27,13 +27,15 @@ class IndexLogic
 
     /**
      * @param  array  $params  请求参数
-     * @param  array  $user  当前登录用户信息
+     * @param  int  $userId  当前用户ID
      * @return array 响应数组
      */
-    public function handle(array $params, array $user): array
+    public function handle(array $params, int $userId): array
     {
         ## 组织查询条件
-        $where   = [];
+        $where   = [
+            ['user_id', '=', $userId],
+        ];
         $options = [
             'page'       => $params['page'],
             'perPage'    => $params['perPage'],
@@ -43,6 +45,7 @@ class IndexLogic
         $res = $this->contactMessageBatchSend->getContactMessageBatchSendList($where, [
             'id',
             'send_way',
+            'content',
             'send_time',
             'send_total',
             'not_send_total',

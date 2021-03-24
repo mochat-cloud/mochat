@@ -79,7 +79,7 @@ interface WorkEmployeeServiceInterface
      * @param array|string[] $columns 查询字段
      * @return array 数组
      */
-    public function getWorkEmployeesByCorpId(int $corpId, array $columns = ['*']): array;
+    public function getWorkEmployeesByCorpId($corpId, array $columns = ['*']): array;
 
     /**
      * 查询多条 - 根据企业ID和状态.
@@ -88,17 +88,7 @@ interface WorkEmployeeServiceInterface
      * @param array|string[] $columns 查询字段
      * @return array 数组
      */
-    public function getWorkEmployeesByCorpIdStatus(int $corpId, int $status, array $columns = ['*']): array;
-
-    /**
-     * 查询多条 - 根据企业ID和状态.
-     * @param int $corpId 企业ID
-     * @param array $id 成员ID
-     * @param int $status 状态
-     * @param array|string[] $columns 查询字段
-     * @return array 数组
-     */
-    public function getWorkEmployeesByIdCorpIdStatus(int $corpId, array $id, int $status, array $columns = ['*']): array;
+    public function getWorkEmployeesByCorpIdStatus($corpId, int $status, array $columns = ['*']): array;
 
     /**
      * 查询多条 - 根据企业ID和成员名称.
@@ -121,7 +111,7 @@ interface WorkEmployeeServiceInterface
 
     /**
      * 查询多条 - 根据成员id和状态.
-     * @param array $id 成员ID
+     * @param array $id 企业ID
      * @param int $status 状态
      * @param array|string[] $columns 查询字段
      * @return array 数组
@@ -259,4 +249,15 @@ interface WorkEmployeeServiceInterface
      * @return int 返回值
      */
     public function countWorkEmployeesByCorpId(int $corpId): int;
+
+    /**
+     * 查询多条 - 根据企业ID和状态.
+     * @param int $corpId 企业ID
+     * @param array $id 成员ID
+     * @param int $status 状态
+     * @param array|string[] $columns 查询字段
+     * @return array 数组
+     */
+    public function getWorkEmployeesByIdCorpIdStatus(int $corpId, array $id, int $status, array $columns = ['*']): array;
+
 }

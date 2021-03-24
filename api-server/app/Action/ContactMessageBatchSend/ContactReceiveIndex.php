@@ -21,7 +21,7 @@ use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
 
 /**
- * 客户消息详情-客户详情
+ * 客户消息群发-客户详情
  * @Controller()
  */
 class ContactReceiveIndex extends AbstractAction
@@ -35,7 +35,7 @@ class ContactReceiveIndex extends AbstractAction
     private $contactReceiveIndexLogic;
 
     /**
-     * @RequestMapping(path="/contactMessageBatchSend/contactR", methods="GET")
+     * @RequestMapping(path="/contactMessageBatchSend/contactReceiveIndex", methods="GET")
      */
     public function handle(): array
     {
@@ -49,7 +49,7 @@ class ContactReceiveIndex extends AbstractAction
             'page'       => $this->request->input('page', 1),
             'perPage'    => $this->request->input('perPage', 15),
         ];
-        return $this->contactReceiveIndexLogic->handle($params, user());
+        return $this->contactReceiveIndexLogic->handle($params, intval(user()['id']));
     }
 
     /**

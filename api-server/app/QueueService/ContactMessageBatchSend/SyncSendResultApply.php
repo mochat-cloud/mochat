@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace App\QueueService\ContactMessageBatchSend;
 
+use App\Constants\MessageBatchSend\MessageStatus;
+use App\Constants\MessageBatchSend\Status;
 use App\Contract\ContactMessageBatchSendEmployeeServiceInterface;
 use App\Contract\ContactMessageBatchSendResultServiceInterface;
 use App\Contract\ContactMessageBatchSendServiceInterface;
@@ -44,7 +46,7 @@ class SyncSendResultApply
         try {
             $contactMessageBatchSendEmployee = $this->container->get(ContactMessageBatchSendEmployeeServiceInterface::class);
             $batchEmployee                   = $contactMessageBatchSendEmployee->getContactMessageBatchSendEmployeeLockById($batchEmployeeId, ['id', 'batch_id', 'status', 'msg_id']);
-            if (empty($batchEmployee) || $batchEmployee['status'] === 1) {
+            if (empty($batchEmployee) || $batchEmployee['status'] === Status::SEND_OK) {
                 Db::commit();
                 return;
             }
@@ -68,16 +70,16 @@ class SyncSendResultApply
                 return;
             }
 
-            $sendStatus = 0;
+            $sendStatus = Status::NOT_SEND;
             $sendTime   = null;
 
             foreach ($batchResult['detail_list'] as $result) {
-                if ($result['status'] == 0) {
+                if ($result['status'] == MessageStatus::NOT_SEND) {
                     Db::commit();
                     return;
                 }
-                if ($sendStatus == 0) {
-                    $sendStatus = 1;
+                if ($sendStatus == Status::NOT_SEND) {
+                    $sendStatus = Status::SEND_OK;
                     $sendTime   = date('Y-m-d H:i:s', $result['send_time']);
                 }
                 $row = $contactMessageBatchSendResult->getContactMessageBatchSendResultByBatchUserId($batchEmployee['batchId'], $result['external_userid'], ['id']);
@@ -102,22 +104,22 @@ class SyncSendResultApply
             ## 获取已发送成员总数
             $sendTotal = $contactMessageBatchSendEmployee->getContactMessageBatchSendEmployeeCount([
                 ['batch_id', '=', $batch['id']],
-                ['status', '=', 1],
+                ['status', '=', Status::SEND_OK],
             ]);
             ## 获取已送达客户总数
             $receivedTotal = $contactMessageBatchSendResult->getContactMessageBatchSendResultCount([
                 ['batch_id', '=', $batch['id']],
-                ['status', '=', 1],
+                ['status', '=', MessageStatus::SEND_OK],
             ]);
             ## 获取客户因不是好友发送失败总数
             $receiveLimitTotal = $contactMessageBatchSendResult->getContactMessageBatchSendResultCount([
                 ['batch_id', '=', $batch['id']],
-                ['status', '=', 2],
+                ['status', '=', MessageStatus::NOT_FRIEND],
             ]);
             ## 获取客户接收已达上限总数
             $notFriendTotal = $contactMessageBatchSendResult->getContactMessageBatchSendResultCount([
                 ['batch_id', '=', $batch['id']],
-                ['status', '=', 3],
+                ['status', '=', MessageStatus::RECEIVE_LIMIT],
             ]);
             ## 更新群发状态
             $this->container->get(ContactMessageBatchSendServiceInterface::class)->updateContactMessageBatchSendById($batch['id'], [
@@ -132,7 +134,7 @@ class SyncSendResultApply
             Db::commit();
         } catch (\Throwable $e) {
             Db::rollBack();
-            $this->container->get(StdoutLoggerInterface::class)->error(sprintf('%s [%s] %s', '客户消息创建失败', date('Y-m-d H:i:s'), $e->getMessage()));
+            $this->container->get(StdoutLoggerInterface::class)->error(sprintf('%s [%s] %s', '客户群发消息同步结果失败', date('Y-m-d H:i:s'), $e->getMessage()));
             $this->container->get(StdoutLoggerInterface::class)->error($e->getTraceAsString());
         }
 

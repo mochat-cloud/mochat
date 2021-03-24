@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace App\QueueService\ContactMessageBatchSend;
 
+use App\Constants\MessageBatchSend\Status;
 use App\Contract\ContactMessageBatchSendEmployeeServiceInterface;
 use App\Contract\ContactMessageBatchSendResultServiceInterface;
 use App\Contract\ContactMessageBatchSendServiceInterface;
@@ -43,7 +44,7 @@ class StoreApply
         Db::beginTransaction();
         try {
             $batch = $this->container->get(ContactMessageBatchSendServiceInterface::class)->getContactMessageBatchSendLockById($batchId);
-            if (empty($batch) || $batch['sendStatus'] === 1) {
+            if (empty($batch) || $batch['sendStatus'] === Status::SEND_OK) {
                 Db::commit();
                 return;
             }
@@ -67,13 +68,13 @@ class StoreApply
             }
             ## 更新群发状态
             $this->container->get(ContactMessageBatchSendServiceInterface::class)->updateContactMessageBatchSendById($batchId, [
-                'sendStatus' => 1,
+                'sendStatus' => Status::SEND_OK,
                 'sendTime'   => date('Y-m-d H:i:s'),
             ]);
             Db::commit();
         } catch (\Throwable $e) {
             Db::rollBack();
-            $this->container->get(StdoutLoggerInterface::class)->error(sprintf('%s [%s] %s', '客户消息创建失败', date('Y-m-d H:i:s'), $e->getMessage()));
+            $this->container->get(StdoutLoggerInterface::class)->error(sprintf('%s [%s] %s', '客户群发消息创建失败', date('Y-m-d H:i:s'), $e->getMessage()));
             $this->container->get(StdoutLoggerInterface::class)->error($e->getTraceAsString());
         }
 

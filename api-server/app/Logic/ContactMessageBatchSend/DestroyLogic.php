@@ -50,16 +50,16 @@ class DestroyLogic
 
     /**
      * @param  array  $params  请求参数
-     * @param  array  $user  当前登录用户信息
-     * @return array 响应数组
+     * @param  int  $userId  当前登录用户信息
+     * @return bool 响应数组
      */
-    public function handle(array $params, array $user): bool
+    public function handle(array $params, int $userId): bool
     {
         $batch = $this->contactMessageBatchSend->getContactMessageBatchSendById((int) $params['batchId']);
         if (!$batch) {
             throw new CommonException(ErrorCode::INVALID_PARAMS, '未找到记录');
         }
-        if ($batch['userId'] != $user['id']) {
+        if ($batch['userId'] != $userId) {
             throw new CommonException(ErrorCode::ACCESS_DENIED, "无操作权限");
         }
         Db::beginTransaction();

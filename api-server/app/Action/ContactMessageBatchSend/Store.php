@@ -21,7 +21,7 @@ use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
 
 /**
- * 添加 - 动作
+ * 客户消息群发 - 新建消息
  * @Controller()
  */
 class Store extends AbstractAction

@@ -26,13 +26,18 @@ class ShowLogic
      */
     private $contactMessageBatchSend;
 
-    public function handle(array $params, array $user): array
+    /**
+     * @param  array  $params  请求参数
+     * @param  int  $userId  当前用户ID
+     * @return array
+     */
+    public function handle(array $params, int $userId): array
     {
         $batch = $this->contactMessageBatchSend->getContactMessageBatchSendById((int) $params['batchId']);
         if (!$batch) {
             throw new CommonException(ErrorCode::INVALID_PARAMS, '未找到记录');
         }
-        if ($batch['userId'] != $user['id']) {
+        if ($batch['userId'] != $userId) {
             throw new CommonException(ErrorCode::ACCESS_DENIED, "无操作权限");
         }
 

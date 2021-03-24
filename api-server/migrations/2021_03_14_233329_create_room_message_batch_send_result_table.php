@@ -15,9 +15,12 @@ class CreateRoomMessageBatchSendResultTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('batch_id')->default(0)->comment('客户群消息群发id （mc_contact_message_batch_send.id)');
             $table->unsignedInteger('employee_id')->default(0)->comment('员工id （mc_work_employee.id)');
-            $table->unsignedInteger('room_id')->default(0)->comment('客户群表id（work_room.id）');
-            $table->string('chat_id',50)->default('')->comment('外部客户群id，群发消息到客户不吐出该字段');
-            $table->string('user_id',50)->default('')->comment('企业服务人员的userid');
+            $table->unsignedInteger('room_id')->default(0)->comment('客户群id（work_room.id）');
+            $table->string('room_name', 255)->default('')->comment('客户群名称（work_room.name）');
+            $table->unsignedInteger('room_employee_num')->default(0)->comment('客户群成员数量');
+            $table->timestamp('room_create_time')->nullable()->comment('群聊创建时间');
+            $table->string('chat_id', 50)->default('')->comment('外部客户群id，群发消息到客户不吐出该字段');
+            $table->string('user_id', 50)->default('')->comment('企业服务人员的userid');
             $table->tinyInteger('status')->default(0)->comment('发送状态 0-未发送 1-已发送 2-因客户不是好友导致发送失败 3-因客户已经收到其他群发消息导致发送失败');
             $table->unsignedInteger('send_time')->default(0)->comment('发送时间，发送状态为1时返回');
             $table->timestamps();

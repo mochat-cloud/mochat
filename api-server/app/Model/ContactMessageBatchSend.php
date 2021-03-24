@@ -10,7 +10,6 @@ declare (strict_types=1);
  */
 namespace App\Model;
 
-use Hyperf\Database\Model\Relations\HasMany;
 use Hyperf\Database\Model\SoftDeletes;
 use MoChat\Framework\Model\AbstractModel;
 use Hyperf\Database\Model\Concerns\CamelCase;
@@ -89,13 +88,5 @@ class ContactMessageBatchSend extends AbstractModel
     public function setContentAttribute($value)
     {
         $this->attributes['content'] = is_string($value) ? $value : json_encode($value, JSON_UNESCAPED_UNICODE);
-    }
-    public function employees() : HasMany
-    {
-        return $this->hasMany(ContactMessageBatchSendEmployee::class, 'batch_id', 'id');
-    }
-    public function results() : HasMany
-    {
-        return $this->hasMany(ContactMessageBatchSendResult::class, 'batch_id', 'id');
     }
 }

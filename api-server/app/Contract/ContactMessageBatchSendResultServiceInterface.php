@@ -98,10 +98,10 @@ interface ContactMessageBatchSendResultServiceInterface
 
     /**
      * 根据群发Id微信Id获取单条记录
-     * @param  int  $batchId  群发ID
-     * @param  int  $employeeId  成员ID
+     * @param  int  $batchId
+     * @param  string  $externalUserUd
      * @param  array|string[]  $columns
-     * @return mixed
+     * @return array
      */
     public function getContactMessageBatchSendResultByBatchUserId(int $batchId, string $externalUserUd, array $columns = ['*']): array;
 

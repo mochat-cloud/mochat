@@ -162,4 +162,13 @@ interface WorkRoomServiceInterface
      * @return int 返回值
      */
     public function countAddWorkRoomsByCorpIdTime(int $corpId, string $startTime, string $endTime): int;
+
+    /**
+     * 根据群主ID获取群列表
+     * @param  int  $employeeId  成员ID
+     * @param  array|string[]  $columns
+     * @return mixed
+     */
+    public function getWorkRoomsByOwnerId(int $employeeId, array $columns = ['*']): array;
+
 }

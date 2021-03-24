@@ -8,15 +8,11 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
-
 namespace App\Service;
 
 use App\Contract\WorkContactServiceInterface;
 use App\Model\WorkContact;
-use App\Model\WorkContactEmployee;
-use App\Model\WorkContactRoom;
 use App\Model\WorkContactTagPivot;
-use Hyperf\Database\Model\Builder;
 use Hyperf\DbConnection\Db;
 use MoChat\Framework\Service\AbstractService;
 
@@ -29,8 +25,8 @@ class WorkContactService extends AbstractService implements WorkContactServiceIn
 
     /**
      * 查询单条 - 根据ID.
-     * @param  int  $id  ID
-     * @param  array|string[]  $columns  查询字段
+     * @param int $id ID
+     * @param array|string[] $columns 查询字段
      * @return array 数组
      */
     public function getWorkContactById(int $id, array $columns = ['*']): array
@@ -40,8 +36,8 @@ class WorkContactService extends AbstractService implements WorkContactServiceIn
 
     /**
      * 查询多条 - 根据ID.
-     * @param  array  $ids  ID
-     * @param  array|string[]  $columns  查询字段
+     * @param array $ids ID
+     * @param array|string[] $columns 查询字段
      * @return array 数组
      */
     public function getWorkContactsById(array $ids, array $columns = ['*']): array
@@ -51,9 +47,9 @@ class WorkContactService extends AbstractService implements WorkContactServiceIn
 
     /**
      * 多条分页.
-     * @param  array  $where  查询条件
-     * @param  array|string[]  $columns  查询字段
-     * @param  array  $options  可选项 ['orderByRaw'=> 'id asc', 'perPage' => 15, 'page' => null, 'pageName' => 'page']
+     * @param array $where 查询条件
+     * @param array|string[] $columns 查询字段
+     * @param array $options 可选项 ['orderByRaw'=> 'id asc', 'perPage' => 15, 'page' => null, 'pageName' => 'page']
      * @return array 分页结果 Hyperf\Paginator\Paginator::toArray
      */
     public function getWorkContactList(array $where, array $columns = ['*'], array $options = []): array
@@ -63,7 +59,7 @@ class WorkContactService extends AbstractService implements WorkContactServiceIn
 
     /**
      * 添加单条
-     * @param  array  $data  添加的数据
+     * @param array $data 添加的数据
      * @return int 自增ID
      */
     public function createWorkContact(array $data): int
@@ -73,7 +69,7 @@ class WorkContactService extends AbstractService implements WorkContactServiceIn
 
     /**
      * 添加多条
-     * @param  array  $data  添加的数据
+     * @param array $data 添加的数据
      * @return bool 执行结果
      */
     public function createWorkContacts(array $data): bool
@@ -83,8 +79,8 @@ class WorkContactService extends AbstractService implements WorkContactServiceIn
 
     /**
      * 修改单条 - 根据ID.
-     * @param  int  $id  id
-     * @param  array  $data  修改数据
+     * @param int $id id
+     * @param array $data 修改数据
      * @return int 修改条数
      */
     public function updateWorkContactById(int $id, array $data): int
@@ -102,7 +98,7 @@ class WorkContactService extends AbstractService implements WorkContactServiceIn
 
     /**
      * 删除 - 单条
-     * @param  int  $id  删除ID
+     * @param int $id 删除ID
      * @return int 删除条数
      */
     public function deleteWorkContact(int $id): int
@@ -112,7 +108,7 @@ class WorkContactService extends AbstractService implements WorkContactServiceIn
 
     /**
      * 删除 - 多条
-     * @param  array  $ids  删除ID
+     * @param array $ids 删除ID
      * @return int 删除条数
      */
     public function deleteWorkContacts(array $ids): int
@@ -122,9 +118,9 @@ class WorkContactService extends AbstractService implements WorkContactServiceIn
 
     /**
      * 查询多条 - 根据企业ID和联系人名称.
-     * @param  int  $corpId  企业ID
-     * @param  string  $name  联系人名称（模糊搜索）
-     * @param  array|string[]  $columns  查询字段
+     * @param int $corpId 企业ID
+     * @param string $name 联系人名称（模糊搜索）
+     * @param array|string[] $columns 查询字段
      * @return array 数组
      */
     public function getWorkContactsByCorpIdName(int $corpId, $name, array $columns = ['*']): array
@@ -142,9 +138,9 @@ class WorkContactService extends AbstractService implements WorkContactServiceIn
 
     /**
      * 查询多条 - 根据企业ID和客户编号.
-     * @param  int  $corpId  企业ID
-     * @param  string  $businessNo  客户编号
-     * @param  array|string[]  $columns  查询字段
+     * @param int $corpId 企业ID
+     * @param string $businessNo 客户编号
+     * @param array|string[] $columns 查询字段
      * @return array 数组
      */
     public function getWorkContactsByCorpIdBusinessNo(int $corpId, $businessNo, array $columns = ['*']): array
@@ -162,9 +158,9 @@ class WorkContactService extends AbstractService implements WorkContactServiceIn
 
     /**
      * 查询多条 - 根据企业ID和性别.
-     * @param  int  $corpId  企业ID
-     * @param  int  $gender  性别
-     * @param  array|string[]  $columns  查询字段
+     * @param int $corpId 企业ID
+     * @param int $gender 性别
+     * @param array|string[] $columns 查询字段
      * @return array 数组
      */
     public function getWorkContactsByCorpIdGender(int $corpId, $gender, array $columns = ['*']): array
@@ -204,8 +200,8 @@ class WorkContactService extends AbstractService implements WorkContactServiceIn
 
     /**
      * 查询多条 - 根据企业ID.
-     * @param  int  $corpId  企业ID
-     * @param  array|string[]  $columns  查询字段
+     * @param int $corpId 企业ID
+     * @param array|string[] $columns 查询字段
      * @return array 数组
      */
     public function getWorkContactsByCorpId($corpId, array $columns = ['*']): array
@@ -222,8 +218,8 @@ class WorkContactService extends AbstractService implements WorkContactServiceIn
 
     /**
      * 查询单条 - 根据企业微信客户id.
-     * @param  string  $wxExternalUserId  企业微信客户id
-     * @param  array  $columns  字段
+     * @param string $wxExternalUserId 企业微信客户id
+     * @param array $columns 字段
      * @return array 返回值
      */
     public function getWorkContactByWxExternalUserId($wxExternalUserId, array $columns = ['*']): array
@@ -240,9 +236,9 @@ class WorkContactService extends AbstractService implements WorkContactServiceIn
     }
 
     /**
-     * @param  int  $corpId  公司授信ID
-     * @param  string  $wxExternalUserId  微信外部联系人ID
-     * @param  array  $columns  查询字段
+     * @param int $corpId 公司授信ID
+     * @param string $wxExternalUserId 微信外部联系人ID
+     * @param array $columns 查询字段
      * @return array 响应数组
      */
     public function getWorkContactByCorpIdWxExternalUserId(int $corpId, $wxExternalUserId, array $columns = ['*']): array
@@ -257,9 +253,9 @@ class WorkContactService extends AbstractService implements WorkContactServiceIn
     }
 
     /**
-     * @param  int  $corpId  公司授信ID
-     * @param  array  $wxExternalUserIds  微信外部联系人ID
-     * @param  array  $columns  查询字段
+     * @param int $corpId 公司授信ID
+     * @param array $wxExternalUserIds 微信外部联系人ID
+     * @param array $columns 查询字段
      * @return array 响应数组
      */
     public function getWorkContactByCorpIdWxExternalUserIds(int $corpId, $wxExternalUserIds, array $columns = ['*']): array
@@ -282,48 +278,17 @@ class WorkContactService extends AbstractService implements WorkContactServiceIn
     }
 
     /**
-     * 获取过滤后的多条
-     * @param  int  $employeeId
-     * @param  array  $params  过滤参数
-     * @return array  响应数组
+     * @inheritDoc
      */
-    public function getWorkContactsByEmployeeFilterParams(int $employeeId, array $params)
+    public function getWorkContactsByIdsTagIds(array $ids, array $tagIds)
     {
-        $gender          = $params['gender'] ?? null;
-        $rooms           = $params['rooms'] ?? [];
-        $addTimeStart    = $params['addTimeStart'] ?? null;
-        $addTimeEnd      = $params['addTimeEnd'] ?? null;
-        $tags            = $params['tags'] ?? [];
-        $excludeContacts = $params['excludeContacts'] ?? [];
-
         $contactTable = $this->model::query()->getModel()->getTable();
         return $this->model::query()
-            ->join(WorkContactEmployee::query()->getModel()->getTable() . ' as b', "$contactTable.id", '=', 'b.contact_id')
-            ->where('b.employee_id', '=', $employeeId)
-            ->when(!empty($excludeContacts), function (Builder $query) use ($excludeContacts) {
-                return $query->whereNotIn('id', $excludeContacts);
+            ->when(!empty($tagIds), function ($query) use ($contactTable, $tagIds) {
+                return $query->join(WorkContactTagPivot::query()->getModel()->getTable() . ' as t', "$contactTable.id", '=', 't.contact_id')
+                    ->whereIn('contact_tag_id', $tagIds);
             })
-            ->when($gender !== null, function (Builder $query) use ($gender) {
-                return $query->where('gender', '=', $gender);
-            })
-            ->when(!empty($rooms), function (Builder $query) use ($contactTable, $rooms) {
-                return $query->join(WorkContactRoom::query()->getModel()->getTable() . ' as r', "$contactTable.id", '=', 'r.contact_id')
-                    ->whereIn('r.room_id', $rooms)
-                    ->where('r.status', '=', 1);
-            })
-            ->when($addTimeStart || $addTimeEnd, function (Builder $query) use ($contactTable, $addTimeStart, $addTimeEnd) {
-                return $query->join(WorkContactEmployee::query()->getModel()->getTable() . ' as e', "$contactTable.id", '=', 'e.contact_id')
-                    ->when($addTimeStart, function ($query) use ($addTimeStart) {
-                        return $query->where('e.create_time', '>=', $addTimeStart);
-                    })
-                    ->when($addTimeEnd, function ($query) use ($addTimeEnd) {
-                        return $query->where('e.create_time', '<=', $addTimeEnd);
-                    });
-            })
-            ->when(!empty($tags), function (Builder $query) use ($contactTable, $tags) {
-                return $query->join(WorkContactTagPivot::query()->getModel()->getTable() . ' as t', "$contactTable.id", '=', 'b.contact_id')
-                    ->whereIn('contact_tag_id', $tags);
-            })
+            ->whereIn("$contactTable.id", $ids)
             ->limit(10000)
             ->get([
                 "$contactTable.id",

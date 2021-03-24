@@ -155,10 +155,10 @@ interface WorkContactServiceInterface
     public function updateWorkContactsCaseIds(array $data): int;
 
     /**
-     * 获取过滤后的多条
-     * @param  int  $employeeId
-     * @param  array  $params 过滤参数
-     * @return array  响应数组
+     * 根据id和标签获取客户列表
+     * @param  array  $ids
+     * @param  array  $tagIds
+     * @return mixed
      */
-    public function getWorkContactsByEmployeeFilterParams(int $employeeId, array $params);
+    public function getWorkContactsByIdsTagIds(array $ids, array $tagIds);
 }

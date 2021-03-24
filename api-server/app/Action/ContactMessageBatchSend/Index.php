@@ -44,7 +44,7 @@ class Index extends AbstractAction
             'page'    => $this->request->input('page', 1),
             'perPage' => $this->request->input('perPage', '10'),
         ];
-        return $this->indexLogin->handle($params, user());
+        return $this->indexLogin->handle($params, intval(user()['id']));
     }
 
     /**

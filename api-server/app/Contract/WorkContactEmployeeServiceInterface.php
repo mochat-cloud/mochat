@@ -270,4 +270,14 @@ interface WorkContactEmployeeServiceInterface
      * @return int 返回值
      */
     public function countWorkContactEmployeesByCorpId(int $corpId, array $status): int;
+
+    /**
+     * 根据成员获取所有客户id
+     * @param  int  $employeeId     成员ID
+     * @param  string  $startTime   添加起始时间
+     * @param  string  $endTime     添加截止时间
+     * @return mixed
+     */
+    public function getWorkContactEmployeeContactIdsByEmployeeId(int $employeeId, string $startTime, string $endTime): array ;
+
 }

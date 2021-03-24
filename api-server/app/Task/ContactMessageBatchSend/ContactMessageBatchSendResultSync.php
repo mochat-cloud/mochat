@@ -17,11 +17,11 @@ use Hyperf\Crontab\Annotation\Crontab;
 use Psr\Container\ContainerInterface;
 
 /**
- * @Crontab(name="contactMessageBatchSendResultSync", rule="*\/1 * * * *", callback="execute", singleton=true, memo="客户消息群发")
+ * @Crontab(name="contactMessageBatchSendResultSync", rule="*\/5 * * * *", callback="execute", singleton=true, memo="客户消息结果同步")
  */
 class ContactMessageBatchSendResultSync
 {
-    const INTERVAL_MINUTES = 1; // 定时任务间隔分钟数
+    const INTERVAL_MINUTES = 5; // 定时任务间隔分钟数
 
     const EXPIRE_MINUTES = 1440 * 30; // 过期时间，到期后不再同步消息结果
 

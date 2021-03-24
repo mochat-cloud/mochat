@@ -16,6 +16,8 @@ namespace App\Logic\ContactMessageBatchSend;
 use App\Contract\ContactMessageBatchSendEmployeeServiceInterface;
 use App\Contract\ContactMessageBatchSendResultServiceInterface;
 use App\Contract\ContactMessageBatchSendServiceInterface;
+use App\Contract\WorkContactEmployeeServiceInterface;
+use App\Contract\WorkContactRoomServiceInterface;
 use App\Contract\WorkContactServiceInterface;
 use App\Contract\WorkContactTagServiceInterface;
 use App\Contract\WorkEmployeeServiceInterface;
@@ -63,9 +65,21 @@ class StoreLogic
 
     /**
      * @Inject()
+     * @var WorkContactEmployeeServiceInterface
+     */
+    private $workContactEmployee;
+
+    /**
+     * @Inject()
      * @var WorkRoomServiceInterface
      */
     private $workRoom;
+
+    /**
+     * @Inject()
+     * @var WorkContactRoomServiceInterface
+     */
+    private $workContactRoom;
 
     /**
      * @Inject()
@@ -80,9 +94,9 @@ class StoreLogic
     private $logger;
 
     /**
-     * @param  array  $params
-     * @param  array  $user
-     * @return array
+     * @param  array  $params  请求参数
+     * @param  array  $user  当前用户信息
+     * @return bool
      */
     public function handle(array $params, array $user): bool
     {
@@ -135,7 +149,7 @@ class StoreLogic
             $batchId      = $this->contactMessageBatchSend->createContactMessageBatchSend([
                 'corp_id'              => $corpId,
                 'user_id'              => $user['id'],
-                'user_name'            => $user['name'],
+                'user_name'            => $user['name'] ?: $user['phone'],
                 'filter_params'        => json_encode($filterParams, JSON_UNESCAPED_UNICODE),
                 'filter_params_detail' => json_encode($filterParamsDetail, JSON_UNESCAPED_UNICODE),
                 'content'              => json_encode($batchContent, JSON_UNESCAPED_UNICODE),
@@ -149,7 +163,7 @@ class StoreLogic
             foreach ($employees as $employee) {
                 $employeeTotal++;
                 ## 获取成员客户
-                $contacts     = $this->workContact->getWorkContactsByEmployeeFilterParams($employee['id'], $filterParams);
+                $contacts     = $this->getWorkContactsByEmployeeFilterParams($employee['id'], $filterParams);
                 $contactTotal += count($contacts);
                 ## 扩展多条消息
                 foreach ($batchContent as $content) {
@@ -194,5 +208,41 @@ class StoreLogic
         }
 
         return true;
+    }
+
+    /**
+     * 获取过滤后的多条
+     * @param  int  $employeeId
+     * @param  array  $params  过滤参数
+     * @return array  响应数组
+     */
+    protected function getWorkContactsByEmployeeFilterParams(int $employeeId, array $params)
+    {
+        $gender          = $params['gender'] ?? null;
+        $rooms           = $params['rooms'] ?? [];
+        $addTimeStart    = $params['addTimeStart'] ?? null;
+        $addTimeEnd      = $params['addTimeEnd'] ?? null;
+        $tags            = $params['tags'] ?? [];
+        $excludeContacts = $params['excludeContacts'] ?? [];
+
+        ## 查询条件
+        $where = [];
+        if ($gender !== null) {
+            $where[] = ['gender', '=', $gender];
+        }
+
+        ## 获取成员所有客户
+        $contactIds = $this->workContactEmployee->getWorkContactEmployeeContactIdsByEmployeeId($employeeId, $addTimeStart, $addTimeEnd);
+
+        if (!empty($excludeContacts)) {
+            $contactIds = array_diff($contactIds, (array) $excludeContacts);
+        }
+
+        if (!empty($rooms)) {
+            $roomContactIds = $this->workContactRoom->getWorkContactRoomsContactIdsByRoomIds((array) $rooms);
+            $contactIds     = array_intersect($contactIds, $roomContactIds);
+        }
+
+        return $this->workContact->getWorkContactsByIdsTagIds($contactIds, (array) $tags);
     }
 }

@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Constants\MessageBatchSend\SendWay;
+use App\Constants\MessageBatchSend\Status;
 use App\Model\ContactMessageBatchSend;
 use App\Contract\ContactMessageBatchSendServiceInterface;
 use MoChat\Framework\Service\AbstractService;
@@ -104,8 +106,8 @@ class ContactMessageBatchSendService extends AbstractService implements ContactM
     public function getContactMessageBatchSendsBySend(): array
     {
         return $this->model::query()
-            ->where('send_way', '=', 2)
-            ->where('send_status', '=', 0)
+            ->where('send_way', '=', SendWay::SEND_DELAY)
+            ->where('send_status', '=', Status::NOT_SEND)
             ->where('definite_time', '<=', date('Y-m-d H:i:s'))
             ->get(['id'])
             ->toArray();

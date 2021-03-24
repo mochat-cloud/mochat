@@ -19,7 +19,7 @@ use Hyperf\HttpServer\Annotation\RequestMapping;
 use MoChat\Framework\Request\ValidateSceneTrait;
 
 /**
- * 查询 - 详情
+ * 客户消息群发 - 查看详情
  * @Controller()
  */
 class Show extends AbstractAction
@@ -44,7 +44,7 @@ class Show extends AbstractAction
         $params = [
             'batchId' => $batchId,
         ];
-        return $this->showLogic->handle($params, user());
+        return $this->showLogic->handle($params, intval(user()['id']));
     }
 
     /**

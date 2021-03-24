@@ -11,18 +11,15 @@
  * @apiSuccessExample [json-app]
  * {
  *     "id": 1,                // ID
+ *     "batchTitle: "斗地主",   // 群发名称
  *     "creator": "王朔",       // 创建者
  *     "createAt": "2021-01-15", // 创建时间
- *     "seedRooms": {
-            "total": 8, // 群聊总数
- *          "list": [
- *              {
- *                  "id":   "1",                // 客户群ID
- *                  "name": "php交流群",        // 客户群名称
- *              }
- *              .....
- *          ]
- *      },      // 群发对象
+ *     "rooms": [
+ *        {
+ *            "id":   "1",                // 客户群ID
+ *            "name": "php交流群",        // 客户群名称
+ *        }
+ *     ],      // 群发对象
  *     "content": [
  *          {
  *              "msgType: "image",      消息类型

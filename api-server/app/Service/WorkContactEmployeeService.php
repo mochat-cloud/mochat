@@ -569,4 +569,24 @@ class WorkContactEmployeeService extends AbstractService implements WorkContactE
             ->whereIn('status', $status)
             ->count();
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getWorkContactEmployeeContactIdsByEmployeeId(int $employeeId, string $startTime = null, string $endTime = null): array
+    {
+        return $this->model::query()
+            ->where('employee_id', '=', $employeeId)
+            ->where('status', '=', 1)
+            ->when(!empty($startTime), function ($query) use ($startTime) {
+                return $query->where('create_time', '>=', $startTime);
+            })
+            ->when(!empty($endTime), function ($query) use ($startTime) {
+                return $query->where('create_time', '<=', $startTime);
+            })
+            ->pluck('contact_id')
+            ->toArray();
+    }
+
+
 }

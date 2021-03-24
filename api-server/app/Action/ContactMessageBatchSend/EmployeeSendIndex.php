@@ -21,7 +21,7 @@ use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
 
 /**
- * 客户消息详情-成员详情
+ * 客户消息群发-成员详情
  * @Controller()
  */
 class EmployeeSendIndex extends AbstractAction
@@ -49,7 +49,7 @@ class EmployeeSendIndex extends AbstractAction
             'page'       => $this->request->input('page', 1),
             'perPage'    => $this->request->input('perPage', 15),
         ];
-        return $this->employeeSendIndexLogic->handle($params, user());
+        return $this->employeeSendIndexLogic->handle($params, intval(user()['id']));
     }
 
     /**

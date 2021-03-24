@@ -255,4 +255,15 @@ class WorkRoomService extends AbstractService implements WorkRoomServiceInterfac
             ->where('created_at', '<', $endTime)
             ->count();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getWorkRoomsByOwnerId(int $employeeId, array $columns = ['*']): array
+    {
+        return $this->model::query()
+            ->where('owner_id', '=', $employeeId)
+            ->get($columns)
+            ->toArray();
+    }
 }

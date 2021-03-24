@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @api {get} /contactMessageBatchSend/contactR 消息详情-客户详情
- * @apiName contactMessageBatchSend.contactR
+ * @api {get} /contactMessageBatchSend/contactReceiveIndex 消息详情-客户详情
+ * @apiName contactMessageBatchSend.contactReceiveIndex
  * @apiDescription [已完成]
  * @apiGroup 客户群发管理
  *

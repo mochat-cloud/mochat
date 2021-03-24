@@ -19,7 +19,7 @@ use Hyperf\HttpServer\Annotation\RequestMapping;
 use MoChat\Framework\Request\ValidateSceneTrait;
 
 /**
- * 删除 - 动作
+ * 客户消息群发 - 删除消息
  * @Controller()
  */
 class Destroy extends AbstractAction
@@ -44,7 +44,7 @@ class Destroy extends AbstractAction
         $params = [
             'batchId' => $batchId,
         ];
-        $this->destroyLogic->handle($params, user());
+        $this->destroyLogic->handle($params, intval(user()['id']));
         return [];
     }
 

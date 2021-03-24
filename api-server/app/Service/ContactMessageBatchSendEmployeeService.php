@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Constants\MessageBatchSend\Status;
 use App\Model\ContactMessageBatchSendEmployee;
 use App\Contract\ContactMessageBatchSendEmployeeServiceInterface;
 use App\Model\WorkEmployee;
@@ -145,7 +146,7 @@ class ContactMessageBatchSendEmployeeService extends AbstractService implements 
     {
         return $this->model::query()
             ->where('last_sync_time', '<', date('Y-m-d H:i:s', time() - $minutes * 60))
-            ->where('status', '=', 0)
+            ->where('status', '=', Status::NOT_SEND)
             ->where('created_at', '>', date('Y-m-d H:i:s', time() - $expireMinutes * 60))
             ->limit($limit)
             ->get(['id'])
@@ -175,6 +176,5 @@ class ContactMessageBatchSendEmployeeService extends AbstractService implements 
     {
         return $this->model::query()->where($where)->count();
     }
-
 
 }

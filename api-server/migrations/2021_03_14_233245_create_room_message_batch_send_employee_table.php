@@ -23,7 +23,7 @@ class CreateRoomMessageBatchSendEmployeeTable extends Migration
             $table->string('msg_id', 50)->default('')->comment('企业群发消息的id，可用于获取群发消息发送结果');
             $table->timestamp('send_time')->nullable()->comment('发送时间');
             $table->timestamp('last_sync_time')->nullable()->comment('最后一次同步结果时间');
-            $table->tinyInteger('status')->default(0)->comment('状态（0-未发送，1-已发送）');
+            $table->tinyInteger('status')->default(0)->comment('状态（0-未发送，1-已发送, 2-发送失败）');
             $table->timestamps();
         });
         \Hyperf\DbConnection\Db::statement("ALTER TABLE `mc_room_message_batch_send_employee` comment '客户群消息群发成员表'");

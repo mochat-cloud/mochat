@@ -15,10 +15,15 @@ namespace App\Action\ContactMessageBatchSend;
 
 use App\Logic\ContactMessageBatchSend\RemindLogic;
 use Hyperf\Di\Annotation\Inject;
+use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
 
+/**
+ * 客户消息群发 - 提醒群主发送
+ * @Controller()
+ */
 class Remind extends AbstractAction
 {
     use ValidateSceneTrait;
@@ -42,7 +47,7 @@ class Remind extends AbstractAction
             'batchId'        => $this->request->input('batchId'),
             'batchEmployIds' => array_filter(explode(',', $batchEmployIds)),
         ];
-        $this->remindLogic->handle($params, user());
+        $this->remindLogic->handle($params, intval(user()['id']));
         return [];
     }
 
