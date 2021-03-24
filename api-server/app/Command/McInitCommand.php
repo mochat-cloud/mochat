@@ -163,15 +163,15 @@ class McInitCommand extends HyperfCommand
     {
         appDomain:
         $appDomain = $this->ask('输入后端接口域名', env('APP_DOMAIN', 'http://api.mo.chat'));
-        if (false === strpos($appDomain, 'http')) {
+        if (strpos($appDomain, 'http') === false) {
             $this->warn('后端接口域名请添加 http(s)://');
             goto appDomain;
         }
         $this->setEnvs([['APP_DOMAIN', $appDomain]]);
 
         jsDomain:
-        $jsDomain  = $this->ask('输入H5侧边工具栏前端域名', env('JS_DOMAIN', 'http://h5.mo.chat'));
-        if (false === strpos($jsDomain, 'http')) {
+        $jsDomain = $this->ask('输入H5侧边工具栏前端域名', env('JS_DOMAIN', 'http://h5.mo.chat'));
+        if (strpos($jsDomain, 'http') === false) {
             $this->warn('H5侧边工具栏前端域名请添加 http(s)://');
             goto jsDomain;
         }
@@ -180,7 +180,7 @@ class McInitCommand extends HyperfCommand
 
     /**
      * @deprecated
-     * 设置阿里云OSS.
+     * 设置阿里云OSS
      */
     protected function ossInit(): void
     {

@@ -8,9 +8,9 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
+
 namespace App\Action\ContactBatchAdd;
 
-use App\Logic\User\IndexLogic;
 use App\Middleware\PermissionMiddleware;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
@@ -20,23 +20,17 @@ use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
 
 /**
- * 导入客户-列表.
+ * 导入客户-设置修改页面.
  *
  * Class Index.
  * @Controller
  */
-class Index extends AbstractAction
+class SettingEdit extends AbstractAction
 {
     use ValidateSceneTrait;
 
     /**
-     * @Inject
-     * @var IndexLogic
-     */
-    protected $indexLogic;
-
-    /**
-     * @RequestMapping(path="/contactBatchAdd/index", methods="get")
+     * @RequestMapping(path="/contactBatchAdd/settingEdit", methods="get")
      * @Middleware(PermissionMiddleware::class)
      * @return array 返回数组
      */
