@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace App\Logic\WeWork;
 
 use App\Contract\CorpServiceInterface;
+use App\Contract\WorkAgentServiceInterface;
 use EasyWeChat\Work\Application;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
@@ -24,7 +25,7 @@ trait AppTrait
      * @param string $type ...
      * @return Application ...
      */
-    protected function wxApp($corpId, string $type = 'user'): Application
+    public function wxApp($corpId, string $type = 'user'): Application
     {
         if (is_int($corpId)) {
             $corMethod = 'getCorpById';
@@ -49,6 +50,32 @@ trait AppTrait
             default:
                 throw new CommonException(ErrorCode::SERVER_ERROR, sprintf('wxApp方法无此类型:[%s]', $type));
         }
+
+        return make(WeWork::class)->app($config);
+    }
+
+    /**
+     * 根据企业微信应用id获取信息.
+     * @param int|string $agentId
+     */
+    public function wxAgentApp($agentId): Application
+    {
+        $agentFunc = is_int($agentId) ? 'getWorkAgentById' : 'getWorkAgentByWxAgentId';
+        $agent     = make(WorkAgentServiceInterface::class)->{$agentFunc}($agentId, [
+            'id', 'wx_secret', 'corp_id',
+        ]);
+        if (empty($agent)) {
+            throw new CommonException(ErrorCode::SERVER_ERROR, sprintf('无该应用:[%s]', $agentId));
+        }
+        ## 根据corpId 查 wxCorpid
+        $corp = make(CorpServiceInterface::class)->getCorpById($agent['corpId'], [
+            'id', 'wx_corpid',
+        ]);
+
+        $config = [
+            'corp_id' => $corp['wxCorpid'],
+            'secret'  => $agent['wxSecret'],
+        ];
 
         return make(WeWork::class)->app($config);
     }

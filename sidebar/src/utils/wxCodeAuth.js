@@ -1,4 +1,6 @@
 import { getConfigInfo } from '@/api/wxconfig'
+import { Toast } from 'vant'
+
 const wx = window.wx
 // 获取微信注入参数
 async function getConfigParam (corpId, uriPath, agentId) {
@@ -35,6 +37,7 @@ export function wxConfig (corpId, uriPath) {
         resolve()
       })
       wx.error(function (res) {
+        Toast({ position: 'top', message: 'wx.config fail' })
         console.log(res)
         reject(res)
       })
@@ -59,6 +62,7 @@ export function agentConfig (corpId, uriPath, agentId) {
           resolve()
         },
         fail: function (res) {
+          Toast({ position: 'top', message: 'wx.agentConfig fail' })
           reject(res)
           if (res.errMsg.indexOf('function not exist') > -1) {
             alert('版本过低请升级')
@@ -94,6 +98,7 @@ export function getCurExternalContact () {
         // commit('SET_WX_USER_ID', userId)
         resolve(userId)
       } else {
+        Toast({ position: 'top', message: res.err_msg })
         // 错误处理
         reject(res.err_msg)
       }
@@ -150,6 +155,7 @@ export function sendChatMessage (type, content) {
         // 发送成功
         resolve()
       } else {
+        Toast({ position: 'top', message: res.err_msg })
         reject(res.err_msg)
       }
     })
