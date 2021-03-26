@@ -30,7 +30,7 @@ class Destroy extends AbstractAction
     use ValidateSceneTrait;
 
     /**
-     * @RequestMapping(path="/contactBatchAdd/settingUpdate", methods="put")
+     * @RequestMapping(path="/contactBatchAdd/destroy", methods="put")
      * @Middleware(PermissionMiddleware::class)
      * @return array 返回数组
      */
