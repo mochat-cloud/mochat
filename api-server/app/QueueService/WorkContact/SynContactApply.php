@@ -10,10 +10,8 @@ declare(strict_types=1);
  */
 namespace App\QueueService\WorkContact;
 
-use App\Contract\CorpServiceInterface;
 use App\Logic\WeWork\AppTrait;
 use App\Logic\WorkContact\SynContactLogic;
-use Hyperf\AsyncQueue\Annotation\AsyncQueueMessage;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Utils\Exception\ParallelExecutionException;
@@ -34,39 +32,33 @@ class SynContactApply
     private $logger;
 
     /**
-     * 企业信息.
-     * @var array
+     * @var
      */
-    private $corp;
+    private $ecClient;
 
     /**
      * @AsyncQueueMessage(pool="contact")
-     * @param $employee
-     * @param $corpId
+     * @param array $employee 通讯录成员
+     * @param int $corpId 企业授信ID
+     * @param string $wxCorpid 企业微信ID
      */
-    public function handle($employee, $corpId): void
+    public function handle(array $employee, int $corpId, string $wxCorpid): void
     {
-        //记录日志
+        // 记录日志
         $this->logger->debug(sprintf('%s [%s]', '同步客户', date('Y-m-d H:i:s')));
-
-        ## 获取企业微信信息
-        $this->corp = make(CorpServiceInterface::class)->getCorpById($corpId, ['id', 'wx_corpid']);
-
+        $this->ecClient = $this->wxApp($wxCorpid, 'contact')->external_contact;
         //获取客户列表
-        $listRes = $this->getList($employee);
-
+        $listRes = array_filter($this->getList($employee));
         if (empty($listRes)) {
             return;
         }
-
-        //转为一维数组
+        // 转为一维数组
         $externalUserid = [];
         array_walk_recursive($listRes, function ($value) use (&$externalUserid) {
             array_push($externalUserid, $value);
         });
-
-        //获取客户详情
-        $detailRes = $this->getDetail($externalUserid);
+        // 获取客户详情
+        $detailRes = array_filter($this->getDetail($externalUserid));
 
         $detail = [];
         foreach ($detailRes as $val) {
@@ -99,16 +91,11 @@ class SynContactApply
                 return $call($item);
             });
         }
-
         $results = [];
         try {
             $results = $parallel->wait();
         } catch (ParallelExecutionException $e) {
-            //dump($e);
-
             $this->logger->error($e->getMessage());
-            // $e->getResults() 获取协程中的返回值。
-            // $e->getThrowables() 获取协程中出现的异常。
         }
 
         return $results;
@@ -124,17 +111,16 @@ class SynContactApply
         $newEmployee = array_chunk($employee, 3);
 
         return $this->coDeal($newEmployee, function ($data) {
-            $ecClient = $this->wxApp($this->corp['wxCorpid'], 'contact')->external_contact;
-
-            $list = [];
-            foreach ($data as &$value) {
+            $arr = array_map(function ($v) {
                 //获取客户列表
-                $contact = $ecClient->list($value['wxUserId']);
+                $contact = $this->ecClient->list($v['wxUserId']);
                 if ($contact['errcode'] == 0) {
-                    $list[] = $contact['external_userid'];
+                    return $contact['external_userid'];
                 }
-            }
-            return $list;
+                $contact['errcode'] == 84061 || $this->logger->error(sprintf('同步客户-获取通讯录用户跟进的客户列表信息失败，error: %s [%s]', json_encode($contact), date('Y-m-d H:i:s')));
+                return [];
+            }, $data);
+            return array_filter($arr);
         });
     }
 
@@ -148,21 +134,18 @@ class SynContactApply
         $externalUserid = array_chunk(array_unique($externalUserid), 3);
 
         return $this->coDeal($externalUserid, function ($data) {
-            $detail = [];
-            foreach ($data as $value) {
-                $ecClient = $this->wxApp($this->corp['wxCorpid'], 'contact')->external_contact;
-                //获取客户详情
-                $res = $ecClient->get($value);
+            $arr = array_map(function ($v) {
+                $res = $this->ecClient->get($v);
                 if ($res['errcode'] == 0) {
-                    if (! empty($res['external_contact'])) {
-                        $detail[] = [
-                            'external_contact' => $res['external_contact'],
-                            'follow_user'      => $res['follow_user'],
-                        ];
-                    }
+                    return [
+                        'external_contact' => $res['external_contact'],
+                        'follow_user'      => $res['follow_user'],
+                    ];
                 }
-            }
-            return $detail;
+                $this->logger->error(sprintf('同步客户-获取客户详情信息失败，error: %s [%s]', json_encode($res), date('Y-m-d H:i:s')));
+                return [];
+            }, $data);
+            return array_filter($arr);
         });
     }
 }
