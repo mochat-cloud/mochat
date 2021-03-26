@@ -33,14 +33,15 @@ const assetsCDN = {
     '//cdn.jsdelivr.net/npm/vue-router@3.1.3/dist/vue-router.min.js',
     '//cdn.jsdelivr.net/npm/vuex@3.1.1/dist/vuex.min.js',
     '//cdn.jsdelivr.net/npm/axios@0.19.0/dist/axios.min.js'
-  ]
+  ],
+  dll: ['./dll/antDesignVue.dll.js', './dll/echarts.dll.js', './dll/vueCropper.dll.js', './dll/corejs.dll.js', './dll/vueContainerQuery.dll.js']
 }
 
 // vue.config.js
 const vueConfig = {
-  configureWebpack: {
+  configureWebpack: config => {
     // webpack plugins
-    plugins: [
+    config.plugins.concat([
       // Ignore all locale files of moment.js
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
       new webpack.DefinePlugin({
@@ -48,9 +49,25 @@ const vueConfig = {
         GIT_HASH: JSON.stringify(getGitHash()),
         BUILD_DATE: buildDate
       })
-    ],
-    // if prod, add externals
-    externals: isProd ? assetsCDN.externals : {}
+    ])
+    if (isProd) {
+      const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+      const CompressionWebpackPlugin = require('compression-webpack-plugin')
+      config.plugins.push(new BundleAnalyzerPlugin())
+      config.plugins.push(new CompressionWebpackPlugin({
+        test: /\.(js|css)$/,
+        threshold: 10240,
+        minRatio: 0.8
+      }))
+      config.externals = assetsCDN.externals
+      const dll = ['antDesignVue', 'vueCropper', 'echarts', 'corejs', 'vueContainerQuery']
+      dll.map(item => {
+        const path = `./public/dll/${item}-manifest.json`
+        config.plugins.push(new webpack.DllReferencePlugin({
+          manifest: require(path)
+        }))
+      })
+    }
   },
 
   chainWebpack: (config) => {
