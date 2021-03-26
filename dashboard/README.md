@@ -10,6 +10,8 @@ yarn run dev
 
 - 编译项目
 ```
+yarn run dll
+
 yarn run build
 ```
 
