@@ -51,9 +51,7 @@ const vueConfig = {
       })
     ])
     if (isProd) {
-      const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
       const CompressionWebpackPlugin = require('compression-webpack-plugin')
-      config.plugins.push(new BundleAnalyzerPlugin())
       config.plugins.push(new CompressionWebpackPlugin({
         test: /\.(js|css)$/,
         threshold: 10240,
@@ -67,6 +65,10 @@ const vueConfig = {
           manifest: require(path)
         }))
       })
+      if (process.env.npm_config_report) {
+        const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+        config.plugins.push(new BundleAnalyzerPlugin())
+      }
     }
   },
 
@@ -89,7 +91,6 @@ const vueConfig = {
       .options({
         name: 'assets/[name].[hash:8].[ext]'
       })
-
     // if prod is on
     // assets require on cdn
     if (isProd) {
