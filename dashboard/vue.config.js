@@ -34,7 +34,7 @@ const assetsCDN = {
     '//cdn.jsdelivr.net/npm/vuex@3.1.1/dist/vuex.min.js',
     '//cdn.jsdelivr.net/npm/axios@0.19.0/dist/axios.min.js'
   ],
-  dll: ['./dll/antDesignVue.dll.js', './dll/echarts.dll.js', './dll/vueCropper.dll.js', './dll/corejs.dll.js', './dll/vueContainerQuery.dll.js']
+  dll: ['/dll/antDesignVue.dll.js', '/dll/echarts.dll.js', '/dll/vueCropper.dll.js', '/dll/corejs.dll.js', '/dll/vueContainerQuery.dll.js']
 }
 
 // vue.config.js
