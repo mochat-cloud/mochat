@@ -419,7 +419,7 @@ export default {
         width: 100%;
         display: flex;
         align-items: center;
-        justify-content: speact-between;
+        justify-content: space-between;
         padding: 10px;
         div {
           width: 26%;
