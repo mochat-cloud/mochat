@@ -163,12 +163,16 @@
       <a-card title="入门指引" style="marginTop: 13px;">
         <div class="btn-box">
           <div>
-            <img :src="require('@/assets/systemHomePage/file-icon.png')" alt="">
-            <span>开发文档</span>
+            <a :href="guide.docLink" target="_blank">
+              <img :src="require('@/assets/systemHomePage/file-icon.png')" alt="">
+              <span>开发文档</span>
+            </a>
           </div>
           <div>
-            <img :src="require('@/assets/systemHomePage/help-icon.png')" alt="">
-            <span>帮助中心</span>
+            <a :href="guide.faqLink" target="_blank">
+              <img :src="require('@/assets/systemHomePage/help-icon.png')" alt="">
+              <span>帮助中心</span>
+            </a>
           </div>
         </div>
       </a-card>
@@ -386,7 +390,7 @@ export default {
       })
     },
     getRightData () {
-      tenantIndex().then(res => {
+      tenantIndex({ domain: 'mo.chat' }).then(res => {
         const { license, licenseContactLink, news, guide } = res.data
         this.newsList = news
         this.license = license
