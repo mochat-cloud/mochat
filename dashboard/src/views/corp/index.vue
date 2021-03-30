@@ -85,7 +85,7 @@
           <a-form-model-item label="Token：">
             <a-input :disabled="getDisble || editDisble" v-model="editWechatDetail.token"/>
           </a-form-model-item>
-          <a-form-model-item label="EncodingAWSKey：">
+          <a-form-model-item label="EncodingAESKey：">
             <a-input :disabled="getDisble || editDisble" v-model="editWechatDetail.encodingAesKey" />
           </a-form-model-item>
           <a-form-model-item label="外部联系人事件服务器URL">
