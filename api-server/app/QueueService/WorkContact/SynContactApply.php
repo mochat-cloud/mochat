@@ -10,15 +10,16 @@ declare(strict_types=1);
  */
 namespace App\QueueService\WorkContact;
 
+use App\Constants\WorkContactEmployee\Status;
+use App\Contract\WorkContactEmployeeServiceInterface;
+use App\Contract\WorkContactServiceInterface;
 use App\Logic\WeWork\AppTrait;
-use App\Logic\WorkContact\SynContactLogic;
+use Hyperf\AsyncQueue\Annotation\AsyncQueueMessage;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
-use Hyperf\Utils\Exception\ParallelExecutionException;
-use Hyperf\Utils\Parallel;
 
 /**
- * 同步登录人员的客户
+ * 同步单一成员跟进客户信息
  * Class SynContactApply.
  */
 class SynContactApply
@@ -30,6 +31,20 @@ class SynContactApply
      * @var StdoutLoggerInterface
      */
     private $logger;
+
+    /**
+     * 客户 - 员工关联.
+     * @Inject
+     * @var WorkContactEmployeeServiceInterface
+     */
+    private $workContactEmployee;
+
+    /**
+     * 客户.
+     * @Inject
+     * @var WorkContactServiceInterface
+     */
+    private $workContact;
 
     /**
      * @var
@@ -44,108 +59,80 @@ class SynContactApply
      */
     public function handle(array $employee, int $corpId, string $wxCorpid): void
     {
-        // 记录日志
-        $this->logger->debug(sprintf('%s [%s]', '同步客户', date('Y-m-d H:i:s')));
         $this->ecClient = $this->wxApp($wxCorpid, 'contact')->external_contact;
-        //获取客户列表
-        $listRes = array_filter($this->getList($employee));
-        if (empty($listRes)) {
+        // 微信拉取客户列表
+        $wxContactList = $this->getWxContactList((int) $employee['id'], $employee['wxUserId']);
+
+        if (empty($wxContactList)) {
             return;
         }
-        // 转为一维数组
-        $externalUserid = [];
-        array_walk_recursive($listRes, function ($value) use (&$externalUserid) {
-            array_push($externalUserid, $value);
-        });
-        // 获取客户详情
-        $detailRes = array_filter($this->getDetail($externalUserid));
-
-        $detail = [];
-        foreach ($detailRes as $val) {
-            foreach ($val as $v) {
-                $detail[] = $v;
+        $this->logger->error(sprintf('同步客户: %s [%s]', json_encode($employee), date('Y-m-d H:i:s')));
+        ## 从数据表中当前员工所有的客户
+        $oldContactList   = $this->getOldContactList((int) $employee['id'], $corpId);
+        $deleteContactIds = [];
+        if (! empty($oldContactList)) {
+            foreach ($oldContactList as $oldContact) {
+                in_array($oldContact['wxExternalUserid'], $wxContactList) || $deleteContactIds[] = $oldContact['id'];
             }
         }
+        ## 删除员工不存在的客户
+        $this->deleteContacts((int) $employee['id'], $deleteContactIds);
 
-        if (empty($detail)) {
-            return;
+        $wxContactList          = array_chunk($wxContactList, 100);
+        $synContactApplyByGroup = (new SynContactApplyByGroup());
+        foreach ($wxContactList as $v) {
+            $synContactApplyByGroup->handle($employee, $corpId, $wxCorpid, $v);
         }
-        $params = [
-            'employee' => $employee,
-            'corpId'   => $corpId,
-            'detail'   => $detail,
-        ];
-        //同步客户
-        make(SynContactLogic::class)->handle($params);
     }
 
     /**
-     * 协程请求
-     * @return array
+     * 从微信拉取客户列表.
+     * @param int $employeeId 数据表用户ID
+     * @param string $wxEmployeeId 微信用户ID
+     * @return array 相应数组
      */
-    protected function coDeal(array $arr, \Closure $call)
+    private function getWxContactList(int $employeeId, string $wxEmployeeId): array
     {
-        $parallel = new Parallel();
-        foreach ($arr as $item) {
-            $parallel->add(function () use ($item, $call) {
-                return $call($item);
-            });
+        // 从微信拉取客户列表
+        $contact = $this->ecClient->list($wxEmployeeId);
+        if ($contact['errcode'] == 0) {
+            return $contact['external_userid'];
         }
-        $results = [];
-        try {
-            $results = $parallel->wait();
-        } catch (ParallelExecutionException $e) {
-            $this->logger->error($e->getMessage());
+        if ($contact['errcode'] == 84061) { ## 无跟进客户
+            $this->workContactEmployee->updateWorkContactEmployeesByEmployeeId($employeeId, ['status' => Status::REMOVE, 'deleted_at' => date('Y-m-d H:i:s')]);
+            return [];
         }
-
-        return $results;
+        $this->logger->error(sprintf('同步客户-获取通讯录用户跟进的客户列表信息失败，error: %s [%s]', json_encode($contact), date('Y-m-d H:i:s')));
+        return [];
     }
 
     /**
-     * 获取客户列表.
-     * @param $employee
-     * @return array
+     * @param int $employeeId 员工ID
+     * @param int $corpId 企业授信ID
+     * @return array 相应数组
      */
-    private function getList($employee)
+    private function getOldContactList(int $employeeId, int $corpId): array
     {
-        $newEmployee = array_chunk($employee, 3);
-
-        return $this->coDeal($newEmployee, function ($data) {
-            $arr = array_map(function ($v) {
-                //获取客户列表
-                $contact = $this->ecClient->list($v['wxUserId']);
-                if ($contact['errcode'] == 0) {
-                    return $contact['external_userid'];
-                }
-                $contact['errcode'] == 84061 || $this->logger->error(sprintf('同步客户-获取通讯录用户跟进的客户列表信息失败，error: %s [%s]', json_encode($contact), date('Y-m-d H:i:s')));
-                return [];
-            }, $data);
-            return array_filter($arr);
-        });
+        ## 员工-客户关联表信息
+        $contactEmployeeList = $this->workContactEmployee->getWorkContactEmployeeByCorpIdEmployeeId($employeeId, $corpId, ['id', 'contact_id']);
+        if (empty($contactEmployeeList)) {
+            return [];
+        }
+        ## 员工表信息
+        $contactList = $this->workContact->getWorkContactsById(array_column($contactEmployeeList, 'contactId'), ['id', 'wx_external_userid']);
+        return $contactList ?? [];
     }
 
     /**
-     * 获取客户详情.
-     * @param $externalUserid
-     * @return array
+     * 删除员工客户信息.
+     * @param int $employeeId 员工ID
+     * @param array $contactIds 客户ID
      */
-    private function getDetail($externalUserid)
+    private function deleteContacts(int $employeeId, array $contactIds)
     {
-        $externalUserid = array_chunk(array_unique($externalUserid), 3);
-
-        return $this->coDeal($externalUserid, function ($data) {
-            $arr = array_map(function ($v) {
-                $res = $this->ecClient->get($v);
-                if ($res['errcode'] == 0) {
-                    return [
-                        'external_contact' => $res['external_contact'],
-                        'follow_user'      => $res['follow_user'],
-                    ];
-                }
-                $this->logger->error(sprintf('同步客户-获取客户详情信息失败，error: %s [%s]', json_encode($res), date('Y-m-d H:i:s')));
-                return [];
-            }, $data);
-            return array_filter($arr);
-        });
+        $res = $this->workContactEmployee->updateWorkContactEmployeesByOtherId($employeeId, $contactIds, ['status' => Status::REMOVE, 'deleted_at' => date('Y-m-d H:i:s')]);
+        if (! is_int($res)) {
+            $this->logger->error(sprintf('同步客户-删除员工客户失败，error: %s [%s]', json_encode($res), date('Y-m-d H:i:s')));
+        }
     }
 }

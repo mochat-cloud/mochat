@@ -31,6 +31,7 @@ use MoChat\Framework\Exception\CommonException;
 class SynContact extends AbstractAction
 {
     /**
+     * @Inject
      * @var SynContactApply
      */
     private $service;
@@ -69,8 +70,9 @@ class SynContact extends AbstractAction
         if (empty($employee)) {
             throw new CommonException(ErrorCode::SERVER_ERROR, '查询不到有效的企业微信成员信息');
         }
-
-        $this->service = make(SynContactApply::class);
-        $this->service->handle($employee, (int) $corpIds[0], $corpInfo['wxCorpid']);
+        ## 异步队列处理
+        foreach ($employee as $v) {
+            $this->service->handle($v, (int) $corpIds[0], $corpInfo['wxCorpid']);
+        }
     }
 }
