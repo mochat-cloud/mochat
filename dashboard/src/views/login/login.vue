@@ -247,7 +247,6 @@ export default {
   .input {
     height: 60px;
     font-size: 16px;
-    background: #3e4665;
   }
   .footer {
     color: #e4eafa;
