@@ -54,7 +54,7 @@
     "babel-plugin-import": "^1.12.2",
     "babel-plugin-transform-remove-console": "^6.9.4",
     "clean-webpack-plugin": "^3.0.0",
-    "compression-webpack-plugin": "^6.1.2",
+    "compression-webpack-plugin": "^6.1.1",
     "eslint": "^5.16.0",
     "eslint-plugin-html": "^5.0.0",
     "eslint-plugin-vue": "^5.2.3",
