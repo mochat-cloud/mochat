@@ -50,7 +50,10 @@ class FilesystemExt
 
         switch ($this->adapterName) {
             case 'local':
-                $fullUrl = config('framework.app_domain', '') . '/' . $path;
+                $documentRoot = rtrim(config('server.settings.document_root', ''), '\\/');
+                $uploadRoot   = rtrim(realpath($this->config['root']), '/');
+                $relativeDir  = str_replace($documentRoot, '', $uploadRoot);
+                $fullUrl      = config('framework.app_domain') . $relativeDir . '/' . $path;
                 break;
             case 'oss':
                 $fullUrl = $this->getOssClient()->signUrl($this->config['bucket'], $path, 60 * 60 * 24);

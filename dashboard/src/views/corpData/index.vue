@@ -163,12 +163,16 @@
       <a-card title="入门指引" style="marginTop: 13px;">
         <div class="btn-box">
           <div>
-            <img :src="require('@/assets/systemHomePage/file-icon.png')" alt="">
-            <span>开发文档</span>
+            <a :href="guide.docLink" target="_blank">
+              <img :src="require('@/assets/systemHomePage/file-icon.png')" alt="">
+              <span>开发文档</span>
+            </a>
           </div>
           <div>
-            <img :src="require('@/assets/systemHomePage/help-icon.png')" alt="">
-            <span>帮助中心</span>
+            <a :href="guide.faqLink" target="_blank">
+              <img :src="require('@/assets/systemHomePage/help-icon.png')" alt="">
+              <span>帮助中心</span>
+            </a>
           </div>
         </div>
       </a-card>
@@ -229,7 +233,7 @@ export default {
         grid: {
           left: '10%',
           right: '10%',
-          bottom: '10%',
+          bottom: '20%',
           width: '80%'
         },
         xAxis: {
@@ -237,7 +241,7 @@ export default {
           boundaryGap: false,
           data: [],
           axisLabel: {
-            interval: 0,
+            interval: 2,
             rotate: 0,
             color: 'blue',
             margin: 20
@@ -363,7 +367,7 @@ export default {
         const quitRoomNum = []
         const time = []
         line.map(item => {
-          time.push(item.date)
+          time.push(item.date.substr(5, 5))
           addContactNum.push(item.addContactNum)
           addIntoRoomNum.push(item.addIntoRoomNum)
           lossContactNum.push(item.lossContactNum)
@@ -386,7 +390,7 @@ export default {
       })
     },
     getRightData () {
-      tenantIndex().then(res => {
+      tenantIndex({ domain: 'mo.chat' }).then(res => {
         const { license, licenseContactLink, news, guide } = res.data
         this.newsList = news
         this.license = license
@@ -415,7 +419,7 @@ export default {
         width: 100%;
         display: flex;
         align-items: center;
-        justify-content: speact-between;
+        justify-content: space-between;
         padding: 10px;
         div {
           width: 26%;
@@ -619,7 +623,7 @@ export default {
     }
   }
   .right {
-    width: 22%;
+    min-width: 310px;
     .QR-code {
       width: 100%;
       display: flex;
@@ -656,8 +660,8 @@ export default {
       .code-img {
         height: 250px;
         img {
-          width: 100%;
-          height: 100%;
+          width: 250px;
+          height: 250px;
         }
       }
       .code-detail {
