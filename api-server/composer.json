@@ -36,7 +36,8 @@
         "overtrue/pinyin": "^4.0",
         "overtrue/wechat": "~4.0",
         "php-ffmpeg/php-ffmpeg": "^0.16.0",
-        "xxtime/flysystem-aliyun-oss": "^1.5"
+        "xxtime/flysystem-aliyun-oss": "^1.5",
+        "phpoffice/phpspreadsheet": "^1.17"
     },
     "require-dev": {
         "swoole/ide-helper": "^4.5",

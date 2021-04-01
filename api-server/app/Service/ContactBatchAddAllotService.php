@@ -6,12 +6,12 @@ declare(strict_types=1);
  * @link     https://mo.chat
  * @document https://mochat.wiki
  * @contact  group@mo.chat
- * @license  https://github.com/mochatcloud/mochat/blob/master/LICENSE
+ * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
 namespace App\Service;
 
-use App\Model\ContactBatchAddAllot;
 use App\Contract\ContactBatchAddAllotServiceInterface;
+use App\Model\ContactBatchAddAllot;
 use MoChat\Framework\Service\AbstractService;
 
 class ContactBatchAddAllotService extends AbstractService implements ContactBatchAddAllotServiceInterface
@@ -84,5 +84,4 @@ class ContactBatchAddAllotService extends AbstractService implements ContactBatc
     {
         return $this->model->deleteAll($ids);
     }
-
 }

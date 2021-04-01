@@ -6,12 +6,12 @@ declare(strict_types=1);
  * @link     https://mo.chat
  * @document https://mochat.wiki
  * @contact  group@mo.chat
- * @license  https://github.com/mochatcloud/mochat/blob/master/LICENSE
+ * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
 namespace App\Service;
 
-use App\Model\ContactBatchAddImportRecord;
 use App\Contract\ContactBatchAddImportRecordServiceInterface;
+use App\Model\ContactBatchAddImportRecord;
 use MoChat\Framework\Service\AbstractService;
 
 class ContactBatchAddImportRecordService extends AbstractService implements ContactBatchAddImportRecordServiceInterface
@@ -84,5 +84,4 @@ class ContactBatchAddImportRecordService extends AbstractService implements Cont
     {
         return $this->model->deleteAll($ids);
     }
-
 }

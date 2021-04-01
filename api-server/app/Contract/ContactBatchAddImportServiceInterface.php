@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @link     https://mo.chat
  * @document https://mochat.wiki
  * @contact  group@mo.chat
- * @license  https://github.com/mochatcloud/mochat/blob/master/LICENSE
+ * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
 namespace App\Contract;
 
@@ -72,4 +72,11 @@ interface ContactBatchAddImportServiceInterface
      * @return int 删除条数
      */
     public function deleteContactBatchAddImports(array $ids): int;
+
+    /**
+     * 获取最后id.
+     *
+     * @return int 主键ID
+     */
+    public function getLastId(): int;
 }
