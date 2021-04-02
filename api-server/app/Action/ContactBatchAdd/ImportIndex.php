@@ -8,7 +8,6 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
-
 namespace App\Action\ContactBatchAdd;
 
 use App\Logic\ContactBatchAdd\ImportIndexLogic;
@@ -44,8 +43,7 @@ class ImportIndex extends AbstractAction
     public function handle(): array
     {
         $corpIds = user()['corpIds'];
-        $result = $this->importIndexLogic->handle($corpIds[0]);
-        return $result;
+        return $this->importIndexLogic->handle($corpIds[0]);
     }
 
     /**

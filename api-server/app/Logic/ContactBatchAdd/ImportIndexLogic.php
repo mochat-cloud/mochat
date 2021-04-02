@@ -8,12 +8,11 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
-
 namespace App\Logic\ContactBatchAdd;
 
 use App\Contract\ContactBatchAddImportRecordServiceInterface;
-use App\Contract\WorkEmployeeServiceInterface;
 use App\Contract\WorkContactTagServiceInterface;
+use App\Contract\WorkEmployeeServiceInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 
@@ -72,13 +71,13 @@ class ImportIndexLogic
         $tags          = [];
         foreach ($record['data'] as $item) {
             $allotEmployee = array_merge($allotEmployee, $item['allotEmployee'] ?: []);
-            $tags = array_merge($tags, $item['tags'] ?: []);
+            $tags          = array_merge($tags, $item['tags'] ?: []);
         }
 
         $employees = $this->workEmployeeService->getWorkEmployeesById($allotEmployee, ['id', 'name']);
         $employees = collect($employees)->keyBy('id')->toArray();
-        $tags = $this->workContactTagService->getWorkContactTagsById($tags, ['id', 'name']);
-        $tags = collect($tags)->keyBy('id')->toArray();
+        $tags      = $this->workContactTagService->getWorkContactTagsById($tags, ['id', 'name']);
+        $tags      = collect($tags)->keyBy('id')->toArray();
         var_dump($tags);
 
         foreach ($record['data'] as &$item) {
@@ -100,7 +99,6 @@ class ImportIndexLogic
             $item['tags'] = $tempTag;
         }
         unset($item);
-
 
         return $record;
     }
