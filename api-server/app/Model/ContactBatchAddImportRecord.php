@@ -51,5 +51,5 @@ class ContactBatchAddImportRecord extends AbstractModel
      *
      * @var array
      */
-    protected $casts = ['id' => 'integer', 'corp_id' => 'integer', 'import_num' => 'integer', 'add_num' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'integer', 'corp_id' => 'integer', 'allot_employee' => 'array', 'tags' => 'array', 'import_num' => 'integer', 'add_num' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

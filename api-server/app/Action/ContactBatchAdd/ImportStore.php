@@ -36,8 +36,6 @@ class ImportStore extends AbstractAction
     /**
      * @Inject
      * @var ImportStoreLogic
-     *
-     * @var [type]
      */
     protected $importStoreLogic;
 
@@ -51,7 +49,7 @@ class ImportStore extends AbstractAction
      *      #apiGroup 批量添加客户
      *      #apiParam {Number[]} [tags] 标签ID
      *      #apiParam {String} title 标题.
-     *      #apiParam {Number[]} allot_employee 分配员工ID
+     *      #apiParam {Number[]} allotEmployee 分配员工ID
      *      #apiParam {File} file 文件
      *      #apiSuccess {Number} success_num 导入成功数量
      *      #apiSuccessExample {json} Success-Response:
@@ -77,9 +75,9 @@ class ImportStore extends AbstractAction
     public function handle(Filesystem $filesystem): array
     {
         //接收参数
-        $params['tags']           = $this->request->input('tags');
-        $params['title']          = $this->request->input('title');
-        $params['allot_employee'] = $this->request->input('allot_employee');
+        $params['tags']           = $this->request->input('tags', []);
+        $params['title']          = $this->request->input('title', '');
+        $params['allot_employee'] = $this->request->input('allotEmployee', []);
         $params['file']           = $this->request->file('file');
 
         //验证参数
@@ -103,13 +101,8 @@ class ImportStore extends AbstractAction
             throw new CommonException(ErrorCode::SERVER_ERROR, '上传失败:' . $e->getMessage());
         }
 
-        $params = [
-            'tags'          => $this->request->input('tags', []),
-            'title'         => $this->request->input('title', ''),
-            'allotEmployee' => $this->request->input('allot_employee', [1, 2, 3]),
-            'fileName'      => $fileName,
-            'fileUrl'       => file_full_url($fileName),
-        ];
+        $params['fileName'] = $fileName;
+        $params['fileUrl']  = file_full_url($fileName);
 
         $result = $this->importStoreLogic->handle($params, $contact, $user);
 

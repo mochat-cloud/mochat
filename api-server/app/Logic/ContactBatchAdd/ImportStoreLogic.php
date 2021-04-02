@@ -10,19 +10,12 @@ declare(strict_types=1);
  */
 namespace App\Logic\ContactBatchAdd;
 
-use App\Contract\ContactBatchAddAllotServiceInterface;
 use App\Contract\ContactBatchAddImportRecordServiceInterface;
-use App\Contract\ContactBatchAddImportServiceInterface;
-use App\Contract\RbacUserRoleServiceInterface;
-use App\Contract\UserServiceInterface;
-use App\Contract\WorkEmployeeServiceInterface;
-use App\Contract\WorkEmployeeTagServiceInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
-use Qbhy\HyperfAuth\AuthManager;
 
 /**
  * 导入客户-导入提交.
@@ -33,51 +26,9 @@ class ImportStoreLogic
 {
     /**
      * @Inject
-     * @var UserServiceInterface
-     */
-    protected $userService;
-
-    /**
-     * @Inject
-     * @var WorkEmployeeServiceInterface
-     */
-    protected $employeeClient;
-
-    /**
-     * @Inject
-     * @var RbacUserRoleServiceInterface
-     */
-    protected $rbacUserRoleService;
-
-    /**
-     * @Inject
-     * @var AuthManager
-     */
-    protected $authManager;
-
-    /**
-     * @Inject
-     * @var WorkEmployeeTagServiceInterface
-     */
-    protected $workEmployeeTagService;
-
-    /**
-     * @Inject
      * @var ContactBatchAddImportRecordServiceInterface
      */
     protected $contactBatchAddImportRecordService;
-
-    /**
-     * @Inject
-     * @var ContactBatchAddImportServiceInterface
-     */
-    protected $contactBatchAddImportService;
-
-    /**
-     * @Inject
-     * @var ContactBatchAddAllotServiceInterface
-     */
-    protected $contactBatchAddAllotService;
 
     /**
      * @Inject
