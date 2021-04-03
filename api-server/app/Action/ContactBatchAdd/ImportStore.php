@@ -51,13 +51,13 @@ class ImportStore extends AbstractAction
      *      #apiParam {String} title 标题.
      *      #apiParam {Number[]} allotEmployee 分配员工ID
      *      #apiParam {File} file 文件
-     *      #apiSuccess {Number} success_num 导入成功数量
+     *      #apiSuccess {Number} successNum 导入成功数量
      *      #apiSuccessExample {json} Success-Response:
      *      {
      *          "code": 200,
      *          "msg": "",
      *          "data": {
-     *              "success_num": 3
+     *              "successNum": 3
      *           }
      *      }
      *      #apiErrorExample {json} Error-Response:
@@ -107,7 +107,7 @@ class ImportStore extends AbstractAction
         $result = $this->importStoreLogic->handle($params, $contact, $user);
 
         return [
-            'success_num' => $result['number'],
+            'successNum' => $result['number'],
         ];
     }
 

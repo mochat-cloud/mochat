@@ -8,6 +8,7 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
+
 namespace App\Action\ContactBatchAdd;
 
 use App\Middleware\PermissionMiddleware;
@@ -16,6 +17,8 @@ use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
+use App\Contract\ContactBatchAddImportServiceInterface;
+use Hyperf\Di\Annotation\Inject;
 
 /**
  * 导入客户-删除客户.
@@ -28,13 +31,48 @@ class Destroy extends AbstractAction
     use ValidateSceneTrait;
 
     /**
-     * @RequestMapping(path="/contactBatchAdd/destroy", methods="put")
+     * @Inject
+     * @var ContactBatchAddImportServiceInterface
+     */
+    protected $contactBatchAddImportService;
+
+    /**
+     * @api(
+     *      #apiRoute /contactBatchAdd/destroy
+     *      #apiTitle 删除客户
+     *      #apiMethod DELETE
+     *      #apiName ContactBatchAddDestroy
+     *      #apiDescription
+     *      #apiGroup 批量添加客户
+     *      #apiParam {Number} ID 导入客户ID
+     *      #apiSuccess {Number} delNum 删除成功数量
+     *      #apiSuccessExample {json} Success-Response:
+     *      {
+     *          "code": 200,
+     *          "msg": "",
+     *          "data": {
+     *              "delNum": 1
+     *           }
+     *      }
+     *      #apiErrorExample {json} Error-Response:
+     *      {
+     *        "code": "100014",
+     *        "msg": "服务异常",
+     *        "data": []
+     *      }
+     * )
+     * 
+     * @RequestMapping(path="/contactBatchAdd/destroy", methods="DELETE")
      * @Middleware(PermissionMiddleware::class)
      * @return array 返回数组
      */
     public function handle(): array
     {
-        return [];
+        $params['id'] = $this->request->input("id");
+        $delNum = $this->contactBatchAddImportService->deleteContactBatchAddImport((int)$params['id']);
+        return [
+            'delNum' => $delNum
+        ];
     }
 
     /**
