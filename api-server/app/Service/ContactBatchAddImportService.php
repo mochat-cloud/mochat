@@ -92,4 +92,15 @@ class ContactBatchAddImportService extends AbstractService implements ContactBat
     {
         return (int) $this->model->orderBy('id', 'desc')->value('id');
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getContactBatchAddImportOptionWhere(array $where, array $options = [], array $columns = ['*']): array
+    {
+        $res = $this->model
+            ->optionWhere($where, $options)
+            ->get($columns);
+        return $res->toArray();
+    }
 }

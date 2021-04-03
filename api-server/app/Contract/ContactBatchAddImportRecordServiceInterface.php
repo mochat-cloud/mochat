@@ -72,4 +72,12 @@ interface ContactBatchAddImportRecordServiceInterface
      * @return int 删除条数
      */
     public function deleteContactBatchAddImportRecords(array $ids): int;
+
+    /**
+     * 查询多条 - 根据企业ID.
+     * @param array $corpId 企业ID
+     * @param array|string[] $columns 查询字段
+     * @return array 数组
+     */
+    public function getContactBatchAddImportRecordsByCorpId(array $corpId, array $columns = ['*']): array;
 }

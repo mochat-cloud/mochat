@@ -75,10 +75,10 @@ class ImportStore extends AbstractAction
     public function handle(Filesystem $filesystem): array
     {
         //接收参数
-        $params['tags']           = $this->request->input('tags', []);
-        $params['title']          = $this->request->input('title', '');
-        $params['allot_employee'] = $this->request->input('allotEmployee', []);
-        $params['file']           = $this->request->file('file');
+        $params['tags']          = $this->request->input('tags', []);
+        $params['title']         = $this->request->input('title', '');
+        $params['allotEmployee'] = $this->request->input('allotEmployee', []);
+        $params['file']          = $this->request->file('file');
 
         //验证参数
         $this->validated($params);
@@ -119,10 +119,10 @@ class ImportStore extends AbstractAction
     protected function rules(): array
     {
         return [
-            'tags'           => 'array',
-            'title'          => 'required',
-            'allot_employee' => 'required|array|min:1',
-            'file'           => 'required|file',
+            'tags'          => 'array',
+            'title'         => 'required',
+            'allotEmployee' => 'required|array|min:1',
+            'file'          => 'required|file',
         ];
     }
 

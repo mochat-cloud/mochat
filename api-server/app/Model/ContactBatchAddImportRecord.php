@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace App\Model;
 
 use Hyperf\Database\Model\Concerns\CamelCase;
+use Hyperf\Database\Model\SoftDeletes;
 use MoChat\Framework\Model\AbstractModel;
 
 /**
@@ -31,6 +32,7 @@ use MoChat\Framework\Model\AbstractModel;
 class ContactBatchAddImportRecord extends AbstractModel
 {
     use CamelCase;
+    use SoftDeletes;
 
     /**
      * The table associated with the model.

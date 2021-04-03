@@ -78,7 +78,6 @@ class ImportIndexLogic
         $employees = collect($employees)->keyBy('id')->toArray();
         $tags      = $this->workContactTagService->getWorkContactTagsById($tags, ['id', 'name']);
         $tags      = collect($tags)->keyBy('id')->toArray();
-        var_dump($tags);
 
         foreach ($record['data'] as &$item) {
             $tempEmployee = [];

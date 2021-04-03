@@ -84,4 +84,20 @@ class ContactBatchAddImportRecordService extends AbstractService implements Cont
     {
         return $this->model->deleteAll($ids);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getContactBatchAddImportRecordsByCorpId(array $corpId, array $columns = ['*']): array
+    {
+        $res = $this->model::query()
+            ->whereIn('corp_id', $corpId)
+            ->get($columns);
+
+        if (empty($res)) {
+            return [];
+        }
+
+        return $res->toArray();
+    }
 }

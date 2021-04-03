@@ -93,7 +93,7 @@ class ImportStoreLogic
                 'phone'       => $item[0],
                 'upload_at'   => date('Y-m-d H:i:s'),
                 'status'      => 1,
-                'add_at'      => date('Y-m-d H:i:s'),
+                'add_at'      => '0000-00-00 00:00:00',
                 'employee_id' => $employeeId,
                 'allot_num'   => 1,
                 'remark'      => $item[1],

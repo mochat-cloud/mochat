@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace App\Model;
 
 use Hyperf\Database\Model\Concerns\CamelCase;
+use Hyperf\Database\Model\SoftDeletes;
 use MoChat\Framework\Model\AbstractModel;
 
 /**
@@ -31,6 +32,7 @@ use MoChat\Framework\Model\AbstractModel;
 class ContactBatchAddImport extends AbstractModel
 {
     use CamelCase;
+    use SoftDeletes;
 
     /**
      * The table associated with the model.
@@ -51,5 +53,5 @@ class ContactBatchAddImport extends AbstractModel
      *
      * @var array
      */
-    protected $casts = ['id' => 'integer', 'record_id' => 'integer', 'status' => 'integer', 'employee_id' => 'integer', 'allot_num' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'integer', 'record_id' => 'integer', 'status' => 'integer', 'employee_id' => 'integer', 'allot_num' => 'integer', 'tags' => 'array', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }
