@@ -47,6 +47,7 @@ class SettingUpdate extends AbstractAction
      *      #apiParam {Number} pendingStatus 待处理客户提醒开关0关1开
      *      #apiParam {Number} pendingTimeOut 待处理客户提醒超时天数
      *      #apiParam {Time} pendingReminderTime 待处理客户提醒时间 示例（13:01:01）
+     *      #apiParam {Number} [pendingLeaderId] 待处理客户提醒管理员ID
      *      #apiParam {Number} undoneStatus 成员未添加客户提醒开关0关1开
      *      #apiParam {Number} undoneTimeOut 成员未添加客户提醒超时天数
      *      #apiParam {Time} undoneReminderTime 成员未添加客户提醒时间 示例（13:01:01）
@@ -78,13 +79,14 @@ class SettingUpdate extends AbstractAction
         $params['pending_status']        = $this->request->input('pendingStatus');
         $params['pending_time_out']      = $this->request->input('pendingTimeOut');
         $params['pending_reminder_time'] = $this->request->input('pendingReminderTime');
+        $params['pending_leader_id']     = $this->request->input('pendingLeaderId', 0);
         $params['undone_status']         = $this->request->input('undoneStatus');
         $params['undone_time_out']       = $this->request->input('undoneTimeOut');
         $params['undone_reminder_time']  = $this->request->input('undoneReminderTime');
         $params['recycle_status']        = $this->request->input('recycleStatus');
         $params['recycle_time_out']      = $this->request->input('recycleTimeOut');
         $this->validated($params);
-        $bool = $this->contactBatchAddConfigService->updateContactBatchAddConfigBycorpId((int) user()['corpIds'][0], $params);
+        $bool = $this->contactBatchAddConfigService->updateContactBatchAddConfigByCorpId((int) user()['corpIds'][0], $params);
         return [
             'status' => (int) $bool,
         ];
@@ -104,6 +106,7 @@ class SettingUpdate extends AbstractAction
             ],
             'pending_time_out'      => 'required|numeric',
             'pending_reminder_time' => 'required|date_format:H:i:s',
+            'pending_leader_id'     => 'numeric',
             'undone_status'         => [
                 'required',
                 Rule::in(['0', '1']),

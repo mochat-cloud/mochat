@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace App\Action\ContactBatchAdd;
 
 use App\Contract\ContactBatchAddConfigServiceInterface;
+use App\Contract\WorkEmployeeServiceInterface;
 use App\Middleware\PermissionMiddleware;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
@@ -36,6 +37,12 @@ class SettingEdit extends AbstractAction
     protected $contactBatchAddConfigService;
 
     /**
+     * @Inject
+     * @var WorkEmployeeServiceInterface
+     */
+    protected $workEmployeeService;
+
+    /**
      * @api(
      *      #apiRoute /contactBatchAdd/settingEdit
      *      #apiTitle 获取设置
@@ -46,27 +53,34 @@ class SettingEdit extends AbstractAction
      *      #apiSuccess {Number} pendingStatus 待处理客户提醒开关0关1开
      *      #apiSuccess {Number} pendingTimeOut 待处理客户提醒超时天数
      *      #apiSuccess {Time} pendingReminderTime 待处理客户提醒时间 示例（13:01:01）
+     *      #apiSuccess {Number} pendingLeaderId 待处理客户提醒-管理员ID
      *      #apiSuccess {Number} undoneStatus 成员未添加客户提醒开关0关1开
      *      #apiSuccess {Number} undoneTimeOut 成员未添加客户提醒超时天数
      *      #apiSuccess {Time} undoneReminderTime 成员未添加客户提醒时间 示例（13:01:01）
      *      #apiSuccess {Number} recycleStatus 回收客户开关0关1开
      *      #apiSuccess {Number} recycleTimeOut 客户超过天数回收
+     *      #apiSuccess {Object} pendingLeader 员工信息
+     *      #apiSuccess {Object} pendingLeader.id 员工ID
+     *      #apiSuccess {Object} pendingLeader.name 员工名
      *      #apiSuccessExample {json} Success-Response:
      *      {
      *          "code": 200,
      *          "msg": "",
-     *          "data": [
-     *              {
-     *                  "pendingStatus": 1,
-     *                  "pendingTimeOut": 1,
-     *                  "pendingReminderTime": "13:00:01",
-     *                  "undoneStatus": 1,
-     *                  "undoneTimeOut": 1,
-     *                  "undoneReminderTime": "13:00:02",
-     *                  "recycleStatus": 1,
-     *                  "recycleTimeOut": 1
+     *          "data": {
+     *              "pendingStatus": 1,
+     *              "pendingTimeOut": 1,
+     *              "pendingReminderTime": "13:00:01",
+     *              "pendingLeaderId": 1,
+     *              "undoneStatus": 1,
+     *              "undoneTimeOut": 1,
+     *              "undoneReminderTime": "13:00:02",
+     *              "recycleStatus": 1,
+     *              "recycleTimeOut": 1,
+     *              "pendingLeader": {
+     *                  "id": 1,
+     *                  "name": "员工一"
      *              }
-     *          ]
+     *          }
      *      }
      *      #apiErrorExample {json} Error-Response:
      *      {
@@ -85,19 +99,23 @@ class SettingEdit extends AbstractAction
         $corpId = user()['corpIds'][0];
 
         $result = $this->contactBatchAddConfigService->getContactBatchAddConfigByCorpId($corpId, [
-            'pending_status', 'pending_time_out', 'pending_reminder_time', 'undone_status',
+            'pending_status', 'pending_time_out', 'pending_reminder_time', 'pending_leader_id', 'undone_status',
             'undone_time_out', 'undone_reminder_time', 'recycle_status', 'recycle_time_out',
         ]);
-        return $result ?: [
+        $result = $result ?: [
             'pendingStatus'       => 0,
             'pendingTimeOut'      => 0,
             'pendingReminderTime' => '00:00:00',
+            'pendingLeaderId'     => 0,
+            'pendingLeader'       => [],
             'undoneStatus'        => 0,
             'undoneTimeOut'       => 0,
             'undoneReminderTime'  => '00:00:00',
             'recycleStatus'       => 0,
             'recycleTimeOut'      => 0,
         ];
+        $result['pendingLeader'] = $result['pendingLeaderId'] ? $this->workEmployeeService->getWorkEmployeeById($result['pendingLeaderId'], ['id', 'name']) : [];
+        return $result;
     }
 
     /**
