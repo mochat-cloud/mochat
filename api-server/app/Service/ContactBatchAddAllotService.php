@@ -84,4 +84,16 @@ class ContactBatchAddAllotService extends AbstractService implements ContactBatc
     {
         return $this->model->deleteAll($ids);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getContactBatchAddAllotOptionWhereGroup(array $where, array $groupBy, array $columns = ['*']): array
+    {
+        $res = $this->model
+            ->optionWhere($where)
+            ->groupBy($groupBy)
+            ->get($columns);
+        return $res->toArray();
+    }
 }

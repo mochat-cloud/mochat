@@ -72,4 +72,12 @@ interface ContactBatchAddAllotServiceInterface
      * @return int 删除条数
      */
     public function deleteContactBatchAddAllots(array $ids): int;
+
+    /**
+     * 查询多条 - 选项查询数量.
+     * @param array $where 查询条件
+     * @param array $groupBy group参数
+     * @param array $columns 字段
+     */
+    public function getContactBatchAddAllotOptionWhereGroup(array $where, array $groupBy, array $columns = ['*']): array;
 }

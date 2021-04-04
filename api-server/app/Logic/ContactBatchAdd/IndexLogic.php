@@ -54,24 +54,16 @@ class IndexLogic
      */
     private $logger;
 
-    /**
-     * @param int $corpId 企业ID
-     * @return array 响应数组
-     */
-
-    /**
-     * @param int $corpId
-     * @param int $status
-     * @param string $searchKey
-     * @param int $recordId
-     */
+     /**
+      * @param array $params 请求参数
+      * @return array
+      */
     public function handle(array $params): array
     {
         $corpId    = (int) $params['corpId'];
         $status    = $params['status'] === null ? null : (int) $params['status'];
         $searchKey = $params['searchKey'];
         $recordId  = (int) $params['recordId'];
-        var_dump($params);
         return $this->handleContact(
             $corpId,
             $status,
@@ -82,7 +74,10 @@ class IndexLogic
 
     /**
      * @param int $corpId 企业ID
-     * @return array 响应数组
+     * @param int $status 状态
+     * @param string $searchKey 搜索关键字
+     * @param int $recordId 指定导入批次
+     * @return array
      */
     private function handleContact(int $corpId, int $status = null, string $searchKey = null, int $recordId = 0): array
     {
