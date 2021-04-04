@@ -102,4 +102,10 @@ interface ContactBatchAddImportServiceInterface
      * @param array $columns 字段
      */
     public function getContactBatchAddImportOptionWhereGroup(array $where, array $groupBy, array $columns = ['*']): array;
+
+    /**
+     * 查询数量 - 根据扩展搜索条件.
+     * @param array $where 搜索条件
+     */
+    public function getContactBatchAddImportOptionWhereCount(array $where): int;
 }

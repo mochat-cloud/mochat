@@ -123,4 +123,14 @@ class ContactBatchAddImportService extends AbstractService implements ContactBat
             ->get($columns);
         return $res->toArray();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getContactBatchAddImportOptionWhereCount(array $where): int
+    {
+        return $this->model
+            ->optionWhere($where)
+            ->count();
+    }
 }
