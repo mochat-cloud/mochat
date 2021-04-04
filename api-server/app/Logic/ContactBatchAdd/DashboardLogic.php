@@ -45,14 +45,17 @@ class DashboardLogic
     {
         $corpId = $params['corp_id'];
 
-        return $this->handleContact($corpId);
+        return [
+            'employees' => $this->handleEmployees($corpId),
+            'dashboard' => $this->getDashboard($corpId),
+        ];
     }
 
     /**
      * @param int $corpId 企业ID
      * @return array 响应数组
      */
-    private function handleContact(int $corpId): array
+    private function handleEmployees(int $corpId): array
     {
         $employee    = $this->workEmployeeService->getWorkEmployeeList(['corp_id' => $corpId], ['id', 'name'], ['orderByRaw' => 'id desc']);
         $co          = collect($employee['data']);
@@ -89,5 +92,29 @@ class DashboardLogic
         }
         unset($item);
         return $employee;
+    }
+
+    private function getDashboard($corpId)
+    {
+        $data = $this->contactBatchAddImportService->getContactBatchAddImportOptionWhereGroup([
+            ['corp_id', '=', $corpId],
+        ], ['employee_id', 'status'], [
+            'employee_id', 'status', Db::raw('count(1) as num'),
+        ]);
+        $coData = collect($data);
+
+        ## 导入总客户数
+        $result['contactNum'] = $coData->count();
+        ## 待分配客户数
+        $result['pendingNum'] = $coData->where('status', '=', 0)->count();
+        ## 待添加客户数
+        $result['toAddNum'] = $coData->where('status', '=', 1)->count();
+        ## 待通过客户数
+        $result['pendingNum'] = $coData->where('status', '=', 2)->count();
+        ## 已添加客户数
+        $result['passedNum'] = $coData->where('status', '=', 3)->count();
+        ## 完成率
+        $result['completion'] = intval($result['passedNum'] / ($result['contactNum'] ?: 1) * 10000) / 100;
+        return $result;
     }
 }
