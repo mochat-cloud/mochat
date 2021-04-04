@@ -10,7 +10,9 @@ declare(strict_types=1);
  */
 namespace App\Action\ContactBatchAdd;
 
+use App\Contract\ContactBatchAddConfigServiceInterface;
 use App\Middleware\PermissionMiddleware;
+use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\HttpServer\Annotation\RequestMapping;
@@ -28,13 +30,74 @@ class SettingEdit extends AbstractAction
     use ValidateSceneTrait;
 
     /**
+     * @Inject
+     * @var ContactBatchAddConfigServiceInterface
+     */
+    protected $contactBatchAddConfigService;
+
+    /**
+     * @api(
+     *      #apiRoute /contactBatchAdd/settingEdit
+     *      #apiTitle 获取设置
+     *      #apiMethod GET
+     *      #apiName ContactBatchAddSettingEdit
+     *      #apiDescription
+     *      #apiGroup 批量添加客户
+     *      #apiSuccess {Number} pendingStatus 待处理客户提醒开关0关1开
+     *      #apiSuccess {Number} pendingTimeOut 待处理客户提醒超时天数
+     *      #apiSuccess {Time} pendingReminderTime 待处理客户提醒时间 示例（13:01:01）
+     *      #apiSuccess {Number} undoneStatus 成员未添加客户提醒开关0关1开
+     *      #apiSuccess {Number} undoneTimeOut 成员未添加客户提醒超时天数
+     *      #apiSuccess {Time} undoneReminderTime 成员未添加客户提醒时间 示例（13:01:01）
+     *      #apiSuccess {Number} recycleStatus 回收客户开关0关1开
+     *      #apiSuccess {Number} recycleTimeOut 客户超过天数回收
+     *      #apiSuccessExample {json} Success-Response:
+     *      {
+     *          "code": 200,
+     *          "msg": "",
+     *          "data": [
+     *              {
+     *                  "pendingStatus": 1,
+     *                  "pendingTimeOut": 1,
+     *                  "pendingReminderTime": "13:00:01",
+     *                  "undoneStatus": 1,
+     *                  "undoneTimeOut": 1,
+     *                  "undoneReminderTime": "13:00:02",
+     *                  "recycleStatus": 1,
+     *                  "recycleTimeOut": 1
+     *              }
+     *          ]
+     *      }
+     *      #apiErrorExample {json} Error-Response:
+     *      {
+     *        "code": "100014",
+     *        "msg": "服务异常",
+     *        "data": []
+     *      }
+     * )
+     *
      * @RequestMapping(path="/contactBatchAdd/settingEdit", methods="get")
      * @Middleware(PermissionMiddleware::class)
      * @return array 返回数组
      */
     public function handle(): array
     {
-        return [];
+        $corpId = user()['corpIds'][0];
+
+        $result = $this->contactBatchAddConfigService->getContactBatchAddConfigByCorpId($corpId, [
+            'pending_status', 'pending_time_out', 'pending_reminder_time', 'undone_status',
+            'undone_time_out', 'undone_reminder_time', 'recycle_status', 'recycle_time_out',
+        ]);
+        return $result ?: [
+            'pendingStatus'       => 0,
+            'pendingTimeOut'      => 0,
+            'pendingReminderTime' => '00:00:00',
+            'undoneStatus'        => 0,
+            'undoneTimeOut'       => 0,
+            'undoneReminderTime'  => '00:00:00',
+            'recycleStatus'       => 0,
+            'recycleTimeOut'      => 0,
+        ];
     }
 
     /**

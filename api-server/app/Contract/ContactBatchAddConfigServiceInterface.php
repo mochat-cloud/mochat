@@ -79,4 +79,12 @@ interface ContactBatchAddConfigServiceInterface
      * @param array $values 修改值
      */
     public function updateContactBatchAddConfigByCorpId(int $corpId, array $values = []): bool;
+
+    /**
+     * 查询单条 - 根据企业ID.
+     * @param int $corpId 企业ID
+     * @param array|string[] $columns 查询字段
+     * @return array 数组
+     */
+    public function getContactBatchAddConfigByCorpId(int $corpId, array $columns = ['*']): array;
 }

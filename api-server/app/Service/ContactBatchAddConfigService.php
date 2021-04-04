@@ -99,4 +99,12 @@ class ContactBatchAddConfigService extends AbstractService implements ContactBat
 
         return (bool) $model->take(1)->update($values);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getContactBatchAddConfigByCorpId(int $corpId, array $columns = ['*']): array
+    {
+        return $this->model::query()->where(['corp_id' => $corpId])->get($columns)->toArray();
+    }
 }
