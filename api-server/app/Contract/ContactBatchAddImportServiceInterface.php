@@ -87,4 +87,11 @@ interface ContactBatchAddImportServiceInterface
      * @param array $columns 字段
      */
     public function getContactBatchAddImportOptionWhere(array $where, array $options = [], array $columns = ['*']): array;
+
+    /**
+     * 修改多条
+     * @param array $values 修改数据(必须包含ID)
+     * @return int 影响条数
+     */
+    public function updateContactBatchAddImports(array $values): int;
 }

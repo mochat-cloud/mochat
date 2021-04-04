@@ -44,9 +44,9 @@ class Index extends AbstractAction
      *      #apiName ContactBatchAddIndex
      *      #apiDescription
      *      #apiGroup 批量添加客户
-     *      #apiParam {Number} status 状态0未分配1待添加2待通过3已添加
-     *      #apiParam {String} searchKey 搜索关键字（客户手机号[四位数字及以上有效]/客户备注/员工名模糊搜索）.
-     *      #apiParam {Number} recordId 指定导入批次ID（适用于导入批次查看详情）
+     *      #apiParam {Number} [status] 状态0未分配1待添加2待通过3已添加
+     *      #apiParam {String} [searchKey] 搜索关键字（客户手机号[四位数字及以上有效]/客户备注/员工名模糊搜索）.
+     *      #apiParam {Number} [recordId] 指定导入批次ID（适用于导入批次查看详情）
      *      #apiSuccess {Number} id 导入客户ID
      *      #apiSuccess {Number} recordId 导入批次ID
      *      #apiSuccess {String} phone 导入客户手机号

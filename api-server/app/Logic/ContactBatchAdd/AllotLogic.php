@@ -8,11 +8,10 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
-
 namespace App\Logic\ContactBatchAdd;
 
-use App\Contract\ContactBatchAddImportServiceInterface;
 use App\Contract\ContactBatchAddAllotServiceInterface;
+use App\Contract\ContactBatchAddImportServiceInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use MoChat\Framework\Constants\ErrorCode;
@@ -62,47 +61,59 @@ class AllotLogic
      */
     private function handleContact(array $params, array $user): array
     {
-        $ids = $params['id'];
+        $ids        = $params['id'];
         $employeeId = $params['employeeId'];
+        $contact    = $this->contactBatchAddImportService->getContactBatchAddImportsById($ids, ['id', 'employee_id', 'status']);
+        $co         = collect($contact);
+        $group      = $co->groupBy('status');
 
-        $contact = $this->contactBatchAddImportService->getContactBatchAddImportsById($ids, ['id', 'employee_id', 'status']);
-        $co = collect($contact);
-        $group = $co->groupBy('status');
-
-        ## $group['1']; ## 先回收再分配
-        $recycleArr = $group['1']->toArray();
-        $allotrRecycle = [];
+        ## $group['1']; ## 已分配 先回收再分配
+        $recycleArr   = $group->get('1', collect([]))->toArray();
+        $allotRecycle = []; ## 回收分配记录
         foreach ($recycleArr as $item) {
-            $allotrRecycle[] = [
-                'import_id' => $item['id'],
+            $allotRecycle[] = [
+                'import_id'   => $item['id'],
                 'employee_id' => $item['employeeId'],
-                'type' => 0,
-                'operate_id' => $user['id'],
-                'created_at' => date("Y-m-d H:i:s")
+                'type'        => 0,
+                'operate_id'  => $user['id'],
+                'created_at'  => date('Y-m-d H:i:s'),
             ];
         }
 
+        ## $group['0']; ## 未分配 直接分配
+        $allotArr = array_merge($group->get('0', collect([]))->toArray(), $group->get('1', collect([]))->toArray()); ## 重新分配叠加之前已回收的
 
-        ## $group['0']; ## 直接分配
-        $allotArr = array_merge($group['0']->toArray(), $group['1']->toArray());
-        $allotr = [];
+        $allot         = []; ## 分配记录
+        $updateContact = []; ## 客户重新分配员工数据
+
         foreach ($allotArr as $item) {
-            $allotr[] = [
-                'import_id' => $item['id'],
+            $allot[] = [
+                'import_id'   => $item['id'],
                 'employee_id' => $employeeId,
-                'type' => 1,
-                'operate_id' => $user['id'],
-                'created_at' => date("Y-m-d H:i:s")
+                'type'        => 1,
+                'operate_id'  => $user['id'],
+                'created_at'  => date('Y-m-d H:i:s'),
+            ];
+
+            $updateContact[] = [
+                'id'          => $item['id'],
+                'status'      => 1,
+                'employee_id' => $employeeId,
+                'allot_num'   => DB::raw('allot_num + 1'),
             ];
         }
-        return $allotr;
+        ## $group['2']; ## 申请中拒绝操作
+        ## $group['3']; ## 已添加拒绝操作
 
-        ## $group['2']; ## 拒绝操作
-        ## $group['3']; ## 拒绝操作
+        ## 提交回收分配记录
+        $allotMerge = array_merge($allotRecycle, $allot);
+        $this->contactBatchAddAllotService->createContactBatchAddAllots($allotMerge);
 
-        // TODO 提交回收分配记录
-        // TODO 实际分配用户 并且分配次数自增+1
+        ## 实际分配用户 并且分配次数自增+1
+        $updateNum = $this->contactBatchAddImportService->updateContactBatchAddImports($updateContact);
 
-        return [];
+        return [
+            'updateNum' => $updateNum,
+        ];
     }
 }

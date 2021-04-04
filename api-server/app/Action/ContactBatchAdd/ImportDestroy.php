@@ -50,7 +50,7 @@ class ImportDestroy extends AbstractAction
      *      #apiName ContactBatchAddImportDestroy
      *      #apiDescription
      *      #apiGroup 批量添加客户
-     *      #apiParam {Number} ID 导入客户批次ID
+     *      #apiParam {Number} id 导入客户批次ID
      *      #apiSuccess {Number} delRecordNum 删除成功批次数量
      *      #apiSuccess {Number} delContactNum 删除成功客户数量
      *      #apiSuccessExample {json} Success-Response:

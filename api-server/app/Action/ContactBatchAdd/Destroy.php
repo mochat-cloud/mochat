@@ -43,7 +43,7 @@ class Destroy extends AbstractAction
      *      #apiName ContactBatchAddDestroy
      *      #apiDescription
      *      #apiGroup 批量添加客户
-     *      #apiParam {Number} ID 导入客户ID
+     *      #apiParam {Number} id 导入客户ID
      *      #apiSuccess {Number} delNum 删除成功数量
      *      #apiSuccessExample {json} Success-Response:
      *      {

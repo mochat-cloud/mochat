@@ -103,4 +103,12 @@ class ContactBatchAddImportService extends AbstractService implements ContactBat
             ->get($columns);
         return $res->toArray();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function updateContactBatchAddImports(array $values): int
+    {
+        return $this->model->batchUpdateByIds($values);
+    }
 }
