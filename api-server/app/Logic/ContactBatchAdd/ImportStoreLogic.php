@@ -45,9 +45,10 @@ class ImportStoreLogic
     {
         DB::beginTransaction();
         try {
+            $corpId = $user['corpIds'][0];
             ## 创建导入记录
             $record = [
-                'corp_id'        => $user['corpIds'][0],
+                'corp_id'        => $corpId,
                 'title'          => $params['title'],
                 'upload_at'      => date('Y-m-d H:i:s'),
                 'allot_employee' => json_encode($params['allotEmployee']),
@@ -62,7 +63,7 @@ class ImportStoreLogic
             $record['id'] = $recordId;
 
             ## 处理数据 分配员工
-            $contactArr = $this->handleContact($record, $contact);
+            $contactArr = $this->handleContact($record, $contact, $corpId);
             ## 数据入表
             ## 包括日志
             $this->insertData($contactArr, $user);
@@ -79,9 +80,10 @@ class ImportStoreLogic
     /**
      * @param array $record 导入记录
      * @param array $contact 客户数据
+     * @param int $corpId 企业ID
      * @return array 响应数组
      */
-    private function handleContact(array $record, array $contact): array
+    private function handleContact(array $record, array $contact, int $corpId): array
     {
         $contactArr    = []; // 客户数据
         $allotEmployee = json_decode($record['allot_employee'], true);
@@ -89,6 +91,7 @@ class ImportStoreLogic
         foreach ($contact as $key => $item) {
             $employeeId   = $allotEmployee[$key % $employeeNum];
             $contactArr[] = [
+                'corp_id'     => $corpId,
                 'record_id'   => $record['id'],
                 'phone'       => $item[0],
                 'upload_at'   => date('Y-m-d H:i:s'),

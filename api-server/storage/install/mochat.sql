@@ -971,47 +971,68 @@ CREATE TABLE `mc_corp_day_data`  (
 ) COMMENT = '企业日数据';
 
 CREATE TABLE `mc_contact_batch_add_allot` (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
-    `import_id` int(11) NOT NULL DEFAULT '0' COMMENT '客户账号表ID',
-    `employee_id` int(11) NOT NULL DEFAULT '0' COMMENT '跟进员工ID',
-    `type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态 0回收 1分配',
-    `operate_id` int(11) NOT NULL DEFAULT '0' COMMENT '操作人ID（如果有）',
-    `created_at` timestamp NULL DEFAULT NULL,
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='批量新增客户分配记录表';
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `import_id` int(11) NOT NULL DEFAULT '0' COMMENT '客户账号表ID',
+  `employee_id` int(11) NOT NULL DEFAULT '0' COMMENT '跟进员工ID',
+  `type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态 0回收 1分配',
+  `operate_id` int(11) NOT NULL DEFAULT '0' COMMENT '操作人ID（如果有）',
+  `created_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `employee_id_type_index` (`employee_id`,`type`) COMMENT '统计索引'
+) COMMENT='批量新增客户分配记录表';
 
 CREATE TABLE `mc_contact_batch_add_config` (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
-    `corp_id` int(11) NOT NULL DEFAULT '0' COMMENT '企业ID',
-    `pending_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '待处理客户提醒开关 0关 1开',
-    `pending_time_out` int(11) NOT NULL DEFAULT '0' COMMENT '待处理客户提醒超时天数',
-    `pending_reminder_time` time NOT NULL DEFAULT '00:00:00' COMMENT '待处理客户提醒时间',
-    `undone_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '成员未添加客户提醒开关 0关 1开',
-    `undone_time_out` int(11) NOT NULL DEFAULT '0' COMMENT '成员未添加客户提醒超时天数',
-    `undone_reminder_time` time NOT NULL DEFAULT '00:00:00' COMMENT '成员未添加客户提醒时间',
-    `recycle_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '回收客户开关 0关 1开',
-    `recycle_time_out` int(11) NOT NULL DEFAULT '0' COMMENT '客户超过天数回收',
-    `created_at` timestamp NULL DEFAULT NULL,
-    `updated_at` timestamp NULL DEFAULT NULL,
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='批量新增客户配置表';
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `corp_id` int(11) NOT NULL DEFAULT '0' COMMENT '企业ID',
+  `pending_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '待处理客户提醒开关 0关 1开',
+  `pending_time_out` int(11) NOT NULL DEFAULT '0' COMMENT '待处理客户提醒超时天数',
+  `pending_reminder_time` time NOT NULL DEFAULT '00:00:00' COMMENT '待处理客户提醒时间',
+  `pending_leader_id` int(11) NOT NULL DEFAULT '0' COMMENT '通知管理员ID',
+  `undone_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '成员未添加客户提醒开关 0关 1开',
+  `undone_time_out` int(11) NOT NULL DEFAULT '0' COMMENT '成员未添加客户提醒超时天数',
+  `undone_reminder_time` time NOT NULL DEFAULT '00:00:00' COMMENT '成员未添加客户提醒时间',
+  `recycle_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '回收客户开关 0关 1开',
+  `recycle_time_out` int(11) NOT NULL DEFAULT '0' COMMENT '客户超过天数回收',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) COMMENT='批量新增客户配置表';
 
 CREATE TABLE `mc_contact_batch_add_import` (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
-    `record_id` int(11) NOT NULL DEFAULT '0' COMMENT '导入记录ID',
-    `phone` varchar(255) NOT NULL DEFAULT '' COMMENT '客户手机号',
-    `upload_at` timestamp NULL DEFAULT NULL COMMENT '导入时间',
-    `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '添加状态 0待分配 1待添加 2待通过 3已添加',
-    `add_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '添加时间',
-    `employee_id` int(11) NOT NULL DEFAULT '0' COMMENT '分配员工',
-    `allot_num` int(11) NOT NULL DEFAULT '0' COMMENT '分配次数',
-    `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
-    `tags` json NOT NULL COMMENT '添加成功后标签',
-    `created_at` timestamp NULL DEFAULT NULL,
-    `updated_at` timestamp NULL DEFAULT NULL,
-    `deleted_at` timestamp NULL DEFAULT NULL,
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='批量新增客户账号表';
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `corp_id` int(11) NOT NULL DEFAULT '0' COMMENT '企业ID（冗余）',
+  `record_id` int(11) NOT NULL DEFAULT '0' COMMENT '导入记录ID',
+  `phone` varchar(255) NOT NULL DEFAULT '' COMMENT '客户手机号',
+  `upload_at` timestamp NULL DEFAULT NULL COMMENT '导入时间',
+  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '添加状态 0待分配 1待添加 2待通过 3已添加',
+  `add_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '添加时间',
+  `employee_id` int(11) NOT NULL DEFAULT '0' COMMENT '分配员工',
+  `allot_num` int(11) NOT NULL DEFAULT '0' COMMENT '分配次数',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
+  `tags` json NOT NULL COMMENT '添加成功后标签',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `employee_id,status_index` (`employee_id`,`status`) COMMENT '统计索引'
+) COMMENT='批量新增客户账号表';
+
+CREATE TABLE `mc_contact_batch_add_import_record` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `corp_id` int(11) NOT NULL DEFAULT '0' COMMENT '企业ID',
+  `title` varchar(255) NOT NULL DEFAULT '' COMMENT '导入任务名称',
+  `upload_at` timestamp NULL DEFAULT NULL COMMENT '上传时间',
+  `allot_employee` json NOT NULL COMMENT '分配客服',
+  `tags` json NOT NULL COMMENT '客户标签',
+  `import_num` int(11) NOT NULL DEFAULT '0' COMMENT '导入客户数量',
+  `add_num` int(11) NOT NULL DEFAULT '0' COMMENT '已添加客户数',
+  `file_name` varchar(255) DEFAULT NULL COMMENT '上传文件名',
+  `file_url` varchar(255) DEFAULT NULL COMMENT '上传文件地址',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) COMMENT='批量新增客户导入记录表';
 
 ## 高级属性
 INSERT INTO mc_contact_field (id, name, label, type, options, `order`, status, is_sys, created_at, updated_at, deleted_at) VALUES (1, 'phone', '手机号', 9, '[]', 0, 1, 1, '2020-12-29 19:39:45', null, null);
