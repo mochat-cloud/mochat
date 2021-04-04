@@ -18,7 +18,7 @@ use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
 
 /**
- * 导入客户-导入提交.
+ * 导入客户-统计数据.
  *
  * Class Index.
  * @Controller

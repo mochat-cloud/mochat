@@ -72,4 +72,11 @@ interface ContactBatchAddConfigServiceInterface
      * @return int 删除条数
      */
     public function deleteContactBatchAddConfigs(array $ids): int;
+
+    /**
+     * 修改配置 - 根据企业（如果不存在则创建）.
+     * @param int $corpId 企业ID
+     * @param array $values 修改值
+     */
+    public function updateContactBatchAddConfigByCorpId(int $corpId, array $values = []): bool;
 }
