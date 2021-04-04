@@ -107,4 +107,15 @@ class ContactBatchAddConfigService extends AbstractService implements ContactBat
     {
         return $this->model::query()->where(['corp_id' => $corpId])->first($columns)->toArray();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getContactBatchAddConfigOptionWhere(array $where, array $options = [], array $columns = ['*']): array
+    {
+        $res = $this->model
+            ->optionWhere($where, $options)
+            ->get($columns);
+        return $res->toArray();
+    }
 }

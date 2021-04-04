@@ -87,4 +87,12 @@ interface ContactBatchAddConfigServiceInterface
      * @return array 数组
      */
     public function getContactBatchAddConfigByCorpId(int $corpId, array $columns = ['*']): array;
+
+    /**
+     * 查询多条 - 选项查询.
+     * @param array $where 查询条件
+     * @param string[] $options 可选项 ['orderByRaw'=> 'id asc', 'skip' => 15, 'take' => 5]
+     * @param array $columns 字段
+     */
+    public function getContactBatchAddConfigOptionWhere(array $where, array $options = [], array $columns = ['*']): array;
 }
