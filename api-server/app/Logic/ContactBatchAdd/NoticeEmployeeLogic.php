@@ -57,7 +57,7 @@ class NoticeEmployeeLogic
         return $this->contactBatchAddImportService->getContactBatchAddImportOptionWhereGroup([
             ['corp_id', '=', $corpId],
             ['status', '=', 1],
-            ['add_at', '<=', date('Y-m-d 23:59:59', time() - $params['undoneTimeOut'] * 86400)],
+            ['upload_at', '<=', date('Y-m-d 23:59:59', time() - $params['undoneTimeOut'] * 86400)],
         ], ['employee_id'], [
             'employee_id', Db::raw('count(1) as num'),
         ]);

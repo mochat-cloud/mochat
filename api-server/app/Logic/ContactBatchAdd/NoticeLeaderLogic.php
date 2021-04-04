@@ -8,10 +8,12 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
+
 namespace App\Logic\ContactBatchAdd;
 
 use App\Contract\ContactBatchAddImportServiceInterface;
 use App\Contract\WorkEmployeeServiceInterface;
+use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 
 /**
@@ -40,9 +42,8 @@ class NoticeLeaderLogic
     {
         ## 获取未分配客户
         $result = $this->handleContact($params);
-        if ($result['num'] > 0) {
-            $this->handleNotice($result);
-        }
+        if($result)
+        $this->handleNotice($result);
         return [];
     }
 
@@ -51,17 +52,17 @@ class NoticeLeaderLogic
      */
     private function handleContact(array $params): array
     {
-        $corpId = $params['corpId'];
+        $corpId      = $params['corpId'];
 
         $num = $this->contactBatchAddImportService->getContactBatchAddImportOptionWhereCount([
             ['corp_id', '=', $corpId],
             ['status', '=', 0],
-            ['add_at', '<=', date('Y-m-d 23:59:59', time() - $params['pendingTimeOut'] * 86400)],
+            ['upload_at', '<=', date('Y-m-d 23:59:59', time() - $params['pendingTimeOut'] * 86400)],
         ]);
 
         return [
             'pendingLeaderId' => $params['pendingLeaderId'], ## 管理员ID
-            'num'             => $num, ## 未分配客户数
+            'num' => $num, ## 未分配客户数
         ];
     }
 
