@@ -54,10 +54,9 @@ class IndexLogic
      */
     private $logger;
 
-     /**
-      * @param array $params 请求参数
-      * @return array
-      */
+    /**
+     * @param array $params 请求参数
+     */
     public function handle(array $params): array
     {
         $corpId    = (int) $params['corpId'];
@@ -77,7 +76,6 @@ class IndexLogic
      * @param int $status 状态
      * @param string $searchKey 搜索关键字
      * @param int $recordId 指定导入批次
-     * @return array
      */
     private function handleContact(int $corpId, int $status = null, string $searchKey = null, int $recordId = 0): array
     {
