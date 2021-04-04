@@ -105,6 +105,6 @@ class ContactBatchAddConfigService extends AbstractService implements ContactBat
      */
     public function getContactBatchAddConfigByCorpId(int $corpId, array $columns = ['*']): array
     {
-        return $this->model::query()->where(['corp_id' => $corpId])->get($columns)->toArray();
+        return $this->model::query()->where(['corp_id' => $corpId])->first($columns)->toArray();
     }
 }
