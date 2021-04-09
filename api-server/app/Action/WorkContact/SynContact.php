@@ -31,6 +31,7 @@ use MoChat\Framework\Exception\CommonException;
 class SynContact extends AbstractAction
 {
     /**
+     * @Inject
      * @var SynContactApply
      */
     private $service;
@@ -58,22 +59,20 @@ class SynContact extends AbstractAction
             throw new CommonException(ErrorCode::INVALID_PARAMS, '请先选择企业');
         }
 
-        //当前企业id
-        $corpId = $corpIds[0];
-
         //查询企业微信id
-        $corpInfo = $this->corp->getCorpById($corpId, ['wx_corpid']);
+        $corpInfo = $this->corp->getCorpById($corpIds[0], ['wx_corpid']);
         if (empty($corpInfo)) {
-            throw new CommonException(ErrorCode::INVALID_PARAMS, '查询不到企业微信id');
+            throw new CommonException(ErrorCode::INVALID_PARAMS, '企业授权信息错误');
         }
 
         //获取成员信息
-        $employee = $this->workEmployee->getWorkEmployeesByCorpIdWxUserIdNotNull([$corpId], ['id', 'wx_user_id']);
+        $employee = $this->workEmployee->getWorkEmployeesByCorpIdWxUserIdNotNull([$corpIds[0]], ['id', 'wx_user_id']);
         if (empty($employee)) {
             throw new CommonException(ErrorCode::SERVER_ERROR, '查询不到有效的企业微信成员信息');
         }
-
-        $this->service = make(SynContactApply::class);
-        $this->service->handle($employee, $corpId);
+        ## 异步队列处理
+        foreach ($employee as $v) {
+            $this->service->handle($v, (int) $corpIds[0], $corpInfo['wxCorpid']);
+        }
     }
 }
