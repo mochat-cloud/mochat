@@ -76,6 +76,7 @@
             :data-source="tableData"
             :rowKey="record => record.id"
             :row-selection="{ selectedRowKeys: deleteList, onChange: onSelectChange }"
+            @change="handleTableChange"
             :pagination="pagination">
             <div slot="action" slot-scope="text, record">
               <template>
