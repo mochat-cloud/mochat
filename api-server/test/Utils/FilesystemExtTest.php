@@ -1,11 +1,23 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of MoChat.
+ * @link     https://mo.chat
+ * @document https://mochat.wiki
+ * @contact  group@mo.chat
+ * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
+ */
 namespace HyperfTest\Utils;
 
 use App\Utils\FilesystemExt;
 use League\Flysystem\Filesystem;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class FilesystemExtTest extends TestCase
 {
     /**
@@ -21,12 +33,12 @@ class FilesystemExtTest extends TestCase
     public function __construct($name = null, array $data = [], $dataName = '')
     {
         $this->filesystemExt = make(FilesystemExt::class);
-        $this->filesystem = make(Filesystem::class);
+        $this->filesystem    = make(Filesystem::class);
         parent::__construct($name, $data, $dataName);
     }
 
     /**
-     * 获取文件完整URL
+     * 获取文件完整URL.
      * @throws \League\Flysystem\FileExistsException ...
      * @throws \League\Flysystem\FileNotFoundException ...
      */
@@ -41,7 +53,7 @@ class FilesystemExtTest extends TestCase
         ## 获取完整URL
         $fullUrl = $this->filesystemExt->getFullUrl($path);
         if ($this->filesystemExt->getAdapterName() === 'local') {
-            $root = $this->filesystemExt->getConfig()['root'];
+            $root    = $this->filesystemExt->getConfig()['root'];
             $fullUrl = str_replace(config('framework.app_domain', ''), $root, $fullUrl);
         }
 

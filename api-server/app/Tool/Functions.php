@@ -103,7 +103,7 @@ if (! function_exists('rsa_keys')) {
 
 if (! function_exists('file_full_url')) {
     /**
-     * 获取文件完整URL
+     * 获取文件完整URL.
      * @param string $path 文件的路径
      * @return string 上传文件的url
      */

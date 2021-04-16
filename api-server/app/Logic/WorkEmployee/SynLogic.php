@@ -84,10 +84,6 @@ class SynLogic
         $this->dealEmployee($corpIds);
         //同步时间
         $this->getSysTime($corpIds);
-        //上传图片
-        if (! empty($ossData)) {
-            oss_up_queue($ossData);
-        }
         return true;
     }
 
@@ -175,6 +171,10 @@ class SynLogic
             if (empty($updateResult)) {
                 $this->logger->error('WorkEmployeeSynLogic->handle同步头像失败:' . json_encode($updateEmployee));
             }
+        }
+        //上传图片
+        if (! empty($ossData)) {
+            oss_up_queue($ossData);
         }
         unset($departments, $employee, $userList);
         return true;
@@ -293,18 +293,15 @@ class SynLogic
     }
 
     /**
-     * 上传文件
-     * @param string $url
-     * @param string $prefix
+     * 上传文件.
      * @param $ossData
-     * @return string
      */
     protected function ossUp(string $url, string $prefix = '', &$ossData): string
     {
         if (! $url) {
             return '';
         }
-        $pathUrl   = 'maochat/employee/' . $prefix . microtime(true) * 10000 . '.png';
+        $pathUrl   = 'mochat/employee/' . $prefix . microtime(true) * 10000 . '.png';
         $ossData[] = [$url, $pathUrl];
         return $pathUrl;
     }

@@ -9,11 +9,11 @@ declare(strict_types=1);
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
 return [
-    'default' => 'local',
+    'default' => env('FILE_DRIVER', 'local'),
     'storage' => [
         'local' => [
             'driver' => \Hyperf\Filesystem\Adapter\LocalAdapterFactory::class,
-            'root'   => __DIR__ . '/../../runtime',
+            'root'   => __DIR__ . '/../../storage/upload/static',
         ],
         'ftp' => [
             'driver'   => \Hyperf\Filesystem\Adapter\FtpAdapterFactory::class,
@@ -57,11 +57,11 @@ return [
             'bucket_name'             => env('S3_BUCKET'),
         ],
         'oss' => [
-            'driver'       => \Hyperf\Filesystem\Adapter\AliyunOssAdapterFactory::class,
-            'accessId'     => env('OSS_ACCESS_ID'),
-            'accessSecret' => env('OSS_ACCESS_SECRET'),
-            'bucket'       => env('OSS_BUCKET'),
-            'endpoint'     => env('OSS_ENDPOINT'),
+            'driver'         => \Hyperf\Filesystem\Adapter\AliyunOssAdapterFactory::class,
+            'accessId'       => env('OSS_ACCESS_ID'),
+            'accessSecret'   => env('OSS_ACCESS_SECRET'),
+            'bucket'         => env('OSS_BUCKET'),
+            'endpoint'       => env('OSS_ENDPOINT'),
             'timeout'        => 3600,
             'connectTimeout' => 60,
             // 'isCName'        => false,

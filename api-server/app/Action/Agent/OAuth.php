@@ -122,6 +122,8 @@ class OAuth extends AbstractAction
             }
             return $tokenData;
         } catch (\Exception $ex) {
+            $this->logger->error(sprintf('%s[%s] in %s', $ex->getMessage(), $ex->getLine(), $ex->getFile()));
+            $this->logger->error($ex->getTraceAsString());
             if ($isJsRedirect) {
                 $redirectUrl .= $queryParam([], $ex->getCode(), $ex->getMessage());
                 return $this->response->redirect($redirectUrl);

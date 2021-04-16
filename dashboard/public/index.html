@@ -21,6 +21,9 @@
     <% for (var i in htmlWebpackPlugin.options.cdn && htmlWebpackPlugin.options.cdn.js) { %>
     <script type="text/javascript" src="<%= htmlWebpackPlugin.options.cdn.js[i] %>"></script>
     <% } %>
+    <% for (var i in htmlWebpackPlugin.options.cdn && htmlWebpackPlugin.options.cdn.dll) { %>
+      <script type="text/javascript" src="<%= htmlWebpackPlugin.options.cdn.dll[i] %>"></script>
+      <% } %>
     <script>
       var _hmt = _hmt || [];
       (function() {

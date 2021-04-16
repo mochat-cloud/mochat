@@ -34,7 +34,7 @@ class MonitorMessage
         $wxMsgArr = [];
         for ($i = 0; $i < 5; ++$i) {
             $message = $redisClient->lPop('sensitiveMonitor');
-            if (false === $message) {
+            if ($message === false) {
                 break;
             }
             $message = json_decode($message, true);
