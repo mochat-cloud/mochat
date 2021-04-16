@@ -51,7 +51,9 @@
                   <a-radio :disabled="isHadGeneral" :value="1" >
                     通用
                   </a-radio>
-                  <a-radio :default-checked="isHadGeneral":value="2">
+                  <a-radio
+                    :default-checked="isHadGeneral"
+                    :value="2">
                     指定企业成员
                   </a-radio>
                 </a-radio-group>
@@ -486,7 +488,7 @@ export default {
           words
         }
         this.employees = res.data.employees
-
+        this.peopleChange(res.data.employees)
         this.mediumDetail = res.data.mediumContent
         this.mediumTitle = res.data.mediumContent.title
         this.mediumId = res.data.mediumId
