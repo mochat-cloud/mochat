@@ -485,7 +485,10 @@ class SynLogic
             return true;
         }
         //添加成员
-        $createEmployeeResult = $this->workEmployeeService->createWorkEmployees($createEmployeeData);
+        $createEmployeeChunkData = array_chunk($createEmployeeData, 100);
+        foreach ($createEmployeeChunkData as $key => $createEmployeeChunk) {
+            $createEmployeeResult = $this->workEmployeeService->createWorkEmployees($createEmployeeChunk);
+        }
         if (empty($createEmployeeResult)) {
             return false;
         }
@@ -599,11 +602,17 @@ class SynLogic
         }
         if (! empty($createSynData)) {
             //创建同步数据
-            $this->workUpdateTimeService->createWorkUpdateTimes($createSynData);
+            $createSynChunkData = array_chunk($createSynData, 100);
+            foreach ($createSynChunkData as $key => $createSynChunk) {
+                $this->workUpdateTimeService->createWorkUpdateTimes($createSynChunk);
+            }
         }
         if (! empty($updateSynData)) {
             //修改同步数据
-            $this->workUpdateTimeService->updateUpdateTimeByIds($updateSynData);
+            $updateSynChunkData = array_chunk($updateSynData, 100);
+            foreach ($updateSynChunkData as $key => $updateSynChunk) {
+                $this->workUpdateTimeService->updateUpdateTimeByIds($updateSynChunk);
+            }
         }
         return true;
     }
