@@ -12,6 +12,7 @@ namespace App\Service;
 
 use App\Contract\WorkContactServiceInterface;
 use App\Model\WorkContact;
+use App\Model\WorkContactTagPivot;
 use Hyperf\DbConnection\Db;
 use MoChat\Framework\Service\AbstractService;
 
@@ -275,4 +276,25 @@ class WorkContactService extends AbstractService implements WorkContactServiceIn
     {
         return $this->model->batchUpdateByIds($data);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getWorkContactsByIdsTagIds(array $ids, array $tagIds)
+    {
+        $contactTable = $this->model::query()->getModel()->getTable();
+        return $this->model::query()
+            ->when(!empty($tagIds), function ($query) use ($contactTable, $tagIds) {
+                return $query->join(WorkContactTagPivot::query()->getModel()->getTable() . ' as t', "$contactTable.id", '=', 't.contact_id')
+                    ->whereIn('contact_tag_id', $tagIds);
+            })
+            ->whereIn("$contactTable.id", $ids)
+            ->limit(10000)
+            ->get([
+                "$contactTable.id",
+                "$contactTable.wx_external_userid",
+            ])
+            ->toArray();
+    }
+
 }

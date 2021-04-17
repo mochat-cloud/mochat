@@ -515,4 +515,22 @@ class WorkEmployeeService extends AbstractService implements WorkEmployeeService
             ->where('status', Status::ACTIVE)
             ->count();
     }
+
+    /**
+     * 查询多条 - 根据企业ID和状态.
+     * @param int $corpId 企业ID
+     * @param array $id 成员ID
+     * @param int $status 状态
+     * @param array|string[] $columns 查询字段
+     * @return array 数组
+     */
+    public function getWorkEmployeesByIdCorpIdStatus(int $corpId, array $id, int $status, array $columns = ['*']): array
+    {
+        return $this->model::query()
+            ->where('corp_id', $corpId)
+            ->whereIn('id',$id)
+            ->where('status', $status)
+            ->get($columns)
+            ->toArray();
+    }
 }

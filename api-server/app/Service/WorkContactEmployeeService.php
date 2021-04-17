@@ -571,6 +571,24 @@ class WorkContactEmployeeService extends AbstractService implements WorkContactE
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getWorkContactEmployeeContactIdsByEmployeeId(int $employeeId, string $startTime = null, string $endTime = null): array
+    {
+        return $this->model::query()
+            ->where('employee_id', '=', $employeeId)
+            ->where('status', '=', 1)
+            ->when(!empty($startTime), function ($query) use ($startTime) {
+                return $query->where('create_time', '>=', $startTime);
+            })
+            ->when(!empty($endTime), function ($query) use ($startTime) {
+                return $query->where('create_time', '<=', $startTime);
+            })
+            ->pluck('contact_id')
+            ->toArray();
+    }
+
+    /*
      * 修改多条 - 根据员工id.
      * @param int $employeeId 员工id
      * @param array $data 参数
@@ -610,4 +628,5 @@ class WorkContactEmployeeService extends AbstractService implements WorkContactE
     {
         return $this->model->batchUpdateByIds($data);
     }
+
 }

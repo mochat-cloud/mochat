@@ -239,7 +239,7 @@ class EmployeeUpdateHandler extends AbstractEventHandler
             'telephone'    => ! empty($this->message['Telephone']) ? $this->message['Telephone'] : $employee['telephone'],
             'alias'        => ! empty($this->message['Alias']) ? $this->message['Alias'] : $employee['alias'],
             'extattr'      => ! empty($this->message['ExtAttr']) ? json_encode($this->message['ExtAttr']) : $employee['extattr'],
-            'status'       => ! empty($this->message['Status']) ? $this->message['Status'] : $employee['status'],
+            'status'       => ! empty($this->message['MessageStatus']) ? $this->message['MessageStatus'] : $employee['status'],
             'address'      => ! empty($this->message['Address']) ? $this->message['Address'] : $employee['address'],
             'log_user_id'  => $logUserId,
             'updated_at'   => date('Y-m-d H:i:s'),

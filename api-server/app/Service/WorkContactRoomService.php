@@ -358,4 +358,17 @@ class WorkContactRoomService extends AbstractService implements WorkContactRoomS
             ->where('status', Status::NORMAL)
             ->count();
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getWorkContactRoomsContactIdsByRoomIds(array $roomIds): array
+    {
+        return $this->model::query()
+            ->whereIn('room_id', $roomIds)
+            ->where('status', '=', 1)
+            ->pluck('contact_id')
+            ->toArray();
+    }
+
 }

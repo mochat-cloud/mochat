@@ -159,7 +159,7 @@ class EmployeeStoreHandler extends AbstractEventHandler
             'extattr'               => ! empty($this->message['ExtAttr']) ? json_encode($this->message['ExtAttr']) : json_encode([]),
             'external_profile'      => ! empty($this->message['external_profile']) ? json_encode($this->message['external_profile']) : json_encode([]),
             'external_position'     => ! empty($this->message['external_position']) ? json_encode($this->message['external_position']) : json_encode([]),
-            'status'                => ! empty($this->message['Status']) ? $this->message['Status'] : '',
+            'status'                => ! empty($this->message['MessageStatus']) ? $this->message['MessageStatus'] : '',
             'address'               => ! empty($this->message['Address']) ? $this->message['Address'] : '',
             'wx_main_department_id' => ! empty($this->message['MainDepartment']) ? $this->message['MainDepartment'] : '',
             'log_user_id'           => $logUserId,

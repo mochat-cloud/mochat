@@ -153,4 +153,12 @@ interface WorkContactServiceInterface
      * @return int 修改条数
      */
     public function updateWorkContactsCaseIds(array $data): int;
+
+    /**
+     * 根据id和标签获取客户列表
+     * @param  array  $ids
+     * @param  array  $tagIds
+     * @return mixed
+     */
+    public function getWorkContactsByIdsTagIds(array $ids, array $tagIds);
 }

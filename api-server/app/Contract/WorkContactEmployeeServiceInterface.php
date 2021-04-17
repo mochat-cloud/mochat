@@ -272,6 +272,15 @@ interface WorkContactEmployeeServiceInterface
     public function countWorkContactEmployeesByCorpId(int $corpId, array $status): int;
 
     /**
+     * 根据成员获取所有客户id
+     * @param  int  $employeeId     成员ID
+     * @param  string  $startTime   添加起始时间
+     * @param  string  $endTime     添加截止时间
+     * @return mixed
+     */
+    public function getWorkContactEmployeeContactIdsByEmployeeId(int $employeeId, string $startTime, string $endTime): array ;
+
+    /*
      * 修改多条 - 根据员工id.
      * @param int $employeeId 员工id
      * @param array $data 参数
@@ -294,4 +303,5 @@ interface WorkContactEmployeeServiceInterface
      * @return int 响应数据
      */
     public function updateWorkContactEmployeesCaseIds(array $data): int;
+
 }

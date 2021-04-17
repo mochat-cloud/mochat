@@ -185,4 +185,11 @@ interface WorkContactRoomServiceInterface
      * @return int 返回值
      */
     public function countWorkContactRoomByRoomIds(array $roomId): int;
+
+    /**
+     * 查询客户id数组 - 根据客户群ID.
+     * @param array $roomIds 客户群ID
+     * @return array 数组
+     */
+    public function getWorkContactRoomsContactIdsByRoomIds(array $roomIds): array;
 }
