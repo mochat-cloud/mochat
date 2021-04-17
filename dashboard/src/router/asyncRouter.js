@@ -200,5 +200,41 @@ export const routeList = {
     name: 'userSearch',
     component: () => import('@/views/greeting/userSearch'),
     meta: { title: '用户搜索添加' }
+  },
+  '/roomMessageBatchSend/index': {
+    path: '/roomMessageBatchSend/index',
+    name: 'roomMessageBatchSendIndex',
+    component: () => import('@/views/roomMessageBatchSend/index'),
+    meta: { title: '客户群群发列表' }
+  },
+  '/roomMessageBatchSend/store': {
+    path: '/roomMessageBatchSend/store',
+    name: 'roomMessageBatchSendStore',
+    component: () => import('@/views/roomMessageBatchSend/store'),
+    meta: { title: '客户群-新建消息' }
+  },
+  '/roomMessageBatchSend/show': {
+    path: '/roomMessageBatchSend/show',
+    name: 'roomMessageBatchSend/show',
+    component: () => import('@/views/roomMessageBatchSend/show'),
+    meta: { title: '群发详情' }
+  },
+  '/contactMessageBatchSend/index': {
+    path: '/contactMessageBatchSend/index',
+    name: '/contactMessageBatchSend/index',
+    component: () => import('@/views/contactMessageBatchSend/index'),
+    meta: { title: '客户群发消息' }
+  },
+  '/contactMessageBatchSend/store': {
+    path: '/contactMessageBatchSend/store',
+    name: '/contactMessageBatchSend/store',
+    component: () => import('@/views//contactMessageBatchSend/store'),
+    meta: { title: '客户群发-新建消息' }
+  },
+  '/contactMessageBatchSend/show': {
+    path: '/contactMessageBatchSend/show',
+    name: '/contactMessageBatchSend/show',
+    component: () => import('@/views/contactMessageBatchSend/show'),
+    meta: { title: '客户-群发详情' }
   }
 }
