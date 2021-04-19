@@ -210,12 +210,14 @@ export const routeList = {
   '/roomMessageBatchSend/store': {
     path: '/roomMessageBatchSend/store',
     name: 'roomMessageBatchSendStore',
+    hidden: true,
     component: () => import('@/views/roomMessageBatchSend/store'),
     meta: { title: '客户群-新建消息' }
   },
   '/roomMessageBatchSend/show': {
     path: '/roomMessageBatchSend/show',
     name: 'roomMessageBatchSend/show',
+    hidden: true,
     component: () => import('@/views/roomMessageBatchSend/show'),
     meta: { title: '群发详情' }
   },
@@ -228,12 +230,14 @@ export const routeList = {
   '/contactMessageBatchSend/store': {
     path: '/contactMessageBatchSend/store',
     name: '/contactMessageBatchSend/store',
+    hidden: true,
     component: () => import('@/views//contactMessageBatchSend/store'),
     meta: { title: '客户群发-新建消息' }
   },
   '/contactMessageBatchSend/show': {
     path: '/contactMessageBatchSend/show',
     name: '/contactMessageBatchSend/show',
+    hidden: true,
     component: () => import('@/views/contactMessageBatchSend/show'),
     meta: { title: '客户-群发详情' }
   }
