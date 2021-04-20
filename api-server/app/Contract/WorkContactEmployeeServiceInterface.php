@@ -270,4 +270,28 @@ interface WorkContactEmployeeServiceInterface
      * @return int 返回值
      */
     public function countWorkContactEmployeesByCorpId(int $corpId, array $status): int;
+
+    /**
+     * 修改多条 - 根据员工id.
+     * @param int $employeeId 员工id
+     * @param array $data 参数
+     * @return int 返回值
+     */
+    public function updateWorkContactEmployeesByEmployeeId(int $employeeId, array $data): int;
+
+    /**
+     * 修改多条 - 根据员工id和客户id.
+     * @param int $employeeId 员工id
+     * @param array $contactId 客户id
+     * @param array $columns 查询字段
+     * @return array 返回值
+     */
+    public function getWorkContactEmployeesByOtherIds(int $employeeId, array $contactId, array $columns = ['*']): array;
+
+    /**
+     * 批量更新.
+     * @param array $data 多条数据
+     * @return int 响应数据
+     */
+    public function updateWorkContactEmployeesCaseIds(array $data): int;
 }

@@ -17,7 +17,7 @@ return [
         'channel'        => 'queue',
         'timeout'        => 5,
         'retry_seconds'  => 5,
-        'handle_timeout' => 10,
+        'handle_timeout' => 60,
         'processes'      => 1,
         'concurrent'     => [
             'limit' => 10,
@@ -28,7 +28,7 @@ return [
         'channel'        => 'employee.queue',
         'timeout'        => 2,
         'retry_seconds'  => 5,
-        'handle_timeout' => 10,
+        'handle_timeout' => 60,
         'processes'      => 1,
         'concurrent'     => [
             'limit' => 2,
@@ -39,7 +39,7 @@ return [
         'channel'        => 'contact.queue',
         'timeout'        => 2,
         'retry_seconds'  => 5,
-        'handle_timeout' => 10,
+        'handle_timeout' => 60,
         'processes'      => 1,
         'concurrent'     => [
             'limit' => 2,
@@ -50,7 +50,7 @@ return [
         'channel'        => 'room.queue',
         'timeout'        => 2,
         'retry_seconds'  => 5,
-        'handle_timeout' => 10,
+        'handle_timeout' => 60,
         'processes'      => 1,
         'concurrent'     => [
             'limit' => 2,
@@ -61,7 +61,7 @@ return [
         'channel'        => 'chat.queue',
         'timeout'        => 5,
         'retry_seconds'  => 5,
-        'handle_timeout' => 10,
+        'handle_timeout' => 60,
         'processes'      => 1,
         'concurrent'     => [
             'limit' => 10,
@@ -72,7 +72,7 @@ return [
         'channel'        => 'coOss.queue',
         'timeout'        => 10,
         'retry_seconds'  => 5,
-        'handle_timeout' => 10,
+        'handle_timeout' => 60,
         'processes'      => 1,
         'concurrent'     => [
             'limit' => 10,
