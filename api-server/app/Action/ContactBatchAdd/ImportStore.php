@@ -40,34 +40,6 @@ class ImportStore extends AbstractAction
     protected $importStoreLogic;
 
     /**
-     * @api(
-     *      #apiRoute /contactBatchAdd/importStore
-     *      #apiTitle 导入客户
-     *      #apiMethod POST
-     *      #apiName ContactBatchAddImportStore
-     *      #apiDescription
-     *      #apiGroup 批量添加客户
-     *      #apiParam {Number[]} [tags] 标签ID
-     *      #apiParam {String} title 标题.
-     *      #apiParam {Number[]} allotEmployee 分配员工ID
-     *      #apiParam {File} file 文件
-     *      #apiSuccess {Number} successNum 导入成功数量
-     *      #apiSuccessExample {json} Success-Response:
-     *      {
-     *          "code": 200,
-     *          "msg": "",
-     *          "data": {
-     *              "successNum": 3
-     *           }
-     *      }
-     *      #apiErrorExample {json} Error-Response:
-     *      {
-     *        "code": "100014",
-     *        "msg": "服务异常",
-     *        "data": []
-     *      }
-     * )
-     *
      * @RequestMapping(path="/contactBatchAdd/importStore", methods="post")
      * @Middleware(PermissionMiddleware::class)
      * @return array 返回数组

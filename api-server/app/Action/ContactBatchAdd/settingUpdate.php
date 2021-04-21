@@ -8,6 +8,7 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
+
 namespace App\Action\ContactBatchAdd;
 
 use App\Contract\ContactBatchAddConfigServiceInterface;
@@ -38,38 +39,6 @@ class SettingUpdate extends AbstractAction
 
     /**
      * @api(
-     *      #apiRoute /contactBatchAdd/settingUpdate
-     *      #apiTitle 修改设置
-     *      #apiMethod POST
-     *      #apiName ContactBatchAddSettingUpdate
-     *      #apiDescription
-     *      #apiGroup 批量添加客户
-     *      #apiParam {Number} pendingStatus 待处理客户提醒开关0关1开
-     *      #apiParam {Number} pendingTimeOut 待处理客户提醒超时天数
-     *      #apiParam {Time} pendingReminderTime 待处理客户提醒时间 示例（13:01:01）
-     *      #apiParam {Number} [pendingLeaderId] 待处理客户提醒管理员ID
-     *      #apiParam {Number} undoneStatus 成员未添加客户提醒开关0关1开
-     *      #apiParam {Number} undoneTimeOut 成员未添加客户提醒超时天数
-     *      #apiParam {Time} undoneReminderTime 成员未添加客户提醒时间 示例（13:01:01）
-     *      #apiParam {Number} recycleStatus 回收客户开关0关1开
-     *      #apiParam {Number} recycleTimeOut 客户超过天数回收
-     *      #apiSuccess {Number} status 保存成功1失败0
-     *      #apiSuccessExample {json} Success-Response:
-     *      {
-     *          "code": 200,
-     *          "msg": "",
-     *          "data": {
-     *              "status": 1
-     *          }
-     *      }
-     *      #apiErrorExample {json} Error-Response:
-     *      {
-     *        "code": "100014",
-     *        "msg": "服务异常",
-     *        "data": []
-     *      }
-     * )
-     *
      * @RequestMapping(path="/contactBatchAdd/settingUpdate", methods="POST")
      * @Middleware(PermissionMiddleware::class)
      * @return array 返回数组

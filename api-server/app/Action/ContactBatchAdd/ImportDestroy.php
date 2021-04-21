@@ -43,33 +43,6 @@ class ImportDestroy extends AbstractAction
     protected $contactBatchAddImportRecordService;
 
     /**
-     * @api(
-     *      #apiRoute /contactBatchAdd/importDestroy
-     *      #apiTitle 删除客户导入
-     *      #apiMethod DELETE
-     *      #apiName ContactBatchAddImportDestroy
-     *      #apiDescription
-     *      #apiGroup 批量添加客户
-     *      #apiParam {Number} id 导入客户批次ID
-     *      #apiSuccess {Number} delRecordNum 删除成功批次数量
-     *      #apiSuccess {Number} delContactNum 删除成功客户数量
-     *      #apiSuccessExample {json} Success-Response:
-     *      {
-     *          "code": 200,
-     *          "msg": "",
-     *          "data": {
-     *              "delRecordNum": 1,
-     *              "delContactNum": 2
-     *           }
-     *      }
-     *      #apiErrorExample {json} Error-Response:
-     *      {
-     *        "code": "100014",
-     *        "msg": "服务异常",
-     *        "data": []
-     *      }
-     * )
-     *
      * @RequestMapping(path="/contactBatchAdd/importDestroy", methods="delete")
      * @Middleware(PermissionMiddleware::class)
      * @return array 返回数组

@@ -36,32 +36,6 @@ class Allot extends AbstractAction
     protected $allotLogic;
 
     /**
-     * @api(
-     *      #apiRoute /contactBatchAdd/allot
-     *      #apiTitle 分配客户
-     *      #apiMethod POST
-     *      #apiName ContactBatchAddAllot
-     *      #apiDescription
-     *      #apiGroup 批量添加客户
-     *      #apiParam {Number[]} id 修改导入客户ID数组
-     *      #apiParam {Number[]} employeeId 分配员工ID
-     *      #apiSuccess {Number} updateNum 更新成功数量
-     *      #apiSuccessExample {json} Success-Response:
-     *      {
-     *          "code": 200,
-     *          "msg": "",
-     *          "data": {
-     *              "updateNum": 1
-     *          }
-     *      }
-     *      #apiErrorExample {json} Error-Response:
-     *      {
-     *        "code": "100014",
-     *        "msg": "服务异常",
-     *        "data": []
-     *      }
-     * )
-     *
      * @RequestMapping(path="/contactBatchAdd/allot", methods="post")
      * @Middleware(PermissionMiddleware::class)
      * @return array 返回数组
