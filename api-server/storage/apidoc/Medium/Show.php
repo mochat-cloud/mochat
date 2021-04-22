@@ -2,7 +2,7 @@
 
 /**
  * @api {get} /medium/show 查看
- * @apiName GetMediumShow
+ * @apiName medium.show
  * @apiDescription [完成]
  * @apiGroup 素材库
  *

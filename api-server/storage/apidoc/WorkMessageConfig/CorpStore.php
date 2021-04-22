@@ -2,7 +2,7 @@
 
 /**
  * @api {POST} /workMessageConfig/corpStore 企业信息添加
- * @apiName PostWorkMessageConfigCorpStore
+ * @apiName workMessageConfig.corpStore
  * @apiDescription [完成]
  * @apiGroup 会话内容存档配置
  *

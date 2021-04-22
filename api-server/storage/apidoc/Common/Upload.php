@@ -2,7 +2,7 @@
 
 /**
  * @api {post} /common/upload 上传
- * @apiName PostCommonUpload
+ * @apiName common.upload
  * @apiDescription [完成]
  * @apiGroup 公共说明
  *

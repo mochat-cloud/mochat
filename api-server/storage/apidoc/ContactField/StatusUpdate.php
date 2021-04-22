@@ -2,7 +2,7 @@
 
 /**
  * @api {PUT} /contactField/statusUpdate 状态修改
- * @apiName PutContactFieldStatusUpdate
+ * @apiName contactField.statusUpdate
  * @apiDescription [完成]
  * @apiGroup 【客户】高级属性
  *

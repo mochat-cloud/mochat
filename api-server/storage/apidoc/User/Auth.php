@@ -2,7 +2,7 @@
 
 /**
  * @api {post} /user/auth 登陆
- * @apiName PostUserAuth
+ * @apiName user.auth
  * @apiDescription [完成]
  * @apiGroup 公共说明
  *

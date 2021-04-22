@@ -2,7 +2,7 @@
 
 /**
  * @api {PUT} /contactField/batchUpdate 批量修改
- * @apiName PutContactFieldBatchUpdate
+ * @apiName contactField.batchUpdate
  * @apiDescription 负责人[是否完成]: [已完成]
  * @apiGroup 【客户】高级属性
  *

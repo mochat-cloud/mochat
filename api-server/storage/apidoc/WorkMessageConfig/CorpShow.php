@@ -2,7 +2,7 @@
 
 /**
  * @api {get} /workMessageConfig/corpShow 企业信息查看
- * @apiName GetWorkMessageConfigCorpShow
+ * @apiName workMessageConfig.corpShow
  * @apiDescription [完成]
  * @apiGroup 会话内容存档配置
  *

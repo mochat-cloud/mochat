@@ -2,7 +2,7 @@
 
 /**
  * @api {post} /medium/store 添加
- * @apiName PostMediumStore
+ * @apiName medium.store
  * @apiDescription [完成]
  * @apiGroup 素材库
  *

@@ -2,7 +2,7 @@
 
 /**
  * @api {get} /workMessage/toUsers 会话对象列表
- * @apiName GetWorkMessageToUsers
+ * @apiName workMessage.toUsers
  * @apiDescription [完成]
  * @apiGroup 会话内容存档
  *

@@ -2,7 +2,7 @@
 
 /**
  * @api {get} /contactField/show 查看
- * @apiName GetContactFieldShow
+ * @apiName contactField.show
  * @apiDescription [完成]
  * @apiGroup 【客户】高级属性
  *

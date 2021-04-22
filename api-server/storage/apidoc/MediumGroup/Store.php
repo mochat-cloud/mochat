@@ -2,7 +2,7 @@
 
 /**
  * @api {post} /mediumGroup/store 添加
- * @apiName PostMediumGroupStore
+ * @apiName mediumGroup.store
  * @apiDescription [完成]
  * @apiGroup 【素材库】分组
  *
