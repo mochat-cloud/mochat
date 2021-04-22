@@ -2,7 +2,7 @@
 
 /**
  * @api {put} /medium/update 修改
- * @apiName PutMediumUpdate
+ * @apiName medium.update
  * @apiDescription [完成]
  * @apiGroup 素材库
  *

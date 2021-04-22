@@ -1,7 +1,7 @@
 <?php
 /**
  * @api {get} /wxJsSdk/config JSSDK-企业、企业应用配置参数
- * @apiName GetWxJsSdkConfig
+ * @apiName wxJsSdk.config
  * @apiDescription
  * @apiGroup 侧边栏-JSSDK
  *

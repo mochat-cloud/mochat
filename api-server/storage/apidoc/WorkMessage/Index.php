@@ -2,7 +2,7 @@
 
 /**
  * @api {get} /workMessage/index 列表
- * @apiName GetWorkMessageIndex
+ * @apiName workMessage.index
  * @apiDescription [已完成] (分页参数见公共部分)
  * @apiGroup 会话内容存档
  *

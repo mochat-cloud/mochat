@@ -2,7 +2,7 @@
 
 /**
  * @api {get} /medium/index 列表
- * @apiName GetMediumIndex
+ * @apiName medium.index
  * @apiDescription [完成]
  * @apiGroup 素材库
  *

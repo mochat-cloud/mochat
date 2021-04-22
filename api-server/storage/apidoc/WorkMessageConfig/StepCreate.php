@@ -2,7 +2,7 @@
 
 /**
  * @api {get} /workMessageConfig/stepCreate 微信后台配置-步骤页面
- * @apiName GetWorkMessageConfigWxCreate
+ * @apiName workMessageConfig.stepCreate
  * @apiDescription [完成]
  * @apiGroup 会话内容存档配置
  *

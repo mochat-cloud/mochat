@@ -2,7 +2,7 @@
 
 /**
  * @api {DELETE} /contactField/destroy 删除
- * @apiName DeleteContactFieldDestroy
+ * @apiName contactField.destroy
  * @apiDescription 负责人[是否完成]: [已完成]
  * @apiGroup 【客户】高级属性
  *

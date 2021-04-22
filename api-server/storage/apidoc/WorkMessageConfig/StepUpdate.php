@@ -2,7 +2,7 @@
 
 /**
  * @api {put} /workMessageConfig/stepUpdate 微信后台配置-步骤动作
- * @apiName GetWorkMessageConfigStepUpdate
+ * @apiName workMessageConfig.stepUpdate
  * @apiDescription [完成]
  * @apiGroup 会话内容存档配置
  *

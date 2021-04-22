@@ -1,7 +1,7 @@
 <?php
 /**
  * @api {get} /agent/oauth 应用验证
- * @apiName GetAgentOauth
+ * @apiName agent.oauth
  * @apiDescription
  * @apiGroup 企业应用
  *
