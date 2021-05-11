@@ -55,6 +55,9 @@ class Store extends AbstractAction
             'roleId' => $this->request->input('roleId', 0),
         ];
 
+        // 添加用户的默认租户id为当前用户的租户id
+        $params['tenant_id'] = $user['tenantId'];
+
         return $this->storeLogic->handle($params, $user);
     }
 
