@@ -33,7 +33,7 @@ const errorHandler = (error) => {
 // request interceptor
 request.interceptors.request.use(config => {
   config.headers['MoChat-Source-Type'] = 'wechat-app'
-  config.headers['MoChat-Corp-Id'] = 1
+  config.headers['MoChat-Corp-Id'] = getCookie('corpId')
   const token = getCookie('token')
   // 如果 token 存在
   if (token) {
