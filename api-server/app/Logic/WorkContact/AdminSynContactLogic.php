@@ -159,7 +159,7 @@ class AdminSynContactLogic
 
         try {
             //本地头像存储路径
-            $pathFileName = 'contact/avatar/' . microtime(true) * 10000 . '.jpg';
+            $pathFileName = 'contact/avatar/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg';
 
             //添加客户表
             $addContact = [
@@ -268,7 +268,7 @@ class AdminSynContactLogic
     private function updateContactInfo($contactInfo, $val, $employee)
     {
         //本地头像存储路径
-        $pathFileName = 'contact/avatar/' . microtime(true) * 10000 . '.jpg';
+        $pathFileName = 'contact/avatar/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg';
 
         $this->updateContact[] = [
             'id'               => $contactInfo[$val['external_contact']['external_userid']]['id'],

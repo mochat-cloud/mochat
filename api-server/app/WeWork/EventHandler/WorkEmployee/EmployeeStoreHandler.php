@@ -246,12 +246,12 @@ class EmployeeStoreHandler extends AbstractEventHandler
     protected function getAvatar()
     {
         if (! empty($this->message['Avatar'])) {
-            $pathAvatarFileName = 'mochat/employee/avatar_' . microtime(true) * 10000 . '.png';
+            $pathAvatarFileName = 'mochat/employee/avatar_' . strval(microtime(true) * 10000) . '_' . uniqid() . '.png';
             $thumbAvatar        = $this->message['Avatar'];
             if (strpos($this->message['Avatar'], '/0') !== false) {
                 $thumbAvatar = substr($this->message['Avatar'], 0, strpos($this->message['Avatar'], '/0')) . '/100';
             }
-            $pathThumAvatarFileName = 'mochat/employee/thumb_avatar_' . microtime(true) * 10000 . '.png';
+            $pathThumAvatarFileName = 'mochat/employee/thumb_avatar_' . strval(microtime(true) * 10000) . '_' . uniqid() . '.png';
             $ossData                = [
                 [$this->message['Avatar'], $pathAvatarFileName],
                 [$thumbAvatar, $pathThumAvatarFileName],

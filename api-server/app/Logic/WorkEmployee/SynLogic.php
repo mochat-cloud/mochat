@@ -301,7 +301,7 @@ class SynLogic
         if (! $url) {
             return '';
         }
-        $pathUrl   = 'maochat/employee/' . $prefix . microtime(true) * 10000 . '.png';
+        $pathUrl   = 'mochat/employee/' . $prefix . strval(microtime(true) * 10000) . '_' . uniqid() . '.png';
         $ossData[] = [$url, $pathUrl];
         return $pathUrl;
     }
