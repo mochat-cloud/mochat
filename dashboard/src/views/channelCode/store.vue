@@ -3137,7 +3137,7 @@ export default {
       })
       let falg = false
       if (this.welcomeMessage.scanCodePush == 1) {
-        if (this.currencyMessage.welcomeContent == '' || this.cycleMessage.mediumId == '') {
+        if (this.currencyMessage.welcomeContent == '') {
           this.$message.error('通用欢迎语内容不能为空')
           return
         }
