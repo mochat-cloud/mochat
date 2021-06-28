@@ -69,12 +69,15 @@ class DepartmentUpdateHandler extends AbstractEventHandler
             'id'               => $departments[$this->message['Id']]['id'],
             'wx_department_id' => $this->message['Id'],
             'corp_id'          => current($corpIds),
-            'name'             => ! empty($this->message['Name']) ? $this->message['Name'] : '',
             'parent_id'        => $parentId,
             'wx_parentid'      => ! empty($this->message['ParentId']) ? $this->message['ParentId'] : $departments[$this->message['Id']]['parentId'],
             'order'            => ! empty($this->message['Order']) ? $this->message['Order'] : $departments[$this->message['Id']]['order'],
             'updated_at'       => date('Y-m-d H:i:s'),
         ];
+        // 在部门名字不为空的时候才更新 否则会把已有的name 更新为空 参考企业微信 通讯录回调通知 部门变更通知
+        if(!empty($this->message['Name'])){
+            $updateDepartment['name'] = $this->message['Name'];
+        }
         $result = $this->workDepartmentService->updateWorkDepartmentById($departments[$this->message['Id']]['id'], $updateDepartment);
         if (empty($result)) {
             $this->logger->error('DepartmentUpdateHandler->process微信修改部门失败');
