@@ -101,12 +101,12 @@ class EmployeeUpdateHandler extends AbstractEventHandler
         $orders         = ! empty($this->message['Order']) ? $this->message['Order'] : '';
         if (! empty($this->message['Department']) && ! empty($edepartment)) {
             $wxDepartment = explode(',', $this->message['Department']);
-            if(count($wxDepartment)==1){
+            if (count($wxDepartment) == 1) {
                 //当有且只有一个部门的时候 表示该部门也是主部门
                 //不知道为什么 当部门只有1个的时候 他的MainDepartment 事件儿不返回 不知是否是api触发的缘故 总之做一层兼容保险下
-                $mainDepartmentId=current($wxDepartment);
+                $mainDepartmentId = current($wxDepartment);
                 if ($employee['wxMainDepartmentId'] != $mainDepartmentId) {
-                    $updateEmployee['main_department_id']    = ! empty($department[$mainDepartmentId]) ? $department[$mainDepartmentId] : $employee['mainDepartmentId'];
+                    $updateEmployee['main_department_id'] = !empty($department[$mainDepartmentId]) ? $department[$mainDepartmentId] : $employee['mainDepartmentId'];
                     $updateEmployee['wx_main_department_id'] = $mainDepartmentId;
                 }
             }
