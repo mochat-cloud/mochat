@@ -16,3 +16,6 @@ Router::addRoute(['GET', 'POST', 'HEAD'], '/', function () {
 Router::get('/favicon.ico', function () {
     return '';
 });
+
+// 注册路由别名，兼容历史路由
+Router::addRoute(['GET', 'POST'], '/weWork/callback', 'MoChat\App\Corp\Action\Dashboard\WeWorkCallback@handle');

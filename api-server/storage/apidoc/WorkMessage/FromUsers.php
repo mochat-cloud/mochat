@@ -2,7 +2,7 @@
 
 /**
  * @api {get} /workMessage/fromUsers 会话员工下拉
- * @apiName workMessage.fromUsers
+ * @apiName GetWorkMessageFromUsers
  * @apiDescription [完成]
  * @apiGroup 会话内容存档
  *

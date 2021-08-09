@@ -67,9 +67,9 @@ return [
             'limit' => 10,
         ],
     ],
-    'coOSS' => [
+    'file' => [
         'driver'         => \Hyperf\AsyncQueue\Driver\RedisDriver::class,
-        'channel'        => 'coOss.queue',
+        'channel'        => 'file.queue',
         'timeout'        => 10,
         'retry_seconds'  => 5,
         'handle_timeout' => 60,

@@ -1,0 +1,142 @@
+<?php
+
+declare(strict_types=1);
+/**
+ * This file is part of MoChat.
+ * @link     https://mo.chat
+ * @document https://mochat.wiki
+ * @contact  group@mo.chat
+ * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
+ */
+namespace MoChat\Plugin\ContactSop\Logic;
+
+use Hyperf\Di\Annotation\Inject;
+use MoChat\App\Corp\Contract\CorpContract;
+use MoChat\App\User\Contract\UserContract;
+use MoChat\App\WorkContact\Contract\WorkContactContract;
+use MoChat\App\WorkContact\Contract\WorkContactEmployeeContract;
+use MoChat\App\WorkContact\Contract\WorkContactTagContract;
+use MoChat\App\WorkContact\Contract\WorkContactTagPivotContract;
+use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
+use MoChat\App\WorkMessage\Contract\WorkMessageContract;
+use MoChat\Plugin\ContactSop\Contract\ContactSopContract;
+use MoChat\Plugin\ContactSop\Contract\ContactSopLogContract;
+use MoChat\Plugin\ContactTransfer\Contract\WorkUnassignedContract;
+
+/**
+ * Class GetSopInfoLogic.
+ */
+class GetSopInfoLogic
+{
+    /**
+     * @Inject
+     * @var ContactSopLogContract
+     */
+    protected $contactSopLogService;
+
+    /**
+     * @Inject
+     * @var ContactSopContract
+     */
+    protected $contactSopService;
+
+    /**
+     * @Inject
+     * @var CorpContract
+     */
+    protected $corpService;
+
+    /**
+     * @Inject
+     * @var WorkUnassignedContract
+     */
+    protected $workUnassignedService;
+
+    /**
+     * @Inject
+     * @var WorkEmployeeContract
+     */
+    protected $workEmployeeService;
+
+    /**
+     * @Inject
+     * @var WorkContactEmployeeContract
+     */
+    protected $workContactEmployeeService;
+
+    /**
+     * @Inject
+     * @var WorkContactContract
+     */
+    protected $workContactService;
+
+    /**
+     * @Inject
+     * @var WorkContactTagContract
+     */
+    protected $workContactTagService;
+
+    /**
+     * @Inject
+     * @var WorkContactTagPivotContract
+     */
+    protected $workContactTagPivotService;
+
+    /**
+     * @var WorkMessageContract
+     */
+    protected $workMessageService;
+
+    /**
+     * @Inject
+     * @var UserContract
+     */
+    protected $userService;
+
+    /**
+     * @param $params
+     * @return array
+     */
+    public function handle($params)
+    {
+        $contactSopLog = $this->contactSopLogService->getContactSopLogById($params['id']);
+
+        $contactSop = $this->contactSopService->getContactSopById($contactSopLog['contactSopId']);
+
+        $user = $this->userService->getUserById($contactSop['creatorId']);
+
+        $contact = $this->workContactService->getWorkContactByCorpIdWxExternalUserId($contactSopLog['corpId'], $contactSopLog['contact']);
+
+        $contact['avatar'] = file_full_url($contact['avatar']);
+
+        $contactSop['contactIds'];
+
+        $task = json_decode($contactSopLog['task']);
+
+        $delay = 0;
+        if ($task->time->type == 0) {
+            //1时 30分
+            $delay += (int) $task->time->data->first * 3600;
+            $delay += (int) $task->time->data->last * 60;
+            $tipTime = date('Y-m-d H:i', strtotime($contact['createdAt']) + $delay);
+        } else {
+            //1天 11:30
+            $delay += (int) $task->time->data->first * 86400;
+            $tipTime = date('Y-m-d', strtotime($contact['createdAt']) + $delay) . " {$task->time->data->last}";
+        }
+
+        if ($task->time->type == 0) {
+            $time = "{$task->time->data->first}分{$task->time->data->last}秒";
+        } else {
+            $time = "{$task->time->data->first}天后的{$task->time->data->last}";
+        }
+
+        return [
+            'creator' => $user['name'],
+            'time'    => $time,
+            'tipTime' => $tipTime,
+            'task'    => $task,
+            'contact' => $contact,
+        ];
+    }
+}

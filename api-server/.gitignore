@@ -12,7 +12,7 @@ vendor/
 .phpunit*
 docker-compose.yml
 doc/
-/plugins/vendor/
+/plugin/vendor/
 composer.phar
 *.lock
 node_modules/*

@@ -13,6 +13,8 @@ use MoChat\Framework\Log\StdoutLoggerFactory;
 
 $dependencies = [];
 
+$dependencies = array_merge(register_service_map(BASE_PATH . '/app/core'), $dependencies);
+
 $appEnv = env('APP_ENV', 'production');
 if ($appEnv !== 'dev') {
     $dependencies[StdoutLoggerInterface::class] = StdoutLoggerFactory::class;

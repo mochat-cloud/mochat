@@ -10,6 +10,6 @@ declare(strict_types=1);
  */
 return [
     'http' => [
-        \MoChat\Framework\Middleware\JwtAuthMiddleware::class,
+        //        \MoChat\Framework\Middleware\JwtAuthMiddleware::class,
     ],
 ];

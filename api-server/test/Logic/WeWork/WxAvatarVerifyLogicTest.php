@@ -10,10 +10,10 @@ declare(strict_types=1);
  */
 namespace HyperfTest\Logic\WeWork;
 
-use App\Contract\WorkContactServiceInterface;
-use App\Contract\WorkEmployeeServiceInterface;
-use App\Logic\WeWork\WxApp;
-use App\Logic\WeWork\WxAvatarVerifyLogic;
+use MoChat\App\WorkContact\Contract\WorkContactContract;
+use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
+use MoChat\App\Corp\Logic\WxApp;
+use MoChat\App\WorkEmployee\Logic\WeWork\WxAvatarVerifyLogic;
 use Hyperf\Di\Container;
 use Hyperf\Utils\ApplicationContext;
 use HyperfTest\Stub\WeWork\ApplicationStub;
@@ -57,14 +57,14 @@ class WxAvatarVerifyLogicTest extends TestCase
         $container = ApplicationContext::getContainer();
 
         ## 员工服务替身
-        $employeeServiceStub = $this->createMock(WorkEmployeeServiceInterface::class);
+        $employeeServiceStub = $this->createMock(WorkEmployeeContract::class);
         $employeeServiceStub->method('getWorkEmployeeList')->willReturnCallback(function () {
             return self::fakeEmployeeList(func_get_args());
         });
         $employeeServiceStub->method('updateWorkEmployeesCaseIds')->willReturn(true);
 
         ## 客户服务替身
-        $contactServiceStub = $this->createMock(WorkContactServiceInterface::class);
+        $contactServiceStub = $this->createMock(WorkContactContract::class);
         $contactServiceStub->method('getWorkContactList')
             ->willReturnCallback(function () {
                 return self::fakeContactList(func_get_args());
@@ -77,10 +77,10 @@ class WxAvatarVerifyLogicTest extends TestCase
 
         ## 替换
         $container->getDefinitionSource()
-            ->addDefinition(WorkEmployeeServiceInterface::class, function () use ($employeeServiceStub) {
+            ->addDefinition(WorkEmployeeContract::class, function () use ($employeeServiceStub) {
                 return $employeeServiceStub;
             })
-            ->addDefinition(WorkContactServiceInterface::class, function () use ($contactServiceStub) {
+            ->addDefinition(WorkContactContract::class, function () use ($contactServiceStub) {
                 return $contactServiceStub;
             })
             ->addDefinition(WxApp::class, function () use ($wxAppStub) {

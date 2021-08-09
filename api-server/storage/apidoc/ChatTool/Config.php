@@ -2,7 +2,7 @@
 
 /**
  * @api {get} /chatTool/config 配置详情
- * @apiName chatTool.config
+ * @apiName GetChatToolConfig
  * @apiDescription
  * @apiGroup 侧边栏-JSSDK
  *

@@ -1,0 +1,42 @@
+{
+    "name": "mochat-plugin/room-infinite-pull",
+    "description": "MoChat 无限拉群插件",
+    "license": "GPL-3.0",
+    "keywords": [
+        "php",
+        "mochat",
+        "scrm"
+    ],
+    "homepage": "https://mo.chat",
+    "support": {
+        "docs": "https://mochat.wiki",
+        "issues": "https://github.com/mochat-cloud/mochat/issues",
+        "pull-request": "https://github.com/mochat-cloud/mochat/pulls",
+        "source": "https://github.com/mochat-cloud/mochat"
+    },
+    "require": {
+        "php": ">=7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "MoChat\\Plugin\\RoomInfinitePull\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "master"
+        },
+        "hyperf": {
+            "config": "MoChat\\Plugin\\RoomInfinitePull\\ConfigProvider"
+        }
+    },
+    "bin": [
+    ],
+    "scripts": {
+        "cs-fix": "php-cs-fixer fix $1",
+        "test": "phpunit --colors=always"
+    }
+}

@@ -2,7 +2,7 @@
 
 /**
  * @api {put} /medium/groupUpdate 移动分组
- * @apiName medium.groupUpdate
+ * @apiName PutMediumUpdate
  * @apiDescription [完成]
  * @apiGroup 素材库
  *
