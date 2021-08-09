@@ -262,8 +262,7 @@
             v-if="drainageEmployee.addMax.status == 1"
             :columns="columns"
             :data-source="allMemderList"
-            :rowKey="record => record.employeeId"
-            :pagination="false">
+            :rowKey="record => record.employeeId">
             <div slot="max" slot-scope="text, record">
               <input v-model="record.max" @blur="inputNum(record.max)"/>
             </div>
@@ -3137,7 +3136,7 @@ export default {
       })
       let falg = false
       if (this.welcomeMessage.scanCodePush == 1) {
-        if (this.currencyMessage.welcomeContent == '') {
+        if (this.currencyMessage.welcomeContent == '' || this.cycleMessage.mediumId == '') {
           this.$message.error('通用欢迎语内容不能为空')
           return
         }
@@ -3568,7 +3567,7 @@ export default {
       text-align: center;
       line-height: 80px;
       font-size: 50px;
-      font-weight: 800px;
+      font-weight: 800;
     }
     .img-box {
       display: flex;

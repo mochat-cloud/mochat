@@ -89,7 +89,6 @@
         style="width: 800px"
         bordered
         :data-source="detailList"
-        :pagination="false"
         :rowKey="(record,index)=>{return index}"
         :columns="detailColumns">
         <div slot="sender" slot-scope="text, record">

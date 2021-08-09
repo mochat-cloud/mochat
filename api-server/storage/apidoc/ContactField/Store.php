@@ -2,7 +2,7 @@
 
 /**
  * @api {POST} /contactField/store 添加
- * @apiName contactField.store
+ * @apiName PostContactFieldStore
  * @apiDescription [完成]
  * @apiGroup 【客户】高级属性
  *

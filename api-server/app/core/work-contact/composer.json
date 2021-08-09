@@ -1,0 +1,39 @@
+{
+    "name": "mochat/app-work-employee",
+    "description": "MoChat 核心应用-员工管理",
+    "license": "GPL-3.0",
+    "keywords": [
+        "php",
+        "mochat",
+        "scrm"
+    ],
+    "homepage": "https://mo.chat",
+    "support": {
+        "docs": "https://mochat.wiki",
+        "issues": "https://github.com/mochat-cloud/mochat/issues",
+        "pull-request": "https://github.com/mochat-cloud/mochat/pulls",
+        "source": "https://github.com/mochat-cloud/mochat"
+    },
+    "require": {
+        "php": ">=7.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "MoChat\\App\\WorkEmployee\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "dev-master"
+        }
+    },
+    "bin": [
+    ],
+    "scripts": {
+        "cs-fix": "php-cs-fixer fix $1",
+        "test": "phpunit --colors=always"
+    }
+}

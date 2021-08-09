@@ -8,9 +8,7 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
-use App\Listener\ValidatorFactoryResolvedListener;
-
 return [
-    ValidatorFactoryResolvedListener::class,
+    MoChat\App\Common\Listener\ValidatorFactoryResolvedListener::class,
     Hyperf\AsyncQueue\Listener\QueueLengthListener::class,
 ];

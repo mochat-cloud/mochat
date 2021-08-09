@@ -55,7 +55,6 @@ export default {
     return {
       statisticsShow: true,
       channelCodeId: '',
-      // 日 周 月 1 2 3
       type: 2,
       time: null,
       startTime: '',

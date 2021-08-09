@@ -60,6 +60,7 @@
       <!-- <van-sticky :offset-top="50"> -->
       <van-tabs
         v-model:active="activeName"
+        @click="switchTabs"
         color="#4477bc"
         :sticky="true"
         title-active-color="#000000"
@@ -116,55 +117,58 @@
           title="客户画像"
           name="3"
           class="list">
-          <van-cell-group class="data-group">
-            <div
-              v-for="(item, index) in detail"
-              :key="index"
-            >
-              <van-field
-                v-if="item.typeText !== '多选' && item.typeText !== '图片' && item.typeText !== '单选'"
-                :label="item.name"
-                v-model="item.value"
-                readonly
-                placeholder="暂无" />
-              <div v-if="item.typeText == '图片'" class="picture-wrapper">
-                <span class="title">{{ item.name }}</span>
-                <img
-                  v-if="item.pictureFlag"
-                  class="picture"
-                  :src="item.pictureFlag"
-                  alt="">
-                <span v-else class="text">暂无</span>
+          <div class="list_tab">
+            <van-cell-group class="data-group">
+              <div
+                v-for="(item, index) in detail"
+                :key="index"
+              >
+                <van-field
+                  v-if="item.typeText !== '多选' && item.typeText !== '图片' && item.typeText !== '单选'"
+                  :label="item.name"
+                  v-model="item.value"
+                  readonly
+                  placeholder="暂无" />
+                <div v-if="item.typeText == '图片'" class="picture-wrapper">
+                  <span class="title">{{ item.name }}</span>
+                  <img
+                    v-if="item.pictureFlag"
+                    class="picture"
+                    :src="item.pictureFlag"
+                    alt="">
+                  <span v-else class="text">暂无</span>
+                </div>
+                <div v-if="item.typeText == '单选'" class="check-wrapper">
+                  <span class="title">{{ item.name }}</span>
+                  <van-radio-group v-if="item.value" v-model="item.value" direction="horizontal" class="check-group">
+                    <van-radio
+                      :name="item.value"
+                      icon-size="15px"
+                      class="check-item"
+                      disabled
+                    >
+                      <span class="text">{{ item.value }}</span>
+                    </van-radio>
+                  </van-radio-group>
+                </div>
+                <div v-if="item.typeText == '多选'" class="check-wrapper">
+                  <span class="title">{{ item.name }}</span>
+                  <van-checkbox-group v-model="item.value" class="check-group">
+                    <van-checkbox
+                      v-for="(val, ind) in item.value"
+                      :key="ind + val"
+                      :name="val"
+                      icon-size="15px"
+                      class="check-item"
+                      disabled>
+                      <span class="text">{{ val }}</span>
+                    </van-checkbox>
+                  </van-checkbox-group>
+                </div>
               </div>
-              <div v-if="item.typeText == '单选'" class="check-wrapper">
-                <span class="title">{{ item.name }}</span>
-                <van-radio-group v-if="item.value" v-model="item.value" direction="horizontal" class="check-group">
-                  <van-radio
-                    :name="item.value"
-                    icon-size="15px"
-                    class="check-item"
-                    disabled
-                  >
-                    <span class="text">{{ item.value }}</span>
-                  </van-radio>
-                </van-radio-group>
-              </div>
-              <div v-if="item.typeText == '多选'" class="check-wrapper">
-                <span class="title">{{ item.name }}</span>
-                <van-checkbox-group v-model="item.value" class="check-group">
-                  <van-checkbox
-                    v-for="(val, ind) in item.value"
-                    :key="ind + val"
-                    :name="val"
-                    icon-size="15px"
-                    class="check-item"
-                    disabled>
-                    <span class="text">{{ val }}</span>
-                  </van-checkbox>
-                </van-checkbox-group>
-              </div>
-            </div>
-          </van-cell-group>
+            </van-cell-group>
+            <div class="popup_box"><personalSopIndex ref="personalSopIndex" /></div>
+          </div>
         </van-tab>
       </van-tabs>
       <!-- </van-sticky> -->
@@ -178,9 +182,14 @@
 
 <script>
 import { getWorkContactInfo, getUserPortrait, track } from '@/api/customer'
+import personalSopIndex from '@/views/personalSop/personalSopIndex'
 import { mapGetters } from 'vuex'
+import { getCookie } from 'utils'
 
 export default {
+  components: {
+    personalSopIndex
+  },
   data () {
     return {
       activeName: '1',
@@ -197,6 +206,9 @@ export default {
     }
   },
   created () {
+    this.corpId = getCookie('corpId')
+    // this.agentId = getCookie('agentId')
+    // this.uriPath = this.$route.fullPath.substr(1, this.$route.fullPath.length - 1)
     if (!this.contactId) {
       this.$toast({ position: 'top', message: '请重新进入应用' })
       return
@@ -212,6 +224,14 @@ export default {
     ])
   },
   methods: {
+    switchTabs () {
+      // contactId: this.contactId,
+      //   employeeId: this.userInfo.employeeId
+      this.$nextTick(() => {
+        this.$refs.personalSopIndex.show(this.corpId, this.userInfo.employeeId, this.contactId)
+        // this.$refs.personalSopIndex.show(1, 2, 4)
+      })
+    },
     getInfo () {
       const params = {
         contactId: this.contactId,
@@ -250,6 +270,17 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.list_tab{
+  width: 100%;
+  background: #fff;
+  position: relative;
+  min-height: 650px;
+  padding-bottom: 20px;
+}
+.popup_box{
+  //position: absolute;
+  //bottom: 20px;
+}
 .header {
   padding-top: 24px;
   display: flex;

@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 namespace HyperfTest\Utils;
 
-use App\Utils\FilesystemExt;
+use MoChat\App\Utils\FilesystemExt;
 use League\Flysystem\Filesystem;
 use PHPUnit\Framework\TestCase;
 

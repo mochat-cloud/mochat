@@ -2,7 +2,7 @@
 
 /**
  * @api {get} /contactField/index 列表
- * @apiName contactField.index
+ * @apiName GetContactFieldIndex
  * @apiDescription [完成]
  * @apiGroup 【客户】高级属性
  *

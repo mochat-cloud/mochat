@@ -402,8 +402,18 @@ export default {
     },
     // 批量删除
     deleteAttr (id, index) {
-      this.editData.splice(index, 1)
-      this.destroy.push(id)
+      const that = this
+      this.$confirm({
+        title: '提示',
+        content: '是否批量删除',
+        okText: '删除',
+        okType: 'danger',
+        cancelText: '取消',
+        onOk () {
+          that.editData.splice(index, 1)
+          that.destroy.push(id)
+        }
+      })
     },
     // 修改状态
     editStatus (id, status) {

@@ -50,7 +50,7 @@ export default {
         ['mp4'],
         ['doc', 'docx', 'xls', 'xlsx', 'csv', 'ppt', 'pptx', 'txt', 'pdf', 'Xmind']
       ],
-      uploadApi: process.env.VUE_APP_API_BASE_URL + '/common/upload'
+      uploadApi: process.env.VUE_APP_API_BASE_URL + '/dashboard/common/upload'
     }
   },
   computed: {

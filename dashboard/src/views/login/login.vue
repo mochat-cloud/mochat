@@ -135,7 +135,6 @@ export default {
       state: {
         time: 60,
         loginBtn: false,
-        // login type: 0 email, 1 phone, 2 telephone
         loginType: 0,
         smsSendBtn: false
       },

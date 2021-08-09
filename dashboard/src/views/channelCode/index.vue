@@ -261,7 +261,6 @@ export default {
       editGroupData: {},
       // 移动分组
       moveGroupId: ''
-      // channelCodeId: ''
     }
   },
   created () {

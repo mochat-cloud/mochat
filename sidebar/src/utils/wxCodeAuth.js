@@ -18,7 +18,7 @@ async function getConfigParam (corpId, uriPath, agentId) {
     console.log(e)
   }
 }
-const jsApiList = ['getCurExternalContact', 'sendChatMessage', 'getContext']
+const jsApiList = ['getCurExternalContact', 'sendChatMessage', 'getContext', 'openUserProfile', 'getCurExternalChat', 'openExistedChatWithMsg']
 // wx.config
 export function wxConfig (corpId, uriPath) {
   return new Promise((resolve, reject) => {
@@ -59,6 +59,7 @@ export function agentConfig (corpId, uriPath, agentId) {
         signature: signature, // 必填，签名，见附录-JS-SDK使用权限签名算法
         jsApiList,
         success: function (res) {
+          // Toast({ position: 'top', message: '注册成功' })
           resolve()
         },
         fail: function (res) {
@@ -98,7 +99,7 @@ export function getCurExternalContact () {
         // commit('SET_WX_USER_ID', userId)
         resolve(userId)
       } else {
-        Toast({ position: 'top', message: res.err_msg })
+        // Toast({ position: 'top', message: res.err_msg })
         // 错误处理
         reject(res.err_msg)
       }
@@ -161,3 +162,66 @@ export function sendChatMessage (type, content) {
     })
   })
 }
+// getCurExternalChat
+export function openUserProfile (type, userid) {
+  const params = {
+    type,
+    userid
+  }
+  return new Promise((resolve, reject) => {
+    wx.invoke('openUserProfile', params, function (res) {
+      if (res.err_msg == 'openUserProfile:ok') {
+        // const userId = res.userId // 返回当前外部联系人userId
+        // resolve(userId)
+      } else {
+        Toast({ position: 'top', message: res.err_msg })
+        // 错误处理
+        reject(res.err_msg)
+      }
+    })
+  })
+}
+// 获取当前客户群的群ID
+export function getCurExternalChat () {
+  return new Promise((resolve, reject) => {
+    wx.invoke('getCurExternalChat', {}, function (res) {
+      if (res.err_msg == 'getCurExternalChat:ok') {
+        const chatId = res.chatId // 返回当前外部联系人userId
+        resolve(chatId)
+      } else {
+
+      }
+    })
+  })
+}
+// 打开当前群聊
+export function openExistedChatWithMsg (chatId) {
+  const params = {
+    chatId
+  }
+  return new Promise((resolve, reject) => {
+    wx.invoke('openExistedChatWithMsg', params, function (res) {
+      if (res.err_msg == 'openExistedChatWithMsg:ok') {
+        console.log('打开群聊sfidjrfe')
+      } else {
+        Toast({ position: 'top', message: res.errmsg })
+        // 错误处理
+        reject(res.errmsg)
+      }
+    })
+  })
+}
+// export function openEnterpriseChat (chatId) {
+//   wx.openEnterpriseChat({
+//     chatId,
+//     success: function (res) {
+//
+//     },
+//     fail: function (res) {
+//       Toast({ position: 'top', message: res.errmsg })
+//       if (res.errMsg.indexOf('function not exist') > -1) {
+//         alert('版本过低请升级')
+//       }
+//     }
+//   })
+// }

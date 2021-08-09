@@ -93,7 +93,6 @@
                   bordered
                   rowKey="roomId"
                   :columns="columns"
-                  :pagination="false"
                   :data-source="rooms">
                   <div slot="maxNum" slot-scope="text, record">
                     <div>

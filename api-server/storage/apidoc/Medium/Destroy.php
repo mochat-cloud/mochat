@@ -2,7 +2,7 @@
 
 /**
  * @api {delete} /medium/destroy 删除
- * @apiName medium.destroy
+ * @apiName DeleteMediumDestroy
  * @apiDescription [完成]
  * @apiGroup 素材库
  *

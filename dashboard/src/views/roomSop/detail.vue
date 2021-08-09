@@ -1,0 +1,399 @@
+<template>
+  <div class="room-sop-detail">
+    <div class="card-row flex mb16">
+      <div class="box mr16">
+        <a-card>
+          <div class="block">
+            <div class="title">规则信息</div>
+            <div class="item">
+              <span class="label required">规则名称：</span>
+              <div class="input">
+                {{ data.name }}
+              </div>
+            </div>
+            <div class="item">
+              <span class="label required">创建人：</span>
+              <div class="input">
+                {{ data.creatorName }}
+              </div>
+            </div>
+            <div class="item">
+              <span class="label required">创建时间：</span>
+              <div class="input">
+                {{ data.createTime }}
+              </div>
+            </div>
+            <div class="item">
+              <span class="label required">执行群聊：</span>
+              <div class="input">
+                <a-tag v-for="(v,i) in data.rooms" :key="i">
+                  {{ v.name }}
+                </a-tag>
+              </div>
+            </div>
+          </div>
+        </a-card>
+      </div>
+      <div class="box">
+        <a-card>
+          <div class="title">规则信息</div>
+          <div class="data-panel">
+            <div class="data">
+              <div class="item">
+                <div class="count">
+                  {{ data.chatHandleNum }}
+                </div>
+                <div class="desc">
+                  执行群聊数
+                </div>
+              </div>
+              <div class="item">
+                <div class="count">
+                  {{ data.todayTipNum }}
+                </div>
+                <div class="desc">
+                  今日提醒群聊
+                </div>
+              </div>
+              <div class="item">
+                <div class="count">
+                  {{ data.ownerTipNum }}
+                </div>
+                <div class="desc">
+                  今日提醒群主数
+                </div>
+              </div>
+            </div>
+          </div>
+        </a-card>
+      </div>
+    </div>
+
+    <a-card>
+      <div class="block">
+        <div class="title">推送内容</div>
+        <div class="tips flex">
+          <span>共 {{ data.setting.length }} 条推送规则</span>
+        </div>
+        <div class="rules">
+          <div class="rule" v-for="(v,i) in data.setting" :key="i">
+            <div class="header flex">
+              <div class="icon">
+                <a-icon type="bell"/>
+              </div>
+              <div class="name">
+                加入规则
+                <span v-if="v.time.type === '0'">
+                  {{ v.time.data.first }}小时{{ v.time.data.last }}分
+                </span>
+                <span v-if="v.time.type === '1'">
+                  {{ v.time.data.first }}天后，当日{{ v.time.data.last }}
+                </span>
+                提醒发送
+              </div>
+            </div>
+            <div class="content flex">
+              <div class="warp">
+                <div
+                  class="text-content"
+                  v-for="(content,contentIndex) in v.content"
+                  :key="contentIndex"
+                >
+                  <div v-if="content.type === 'text'">
+                    {{ content.value }}
+                  </div>
+                  <div v-if="content.type === 'image'">
+                    <img :src="content.value" style="max-width: 80px;">
+                  </div>
+                </div>
+                <div class="count">
+                  共{{ v.content.length }}条
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a-card>
+
+    <addRule ref="addRule"/>
+  </div>
+</template>
+
+<script>
+import addRule from '@/views/contactSop/components/create/addRule'
+import { getInfo } from '@/api/roomSop'
+
+export default {
+  data () {
+    return {
+      data: {}
+    }
+  },
+  mounted () {
+    this.getData()
+  },
+  methods: {
+    getData () {
+      getInfo({
+        id: this.$route.query.id
+      }).then(res => {
+        this.data = res.data
+      })
+    }
+  },
+  components: { addRule }
+}
+</script>
+
+<style lang="less" scoped>
+.card-row {
+  .box {
+    flex: 1;
+  }
+
+  .data-panel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    margin: 55px 0;
+
+    .data {
+      flex: 1;
+      height: 120px;
+      background: #fbfdff;
+      border: 1px solid #daedff;
+      padding: 31px;
+      margin-right: 25px;
+      display: flex;
+      align-items: center;
+
+      .item {
+        flex: 1;
+        border-right: 1px solid #e9e9e9;
+
+        .count {
+          font-size: 24px;
+          font-weight: 500;
+          text-align: center;
+        }
+
+        .desc {
+          font-size: 13px;
+          text-align: center;
+        }
+
+        &:last-child {
+          border-right: 0;
+        }
+      }
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+
+  .title {
+    font-size: 15px;
+    line-height: 21px;
+    color: rgba(0, 0, 0, 0.85);
+    border-bottom: 1px solid #e9ebf3;
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+}
+
+.block {
+  margin-bottom: 60px;
+
+  .title {
+    font-size: 15px;
+    line-height: 21px;
+    color: rgba(0, 0, 0, .85);
+    border-bottom: 1px solid #e9ebf3;
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+    position: relative;
+
+    span {
+      font-size: 13px;
+      margin-left: 11px;
+      color: rgba(0, 0, 0, .45);
+      font-weight: 400;
+    }
+  }
+
+  .required:after {
+    content: "*";
+    display: inline-block;
+    margin-right: 4px;
+    color: #f5222d;
+    font-size: 14px;
+    line-height: 1;
+    position: absolute;
+    left: -10px;
+    top: 6px;
+  }
+
+  .item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 23px;
+
+    .label {
+      color: rgba(0, 0, 0, .85);
+      position: relative;
+    }
+  }
+}
+
+.rules {
+  .rule {
+    .header {
+      .icon {
+        width: 18px;
+        height: 18px;
+        margin-right: 10px;
+        -webkit-transform: translateX(-40%);
+        transform: translateX(-40%);
+        color: #b4b9c3;
+      }
+
+      .name {
+        font-size: 14px;
+        color: rgba(0, 0, 0, .85);
+        font-weight: 500;
+      }
+    }
+
+    .content {
+      padding: 8px 16px 24px 21px;
+      border-left: 1px dashed #d8dfe4;
+
+      .warp {
+        width: 659px;
+        background: #fbfbfb;
+        border: 1px solid #f2f2f2;
+        padding: 0 20px 8px 16px;
+
+        .text-content {
+          background: #fff;
+          box-shadow: 0 0 2px 0 rgb(0 0 0 / 4%);
+          border-radius: 2px 16px 16px 24px;
+          border: 1px solid #f6f6f6;
+          padding: 10px 16px;
+          word-break: break-all;
+          font-size: 14px;
+          font-weight: 400;
+          color: rgba(0, 0, 0, .86);
+          line-height: 20px;
+          margin-top: 12px;
+        }
+
+        .img-content img {
+          margin-top: 12px;
+          width: 80px;
+          height: 80px;
+        }
+
+        .pdf-content {
+          display: flex;
+          align-items: center;
+          margin-top: 8px;
+          padding: 11px 12px;
+          width: 250px;
+          background: #fff;
+          border-radius: 1px;
+          border: 1px solid #f0f0f0;
+
+          img {
+            width: 58px;
+            height: 58px;
+            margin-right: 13px;
+          }
+
+          .info {
+            p {
+              font-size: 13px;
+              font-weight: 500;
+              color: rgba(0, 0, 0, .85);
+              margin-bottom: 0;
+            }
+
+            .size {
+              font-size: 12px;
+              color: #999;
+            }
+          }
+        }
+
+        .link-content {
+          width: 250px;
+          margin-top: 8px;
+          background: #fff;
+          border: 1px solid #f0f0f0;
+          padding: 10px 12px 13px;
+
+          .link-title {
+            font-size: 13px;
+            color: #191919;
+          }
+
+          .info {
+            .desc {
+              font-size: 12px;
+              color: #999;
+              line-height: 16px;
+              padding-right: 19px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              display: -webkit-box;
+              -webkit-line-clamp: 2;
+              -webkit-box-orient: vertical;
+            }
+
+            img {
+              width: 47px;
+              height: 47px;
+            }
+          }
+        }
+
+        .count {
+          font-size: 13px;
+          font-weight: 400;
+          line-height: 24px;
+          margin-right: 12px;
+          color: rgba(0, 0, 0, .45);
+          margin-top: 5px;
+        }
+      }
+
+      .btn-box {
+        width: 21px;
+        height: 21px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #f0f0f0;
+        border-radius: 2px;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.tips {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #000;
+
+  span {
+    flex: 1;
+  }
+}
+</style>

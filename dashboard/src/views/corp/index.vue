@@ -197,7 +197,6 @@ export default {
             this.btnLoading = false
           })
         } else {
-          console.log('error submit!!')
           return false
         }
       })
@@ -246,7 +245,6 @@ export default {
             this.editDisble = true
           })
         } else {
-          console.log('error submit!!')
           return false
         }
       })

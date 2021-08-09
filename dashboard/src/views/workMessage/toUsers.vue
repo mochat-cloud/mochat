@@ -307,6 +307,7 @@ export default {
     },
     // 选择聊天对象类型
     choose (type) {
+      // abc
       this.type = type
       this.getNameList()
     },
