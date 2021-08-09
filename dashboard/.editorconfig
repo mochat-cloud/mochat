@@ -36,4 +36,3 @@ indent_size=2
 [{.analysis_options,*.yml,*.yaml}]
 indent_style=space
 indent_size=2
-

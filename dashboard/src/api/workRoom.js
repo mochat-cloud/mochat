@@ -9,6 +9,7 @@ export function workRoomGroupList (params) {
     params: params
   })
 }
+
 // 删除分组
 export function deleteGroup (params) {
   return request({
@@ -17,6 +18,7 @@ export function deleteGroup (params) {
     data: params
   })
 }
+
 // 新建分组
 export function createGroup (params) {
   return request({
@@ -25,6 +27,7 @@ export function createGroup (params) {
     data: params
   })
 }
+
 // 更新分组
 export function updateGroup (params) {
   return request({
@@ -33,6 +36,7 @@ export function updateGroup (params) {
     data: params
   })
 }
+
 // 客户群列表
 export function workRoomList (params) {
   return request({
@@ -41,6 +45,7 @@ export function workRoomList (params) {
     params: params
   })
 }
+
 // 同步群
 export function synList (params) {
   return request({
@@ -49,6 +54,7 @@ export function synList (params) {
     data: params
   })
 }
+
 // 批量修改群
 export function batchUpdate (params) {
   return request({
@@ -57,6 +63,7 @@ export function batchUpdate (params) {
     data: params
   })
 }
+
 // 客户群成员
 export function workContactRoom (params) {
   return request({
@@ -65,6 +72,7 @@ export function workContactRoom (params) {
     params: params
   })
 }
+
 // 部门成员列表
 export function workDepartmentList (params) {
   return request({
@@ -73,6 +81,7 @@ export function workDepartmentList (params) {
     params: params
   })
 }
+
 // 部门列表
 export function departmentList (params) {
   return request({
@@ -81,6 +90,7 @@ export function departmentList (params) {
     params: params
   })
 }
+
 // 统计分页数据
 export function statisticsIndex (params) {
   return request({
@@ -89,6 +99,7 @@ export function statisticsIndex (params) {
     params: params
   })
 }
+
 // 折线图
 export function statistics (params) {
   return request({
@@ -97,6 +108,7 @@ export function statistics (params) {
     params: params
   })
 }
+
 // 自动拉群列表
 export function workRoomAutoPullList (params) {
   return request({
@@ -105,6 +117,7 @@ export function workRoomAutoPullList (params) {
     params: params
   })
 }
+
 // 更新
 export function autoPullUpdate (params) {
   return request({
@@ -113,6 +126,7 @@ export function autoPullUpdate (params) {
     data: params
   })
 }
+
 // 创建
 export function autoPullCreate (params) {
   return request({
@@ -121,6 +135,7 @@ export function autoPullCreate (params) {
     data: params
   })
 }
+
 // 移动
 export function autoPullMove (params) {
   return request({
@@ -129,6 +144,7 @@ export function autoPullMove (params) {
     data: params
   })
 }
+
 // 详情
 export function autoPullShow (params) {
   return request({
@@ -137,6 +153,7 @@ export function autoPullShow (params) {
     params: params
   })
 }
+
 // 标签分组
 export function workContactTagGroup (params) {
   return request({
@@ -145,6 +162,7 @@ export function workContactTagGroup (params) {
     params: params
   })
 }
+
 // 新建标签
 export function addWorkContactTag (params) {
   return request({
@@ -153,6 +171,7 @@ export function addWorkContactTag (params) {
     data: params
   })
 }
+
 // 标签列表
 export function tagList (params) {
   return request({
@@ -168,5 +187,85 @@ export function roomList (params) {
     url: '/workRoom/roomIndex',
     method: 'get',
     params: params
+  })
+}
+
+// 选择群聊
+export function optCroup (params) {
+  return request({
+    url: '/roomTagPull/roomList',
+    method: 'get',
+    params
+  })
+}
+
+// 标签建群获取列表
+export function tagGetList (params) {
+  return request({
+    url: '/roomTagPull/index',
+    method: 'get',
+    params
+  })
+}
+
+// 创建标签建群邀请
+export function addGroup (params) {
+  return request({
+    url: '/roomTagPull/store',
+    method: 'POST',
+    data: params
+  })
+}
+
+// 标签建群详情
+export function labelShow (params) {
+  return request({
+    url: '/roomTagPull/show',
+    method: 'GET',
+    params
+  })
+}
+
+// 删除标签建群
+export function delRoomTag (params) {
+  return request({
+    url: '/roomTagPull/destroy',
+    method: 'DELETE',
+    data: params
+  })
+}
+
+// 标签建群提醒发送
+export function remindRoomTag (params) {
+  return request({
+    url: '/roomTagPull/remindSend',
+    method: 'GET',
+    params
+  })
+}
+
+// 标签建群筛选客户
+export function chooseContactRoomTag (params) {
+  return request({
+    url: '/roomTagPull/chooseContact',
+    method: 'GET',
+    params
+  })
+}
+
+// 标签建群过滤客户
+export function chooseFilterContact (params) {
+  return request({
+    url: '/roomTagPull/filterContact',
+    method: 'POST',
+    data: params
+  })
+}
+
+export function labelContactShow (params) {
+  return request({
+    url: '/roomTagPull/showContact',
+    method: 'GET',
+    params
   })
 }

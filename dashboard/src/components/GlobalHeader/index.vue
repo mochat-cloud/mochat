@@ -4,7 +4,7 @@
       <img class="icon" :src="iconSrc" alt="">
     </span>
     <top-menu class="top-menu"></top-menu>
-    <right-content class="right-content" :is-mobile="isMobile" :theme="theme" />
+    <right-content class="right-content" :is-mobile="isMobile" :theme="theme"/>
   </div>
 </template>
 <script>
@@ -50,26 +50,30 @@ export default {
   }
 }
 </script>
-<style lang='less' scoped>
-.header-wrapper{
+<style lang="less" scoped>
+.header-wrapper {
   flex: 1;
   display: flex;
   align-items: center;
-  .top-menu{
+
+  .top-menu {
     flex: 1
   }
-  .right-content{
+
+  .right-content {
     display: flex;
     justify-content: flex-end;
     align-items: center;
     flex: 0 0 250px;
   }
+
   .icon-wrapper {
     width: 50px;
     height: 64px;
     display: flex;
     align-items: center;
     justify-content: center;
+
     .icon {
       color: #fff;
       display: inline-block;

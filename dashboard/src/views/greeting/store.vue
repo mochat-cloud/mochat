@@ -1064,7 +1064,7 @@ export default {
       text-align: center;
       line-height: 80px;
       font-size: 50px;
-      font-weight: 800px;
+      font-weight: 800;
     }
     .img-box {
       display: flex;

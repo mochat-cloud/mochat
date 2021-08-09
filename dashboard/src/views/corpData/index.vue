@@ -254,7 +254,6 @@ export default {
           {
             name: '新增客户数',
             type: 'line',
-            // stack: '总量',
             data: [],
             itemStyle: {
               normal: {
@@ -268,7 +267,6 @@ export default {
           {
             name: '新增入群数',
             type: 'line',
-            // stack: '总量',
             data: [],
             itemStyle: {
               normal: {
@@ -282,7 +280,6 @@ export default {
           {
             name: '流失客户',
             type: 'line',
-            // stack: '总量',
             data: [],
             itemStyle: {
               normal: {
@@ -296,7 +293,6 @@ export default {
           {
             name: '退群人数',
             type: 'line',
-            // stack: '总量',
             data: [],
             itemStyle: {
               normal: {

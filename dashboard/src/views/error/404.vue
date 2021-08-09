@@ -1,8 +1,8 @@
 <template>
-  <a-result status="404" title="404" sub-title="Sorry, the page you visited does not exist.">
+  <a-result status="404" title="404" sub-title="对不起，MoChat该页面未找到！">
     <template #extra>
       <a-button type="primary" @click="toHome">
-        Back Home
+        回首页
       </a-button>
     </template>
   </a-result>

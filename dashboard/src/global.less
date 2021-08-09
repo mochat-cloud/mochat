@@ -34,6 +34,7 @@ ol {
 .table-alert {
   margin-bottom: 16px;
 }
+
 // 数据列表 操作
 .table-operator {
   margin-bottom: 18px;
@@ -42,6 +43,7 @@ ol {
     margin-right: 8px;
   }
 }
+
 // 数据列表 搜索条件
 .table-page-search-wrapper {
 
@@ -62,6 +64,7 @@ ol {
         padding-right: 8px;
         width: auto;
       }
+
       .ant-form-item-control {
         height: 32px;
         line-height: 32px;
@@ -79,15 +82,18 @@ ol {
 .ant-layout-content {
   margin-top: 0;
 }
+
 @media (max-width: @screen-xs) {
   .ant-table {
     width: 100%;
     overflow-x: auto;
+
     &-thead > tr,
     &-tbody > tr {
       > th,
       > td {
         white-space: pre;
+
         > span {
           display: block;
         }
@@ -95,56 +101,160 @@ ol {
     }
   }
 }
+
 .login-wrapper {
   .user-layout-login {
     .ant-input.ant-input-lg {
       padding-left: 50px;
       font-size: 16px;
     }
+
     .ant-input-prefix {
       width: 20px;
       height: 20px
     }
   }
+
   .ant-input.ant-input-lg {
     min-height: 100%;
   }
 }
 
 .ant-pro-sider-menu-logo {
-  background:#212943;
+  background: #212943;
 }
+
 .ant-layout.sidemenu .ant-layout-header .ant-pro-global-header {
   background: #212943
 }
-.ant-menu-dark{
+
+.ant-menu-dark {
   background: #212943;
+
   .ant-menu-inline.ant-menu-sub {
     background: #212943;
     box-shadow: none;
   }
 }
+
 .header-wrapper {
   .ant-menu-item.ant-menu-item-selected {
     background: none;
+
     .title {
       display: inline-block;
-      border-bottom: 4px solid#1890ff;
+      border-bottom: 4px solid #1890ff;
       padding: 0 8px
     }
   }
+
   .ant-menu-item {
     background: none;
+
     .title {
       display: inline-block;
       border-bottom: 4px solid #212943;
       padding: 0 8px
     }
   }
+
   .ant-menu-item {
     padding: 0 12px
   }
 }
+
 .ant-layout.sidemenu .ant-layout-header .ant-pro-global-header .ant-pro-global-header-trigger {
   display: none;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.f-blod {
+  font-weight: bold;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+}
+
+.filter-input-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 20px;
+
+  .item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+
+    .title {
+      width: 100px;
+      text-align: right;
+    }
+
+    .ant-calendar-picker {
+      width: 232px;
+    }
+  }
+
+  .reset {
+    margin-left: 50px;
+    margin-bottom: 20px;
+  }
+}
+
+.desc-text {
+  color: #00000073;
+  font-size: 14px;
+}
+
+.pointer{
+  cursor: pointer;
+}
+
+@max: 100;
+@step: 1;
+
+.mb(@max);
+.mb(@n, @i: 0) when (@i =< @n) {
+  .mb@{i} {
+    margin-bottom: 0px + @i!important;
+  }
+  .mb(@n, (@i+@step));
+}
+
+.mr(@max);
+.mr(@n, @i: 0) when (@i =< @n) {
+  .mr@{i} {
+    margin-right: 0px + @i;
+  }
+  .mr(@n, (@i+@step));
+}
+
+.ml(@max);
+.ml(@n, @i: 0) when (@i =< @n) {
+  .ml@{i} {
+    margin-left: 0px + @i;
+  }
+  .ml(@n, (@i+@step));
+}
+
+.mt(@max);
+.mt(@n, @i: 0) when (@i =< @n) {
+  .mt@{i} {
+    margin-top: 0px + @i;
+  }
+  .mt(@n, (@i+@step));
+}
+
+.fontSize(@max);
+.fontSize(@n, @i: 0) when (@i =< @n) {
+  .fz@{i} {
+    font-size: 0px + @i;
+  }
+  .fontSize(@n, (@i+@step));
 }

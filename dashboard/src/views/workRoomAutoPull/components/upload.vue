@@ -44,7 +44,7 @@ export default {
         ['pdf'],
         ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf']
       ],
-      uploadApi: process.env.VUE_APP_API_BASE_URL + '/common/upload'
+      uploadApi: process.env.VUE_APP_API_BASE_URL + '/dashboard/common/upload'
     }
   },
   computed: {
