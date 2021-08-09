@@ -1,5 +1,6 @@
 import { getWorkContactDetail } from '@/api/customer'
 import { getUserInfo } from '@/api/wxconfig'
+// eslint-disable-next-line no-unused-vars
 import { getCurExternalContact } from '@/utils/wxCodeAuth'
 import { setStorage } from '@/utils'
 // import router from '@/router'

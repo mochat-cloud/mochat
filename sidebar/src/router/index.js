@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import store from '@/store'
 import routes from './routes'
 import { Toast } from 'vant'
+// eslint-disable-next-line no-unused-vars
 import { getStorage, removeStorage } from '@/utils'
 
 const router = createRouter({
@@ -14,7 +15,8 @@ router.beforeEach(async (to, from, next) => {
     if (from.path == '/codeAuth') {
       removeStorage('customerWxUserId')
       await store.dispatch('GET_USER_INFO')
-      await store.dispatch('GET_CUSTOMER_INFO')
+
+      if (from.path !== '/groupSide') await store.dispatch('GET_CUSTOMER_INFO')
     } else if (to.path !== '/' && to.path !== '/codeAuth') {
       const customerWxUserId = getStorage('customerWxUserId')
       if (customerWxUserId) {
@@ -25,7 +27,7 @@ router.beforeEach(async (to, from, next) => {
         await store.dispatch('GET_USER_INFO')
       }
       if (Object.keys(customerInfo).length == 0) {
-        await store.dispatch('GET_CUSTOMER_INFO')
+        if (from.path !== '/groupSide') await store.dispatch('GET_CUSTOMER_INFO')
       }
     }
     next()

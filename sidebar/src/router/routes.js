@@ -38,6 +38,36 @@ const routes = [
     name: '404',
     component: () => import(/* webpackChunkName: "404" */ 'views/error/404')
   },
-  { path: '/:pathMatch(.*)', redirect: { name: '404' } }
+  { path: '/:pathMatch(.*)', redirect: { name: '404' } },
+  {
+    path: '/personalSop',
+    name: 'personalSop',
+    component: () => import(/* webpackChunkName: "404" */ 'views/personalSop/personalSop')
+  },
+  // {
+  //   path: '/personalSopIndex',
+  //   name: 'personalSopIndex',
+  //   component: () => import(/* webpackChunkName: "404" */ 'views/personalSop/personalSopIndex')
+  // },
+  {
+    path: '/groupSop',
+    name: 'groupSop',
+    component: () => import(/* webpackChunkName: "404" */ 'views/groupSop/groupSop')
+  },
+  {
+    path: '/groupSide',
+    name: 'groupSide',
+    component: () => import(/* webpackChunkName: "404" */ 'views/groupSop/groupSide')
+  }
+  // {
+  //   path: '/pushRule',
+  //   name: 'pushRule',
+  //   component: () => import(/* webpackChunkName: "404" */ 'views/groupSop/pushRule')
+  // },
+  // {
+  //   path: '/setCalendar',
+  //   name: 'setCalendar',
+  //   component: () => import(/* webpackChunkName: "404" */ 'views/groupSop/setCalendar')
+  // }
 ]
 export default routes

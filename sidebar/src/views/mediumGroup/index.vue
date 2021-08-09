@@ -344,8 +344,9 @@ export default {
         if (this.type == 1) {
           sendChatMessage(this.type, item.content?.content || '')
         } else if (this.type == 3) {
+          // gitee 武伟鹏(wvpyym) 修复发送链接
           sendChatMessage(3, {
-            link: '#.com',
+            link: item.content.imageLink,
             title: item.content.title,
             desc: item.content.description,
             imgUrl: item.content.imageFullPath

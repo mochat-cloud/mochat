@@ -109,7 +109,8 @@ export default {
         await agentConfig(this.corpId, uriPath, this.agentId)
         const entry = await getContext()
         if (entry == 'normal' || entry == 'group_chat_tools') {
-          this.message = '请从个人聊天工具栏进入'
+          // this.message = '请从个人聊天工具栏进入'
+          this.$router.push({ path: '/groupSide' })
           this.loading = false
           this.btnShow = false
           return
