@@ -508,24 +508,32 @@ class StoreCallback
      */
     private function uploadMedia(string $toUserName, string $mediaPath): array
     {
-        $data = [
-            'code'    => 0,
-            'mediaId' => '',
-        ];
-        $mediaService = $this->wxApp($toUserName, 'contact')->media;
-        $imageContent = file_get_contents(file_full_url($mediaPath));
-        $localPath    = '/tmp/' . time() . '.jpg';
-        file_put_contents($localPath, $imageContent, FILE_USE_INCLUDE_PATH);
-        $wxMediaRes = $mediaService->uploadImage($localPath);
-        if ($wxMediaRes['errcode'] != 0) {
+        try {
+            $data = [
+                'code'    => 0,
+                'mediaId' => '',
+            ];
+            $mediaService = $this->wxApp($toUserName, 'contact')->media;
+            $imageContent = file_get_contents(file_full_url($mediaPath));
+            $localPath    = '/tmp/' . time() . '.jpg';
+            file_put_contents($localPath, $imageContent, FILE_USE_INCLUDE_PATH);
+            $wxMediaRes = $mediaService->uploadImage($localPath);
+            if ($wxMediaRes['errcode'] != 0) {
+                ## 记录错误日志
+                $this->logger->error(sprintf('%s [%s] 请求数据：%s 响应结果：%s', '请求微信上传临时素材失败', date('Y-m-d H:i:s'), json_encode($localPath), json_encode($wxMediaRes)));
+                $data['code'] = $wxMediaRes['errcode'];
+            } else {
+                file_exists($localPath) && unlink($localPath);
+                $data['mediaId'] = $wxMediaRes['media_id'];
+            }
+            return $data;
+        } catch (\Throwable $e) {
             ## 记录错误日志
-            $this->logger->error(sprintf('%s [%s] 请求数据：%s 响应结果：%s', '请求微信上传临时素材失败', date('Y-m-d H:i:s'), json_encode($localPath), json_encode($wxMediaRes)));
-            $data['code'] = $wxMediaRes['errcode'];
-        } else {
+            $this->logger->error(sprintf('%s [%s] %s', '上传媒体文件失败', date('Y-m-d H:i:s'), $e->getMessage()));
+            $this->logger->error($e->getTraceAsString());
+        } finally {
             file_exists($localPath) && unlink($localPath);
-            $data['mediaId'] = $wxMediaRes['media_id'];
         }
-        return $data;
     }
 
     /**

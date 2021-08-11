@@ -10,6 +10,8 @@ declare(strict_types=1);
  */
 namespace MoChat\App\Medium\Logic;
 
+use Hyperf\Contract\StdoutLoggerInterface;
+use Hyperf\Di\Annotation\Inject;
 use Hyperf\Utils\ApplicationContext;
 use MoChat\App\Corp\Logic\AppTrait;
 use MoChat\App\Medium\Constants\Type;
@@ -18,6 +20,12 @@ use MoChat\App\Medium\Contract\MediumContract;
 class Medium
 {
     use AppTrait;
+
+    /**
+     * @Inject()
+     * @var StdoutLoggerInterface
+     */
+    private $logger;
 
     public function getWxMediumId(array $ids, int $corpId): array
     {
@@ -42,17 +50,24 @@ class Medium
                     continue;
                 }
 
-                $tmpPath = '/_medium' . time() . $uploadFile[$typeText . 'Path'];
-                $tmpFull = $fileSystem->getAdapter()->getPathPrefix() . $tmpPath;
-                $fileSystem->write($tmpPath, file_get_contents(file_full_url($uploadFile[$typeText . 'Path'])));
-                // 语音转换amr
-                if ($medium['type'] === Type::VOICE) {
-                    continue; // todo 等待ffmpeg-amr安装完成
-                    $tmpFull = $this->ffmpegToAmr($tmpFull);
-                }
+                try {
+                    $tmpPath = '/_medium' . time() . $uploadFile[$typeText . 'Path'];
+                    $tmpFull = $fileSystem->getAdapter()->getPathPrefix() . $tmpPath;
+                    $fileSystem->write($tmpPath, file_get_contents(file_full_url($uploadFile[$typeText . 'Path'])));
+                    // 语音转换amr
+                    if ($medium['type'] === Type::VOICE) {
+                        continue; // todo 等待ffmpeg-amr安装完成
+                        $tmpFull = $this->ffmpegToAmr($tmpFull);
+                    }
 
-                $wxReq = $wxMedia->{'upload' . ucfirst($typeText)}($tmpFull);
-                file_exists($tmpFull) && unlink($tmpFull);
+                    $wxReq = $wxMedia->{'upload' . ucfirst($typeText)}($tmpFull);
+                } catch (\Throwable $e) {
+                    ## 记录错误日志
+                    $this->logger->error(sprintf('%s [%s] %s', '上传媒体文件失败', date('Y-m-d H:i:s'), $e->getMessage()));
+                    $this->logger->error($e->getTraceAsString());
+                } finally {
+                    file_exists($tmpFull) && unlink($tmpFull);
+                }
 
                 $dbData[] = [
                     'id'               => $medium['id'],
