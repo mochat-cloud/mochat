@@ -49,7 +49,7 @@ class FilesystemExt
      */
     public function getFullUrl(string $path): string
     {
-        if (! $path || ! $this->filesystem->fileExists($path)) {
+        if (! $path) {
             return '';
         }
 
@@ -57,7 +57,7 @@ class FilesystemExt
             case 'local':
                 $documentRoot = rtrim(config('server.settings.document_root', ''), '\\/');
                 $uploadRoot   = rtrim(realpath($this->config['root']), '/');
-                $relativeDir  = str_replace($documentRoot, '', $uploadRoot);
+                $relativeDir  = trim(str_replace($documentRoot, '', $uploadRoot), '/');
                 $fullUrl      = Url::getApiBaseUrl() . '/' . $relativeDir . '/' . $path;
                 break;
             case 'oss':
@@ -99,7 +99,7 @@ class FilesystemExt
     protected function getCosUrl(string $path)
     {
         $config = $this->fileStorageConfig['cos'];
-        return sprintf('%s://%s.cos.%s.myqloud.com/%s', $config['scheme'], $config['bucket'], $config['region'], $path);
+        return sprintf('%s://%s-%s.cos.%s.myqcloud.com/%s', $config['scheme'], $config['bucket'], $config['app_id'], $config['region'], $path);
     }
 
     protected function getS3Url(string $path)
