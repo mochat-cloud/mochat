@@ -26,7 +26,7 @@ return [
     // MoChat\Framework\Middleware\ResponseMiddleware 原生响应格式的路由
     'response_raw_routes' => [
         '/weWork/callback',
-        '/dashboard/officialAccount/weWorkCallback',
+        '/dashboard/corp/weWorkCallback',
         '/',
         '/dashboard/{wxVerifyTxt}',
         '/dashboard/officialAccount/authEventCallback',
