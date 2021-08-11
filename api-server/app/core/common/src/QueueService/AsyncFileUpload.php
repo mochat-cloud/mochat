@@ -30,26 +30,30 @@ class AsyncFileUpload
         $fileSystem = make(\League\Flysystem\Filesystem::class);
 
         foreach ($files as $paths) {
-            if (count($paths) < 2) {
-                throw new CommonException(ErrorCode::SERVER_ERROR, 'OSS图片参数错误');
-            }
-            [$localPath, $ossPath] = $paths;
-            $isUnlink              = $paths[2] ?? 0;
-            if (! $localPath) {
-                continue;
-            }
+            try {
+                if (count($paths) < 2) {
+                    throw new CommonException(ErrorCode::SERVER_ERROR, '异步上传文件参数错误');
+                }
+                [$localPath, $targetPath] = $paths;
+                $isUnlink              = $paths[2] ?? 0;
+                if (! $localPath) {
+                    continue;
+                }
 
-            ## url资源
-            if (strpos($localPath, 'http') === 0) {
-                $ctx = stream_context_create([
-                    'http' => [
-                        'timeout' => 180,
-                    ],
-                ]);
-                $fileSystem->write($ossPath, file_get_contents($localPath, false, $ctx));
-            } else {
-                $fileSystem->writeStream($ossPath, fopen($localPath, 'rb'));
-                $isUnlink && file_exists($localPath) && unlink($localPath);
+                ## url资源
+                if (strpos($localPath, 'http') === 0) {
+                    $ctx = stream_context_create([
+                        'http' => [
+                            'timeout' => 180,
+                        ],
+                    ]);
+                    $fileSystem->write($targetPath, file_get_contents($localPath, false, $ctx));
+                } else {
+                    $fileSystem->writeStream($targetPath, fopen($localPath, 'rb'));
+                    $isUnlink && file_exists($localPath) && unlink($localPath);
+                }
+            } catch (\Throwable $e) {
+                dump($e->getMessage());
             }
         }
     }

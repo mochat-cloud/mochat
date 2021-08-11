@@ -118,13 +118,13 @@ class SyncContactLogic
             ## 处理用户-客户信息
             $this->handleEmployeeContact($employee, $corpId, $handleContactRes, $oldContactList, $oldTags, $oldContactEmployeeList, $oldContactTagList);
             //上传头像到阿里云
-            if (! empty($this->updateAvatar)) {
-                file_upload_queue($this->updateAvatar);
-            }
-            //上传头像到阿里云
-            if (! empty($this->createAvatar)) {
-                file_upload_queue($this->createAvatar);
-            }
+//            if (! empty($this->updateAvatar)) {
+//                file_upload_queue($this->updateAvatar);
+//            }
+//            //上传头像到阿里云
+//            if (! empty($this->createAvatar)) {
+//                file_upload_queue($this->createAvatar);
+//            }
         }
     }
 
@@ -167,13 +167,13 @@ class SyncContactLogic
                 }
             }
             ## 本地头像存储路径
-            $pathFileName = 'contact/avatar/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg';
+//            $pathFileName = 'contact/avatar/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg';
             $contact      = $val['external_contact'];
             $contactData  = [
                 'corp_id'            => $corpId,
                 'wx_external_userid' => $contact['external_userid'],
                 'name'               => $contact['name'],
-                'avatar'             => empty($contact['avatar']) ? '' : $pathFileName,
+                'avatar'             => empty($contact['avatar']) ? '' : $contact['avatar'],
                 'type'               => isset($contact['type']) ? $contact['type'] : 0,
                 'gender'             => isset($contact['gender']) ? $contact['gender'] : 0,
                 'unionid'            => isset($contact['unionid']) ? $contact['unionid'] : '',
@@ -186,11 +186,11 @@ class SyncContactLogic
             if (isset($oldContactList[$contact['external_userid']])) {
                 $contactData['id']                                 = $oldContactList[$contact['external_userid']];
                 $updateContactData[]                               = $contactData;
-                empty($contact['avatar']) || $this->updateAvatar[] = [$contact['avatar'], $pathFileName];
+//                empty($contact['avatar']) || $this->updateAvatar[] = [$contact['avatar'], $pathFileName];
             } else {
                 $contactData['created_at']                         = date('Y-m-d H:i:s');
                 $createContactData[]                               = $contactData;
-                empty($contact['avatar']) || $this->createAvatar[] = [$contact['avatar'], $pathFileName];
+//                empty($contact['avatar']) || $this->createAvatar[] = [$contact['avatar'], $pathFileName];
             }
         }
         ## 查询

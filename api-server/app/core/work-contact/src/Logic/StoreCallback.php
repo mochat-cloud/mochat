@@ -382,21 +382,21 @@ class StoreCallback
                 $contactId = (int) $sysContact['id'];
             } else {
                 ## 客户头像上传到阿里云
-                $pathFileName = '';
-                if (isset($wxContact['avatar']) && ! empty($wxContact['avatar'])) {
-                    $filesystem   = make(Filesystem::class);
-                    $pathFileName = 'contact/avatar/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg';
-                    $stream       = file_get_contents($wxContact['avatar'], true);
-                    ## 文件上传
-                    $filesystem->write($pathFileName, $stream);
-                }
+//                $pathFileName = '';
+//                if (isset($wxContact['avatar']) && ! empty($wxContact['avatar'])) {
+//                    $filesystem   = make(Filesystem::class);
+//                    $pathFileName = 'contact/avatar/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg';
+//                    $stream       = file_get_contents($wxContact['avatar'], true);
+//                    ## 文件上传
+//                    $filesystem->write($pathFileName, $stream);
+//                }
 
                 ## 组织客户表入表数据
                 $createContractData = [
                     'corp_id'            => $corpId,
                     'wx_external_userid' => $wxResponse['ExternalUserID'],
                     'name'               => $wxContact['name'],
-                    'avatar'             => $pathFileName,
+                    'avatar'             => ! empty($wxContact['avatar']) ? ! $wxContact['avatar'] : '',
                     'type'               => $wxContact['type'],
                     'gender'             => $wxContact['gender'],
                     'unionid'            => isset($wxContact['unionid']) ? $wxContact['unionid'] : '',
@@ -553,14 +553,14 @@ class StoreCallback
         try {
             if (isset($wxData['State']) && ! empty($wxData['State']) && str_contains($wxData['State'], 'fission')) {
                 ## 客户头像上传到阿里云
-                $pathFileName = '';
-                if (isset($wxContact['external_contact']['avatar']) && ! empty($wxContact['external_contact']['avatar'])) {
-                    $filesystem   = make(Filesystem::class);
-                    $pathFileName = 'contact/avatar/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg';
-                    $stream       = file_get_contents($wxContact['external_contact']['avatar'], true);
-                    ## 文件上传
-                    $filesystem->write($pathFileName, $stream);
-                }
+                $pathFileName = empty($wxContact['external_contact']['avatar']) ? '' : $wxContact['external_contact']['avatar'];
+//                if (isset($wxContact['external_contact']['avatar']) && ! empty($wxContact['external_contact']['avatar'])) {
+//                    $filesystem   = make(Filesystem::class);
+//                    $pathFileName = 'contact/avatar/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg';
+//                    $stream       = file_get_contents($wxContact['external_contact']['avatar'], true);
+//                    ## 文件上传
+//                    $filesystem->write($pathFileName, $stream);
+//                }
                 $stateArr = explode('-', $wxData['State']);
                 if (! empty($stateArr[1])) {
                     $parent = $workFissionContactService->getWorkFissionContactById((int) $stateArr[1], ['id', 'fission_id', 'level', 'invite_count', 'contact_superior_user_parent']);

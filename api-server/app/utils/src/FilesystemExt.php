@@ -53,6 +53,10 @@ class FilesystemExt
             return '';
         }
 
+        if (false !== strpos($path,'http')) {
+            return $path;
+        }
+
         switch ($this->adapterName) {
             case 'local':
                 $documentRoot = rtrim(config('server.settings.document_root', ''), '\\/');

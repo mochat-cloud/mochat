@@ -133,14 +133,17 @@ class AdminSyncContactLogic
             }
         }
 
-        //上传头像到阿里云
+        // 头像改为存储原地址
+        /**
+        //上传头像到存储
         if (! empty($this->updateAvatar)) {
             file_upload_queue($this->updateAvatar);
         }
-        //上传头像到阿里云
+        //上传头像到存储
         if (! empty($this->createAvatar)) {
             file_upload_queue($this->createAvatar);
         }
+        */
     }
 
     /**
@@ -159,14 +162,14 @@ class AdminSyncContactLogic
 
         try {
             //本地头像存储路径
-            $pathFileName = 'contact/avatar/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg';
+//            $pathFileName = 'contact/avatar/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg';
 
             //添加客户表
             $addContact = [
                 'corp_id'            => $corpId,
                 'wx_external_userid' => $val['external_contact']['external_userid'],
                 'name'               => $val['external_contact']['name'],
-                'avatar'             => empty($val['external_contact']['avatar']) ? '' : $pathFileName,
+                'avatar'             => empty($val['external_contact']['avatar']) ? '' : $val['external_contact']['avatar'],
                 'type'               => isset($val['external_contact']['type']) ? $val['external_contact']['type'] : 0,
                 'gender'             => isset($val['external_contact']['gender']) ? $val['external_contact']['gender'] : 0,
                 'unionid'            => isset($val['external_contact']['unionid']) ? $val['external_contact']['unionid'] : '',
@@ -181,12 +184,12 @@ class AdminSyncContactLogic
             }
 
             //组织头像数据
-            if (! empty($val['external_contact']['avatar'])) {
-                $this->createAvatar[] = [
-                    $val['external_contact']['avatar'],
-                    $pathFileName,
-                ];
-            }
+//            if (! empty($val['external_contact']['avatar'])) {
+//                $this->createAvatar[] = [
+//                    $val['external_contact']['avatar'],
+//                    $pathFileName,
+//                ];
+//            }
 
             //客户与员工关联
             foreach ($val['follow_user'] as $item) {
@@ -268,12 +271,12 @@ class AdminSyncContactLogic
     private function updateContactInfo($contactInfo, $val, $employee)
     {
         //本地头像存储路径
-        $pathFileName = 'contact/avatar/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg';
+//        $pathFileName = 'contact/avatar/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg';
 
         $this->updateContact[] = [
             'id'               => $contactInfo[$val['external_contact']['external_userid']]['id'],
             'name'             => $val['external_contact']['name'],
-            'avatar'           => empty($val['external_contact']['avatar']) ? '' : $pathFileName,
+            'avatar'           => empty($val['external_contact']['avatar']) ? '' : $val['external_contact']['avatar'],
             'type'             => isset($val['external_contact']['type']) ? $val['external_contact']['type'] : 0,
             'gender'           => isset($val['external_contact']['gender']) ? $val['external_contact']['gender'] : 0,
             'unionid'          => isset($val['external_contact']['unionid']) ? $val['external_contact']['unionid'] : '',
@@ -284,12 +287,12 @@ class AdminSyncContactLogic
         ];
 
         //组织头像数据
-        if (! empty($val['external_contact']['avatar'])) {
-            $this->updateAvatar[] = [
-                $val['external_contact']['avatar'],
-                $pathFileName,
-            ];
-        }
+//        if (! empty($val['external_contact']['avatar'])) {
+//            $this->updateAvatar[] = [
+//                $val['external_contact']['avatar'],
+//                $pathFileName,
+//            ];
+//        }
 
         $employeeIds = [];
         //客户与员工关联

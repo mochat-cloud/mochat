@@ -135,15 +135,15 @@ if (! function_exists('file_upload_queue')) {
      */
     function file_upload_queue(array $files): void
     {
-        $ossQueue = make(\MoChat\App\Common\QueueService\AsyncFileUpload::class);
+        $asyncFileUpload = make(\MoChat\App\Common\QueueService\AsyncFileUpload::class);
         if (count($files) <= 10) {
-            $ossQueue->upload($files);
+            $asyncFileUpload->upload($files);
             return;
         }
 
         $newFiles = array_chunk($files, 10);
         foreach ($newFiles as $newFile) {
-            $ossQueue->upload($newFile);
+            $asyncFileUpload->upload($newFile);
         }
     }
 }
