@@ -37,7 +37,7 @@ export function userInfo (params) {
         method: 'GET',
         params: {
             ...params,
-            appid: localStorage.getItem('mochat_component_appid')
+            appid: localStorage.getItem('appid')
         }
     })
 }

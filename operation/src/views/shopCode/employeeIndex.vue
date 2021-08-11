@@ -80,7 +80,7 @@ export default {
 
       wechatApi({
         url,
-        appid: localStorage.getItem('mochat_appid')
+        appid: localStorage.getItem('appid')
       }).then((res) => {
         let that = this
         this.setConfigNews(res.data)
