@@ -40,25 +40,26 @@ class UploadFile extends AbstractAction
     public function handle(Filesystem $filesystem): array
     {
         $file = $this->request->file('file');
-        $path = $this->request->post('path', date('Y/m/d/His'));
 
         // 验证
-        $this->validated(['file' => $file, 'path' => $path]);
-        $fileName = $this->request->post('name', false) ?: $file->getClientFilename();
+        $this->validated(['file' => $file]);
+        $originalFilename = $this->request->post('name', false) ?: $file->getClientFilename();
 
-        $pathFileName = $path . '/' . $fileName;
-        if ($filesystem->fileExists($pathFileName)) {
-            throw new CommonException(ErrorCode::INVALID_PARAMS, '上传失败:已经存在此文件名的文件');
-        }
+        // 不再支持自定义path
+        $path = date('Y/md/Hi');
+        $extension = $file->getExtension();
+        $filename = strval(microtime(true) * 10000) . uniqid() . '.' . $extension;
+        $pathFileName = $path . '/' . $filename;
 
         try {
-            $filesystem->writeStream($pathFileName, $file->getStream());
+            $stream = fopen($file->getRealPath(), 'r+');
+            $filesystem->writeStream($pathFileName, $stream);
         } catch (\Exception $e) {
             throw new CommonException(ErrorCode::SERVER_ERROR, '上传失败:' . $e->getMessage());
         }
 
         return [
-            'name'     => $fileName,
+            'name'     => $originalFilename,
             'type'     => $file->getMimeType(),
             'path'     => $pathFileName,
             'fullPath' => file_full_url($pathFileName),
@@ -73,7 +74,6 @@ class UploadFile extends AbstractAction
     {
         return [
             'file' => '文件',
-            'path' => '文件路径',
         ];
     }
 
@@ -86,9 +86,6 @@ class UploadFile extends AbstractAction
         $allowMimes .= ',xlsx,csv,ppt,pptx,txt,pdf,Xmind';
         return [
             'file' => 'required|mimes:' . $allowMimes,
-            'path' => [
-                'not_regex:/\.\.\//',
-            ],
         ];
     }
 
@@ -98,8 +95,7 @@ class UploadFile extends AbstractAction
     protected function messages(): array
     {
         return [
-            'file.mimetypes' => '状态必须为数字',
-            'path.not_regex' => '文件路径非法',
+            'file.mimetypes' => '文件类型不合法',
         ];
     }
 }
