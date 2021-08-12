@@ -809,7 +809,7 @@ CREATE TABLE IF NOT EXISTS `mc_work_transfer_log`  (
 ) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '客户/群聊 分配记录表' ;
 
 CREATE TABLE IF NOT EXISTS `mc_room_welcome_template` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `corp_id` varchar(11) NOT NULL DEFAULT '0' COMMENT '企业表ID（mc_crop.id）',
   `msg_text` varchar(255) DEFAULT NULL COMMENT '欢迎语1（文字）',
   `complex_type` varchar(50) DEFAULT NULL COMMENT '欢迎语2类型',
@@ -823,7 +823,7 @@ CREATE TABLE IF NOT EXISTS `mc_room_welcome_template` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci  COMMENT='入群欢迎语表';
 
 CREATE TABLE IF NOT EXISTS `mc_work_unassigned` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `corp_id` int(11) NOT NULL COMMENT '企业id(corp.id)',
   `handover_userid` varchar(100) NOT NULL COMMENT '离职成员的userid',
   `external_userid` varchar(255) NOT NULL COMMENT '外部联系人userid',
