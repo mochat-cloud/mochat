@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
-namespace MoChat\Plugin\AutoTag\Action\Dashboard;
+namespace MoChat\Plugin\ChannelCode\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
