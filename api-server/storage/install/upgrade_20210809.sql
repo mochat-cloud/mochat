@@ -2,12 +2,12 @@
 CREATE TABLE IF NOT EXISTS `mc_auto_tag`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `type` tinyint(1) NULL DEFAULT 1 COMMENT '类型（1：关键词打标签。2：客户入群行为打标签。3：分时段打标签）',
-  `name` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '规则名称',
-  `employees` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '生效成员（关键词打标签，分时段打标签）',
-  `fuzzy_match_keyword` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '模糊匹配关键词',
-  `exact_match_keyword` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '精准匹配关键词',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '规则名称',
+  `employees` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '生效成员（关键词打标签，分时段打标签）',
+  `fuzzy_match_keyword` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '模糊匹配关键词',
+  `exact_match_keyword` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '精准匹配关键词',
   `tag_rule` json NULL COMMENT '标签规则',
-  `tags` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '标签组',
+  `tags` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '标签组',
   `on_off` tinyint(1) NULL DEFAULT 1 COMMENT '规则状态（1：开，2：关）',
   `mark_tag_count` int(11) NULL DEFAULT 0 COMMENT '已打标签数',
   `tenant_id` int(11) NULL DEFAULT NULL COMMENT '租户id',
@@ -17,16 +17,16 @@ CREATE TABLE IF NOT EXISTS `mc_auto_tag`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '自动打标签-基本信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '自动打标签-基本信息表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_auto_tag_record`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `auto_tag_id` int(11) NOT NULL COMMENT '标签id(mc_auto_tag.id)',
   `contact_id` int(11) NOT NULL COMMENT '客户id(mc_work_contact.id)',
   `tag_rule_id` int(11) NULL DEFAULT NULL COMMENT '标签规则ID',
-  `wx_external_userid` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户wx_external_userid',
+  `wx_external_userid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户wx_external_userid',
   `employee_id` int(11) NULL DEFAULT NULL COMMENT '所属员工id(mc_work_employee.id)',
-  `keyword` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '触发关键词',
+  `keyword` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '触发关键词',
   `contact_room_id` int(11) NULL DEFAULT 0 COMMENT '客户群id',
   `tags` json NULL COMMENT '标签',
   `corp_id` int(11) NULL DEFAULT NULL COMMENT '企业ID(mc_corp.id)',
@@ -36,18 +36,18 @@ CREATE TABLE IF NOT EXISTS `mc_auto_tag_record`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '自动打标签-记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '自动打标签-记录表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_room_clock_in`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '活动名称',
-  `description` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '活动说明',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '活动名称',
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '活动说明',
   `type` tinyint(1) NOT NULL COMMENT '打卡类型（1：连续打卡，2：累计打卡）',
   `tasks` json NOT NULL COMMENT '任务设置',
   `time_type` tinyint(1) NOT NULL COMMENT '截止日期（1：永久有效，2，自定义活动时间）',
-  `start_time` varchar(20) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '开始时间（为空永久有效，不为空自定义活动时间）',
-  `end_time` varchar(20) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '结束时间',
-  `employee_qrcode` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客服二维码（用户领奖）',
+  `start_time` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '开始时间（为空永久有效，不为空自定义活动时间）',
+  `end_time` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '结束时间',
+  `employee_qrcode` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客服二维码（用户领奖）',
   `corp_card_status` tinyint(255) NULL DEFAULT NULL COMMENT '企业名片状态（0：关，1开）',
   `corp_card` json NULL COMMENT '企业名片（头像、名称、简介）',
   `contact_clock_tags` json NULL COMMENT '客户标签',
@@ -59,17 +59,17 @@ CREATE TABLE IF NOT EXISTS `mc_room_clock_in`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群打卡-基本信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群打卡-基本信息表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_room_clock_in_contact`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `clock_in_id` int(11) NOT NULL COMMENT '活动id',
-  `union_id` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '微信union_id',
+  `union_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '微信union_id',
   `contact_id` int(11) NULL DEFAULT 0 COMMENT '客户id（mc_work_contact.id。不能匹配时为0）',
-  `nickname` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '昵称',
-  `avatar` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '头像',
-  `employee_ids` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '企业员工',
-  `city` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '城市',
+  `nickname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '昵称',
+  `avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '头像',
+  `employee_ids` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '企业员工',
+  `city` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '城市',
   `contact_clock_tags` json NULL COMMENT '客户标签',
   `total_day` int(11) NULL DEFAULT 0 COMMENT '总打卡天数',
   `series_day` int(11) NULL DEFAULT 0 COMMENT '连续打卡天数',
@@ -79,28 +79,28 @@ CREATE TABLE IF NOT EXISTS `mc_room_clock_in_contact`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群打卡-客户表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群打卡-客户表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_room_clock_in_contact_record`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `contact_id` int(11) NOT NULL COMMENT '客户id（mc_clock_in_contact.id）',
-  `day` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '打卡时间',
+  `day` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '打卡时间',
   `type` tinyint(1) NOT NULL COMMENT '打卡类型（1：连续打卡，2：累计打卡）',
   `clock_in_id` int(11) NOT NULL COMMENT '活动id（mc_clock_in.id）',
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群打卡-客户打卡记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群打卡-客户打卡记录表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_lottery`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '活动名称',
-  `description` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '活动说明',
-  `type` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '活动模板（roulette：转盘）',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '活动名称',
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '活动说明',
+  `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '活动模板（roulette：转盘）',
   `time_type` tinyint(1) NOT NULL COMMENT '截止日期（1：永久有效，2，自定义活动时间）',
-  `start_time` varchar(20) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '开始时间（为空永久有效，不为空自定义活动时间）',
-  `end_time` varchar(20) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '结束时间',
+  `start_time` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '开始时间（为空永久有效，不为空自定义活动时间）',
+  `end_time` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '结束时间',
   `contact_tags` json NULL COMMENT '客户标签',
   `tenant_id` int(11) NULL DEFAULT NULL COMMENT '租户id',
   `corp_id` int(11) NULL DEFAULT NULL COMMENT '企业id',
@@ -109,18 +109,18 @@ CREATE TABLE IF NOT EXISTS `mc_lottery`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '抽奖活动-基本信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '抽奖活动-基本信息表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_lottery_contact`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `lottery_id` int(11) NOT NULL COMMENT '活动id',
-  `union_id` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '微信union_id',
+  `union_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '微信union_id',
   `contact_id` int(11) NULL DEFAULT 0 COMMENT '客户id（mc_work_contact.id。不能匹配时为0）',
-  `nickname` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '昵称',
-  `avatar` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '头像',
-  `employee_ids` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '企业员工',
-  `city` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '城市',
-  `source` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '来源',
+  `nickname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '昵称',
+  `avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '头像',
+  `employee_ids` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '企业员工',
+  `city` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '城市',
+  `source` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '来源',
   `grade` int(11) NULL DEFAULT 0 COMMENT '客户评分',
   `contact_tags` json NULL COMMENT '客户标签',
   `draw_num` int(11) NULL DEFAULT 0 COMMENT '抽奖次数',
@@ -131,24 +131,24 @@ CREATE TABLE IF NOT EXISTS `mc_lottery_contact`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '抽奖活动--客户表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '抽奖活动--客户表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_lottery_contact_record`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `lottery_id` int(11) NOT NULL COMMENT '活动id',
   `contact_id` int(11) NOT NULL COMMENT '客户id（mc_lottery_contact.id）',
   `prize_id` int(11) NOT NULL COMMENT '奖品id',
-  `prize_name` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '奖品名称',
+  `prize_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '奖品名称',
   `receive_status` tinyint(1) NULL DEFAULT 0 COMMENT '领奖状态（0：未领取。1：已领取）',
-  `receive_qr` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客服二维码链接',
+  `receive_qr` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客服二维码链接',
   `receive_type` tinyint(1) NOT NULL COMMENT '兑奖方式（1：客服二维码，2：兑换码）',
-  `receive_code` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '兑换码',
+  `receive_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '兑换码',
   `write_off` tinyint(255) NOT NULL DEFAULT 0 COMMENT '核销（0：未核销，1：已核销）',
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '抽奖活动-客户参与记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '抽奖活动-客户参与记录表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_lottery_prize`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -163,37 +163,37 @@ CREATE TABLE IF NOT EXISTS `mc_lottery_prize`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '抽奖活动-奖品信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '抽奖活动-奖品信息表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_official_account`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `app_type` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `appid` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '第三方平台 appid',
+  `app_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `appid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '第三方平台 appid',
   `authorized_status` tinyint(1) NULL DEFAULT NULL COMMENT '授权状态（1：授权成功，2：更新授权，3：取消授权）',
-  `authorizer_appid` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '公众号或小程序的 appid',
-  `authorization_code` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '授权码，可用于获取授权信息',
-  `pre_auth_code` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '预授权码\r\n预授权码',
-  `head_img` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '头像',
-  `avatar` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '头像服务器地址',
+  `authorizer_appid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '公众号或小程序的 appid',
+  `authorization_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '授权码，可用于获取授权信息',
+  `pre_auth_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '预授权码\r\n预授权码',
+  `head_img` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '头像',
+  `avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '头像服务器地址',
   `business_info` json NULL COMMENT '{\"open_pay\": 0, \"open_shake\": 0, \"open_scan\": 0, \"open_card\": 0, \"open_store\": 0}',
   `modules` json NULL COMMENT '[\"contact_way_region\", \"raffle_activity\", \"check_in\", \"radar\"]',
   `news_offset` tinyint(1) NULL DEFAULT NULL COMMENT '（0：已关闭，1：开启）',
-  `nickname` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '企业昵称',
+  `nickname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '企业昵称',
   `service_type_info` tinyint(1) NULL DEFAULT 0 COMMENT '公众号类型（0：订阅号，1由历史老帐号升级后的订阅号：，2：服务号）',
   `verify_type_info` tinyint(1) NULL DEFAULT 0 COMMENT '服务号\r\n公众号认证类型(-1:未认证，0：微信认证，:1：新浪微博认证，2：腾讯微博认证，3：已资质认证通过但还未通过名称认证，4：已资质认证通过、还未通过名称认证，但通过了新浪微博认证',
-  `original_id` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `original_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `func_info` json NULL COMMENT '[\r\n      {\r\n        \"funcscope_category\": {\r\n          \"id\": 1\r\n        }\r\n      },\r\n      {\r\n        \"funcscope_category\": {\r\n          \"id\": 2\r\n        }\r\n      }\r\n    ]',
-  `principal_name` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `alias` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '公众号所设置的微信号，可能为空',
-  `qrcode_url` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码图片的 UR',
-  `local_qrcode_url` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码图片的 UR(服务器地址）',
-  `callback_suffix` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `principal_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `alias` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '公众号所设置的微信号，可能为空',
+  `qrcode_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码图片的 UR',
+  `local_qrcode_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码图片的 UR(服务器地址）',
+  `callback_suffix` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `callback_verified` tinyint(1) NULL DEFAULT NULL,
-  `user_name` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '原始id',
-  `encoding_aes_key` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '第三方平台消息加解密  Key',
-  `notify_url` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `secret` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '第三方平台appserect',
-  `token` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '第三方平台token',
+  `user_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '原始id',
+  `encoding_aes_key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '第三方平台消息加解密  Key',
+  `notify_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `secret` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '第三方平台appserect',
+  `token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '第三方平台token',
   `create_time` int(11) NULL DEFAULT NULL COMMENT '授权时间',
   `tenant_id` int(11) NULL DEFAULT 0 COMMENT '租户id',
   `corp_id` int(11) NULL DEFAULT NULL COMMENT '企业id',
@@ -202,7 +202,7 @@ CREATE TABLE IF NOT EXISTS `mc_official_account`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '公众号授权表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '公众号授权表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_official_account_set`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -215,18 +215,18 @@ CREATE TABLE IF NOT EXISTS `mc_official_account_set`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '公众号设置表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '公众号设置表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_radar`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `type` tinyint(1) NOT NULL COMMENT '雷达类型（1：链接，2：PDF，3：文章）',
-  `title` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '雷达标题',
-  `link` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '雷达链接',
-  `link_title` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '链接标题',
-  `link_description` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '链接摘要',
-  `link_cover` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '链接封面',
-  `pdf_name` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT 'PDF名称',
-  `pdf` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '雷达PDF',
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '雷达标题',
+  `link` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '雷达链接',
+  `link_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '链接标题',
+  `link_description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '链接摘要',
+  `link_cover` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '链接封面',
+  `pdf_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT 'PDF名称',
+  `pdf` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '雷达PDF',
   `article_type` tinyint(1) NULL DEFAULT NULL COMMENT '雷达文章类型（1：提取公众号文章，2:新建文章素材）',
   `article` json NULL COMMENT '雷达文章',
   `employee_card` tinyint(1) NULL DEFAULT 0 COMMENT '成员名片（0：不显示，1：显示）',
@@ -242,11 +242,11 @@ CREATE TABLE IF NOT EXISTS `mc_radar`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '互动雷达-基本信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '互动雷达-基本信息表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_radar_channel`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '渠道名称',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '渠道名称',
   `tenant_id` int(11) NULL DEFAULT NULL COMMENT '租户id',
   `corp_id` int(11) NULL DEFAULT NULL COMMENT '企业id',
   `create_user_id` int(11) NULL DEFAULT NULL COMMENT '创建人ID',
@@ -254,13 +254,13 @@ CREATE TABLE IF NOT EXISTS `mc_radar_channel`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '互动雷达-渠道信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '互动雷达-渠道信息表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_radar_channel_link`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `radar_id` int(11) NOT NULL COMMENT '雷达id(mc_radar.id)',
   `channel_id` int(11) NOT NULL COMMENT '渠道id(mc_radar_channel.id)',
-  `link` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '渠道链接',
+  `link` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '渠道链接',
   `employee_id` int(11) NOT NULL DEFAULT 0 COMMENT '员工id',
   `click_num` int(11) NOT NULL DEFAULT 0 COMMENT '点击次数',
   `click_person_num` int(11) NOT NULL DEFAULT 0 COMMENT '点击人数',
@@ -272,29 +272,29 @@ CREATE TABLE IF NOT EXISTS `mc_radar_channel_link`  (
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `Un_INDEX`(`radar_id`, `channel_id`, `corp_id`, `employee_id`) USING BTREE COMMENT '唯一索引'
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '互动雷达-渠道链接信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '互动雷达-渠道链接信息表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_radar_record`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `radar_id` int(11) NOT NULL COMMENT '雷达id(mc_radar.id)',
   `channel_id` int(11) NOT NULL COMMENT '渠道id(mc_radar_channel.id)',
   `type` tinyint(1) NOT NULL COMMENT '客户类型（1：企业客户，2：非企业客户）',
-  `union_id` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户union_id',
-  `nickname` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '昵称',
-  `avatar` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '头像',
+  `union_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户union_id',
+  `nickname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '昵称',
+  `avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '头像',
   `contact_id` int(11) NULL DEFAULT NULL COMMENT '客户id',
   `employee_id` int(11) NOT NULL COMMENT '企业员工id',
-  `content` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '内容',
+  `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '内容',
   `corp_id` int(11) NOT NULL DEFAULT 0 COMMENT '企业id',
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '互动雷达-客户表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '互动雷达-客户表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_room_calendar`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '日历名称',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '日历名称',
   `rooms` json NULL COMMENT '群聊',
   `on_off` tinyint(1) NULL DEFAULT 1 COMMENT '开关（1：开，2：关）',
   `tenant_id` int(11) NULL DEFAULT NULL COMMENT '租户id',
@@ -304,13 +304,13 @@ CREATE TABLE IF NOT EXISTS `mc_room_calendar`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群日历-基本信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群日历-基本信息表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_room_calendar_push`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `room_calendar_id` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '群日历id',
-  `name` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '推送内容名称',
-  `day` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '推送时间',
+  `room_calendar_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '群日历id',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '推送内容名称',
+  `day` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '推送时间',
   `push_content` json NULL COMMENT '发送内容',
   `on_off` tinyint(1) NULL DEFAULT 1 COMMENT '开关（1：开，2：关）',
   `status` tinyint(1) NULL DEFAULT 1 COMMENT '状态（1：未推送，2：已推送）',
@@ -318,24 +318,24 @@ CREATE TABLE IF NOT EXISTS `mc_room_calendar_push`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群日历-推送信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群日历-推送信息表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_room_calendar_record`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `room_calendar_id` int(11) NOT NULL COMMENT '群日历id',
-  `push_ids` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '推送消息ids',
-  `day` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '推送时间',
-  `room_id` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '群聊id',
+  `push_ids` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '推送消息ids',
+  `day` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '推送时间',
+  `room_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '群聊id',
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB  CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群日历-推送信息记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB  CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群日历-推送信息记录表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_room_fission`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `official_account_id` int(11) NULL DEFAULT 0 COMMENT '公众号id',
-  `active_name` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '活动名称',
+  `active_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '活动名称',
   `end_time` timestamp NULL DEFAULT NULL COMMENT '活动结束时间',
   `target_count` int(11) NULL DEFAULT 0 COMMENT '活动目标人数',
   `new_friend` tinyint(1) NULL DEFAULT 0 COMMENT '必须新好友才能助力（0：否，1：是）',
@@ -350,24 +350,24 @@ CREATE TABLE IF NOT EXISTS `mc_room_fission`  (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群裂变-基础信息主表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群裂变-基础信息主表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_room_fission_contact`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `fission_id` int(11) NOT NULL DEFAULT 0 COMMENT '活动ID',
-  `union_id` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户微信id',
-  `nickname` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户微信昵称',
-  `avatar` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户微信头像',
-  `parent_union_id` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '0' COMMENT '上级（被谁邀请来的）',
+  `union_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户微信id',
+  `nickname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户微信昵称',
+  `avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户微信头像',
+  `parent_union_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '0' COMMENT '上级（被谁邀请来的）',
   `level` tinyint(1) NULL DEFAULT 0 COMMENT '裂变等级',
   `contact_id` int(11) NOT NULL DEFAULT 0 COMMENT '客户ID',
-  `employee` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '添加的员工',
+  `employee` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '添加的员工',
   `invite_count` int(11) NOT NULL DEFAULT 0 COMMENT '邀请数量',
   `loss` tinyint(1) NULL DEFAULT 0 COMMENT '是否已流失（被删除好友）（0：否，1：是）',
   `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '完成状态。（0：未完成，1：已完成）',
   `receive_status` tinyint(1) NULL DEFAULT 0 COMMENT '领取状态（0：未领取，1：已领取）',
   `is_new` tinyint(1) NOT NULL DEFAULT 0 COMMENT '新客户（0：老，1：新）',
-  `external_user_id` varchar(55) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '外部联系人external_userid',
+  `external_user_id` varchar(55) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '外部联系人external_userid',
   `room_id` int(255) NULL DEFAULT NULL COMMENT '群聊ID',
   `join_status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '入群状态（0：未入群，1：已入群）',
   `write_off` tinyint(1) NOT NULL DEFAULT 0 COMMENT '核销（0：未核销，1：已核销）',
@@ -375,7 +375,7 @@ CREATE TABLE IF NOT EXISTS `mc_room_fission_contact`  (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群裂变-客户参与' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群裂变-客户参与' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_room_fission_invite`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -383,71 +383,71 @@ CREATE TABLE IF NOT EXISTS `mc_room_fission_invite`  (
   `type` tinyint(1) NOT NULL DEFAULT 2 COMMENT '类型（1：邀请，2：暂不邀请）',
   `employees` json NULL COMMENT '所属员工',
   `choose_contact` json NULL COMMENT '筛选客户条件',
-  `text` varchar(255) CHARACTER SET = utf8mb4mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '邀请文案',
-  `link_title` varchar(255) CHARACTER SET = utf8mb4mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '邀请链接标题',
-  `link_desc` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '邀请链接描述',
-  `link_pic` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '邀请链接封面图',
-  `wx_link_pic` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '微信图片地址',
+  `text` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '邀请文案',
+  `link_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '邀请链接标题',
+  `link_desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '邀请链接描述',
+  `link_pic` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '邀请链接封面图',
+  `wx_link_pic` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '微信图片地址',
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群裂变-邀请客户参与' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群裂变-邀请客户参与' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_room_fission_poster`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `fission_id` int(11) NOT NULL DEFAULT 0 COMMENT '活动ID',
-  `cover_pic` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '海报背景图片',
+  `cover_pic` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '海报背景图片',
   `avatar_show` tinyint(1) NULL DEFAULT NULL COMMENT '头像是否显示。0：不显示，1：显示',
   `nickname_show` tinyint(1) NULL DEFAULT NULL COMMENT '昵称是否显示。0：不显示，1：显示',
-  `nickname_color` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '颜色',
-  `qrcode_w` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码宽度',
-  `qrcode_h` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码高度',
-  `qrcode_x` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码X值',
-  `qrcode_y` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码Y值',
+  `nickname_color` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '颜色',
+  `qrcode_w` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码宽度',
+  `qrcode_h` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码高度',
+  `qrcode_x` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码X值',
+  `qrcode_y` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码Y值',
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群裂变-海报' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群裂变-海报' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_room_fission_room`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `fission_id` int(11) NOT NULL DEFAULT 0 COMMENT '活动ID',
-  `room_qrcode` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '群聊二维码',
-  `room_wx_qrcode` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '群聊二维码微信图片地址',
+  `room_qrcode` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '群聊二维码',
+  `room_wx_qrcode` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '群聊二维码微信图片地址',
   `room` json NULL COMMENT '群聊',
   `room_max` int(11) NULL DEFAULT 0 COMMENT '群人数上限',
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群裂变-群聊' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群裂变-群聊' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_room_fission_welcome`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `fission_id` int(11) NOT NULL DEFAULT 0 COMMENT '活动ID',
-  `text` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '文字欢迎语',
-  `link_title` varchar(255) CHARACTER SET = utf8mb4mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '链接标题',
-  `link_desc` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '链接描述',
-  `link_pic` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '链接封面地址',
-  `link_wx_url` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '微信图片地址',
-  `template_id` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '欢迎语素材id',
+  `text` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '文字欢迎语',
+  `link_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '链接标题',
+  `link_desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '链接描述',
+  `link_pic` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '链接封面地址',
+  `link_wx_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '微信图片地址',
+  `template_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '欢迎语素材id',
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群裂变-欢迎语' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群裂变-欢迎语' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_room_infinite`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '名称',
-  `avatar` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '二维码头像',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '名称',
+  `avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '二维码头像',
   `title_status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '群名称设置（0：关闭，1：开启）',
-  `title` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '群名称',
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '群名称',
   `describe_status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '入群引导语（0：关闭，1：开启）',
-  `describe` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '入群引导语',
-  `logo` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '头像',
+  `describe` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '入群引导语',
+  `logo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '头像',
   `qw_code` json NOT NULL COMMENT '企微活码（qrcode，upper_limit，status状态（0：未开始，1：拉人中，2：已停用））',
   `total_num` int(11) NOT NULL DEFAULT 0 COMMENT '扫码人数',
   `tenant_id` int(11) NULL DEFAULT NULL COMMENT '租户id',
@@ -457,17 +457,17 @@ CREATE TABLE IF NOT EXISTS `mc_room_infinite`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '无限拉群-基本信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '无限拉群-基本信息表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_room_quality`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '名称',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '名称',
   `rooms` json NOT NULL COMMENT '群聊',
   `quality_type` tinyint(1) NOT NULL COMMENT '质检时间（1：全天检测，2：自定义质检时间）',
   `work_cycle` json NOT NULL COMMENT '工作周期',
   `rule` json NOT NULL COMMENT '规则',
   `white_list_status` tinyint(1) NOT NULL COMMENT '白名单状态（0：已关闭，1：开启）',
-  `keyword` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '关键词',
+  `keyword` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '关键词',
   `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '状态（0：关闭，1：开启）',
   `tenant_id` int(11) NULL DEFAULT NULL COMMENT '租户id',
   `corp_id` int(11) NULL DEFAULT NULL COMMENT '企业id',
@@ -476,31 +476,31 @@ CREATE TABLE IF NOT EXISTS `mc_room_quality`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群聊质检-基本信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群聊质检-基本信息表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_room_quality_record`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `quality_id` int(11) NOT NULL COMMENT '质检id',
   `message_id` int(11) NOT NULL COMMENT '消息id',
   `room_id` int(11) NOT NULL COMMENT '群聊',
-  `content` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '内容',
+  `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '内容',
   `corp_id` int(11) NULL DEFAULT NULL COMMENT '企业id',
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群聊质检-提醒记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群聊质检-提醒记录表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_room_remind`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '名称',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '名称',
   `rooms` json NOT NULL COMMENT '群聊',
   `is_qrcode` tinyint(1) NOT NULL COMMENT '发送带二维码图片（0：不提醒，1：提醒）',
   `is_link` tinyint(1) NOT NULL COMMENT '发送链接分享（0：不提醒，1：提醒）',
   `is_miniprogram` tinyint(1) NOT NULL COMMENT '发送小程序（0：不提醒，1：提醒）',
   `is_card` tinyint(1) NOT NULL COMMENT '发送名片（0：不提醒，1：提醒）',
   `is_keyword` tinyint(1) NOT NULL COMMENT '发送关键词（0：不提醒，1：提醒）',
-  `keyword` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '关键词',
+  `keyword` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '关键词',
   `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '状态（0：关闭，1：开启）',
   `tenant_id` int(11) NULL DEFAULT NULL COMMENT '租户id',
   `corp_id` int(11) NULL DEFAULT NULL COMMENT '企业id',
@@ -509,7 +509,7 @@ CREATE TABLE IF NOT EXISTS `mc_room_remind`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '客户群提醒-基本信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '客户群提醒-基本信息表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_room_remind_record`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -517,21 +517,21 @@ CREATE TABLE IF NOT EXISTS `mc_room_remind_record`  (
   `message_id` int(11) NOT NULL COMMENT '消息id',
   `room_id` int(11) NOT NULL COMMENT '群聊',
   `type` tinyint(1) NOT NULL COMMENT '类型（1：二维码，2：链接，3：小程序，4：名片，5：关键词）',
-  `content` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '内容',
-  `keyword` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '关键词',
+  `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '内容',
+  `keyword` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '关键词',
   `corp_id` int(11) NULL DEFAULT NULL COMMENT '企业id',
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '客户群提醒-提醒记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '客户群提醒-提醒记录表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_room_tag_pull`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '任务名称',
-  `employees` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '群发员工',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '任务名称',
+  `employees` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '群发员工',
   `choose_contact` json NULL COMMENT '筛选客户条件',
-  `guide` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '入群引导语',
+  `guide` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '入群引导语',
   `rooms` json NULL COMMENT '群聊',
   `filter_contact` tinyint(1) NULL DEFAULT 1 COMMENT '过滤客户（0：否，1：是）',
   `contact_num` int(11) NULL DEFAULT NULL COMMENT '客户数量',
@@ -543,16 +543,16 @@ CREATE TABLE IF NOT EXISTS `mc_room_tag_pull`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '标签建群-基本信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '标签建群-基本信息表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_room_tag_pull_contact`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `room_tag_pull_id` int(11) NOT NULL COMMENT '标签建群id(mc_room_tag_pull.id)',
   `contact_id` int(11) NOT NULL COMMENT '客户id',
-  `wx_external_userid` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户wx_external_userid',
-  `contact_name` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户名称',
+  `wx_external_userid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户wx_external_userid',
+  `contact_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户名称',
   `employee_id` int(11) NOT NULL COMMENT '员工id',
-  `wx_user_id` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '员工wx_user_id',
+  `wx_user_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '员工wx_user_id',
   `send_status` tinyint(1) NULL DEFAULT 0 COMMENT '发送状态：0-未发送 1-已发送 2-因客户不是好友导致发送失败 3-因客户已经收到其他群发消息导致发送失',
   `is_join_room` tinyint(1) NULL DEFAULT 0 COMMENT '是否入群（0：否，1：是）',
   `room_id` int(11) NOT NULL COMMENT '客户群id(mc_work_room.id)',
@@ -560,23 +560,23 @@ CREATE TABLE IF NOT EXISTS `mc_room_tag_pull_contact`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '标签建群-客户表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '标签建群-客户表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_shop_code`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '名称',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '名称',
   `type` tinyint(1) NOT NULL COMMENT '类型（1：扫码添加店主。2：扫码加入门店群。3：扫码加入城市群）',
   `employee` json NULL COMMENT '店主',
   `employee_qrcode` json NULL COMMENT '店主二维码',
   `qw_code` json NULL COMMENT '拉群活码（mc_work_room_auto_pull）',
-  `search_keyword` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '搜索关键词',
-  `address` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '地址',
-  `country` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '国家',
-  `province` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '省',
-  `city` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '城市',
-  `district` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '地区',
-  `lat` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '地址纬度',
-  `lng` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '地址经度',
+  `search_keyword` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '搜索关键词',
+  `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '地址',
+  `country` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '国家',
+  `province` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '省',
+  `city` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '城市',
+  `district` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '地区',
+  `lat` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '地址纬度',
+  `lng` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '地址经度',
   `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '状态（0：关闭，1：开启）',
   `tenant_id` int(11) NULL DEFAULT NULL COMMENT '租户id',
   `corp_id` int(11) NULL DEFAULT NULL COMMENT '企业id',
@@ -585,15 +585,15 @@ CREATE TABLE IF NOT EXISTS `mc_shop_code`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '门店活码-基本信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '门店活码-基本信息表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_shop_code_page`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `type` tinyint(1) NOT NULL COMMENT '类型（1：扫码添加店主。2：扫码加入门店群。3：扫码加入城市群）',
-  `title` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '页面标题',
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '页面标题',
   `show_type` tinyint(1) NOT NULL DEFAULT 1 COMMENT '扫码页面展示（1：默认样式，2：自定义海报）',
   `default` json NOT NULL COMMENT '默认样式（企业介绍，企业logo，扫码引导语，门店地址）',
-  `poster` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '自定义海报',
+  `poster` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '自定义海报',
   `autoPass` tinyint(1) NOT NULL DEFAULT 0 COMMENT '好友直接入群（0：关闭，1：开启）',
   `tenant_id` int(11) NULL DEFAULT NULL COMMENT '租户id',
   `corp_id` int(11) NULL DEFAULT NULL COMMENT '企业id',
@@ -602,7 +602,7 @@ CREATE TABLE IF NOT EXISTS `mc_shop_code_page`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '门店活码-页面设置表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '门店活码-页面设置表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_shop_code_record`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -613,12 +613,12 @@ CREATE TABLE IF NOT EXISTS `mc_shop_code_record`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '门店活码-页面点击记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '门店活码-页面点击记录表' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_work_fission`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `corp_id` int(11) NOT NULL DEFAULT 0 COMMENT '企业表ID（mc_crop.id）',
-  `active_name` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '活动名称',
+  `active_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '活动名称',
   `service_employees` json NULL COMMENT '客服成员',
   `auto_pass` tinyint(1) NULL DEFAULT NULL COMMENT '自动通过好友申请',
   `auto_add_tag` tinyint(1) NULL DEFAULT NULL COMMENT '自动添加客户标签',
@@ -637,118 +637,98 @@ CREATE TABLE IF NOT EXISTS `mc_work_fission`  (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '裂变-基础信息主表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '裂变-基础信息主表' ROW_FORMAT = Dynamic;
 
--- ----------------------------
--- Table structure for mc_work_fission_contact
--- ----------------------------
-DROP TABLE IF EXISTS `mc_work_fission_contact`;
 CREATE TABLE IF NOT EXISTS `mc_work_fission_contact`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `fission_id` int(11) NOT NULL DEFAULT 0 COMMENT '活动ID',
-  `union_id` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户微信id',
-  `nickname` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户微信昵称',
-  `avatar` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户微信头像',
+  `union_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户微信id',
+  `nickname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户微信昵称',
+  `avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户微信头像',
   `contact_superior_user_parent` int(11) NULL DEFAULT 0 COMMENT '上级（被谁邀请来的）',
   `level` tinyint(1) NULL DEFAULT 0 COMMENT '裂变等级',
-  `employee` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '添加的员工',
+  `employee` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '添加的员工',
   `invite_count` int(11) NOT NULL DEFAULT 0 COMMENT '邀请数量',
   `loss` tinyint(1) NULL DEFAULT 0 COMMENT '是否已流失（被删除好友）',
   `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '完成状态。（0：未完成，1：已完成）',
   `receive_level` tinyint(1) NULL DEFAULT 0 COMMENT '已领取奖励阶段',
   `is_new` tinyint(1) NOT NULL DEFAULT 0 COMMENT '新客户（0：老，1：新）',
-  `external_user_id` varchar(55) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '外部联系人external_userid',
-  `qrcode_id` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码ID',
-  `qrcode_url` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码图片链接',
+  `external_user_id` varchar(55) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '外部联系人external_userid',
+  `qrcode_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码ID',
+  `qrcode_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码图片链接',
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '裂变-客户参与' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '裂变-客户参与' ROW_FORMAT = Dynamic;
 
--- ----------------------------
--- Table structure for mc_work_fission_invite
--- ----------------------------
-DROP TABLE IF EXISTS `mc_work_fission_invite`;
 CREATE TABLE IF NOT EXISTS `mc_work_fission_invite`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `fission_id` int(11) NOT NULL DEFAULT 0 COMMENT '活动ID',
   `type` tinyint(1) NULL DEFAULT 2 COMMENT '类型（1：邀请，2：暂不邀请）',
-  `text` text CHARACTER SET = utf8mb4mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '邀请文案',
-  `link_title` varchar(255) CHARACTER SET = utf8mb4mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '邀请链接标题',
-  `link_desc` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '邀请链接描述',
-  `link_pic` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '邀请链接封面图',
-  `wx_link_pic` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '微信图片地址',
+  `text` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '邀请文案',
+  `link_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '邀请链接标题',
+  `link_desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '邀请链接描述',
+  `link_pic` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '邀请链接封面图',
+  `wx_link_pic` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '微信图片地址',
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '裂变-邀请客户参与' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '裂变-邀请客户参与' ROW_FORMAT = Dynamic;
 
--- ----------------------------
--- Table structure for mc_work_fission_poster
--- ----------------------------
-DROP TABLE IF EXISTS `mc_work_fission_poster`;
 CREATE TABLE IF NOT EXISTS `mc_work_fission_poster`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `fission_id` int(11) NOT NULL DEFAULT 0 COMMENT '活动ID',
   `poster_type` tinyint(1) NULL DEFAULT NULL COMMENT '裂变海报：0海报,1个人名片',
-  `cover_pic` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '海报背景图片',
-  `wx_cover_pic` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '背景图片微信地址',
-  `foward_text` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '海报转发话术',
+  `cover_pic` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '海报背景图片',
+  `wx_cover_pic` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '背景图片微信地址',
+  `foward_text` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '海报转发话术',
   `avatar_show` tinyint(1) NULL DEFAULT NULL COMMENT '头像是否显示。0：不显示，1：显示',
   `nickname_show` tinyint(1) NULL DEFAULT NULL COMMENT '昵称是否显示。0：不显示，1：显示',
-  `nickname_color` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '颜色',
-  `card_corp_image_name` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '个人名片企业形象名称',
-  `card_corp_name` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '个人名片企业名称',
-  `card_corp_logo` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '个人名片企业logo',
-  `qrcode_w` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码宽度',
-  `qrcode_h` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码高度',
-  `qrcode_x` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码X值',
-  `qrcode_y` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码Y值',
-  `qrcode_id` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码ID',
-  `qrcode_url` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码图片链接',
+  `nickname_color` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '颜色',
+  `card_corp_image_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '个人名片企业形象名称',
+  `card_corp_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '个人名片企业名称',
+  `card_corp_logo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '个人名片企业logo',
+  `qrcode_w` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码宽度',
+  `qrcode_h` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码高度',
+  `qrcode_x` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码X值',
+  `qrcode_y` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码Y值',
+  `qrcode_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码ID',
+  `qrcode_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二维码图片链接',
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '裂变-海报' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '裂变-海报' ROW_FORMAT = Dynamic;
 
--- ----------------------------
--- Table structure for mc_work_fission_push
--- ----------------------------
-DROP TABLE IF EXISTS `mc_work_fission_push`;
 CREATE TABLE IF NOT EXISTS `mc_work_fission_push`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `fission_id` int(11) NOT NULL DEFAULT 0 COMMENT '活动ID',
   `push_employee` tinyint(255) NULL DEFAULT NULL COMMENT '员工推送',
   `push_contact` tinyint(255) NULL DEFAULT NULL COMMENT '客户推送',
-  `msg_text` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '消息1（文字）',
+  `msg_text` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '消息1（文字）',
   `msg_complex` json NULL COMMENT '消息2（图片、链接、小程序）',
-  `msg_complex_type` varchar(55) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '消息2类型（image|link|applets）',
+  `msg_complex_type` varchar(55) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '消息2类型（image|link|applets）',
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '裂变-推送' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '裂变-推送' ROW_FORMAT = Dynamic;
 
--- ----------------------------
--- Table structure for mc_work_fission_welcome
--- ----------------------------
-DROP TABLE IF EXISTS `mc_work_fission_welcome`;
 CREATE TABLE IF NOT EXISTS `mc_work_fission_welcome`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `fission_id` int(11) NOT NULL DEFAULT 0 COMMENT '活动ID',
-  `msg_text` text CHARACTER SET = utf8mb4mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '文字欢迎语',
-  `link_title` varchar(255) CHARACTER SET = utf8mb4mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '链接标题',
-  `link_desc` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '链接描述',
-  `link_cover_url` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '链接封面地址',
-  `link_wx_url` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '微信图片地址',
+  `msg_text` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '文字欢迎语',
+  `link_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '链接标题',
+  `link_desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '链接描述',
+  `link_cover_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '链接封面地址',
+  `link_wx_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '微信图片地址',
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '裂变-欢迎语' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '裂变-欢迎语' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_work_message_id`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -759,46 +739,45 @@ CREATE TABLE IF NOT EXISTS `mc_work_message_id`  (
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '会话内容查询记录' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '会话内容查询记录' ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_contact_sop`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `corp_id` int(11) NULL DEFAULT NULL COMMENT '企业id',
   `creator_id` int(11) NULL DEFAULT NULL COMMENT '创建人id',
-  `name` varchar(100) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '规则名称',
-  `setting` text CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '推送内容（json）',
-  `employee_ids` text CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '客服成员id（json）',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '规则名称',
+  `setting` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '推送内容（json）',
+  `employee_ids` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '客服成员id（json）',
   `state` tinyint(1) NULL DEFAULT NULL COMMENT '开关：0关 1开',
-  `contact_ids` text CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '触发的客户id（json）',
+  `contact_ids` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '触发的客户id（json）',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '个人SOP记录表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '个人SOP记录表' ;
 
-DROP TABLE IF EXISTS `mc_contact_sop_log`;
 CREATE TABLE IF NOT EXISTS `mc_contact_sop_log`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `corp_id` int(11) NULL DEFAULT NULL COMMENT 'work_corp.id',
   `contact_sop_id` int(11) NULL DEFAULT NULL COMMENT 'work_sop_personal.id',
-  `employee` varchar(100) CHARACTER SET = utf8mb4mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '员工wxid',
-  `contact` varchar(100) CHARACTER SET = utf8mb4mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户wxid',
-  `task` text CHARACTER SET = utf8mb4mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '触发的规则json',
+  `employee` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '员工wxid',
+  `contact` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户wxid',
+  `task` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '触发的规则json',
   `created_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_room_sop`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `corp_id` int(11) NULL DEFAULT NULL COMMENT '企业id',
   `creator_id` int(11) NULL DEFAULT NULL COMMENT '创建人id',
-  `name` varchar(100) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '规则名称',
-  `setting` text CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '推送内容（json）',
-  `room_ids` text CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '群聊id（json）',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '规则名称',
+  `setting` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '推送内容（json）',
+  `room_ids` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '群聊id（json）',
   `state` tinyint(1) NULL DEFAULT NULL COMMENT '开关：0关 1开',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_room_sop_log`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -806,28 +785,28 @@ CREATE TABLE IF NOT EXISTS `mc_room_sop_log`  (
   `room_sop_id` int(11) NULL DEFAULT NULL COMMENT 'work_sop_room.id',
   `room_id` int(11) NULL DEFAULT NULL COMMENT 'work_room.id',
   `state` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否已完成：0否，1是',
-  `employee` varchar(100) CHARACTER SET = utf8mb4mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客服wxid',
-  `contact` varchar(100) CHARACTER SET = utf8mb4mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户wxid',
-  `task` text CHARACTER SET = utf8mb4mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '触发的规则json',
+  `employee` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客服wxid',
+  `contact` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户wxid',
+  `task` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '触发的规则json',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `mc_work_transfer_log`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `corp_id` int(11) NULL DEFAULT NULL COMMENT '企业id (corp.id)',
   `status` tinyint(1) NULL DEFAULT NULL COMMENT '客服类型：1离职分配 2在职分配',
   `type` tinyint(1) NULL DEFAULT NULL COMMENT '分配类型：1客户转接 2群聊转接',
-  `name` varchar(255) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户/群聊 名称',
-  `contact_id` varchar(100) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户/群聊 WxId',
-  `handover_employee_id` varchar(100) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '原客服的WxId',
-  `takeover_employee_id` varchar(100) CHARACTER SET = utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '接替的客服的WxId',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户/群聊 名称',
+  `contact_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户/群聊 WxId',
+  `handover_employee_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '原客服的WxId',
+  `takeover_employee_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '接替的客服的WxId',
   `state` tinyint(1) NULL DEFAULT NULL COMMENT '转接状态：1接替完毕 2等待接替 3客户拒绝 4接替成员客户达到上限 5无接替记录',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '客户/群聊 分配记录表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '客户/群聊 分配记录表' ;
 
 CREATE TABLE IF NOT EXISTS `mc_room_welcome_template` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -841,7 +820,7 @@ CREATE TABLE IF NOT EXISTS `mc_room_welcome_template` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci  COMMENT='入群欢迎语表';
+) ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci  COMMENT='入群欢迎语表';
 
 CREATE TABLE IF NOT EXISTS `mc_work_unassigned` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -853,13 +832,13 @@ CREATE TABLE IF NOT EXISTS `mc_work_unassigned` (
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci  ROW_FORMAT=DYNAMIC COMMENT='离职成员-客户存储表';
+) ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci  ROW_FORMAT=DYNAMIC COMMENT='离职成员-客户存储表';
 
 ALTER TABLE `mc_work_contact`
-MODIFY COLUMN `name` varchar(255) CHARACTER SET = utf8mb4mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '外部联系人姓名' AFTER `wx_external_userid`;
+MODIFY COLUMN `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '外部联系人姓名' AFTER `wx_external_userid`;
 
 ALTER TABLE `mc_work_contact_employee`
-MODIFY COLUMN `remark` varchar(255) CHARACTER SET = utf8mb4mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '员工对此外部联系人的备注' AFTER `contact_id`;
+MODIFY COLUMN `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '员工对此外部联系人的备注' AFTER `contact_id`;
 
 ALTER TABLE `mc_work_employee`
 ADD COLUMN `audit_status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '存档状态（0：未开通，1：已开通）' AFTER `contact_auth`;
