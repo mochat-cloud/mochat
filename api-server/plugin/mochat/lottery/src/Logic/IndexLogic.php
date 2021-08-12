@@ -130,7 +130,7 @@ class IndexLogic
                 'time'               => $time,
                 'created_at'         => $val['createdAt'],
                 'status'             => $status,
-                'share_link'         => Url::getOperationBaseUrl() . '/auth?jump=lotteryIndex&modularType=2&id=' . $val['id'] . '&source=from_qr',
+                'share_link'         => Url::getAuthRedirectUrl(2, $val['id']),
             ];
         }
         $data['page']['total']     = $lotteryList['total'];

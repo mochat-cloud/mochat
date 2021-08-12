@@ -16,6 +16,8 @@ use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\OfficialAccount\Contract\OfficialAccountContract;
+use MoChat\App\OfficialAccount\Contract\OfficialAccountSetContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
@@ -27,7 +29,7 @@ use Psr\Container\ContainerInterface;
  * Class Wechat.
  * @Controller
  */
-class Wechat extends AbstractAction
+class WeChatSdkConfig extends AbstractAction
 {
     use ValidateSceneTrait;
 
@@ -59,9 +61,16 @@ class Wechat extends AbstractAction
     protected $appId;
 
     /**
-     * @var string
+     * @Inject
+     * @var OfficialAccountSetContract
      */
-    protected $appSecret;
+    protected $officialAccountSetService;
+
+    /**
+     * @Inject
+     * @var OfficialAccountContract
+     */
+    protected $officialAccountService;
 
     /**
      * @Inject
@@ -76,23 +85,24 @@ class Wechat extends AbstractAction
     }
 
     /**
-     * @RequestMapping(path="/operation/shopCode/wechat", methods="get")
+     * @RequestMapping(path="/operation/shopCode/weChatSdkConfig", methods="get")
      * @throws \JsonException
      */
     public function handle(): array
     {
         $params = $this->request->all();
         $this->validated($params);
-        $appid = $params['appid'];
-        $url   = substr($params['url'], 0, strrpos($params['url'], '#'));
+        $appId = $this->getAppId((int)$params['corpId'], 3);
+        $url   = $params['url'];
         ## EasyWeChat
         $config = config('framework.wechat_open_platform');
         ## 实例化
         $openPlatform = Factory::openPlatform($config);
         $openPlatform = rebind_app($openPlatform, $this->request);
-        $result       = $openPlatform->getAuthorizer($appid);
+        $result       = $openPlatform->getAuthorizer($appId);
         if (! empty($result['authorization_info'])) {
-            $officialAccount = $openPlatform->officialAccount($appid, $result['authorization_info']['authorizer_refresh_token']);
+            $officialAccount = $openPlatform->officialAccount($appId, $result['authorization_info']['authorizer_refresh_token']);
+            $officialAccount = rebind_app($officialAccount, $this->request);
             $ticket          = $officialAccount->jssdk->buildConfig(['getLocation'], false, false, true, [], $url);
 //            $officialAccount->jssdk->setUrl($url);
             return json_decode($ticket, true, 512, JSON_THROW_ON_ERROR);
@@ -108,6 +118,7 @@ class Wechat extends AbstractAction
     protected function rules(): array
     {
         return [
+            'url' => 'required',
         ];
     }
 
@@ -118,6 +129,19 @@ class Wechat extends AbstractAction
     protected function messages(): array
     {
         return [
+            'url.required' => 'url 必传',
         ];
+    }
+
+    protected function getAppId(int $corpId, int $type): string
+    {
+        $set = $this->officialAccountSetService->getOfficialAccountSetByCorpIdType($corpId, $type, ['official_account_id']);
+        if (!empty($set)) {
+            $info = $this->officialAccountService->getOfficialAccountById($set['officialAccountId'], ['appid', 'authorizer_appid']);
+        } else {
+            $info = $this->officialAccountService->getOfficialAccountByCorpId($corpId, ['appid', 'authorizer_appid']);
+        }
+
+        return $info['authorizerAppid'];
     }
 }

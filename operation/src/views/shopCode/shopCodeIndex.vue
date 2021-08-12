@@ -47,11 +47,12 @@
 </template>
 
 <script>
-import {areaCodeApi, wechatApi} from '@/api/shopCode'
+import {areaCodeApi, weChatSdkConfig, openUserInfoApi} from '@/api/shopCode'
 
 export default {
   data() {
     return {
+      url: window.location.href,
       //省市信息
       province: [],
       //店铺信息
@@ -66,21 +67,40 @@ export default {
     }
   },
   created() {
-    this.corpId = this.$getState('corpId')
-    this.type = this.$getState('type')
+    this.corpId = this.$route.query.id;
+    this.type = this.$route.query.type;
     this.getWarrantNews()
   },
+  mounted() {
+    let url = window.location.href.split('#')[0];
+
+    if (navigator.userAgent.indexOf('iPhone') !== -1) {
+      window.wechaturl = window.location + '';
+    }
+    if (window.wechaturl !== undefined) {
+      url = window.wechaturl;
+    }
+    this.url = url;
+    this.getOpenUserInfo();
+  },
   methods: {
+    getOpenUserInfo() {
+      let that = this;
+      openUserInfoApi({
+        id: that.corpId
+      }).then((res) => {
+        if (res.data.length === 0) {
+          let redirectUrl = '/auth/shopCode?id='+that.corpId+'&target=' + encodeURIComponent(that.url);
+          that.$redirectAuth(redirectUrl);
+        }
+      });
+    },
     //获取微信config信息
     getWarrantNews() {
-      let url = window.location.href.split('#')[0];
-
-      if (navigator.userAgent.indexOf('iPhone') !== -1) window.wechaturl = window.location + '';
-      if (window.wechaturl !== undefined) url = window.wechaturl;
-
-      wechatApi({
-        url,
-        appid: localStorage.getItem('appid')
+      let that = this;
+      weChatSdkConfig({
+        url: that.url,
+        corpId: that.corpId
       }).then((res) => {
         let that = this
         this.setConfigNews(res.data)

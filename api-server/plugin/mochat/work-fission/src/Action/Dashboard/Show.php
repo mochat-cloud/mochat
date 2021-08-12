@@ -142,7 +142,7 @@ class Show extends AbstractAction
             'id'                => $fission['id'],
             'active_name'       => $fission['activeName'],
             'qrcode_url'        => $posterInfo['qrcodeUrl'],
-            'link'              => Url::getOperationBaseUrl() . '/auth?jump=workFissionIndex&modularType=5&id=' . $id,
+            'link'              => Url::getAuthRedirectUrl(7, $id),
             'active_time'       => $fission['createdAt'] . '-' . $fission['endTime'],
             'service_employees' => $fission['serviceEmployees'],
             'contact_tags'      => $fission['contactTags'],

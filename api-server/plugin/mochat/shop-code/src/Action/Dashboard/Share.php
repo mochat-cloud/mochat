@@ -90,7 +90,22 @@ class Share extends AbstractAction
         ## 参数验证
         $params = $this->request->all();
         $this->validated($params);
-        return ['link' => Url::getOperationBaseUrl() . '/auth?jump=employeeIndex&corpId=' . $user['corpIds'][0] . '&modularType=3&type=' . (int) $params['type']];
+        switch ((int) $params['type']) {
+            case 1: // 扫码添加店主
+                $moduleType = 3;
+                break;
+            case 2: // 扫码加入门店群
+                $moduleType = 4;
+                break;
+            case 3: // 扫码加入城市群
+                $moduleType = 5;
+                break;
+            default:
+                $moduleType = 3;
+                break;
+        }
+        $link = Url::getAuthRedirectUrl($moduleType, $user['corpIds'][0]);
+        return ['link' => $link];
     }
 
     /**

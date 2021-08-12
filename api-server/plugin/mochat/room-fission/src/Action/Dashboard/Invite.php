@@ -187,7 +187,10 @@ class Invite extends AbstractAction
                 $employee = $this->workEmployeeService->getWorkEmployeeById((int) $employeeId, ['wx_user_id']);
 
                 $easyWeChatParams['text']['content'] = $data['text'];
-                $easyWeChatParams['link']            = ['title' => $data['link_title'], 'picurl' => $data['wx_link_pic'], 'desc' => $data['link_desc'], 'url' => Url::getOperationBaseUrl() . '/auth?jump=fissionIndex&fission_id=' . $params['id'] . "&parentUnionId=''&wxUserId=" . $employee['wxUserId']];
+                $easyWeChatParams['link']            = ['title' => $data['link_title'], 'picurl' => $data['wx_link_pic'], 'desc' => $data['link_desc'], 'url' => Url::getAuthRedirectUrl(8, $params['id'], [
+                    'parent_union_id' => '',
+                        'wx_user_id' => $employee['wxUserId'],
+                    ])];
                 $easyWeChatParams['external_userid'] = array_column($contact, 'wxExternalUserid');
                 $easyWeChatParams['sender']          = $employee['wxUserId'];
                 return $res                          = $wx->submit($easyWeChatParams);

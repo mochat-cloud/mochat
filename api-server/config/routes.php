@@ -19,3 +19,5 @@ Router::get('/favicon.ico', function () {
 
 // 注册路由别名，兼容历史路由
 Router::addRoute(['GET', 'POST'], '/weWork/callback', 'MoChat\App\Corp\Action\Dashboard\WeWorkCallback@handle');
+
+Router::addRoute(['GET', 'POST'], '/load/{params?}', 'MoChat\App\OfficialAccount\Action\Operation\AuthRedirect@handle');

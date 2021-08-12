@@ -30,7 +30,7 @@ return [
         '/',
         '/dashboard/{wxVerifyTxt}',
         '/dashboard/officialAccount/authEventCallback',
-        '/dashboard/officialAccount/messageEventCallback',
+        '/dashboard/{appId}/officialAccount/messageEventCallback',
         '/operation/officialAccount/authRedirect',
     ],
 

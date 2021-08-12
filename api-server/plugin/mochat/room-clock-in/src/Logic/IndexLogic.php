@@ -173,7 +173,7 @@ class IndexLogic
                 'time'               => $time,
                 'created_at'         => $val['createdAt'],
                 'status'             => $status,
-                'share_link'         => Url::getOperationBaseUrl() . '/auth?jump=roomClockIndex&modularType=1&id=' . $val['id'],
+                'share_link'         => Url::getAuthRedirectUrl(1, $val['id']),
             ];
         }
         $data['page']['total']     = $clockInList['total'];

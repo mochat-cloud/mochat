@@ -13,7 +13,7 @@ import success from "@/views/roomClockIn/success";
 import roomClockIndex from "@/views/roomClockIn/roomClockIndex";
 import roomClockInExplain from "@/views/roomClockIn/roomClockInExplain"
 //门店活码
-import employeeIndex from "@/views/shopCode/employeeIndex";
+import shopCodeIndex from "@/views/shopCode/shopCodeIndex";
 //群裂变
 import fissionIndex from "@/views/roomFission/fissionIndex";
 import fissionSpeed from "@/views/roomFission/fissionSpeed";
@@ -32,7 +32,8 @@ const routes = [
     component: index
   },
   {
-    path: '/workFissionIndex',
+    path: '/workFission',
+    name: 'workFissionIndex',
     component: workFissionIndex
   },
   {
@@ -41,7 +42,8 @@ const routes = [
   },
   //抽奖活动
   {
-    path: '/lotteryIndex',
+    path: '/lottery',
+    name: 'lotteryIndex',
     component: lotteryIndex
   },
   //抽奖活动——规则说明
@@ -52,11 +54,13 @@ const routes = [
   //  互动雷达
   {
     path: '/radar',
+    name: 'radar',
     component: radar
   },
   //群打卡
   {
-    path: '/roomClockIndex',
+    path: '/roomClockIn',
+    name: '/roomClockIn',
     component: roomClockIndex
   },
 
@@ -66,14 +70,15 @@ const routes = [
     component: roomClockInExplain
   },
 
-//门店活码
+  //门店活码
   {
-    path: '/employeeIndex',
-    component: employeeIndex
+    path: '/shopCode',
+    name: 'shopCodeIndex',
+    component: shopCodeIndex
   },
-//群裂变
+  //群裂变
   {
-    path: '/fissionIndex',
+    path: '/roomFission',
     component: fissionIndex
   },
 

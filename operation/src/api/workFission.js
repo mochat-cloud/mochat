@@ -31,13 +31,3 @@ export function receiveApi (params) {
         params: params
     })
 }
-export function userInfo (params) {
-    return request({
-        url: '/officialAccount/openUserInfo',
-        method: 'GET',
-        params: {
-            ...params,
-            appid: localStorage.getItem('appid')
-        }
-    })
-}
