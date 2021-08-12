@@ -218,19 +218,19 @@ class EmployeeUpdateHandler extends AbstractEventHandler
      */
     protected function getEmployeeData($employee)
     {
-        if (! empty($this->message['Avatar'])) {
-            $pathAvatarFileName = 'mochat/employee/avatar_' . microtime(true) * 10000 . '.png';
-            $thumbAvatar        = $this->message['Avatar'];
-            if (strpos($this->message['Avatar'], '/0') !== false) {
-                $thumbAvatar = substr($this->message['Avatar'], 0, strpos($this->message['Avatar'], '/0')) . '/100';
-            }
-            $pathThumAvatarFileName = 'mochat/employee/thumb_avatar_' . strval(microtime(true) * 10000) . '_' . uniqid() . '.png';
-            $ossData                = [
-                [$this->message['Avatar'], $pathAvatarFileName],
-                [$thumbAvatar, $pathThumAvatarFileName],
-            ];
-            file_upload_queue($ossData);
-        }
+//        if (! empty($this->message['Avatar'])) {
+//            $pathAvatarFileName = 'employee/avatar_' . microtime(true) * 10000 . '.png';
+//            $thumbAvatar        = $this->message['Avatar'];
+//            if (strpos($this->message['Avatar'], '/0') !== false) {
+//                $thumbAvatar = substr($this->message['Avatar'], 0, strpos($this->message['Avatar'], '/0')) . '/100';
+//            }
+//            $pathThumAvatarFileName = 'employee/thumb_avatar_' . strval(microtime(true) * 10000) . '_' . uniqid() . '.png';
+//            $ossData                = [
+//                [$this->message['Avatar'], $pathAvatarFileName],
+//                [$thumbAvatar, $pathThumAvatarFileName],
+//            ];
+//            file_upload_queue($ossData);
+//        }
         $logUserId = $employee['logUserId'];
         if (! empty($this->message['Mobile']) && $this->message['Mobile'] != $employee['mobile']) {
             //子账户关联
@@ -243,8 +243,8 @@ class EmployeeUpdateHandler extends AbstractEventHandler
             'position'     => ! empty($this->message['Position']) ? $this->message['Position'] : $employee['position'],
             'gender'       => ! empty($this->message['Gender']) ? $this->message['Gender'] : $employee['gender'],
             'email'        => ! empty($this->message['Email']) ? $this->message['Email'] : $employee['email'],
-            'avatar'       => ! empty($pathAvatarFileName) ? $pathAvatarFileName : $employee['avatar'],
-            'thumb_avatar' => ! empty($pathThumAvatarFileName) ? $pathThumAvatarFileName : $employee['thumbAvatar'],
+            'avatar'       => ! empty($this->message['Avatar']) ? $this->message['Avatar'] : $employee['avatar'],
+            'thumb_avatar' => ! empty($this->message['ThumbAvatar']) ? $this->message['ThumbAvatar'] : $employee['thumbAvatar'],
             'telephone'    => ! empty($this->message['Telephone']) ? $this->message['Telephone'] : $employee['telephone'],
             'alias'        => ! empty($this->message['Alias']) ? $this->message['Alias'] : $employee['alias'],
             'extattr'      => ! empty($this->message['ExtAttr']) ? json_encode($this->message['ExtAttr']) : $employee['extattr'],

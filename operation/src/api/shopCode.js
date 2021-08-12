@@ -10,10 +10,19 @@ export function areaCodeApi (params) {
     })
 }
 
-export function wechatApi (params) {
+export function weChatSdkConfig (params) {
     return request({
-        url: '/shopCode/wechat',
+        url: '/shopCode/weChatSdkConfig',
         method: 'get',
+        params: params
+    })
+}
+
+//获取微信用户信息
+export function openUserInfoApi (params) {
+    return request({
+        url: '/shopCode/openUserInfo',
+        method: 'GET',
         params: params
     })
 }

@@ -8,6 +8,7 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
+
 namespace MoChat\App\WorkEmployee\Logic;
 
 use Hyperf\Contract\StdoutLoggerInterface;
@@ -75,11 +76,11 @@ class SyncLogic
             $this->logger->error('WorkEmployeeSyncLogic->handle同步创建成员corp不能为空');
             return true;
         }
-        $this->client                        = make(WeWork::class);
-        $this->workEmployeeService           = make(WorkEmployeeContract::class);
-        $this->workDepartmentService         = make(WorkDepartmentContract::class);
+        $this->client = make(WeWork::class);
+        $this->workEmployeeService = make(WorkEmployeeContract::class);
+        $this->workDepartmentService = make(WorkDepartmentContract::class);
         $this->workEmployeeDepartmentService = make(WorkEmployeeDepartmentContract::class);
-        $this->workUpdateTimeService         = make(WorkUpdateTimeContract::class);
+        $this->workUpdateTimeService = make(WorkUpdateTimeContract::class);
         //处理成员
         $this->dealEmployee($corpIds);
         //同步时间
@@ -90,15 +91,15 @@ class SyncLogic
     /**
      * 处理成员信息.
      * @param $corpIds
-     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
-     * @throws \League\Flysystem\FileExistsException
      * @return bool
+     * @throws \League\Flysystem\FileExistsException
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
      */
     protected function dealEmployee($corpIds)
     {
         //成员基础信息
-        $corpData           = $this->getCorpData($corpIds);
-        $createEmployeeData = $updateEmployeeDepartment = $createEmployeeDepartmentData = $userIds = $updateEmployee = $createData = $ossData = $phones = [];
+        $corpData = $this->getCorpData($corpIds);
+        $createEmployeeData = $updateEmployeeDepartment = $createEmployeeDepartmentData = $userIds = $updateEmployee = $createData = $fileQueueData = $phones = [];
         foreach ($corpData as $corpId => $cdv) {
             $employeeData = $departments = $userList = $employeeDepartment = $employee = [];
             //公司下的所有部门
@@ -117,10 +118,10 @@ class SyncLogic
             foreach ($departments as $key => $value) {
                 //企业微信端用户信息
                 $userList = $this->client->provider('user')->app($cdv)->user->getDetailedDepartmentUsers($value['wxDepartmentId']);
-                if (! empty($userList['errcode']) || empty($userList['userlist'])) {
+                if (!empty($userList['errcode']) || empty($userList['userlist'])) {
                     continue;
                 }
-                $this->handleSynData(
+                $this->handleSyncData(
                     $corpId,
                     $userList,
                     $employee,
@@ -131,14 +132,14 @@ class SyncLogic
                     $updateEmployee,
                     $userIds,
                     $phones,
-                    $ossData
+                    $fileQueueData
                 );
             }
-            if (! empty($createEmployeeData[$corpId])) {
+            if (!empty($createEmployeeData[$corpId])) {
                 //根据手机号查询子账户信息
                 $createData[$corpId] = $this->getUserData($phones, $createEmployeeData[$corpId]);
             }
-            if (! empty($createData[$corpId])) {
+            if (!empty($createData[$corpId])) {
                 //外部联系人权限
                 $createData[$corpId] = $this->getContactAuth($cdv, $createData[$corpId]);
             }
@@ -152,7 +153,7 @@ class SyncLogic
             return true;
         }
         //创建成员部门关系
-        if (! empty($createEmployeeDepartmentData)) {
+        if (!empty($createEmployeeDepartmentData)) {
             $employeeDepartmentResult = $this->createEmployeeDepartment($corpIds, $userIds, $createEmployeeDepartmentData);
             if (empty($employeeDepartmentResult)) {
                 $this->logger->error('WorkEmployeeSyncLogic->handle同步删除成员部门关系失败:' . json_encode($updateEmployeeDepartment));
@@ -160,21 +161,24 @@ class SyncLogic
             }
         }
         //删除成员部门关系失败
-        if (! empty($updateEmployeeDepartment)) {
+        if (!empty($updateEmployeeDepartment)) {
             $result = $this->workEmployeeDepartmentService->deleteWorkEmployeeDepartments($updateEmployeeDepartment);
             if (empty($result)) {
                 $this->logger->error('WorkEmployeeSyncLogic->handle同步删除成员部门关系失败:' . json_encode($updateEmployeeDepartment));
             }
         }
-        if (! empty($updateEmployee)) {
+        if (!empty($updateEmployee)) {
             $updateResult = $this->workEmployeeService->updateWorkEmployeesCaseIds($updateEmployee);
             if (empty($updateResult)) {
                 $this->logger->error('WorkEmployeeSyncLogic->handle同步头像失败:' . json_encode($updateEmployee));
             }
         }
+
+        dump("fileQueueData:");
+        dump($fileQueueData);
         //上传图片
-        if (! empty($ossData)) {
-            file_upload_queue($ossData);
+        if (!empty($fileQueueData)) {
+            file_upload_queue($fileQueueData);
         }
         unset($departments, $employee, $userList);
         return true;
@@ -192,10 +196,10 @@ class SyncLogic
      * @param $updateEmployee
      * @param $userIds
      * @param $phones
-     * @param mixed $ossData
+     * @param mixed $fileQueueData
      * @throws \League\Flysystem\FileExistsException
      */
-    protected function handleSynData(
+    protected function handleSyncData(
         $corpId,
         $userList,
         $employee,
@@ -206,24 +210,28 @@ class SyncLogic
         &$updateEmployee,
         &$userIds,
         &$phones,
-        &$ossData
-    ) {
+        &$fileQueueData
+    )
+    {
         //获取部门员工关联信息
         foreach ($userList['userlist'] as $k => $user) {
             $userIds[$user['userid']] = $user['userid'];
             //判断是否增加过成员（是:判断是否添加过成员部门关系 否:添加成员）
-            if (! empty($employee[$user['userid']])) {
+            if (!empty($employee[$user['userid']])) {
                 foreach ($employee[$user['userid']] as $ek => $ev) {
                     //删掉成员绑定的部门关系
-                    if (! empty($user['department']) && ! in_array($ek, $user['department']) && ! empty($ek)) {
+                    if (!empty($user['department']) && !in_array($ek, $user['department']) && !empty($ek)) {
                         $updateEmployeeDepartment[$ev['employeeDepartmentId']] = $ev['employeeDepartmentId'];
                     }
                     //更新头像
-                    if (empty($ev['avatar']) && ! empty($user['avatar']) && empty($updateEmployee[$ev['id']])) {
+                    if ($ev['avatar'] != $user['avatar'] && empty($updateEmployee[$ev['id']])) {
                         $updateEmployee[$ev['id']] = [
-                            'id'           => $ev['id'],
-                            'avatar'       => $this->ossUp($user['avatar'], 'avatar', $ossData),
-                            'thumb_avatar' => $this->ossUp($user['thumb_avatar'], 'thumb_avatar', $ossData),
+                            'id' => $ev['id'],
+//                            'avatar' => $this->addFileQueueData($user['avatar'], 'avatar', $fileQueueData),
+//                            'thumb_avatar' => $this->addFileQueueData($user['thumb_avatar'], 'thumb_avatar', $fileQueueData),
+                            // 修改为存储原地址
+                            'avatar' => $user['avatar'],
+                            'thumb_avatar' => $user['thumb_avatar'],
                         ];
                     }
                 }
@@ -231,60 +239,60 @@ class SyncLogic
                     //判断是否存在成员部门绑定关系信息
                     if (empty($createEmployeeDepartmentData[$user['userid']][$departments[$dv]['id']]) && empty($employee[$user['userid']][$dv])) {
                         $createEmployeeDepartmentData[$user['userid']][$departments[$dv]['id']] = [
-                            'employee_id'       => 0,
-                            'department_id'     => ! empty($departments[$dv]['id']) ? $departments[$dv]['id'] : 0,
+                            'employee_id' => 0,
+                            'department_id' => !empty($departments[$dv]['id']) ? $departments[$dv]['id'] : 0,
                             'is_leader_in_dept' => $user['is_leader_in_dept'][$dk],
-                            'order'             => $user['order'][$dk],
-                            'created_at'        => date('Y-m-d H:i:s'),
+                            'order' => $user['order'][$dk],
+                            'created_at' => date('Y-m-d H:i:s'),
                         ];
                     }
                 }
             } else {
                 //新增成员信息
                 if (empty($createEmployeeData[$corpId][$user['userid']])) {
-                    if (! empty($user['mobile'])) {
+                    if (!empty($user['mobile'])) {
                         $phones[$user['mobile']] = $user['mobile'];
                     }
                     //头像
-                    $avatar = $this->ossUp($user['avatar'], 'avatar', $ossData);
+//                    $avatar = $this->addFileQueueData($user['avatar'], 'avatar', $fileQueueData);
                     //头像缩图
-                    $thumbAvatar = $this->ossUp($user['thumb_avatar'], 'thumb_avatar', $ossData);
+//                    $thumbAvatar = $this->addFileQueueData($user['thumb_avatar'], 'thumb_avatar', $fileQueueData);
                     //二维码
-                    $qrCode                                       = $this->ossUp($user['qr_code'], 'qr_code', $ossData);
+//                    $qrCode = $this->addFileQueueData($user['qr_code'], 'qr_code', $fileQueueData);
                     $createEmployeeData[$corpId][$user['userid']] = [
-                        'wx_user_id'            => $user['userid'],
-                        'corp_id'               => $corpId,
-                        'name'                  => $user['name'],
-                        'mobile'                => isset($user['mobile']) ? $user['mobile'] : '',
-                        'position'              => $user['position'],
-                        'gender'                => $user['gender'],
-                        'email'                 => $user['email'],
-                        'avatar'                => $avatar,
-                        'thumb_avatar'          => $thumbAvatar,
-                        'telephone'             => $user['telephone'],
-                        'alias'                 => $user['alias'],
-                        'extattr'               => ! empty($user['extattr']) ? json_encode($user['extattr']) : json_encode([]),
-                        'status'                => $user['status'],
-                        'qr_code'               => $qrCode,
-                        'external_profile'      => ! empty($user['external_profile']) ? json_encode($user['external_profile']) : json_encode([]),
-                        'external_position'     => ! empty($user['external_position']) ? json_encode($user['external_position']) : json_encode([]),
-                        'address'               => ! empty($user['address']) ? $user['address'] : '',
-                        'open_user_id'          => ! empty($user['open_userid']) ? $user['open_userid'] : 0,
+                        'wx_user_id' => $user['userid'],
+                        'corp_id' => $corpId,
+                        'name' => $user['name'],
+                        'mobile' => isset($user['mobile']) ? $user['mobile'] : '',
+                        'position' => $user['position'],
+                        'gender' => $user['gender'],
+                        'email' => $user['email'],
+                        'avatar' => $user['avatar'],
+                        'thumb_avatar' => $user['thumb_avatar'],
+                        'telephone' => $user['telephone'],
+                        'alias' => $user['alias'],
+                        'extattr' => !empty($user['extattr']) ? json_encode($user['extattr']) : json_encode([]),
+                        'status' => $user['status'],
+                        'qr_code' => $user['qr_code'],
+                        'external_profile' => !empty($user['external_profile']) ? json_encode($user['external_profile']) : json_encode([]),
+                        'external_position' => !empty($user['external_position']) ? json_encode($user['external_position']) : json_encode([]),
+                        'address' => !empty($user['address']) ? $user['address'] : '',
+                        'open_user_id' => !empty($user['open_userid']) ? $user['open_userid'] : 0,
                         'wx_main_department_id' => $user['main_department'],
-                        'main_department_id'    => ! empty($departments[$user['main_department']]['id']) ? $departments[$user['main_department']]['id'] : 0,
-                        'contact_auth'          => ContactAuth::NO,
-                        'log_user_id'           => 0,
-                        'created_at'            => date('Y-m-d H:i:s'),
+                        'main_department_id' => !empty($departments[$user['main_department']]['id']) ? $departments[$user['main_department']]['id'] : 0,
+                        'contact_auth' => ContactAuth::NO,
+                        'log_user_id' => 0,
+                        'created_at' => date('Y-m-d H:i:s'),
                     ];
                 }
                 foreach ($user['department'] as $item => $v) {
                     if (empty($createEmployeeDepartmentData[$user['userid']][$departments[$v]['id']])) {
                         $createEmployeeDepartmentData[$user['userid']][$departments[$v]['id']] = [
-                            'employee_id'       => 0,
-                            'department_id'     => ! empty($departments[$v]['id']) ? $departments[$v]['id'] : 0,
-                            'is_leader_in_dept' => ! empty($user['is_leader_in_dept'][$item]) ? $user['is_leader_in_dept'][$item] : 0,
-                            'order'             => ! empty($user['order'][$item]) ? $user['order'][$item] : 0,
-                            'created_at'        => date('Y-m-d H:i:s'),
+                            'employee_id' => 0,
+                            'department_id' => !empty($departments[$v]['id']) ? $departments[$v]['id'] : 0,
+                            'is_leader_in_dept' => !empty($user['is_leader_in_dept'][$item]) ? $user['is_leader_in_dept'][$item] : 0,
+                            'order' => !empty($user['order'][$item]) ? $user['order'][$item] : 0,
+                            'created_at' => date('Y-m-d H:i:s'),
                         ];
                     }
                 }
@@ -294,15 +302,19 @@ class SyncLogic
 
     /**
      * 上传文件.
-     * @param $ossData
+     * @param string $url
+     * @param string $prefix
+     * @param array $fileQueueData
+     *
+     * @return string
      */
-    protected function ossUp(string $url, string $prefix = '', &$ossData): string
+    protected function addFileQueueData(string $url, string $prefix, &$fileQueueData): string
     {
-        if (! $url) {
+        if (!$url) {
             return '';
         }
-        $pathUrl   = 'mochat/employee/' . $prefix . strval(microtime(true) * 10000) . '_' . uniqid() . '.png';
-        $ossData[] = [$url, $pathUrl];
+        $pathUrl = 'employee/' . $prefix . strval(microtime(true) * 10000) . '_' . uniqid() . '.png';
+        $fileQueueData[] = [$url, $pathUrl];
         return $pathUrl;
     }
 
@@ -339,13 +351,13 @@ class SyncLogic
         }
         foreach ($employeeData as $ek => $ev) {
             $returnData[$ev['id']] = $wxEmployeeData[$ev['wxUserId']][0] = [
-                'id'                   => $ev['id'],
-                'wxUserId'             => $ev['wxUserId'],
+                'id' => $ev['id'],
+                'wxUserId' => $ev['wxUserId'],
                 'employeeDepartmentId' => 0,
-                'workDepartmentId'     => 0,
-                'wxDepartmentId'       => 0,
-                'avatar'               => $ev['avatar'],
-                'thumbAvatar'          => $ev['thumbAvatar'],
+                'workDepartmentId' => 0,
+                'wxDepartmentId' => 0,
+                'avatar' => $ev['avatar'],
+                'thumbAvatar' => $ev['thumbAvatar'],
             ];
         }
         return ['employee' => $returnData, 'wxEmployee' => $wxEmployeeData];
@@ -370,19 +382,19 @@ class SyncLogic
             return $wxEmployeeDepartment;
         }
         foreach ($employeeDepartmentData as $edk => $edv) {
-            $wxUserIds[]                                                                             = $employeeData[$edv['employeeId']]['wxUserId'];
+            $wxUserIds[] = $employeeData[$edv['employeeId']]['wxUserId'];
             $employeeDepartment[$employeeData[$edv['employeeId']]['wxUserId']][$edv['departmentId']] = [
-                'id'                   => $edv['employeeId'],
-                'wxUserId'             => $employeeData[$edv['employeeId']]['wxUserId'],
+                'id' => $edv['employeeId'],
+                'wxUserId' => $employeeData[$edv['employeeId']]['wxUserId'],
                 'employeeDepartmentId' => $edv['id'],
-                'workDepartmentId'     => $edv['departmentId'],
-                'wxDepartmentId'       => 0,
-                'avatar'               => $employeeData[$edv['employeeId']]['avatar'],
-                'thumbAvatar'          => $employeeData[$edv['employeeId']]['thumbAvatar'],
+                'workDepartmentId' => $edv['departmentId'],
+                'wxDepartmentId' => 0,
+                'avatar' => $employeeData[$edv['employeeId']]['avatar'],
+                'thumbAvatar' => $employeeData[$edv['employeeId']]['thumbAvatar'],
             ];
         }
         foreach ($employeeData as $wek => $wev) {
-            if (! in_array($wev['wxUserId'], $wxUserIds)) {
+            if (!in_array($wev['wxUserId'], $wxUserIds)) {
                 $employeeDepartment[$wev['wxUserId']][0] = $wev;
             }
         }
@@ -406,7 +418,7 @@ class SyncLogic
         }
         foreach ($employeeDepartment as $edk => $employee) {
             foreach ($employee as $ek => $ev) {
-                if (! empty($departmentIds[$ev['workDepartmentId']])) {
+                if (!empty($departmentIds[$ev['workDepartmentId']])) {
                     $employeeDepartment[$edk][$ek]['wxDepartmentId'] = $departmentIds[$ev['workDepartmentId']];
                 }
             }
@@ -440,9 +452,9 @@ class SyncLogic
     protected function getUserData(array $phones = [], array $employee = [])
     {
         $this->userService = make(UserContract::class);
-        $userData          = $this->userService->getUsersByPhone($phones, ['id', 'phone']);
-        $user              = [];
-        if (! empty($userData)) {
+        $userData = $this->userService->getUsersByPhone($phones, ['id', 'phone']);
+        $user = [];
+        if (!empty($userData)) {
             foreach ($userData as $uk => $uv) {
                 $user[$uv['phone']] = $uv['id'];
             }
@@ -450,7 +462,7 @@ class SyncLogic
                 if (empty($ev['mobile'])) {
                     continue;
                 }
-                $employee[$ek]['log_user_id'] = ! empty($user[$ev['mobile']]) ? $user[$ev['mobile']] : 0;
+                $employee[$ek]['log_user_id'] = !empty($user[$ev['mobile']]) ? $user[$ev['mobile']] : 0;
             }
         }
         return $employee;
@@ -458,16 +470,16 @@ class SyncLogic
 
     /**
      * 获取联系人配置权限.
-     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
      * @return array
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
      */
     protected function getContactAuth(array $cropData, array $createEmployeeData = [])
     {
         //配置联系权限
         $followUser = $this->client->provider('externalContact')->app($cropData)->external_contact->getFollowUsers();
-        if (empty($followUser['errcode']) && ! empty($followUser['follow_user'])) {
+        if (empty($followUser['errcode']) && !empty($followUser['follow_user'])) {
             foreach ($followUser['follow_user'] as $fk => $fv) {
-                if (! empty($createEmployeeData[$fv])) {
+                if (!empty($createEmployeeData[$fv])) {
                     $createEmployeeData[$fv]['contact_auth'] = ContactAuth::YES;
                 }
             }
@@ -508,9 +520,9 @@ class SyncLogic
             return true;
         }
         foreach ($wxUserEmployeeData as $wxk => $wx) {
-            if (! empty($createEmployeeDepartmentData[$wx['wxUserId']])) {
+            if (!empty($createEmployeeDepartmentData[$wx['wxUserId']])) {
                 foreach ($createEmployeeDepartmentData[$wx['wxUserId']] as $ck => $cv) {
-                    $cv['employee_id']          = $wx['id'];
+                    $cv['employee_id'] = $wx['id'];
                     $createEmployeeDepartment[] = $cv;
                 }
             }
@@ -531,7 +543,7 @@ class SyncLogic
      */
     protected function getDepartmentIds($corpId)
     {
-        $department     = [];
+        $department = [];
         $departmentData = $this->workDepartmentService->getWorkDepartmentsByCorpId($corpId);
         array_map(function ($item) use (&$department) {
             $department[$item['wxDepartmentId']] = $item;
@@ -545,16 +557,16 @@ class SyncLogic
      */
     protected function getCorpData(array $corpIds)
     {
-        $corp              = [];
+        $corp = [];
         $this->corpService = make(CorpContract::class);
-        $corpData          = $this->corpService->getCorpsById($corpIds, ['wx_corpid', 'employee_secret', 'id']);
+        $corpData = $this->corpService->getCorpsById($corpIds, ['wx_corpid', 'employee_secret', 'id']);
         if (empty($corpData)) {
             return $corp;
         }
         foreach ($corpData as $cdk => $cdv) {
             $corp[$cdv['id']] = [
                 'corp_id' => $cdv['wxCorpid'],
-                'secret'  => $cdv['employeeSecret'],
+                'secret' => $cdv['employeeSecret'],
             ];
         }
         return $corp;
@@ -571,10 +583,10 @@ class SyncLogic
         if (empty($synTimeData)) {
             foreach ($corpIds as $ck => $cv) {
                 $createSynData[] = [
-                    'corp_id'          => $cv,
-                    'type'             => Type::EMPLOYEE,
+                    'corp_id' => $cv,
+                    'type' => Type::EMPLOYEE,
                     'last_update_time' => date('Y-m-d H:i:s'),
-                    'created_at'       => date('Y-m-d H:i:s'),
+                    'created_at' => date('Y-m-d H:i:s'),
                 ];
             }
         } else {
@@ -583,31 +595,31 @@ class SyncLogic
                 $synCorpIds[] = $stdv['corpId'];
                 if (in_array($stdv['corpId'], $corpIds)) {
                     $updateSynData[] = [
-                        'id'               => $stdv['id'],
+                        'id' => $stdv['id'],
                         'last_update_time' => date('Y-m-d H:i:s'),
                     ];
                 }
             }
             $diffCorpIds = array_diff($corpIds, $synCorpIds);
-            if (! empty($diffCorpIds)) {
+            if (!empty($diffCorpIds)) {
                 foreach ($diffCorpIds as $dck => $dcv) {
                     $createSynData[] = [
-                        'corp_id'          => $dcv,
-                        'type'             => Type::EMPLOYEE,
+                        'corp_id' => $dcv,
+                        'type' => Type::EMPLOYEE,
                         'last_update_time' => date('Y-m-d H:i:s'),
-                        'created_at'       => date('Y-m-d H:i:s'),
+                        'created_at' => date('Y-m-d H:i:s'),
                     ];
                 }
             }
         }
-        if (! empty($createSynData)) {
+        if (!empty($createSynData)) {
             //创建同步数据
             $createSynChunkData = array_chunk($createSynData, 100);
             foreach ($createSynChunkData as $key => $createSynChunk) {
                 $this->workUpdateTimeService->createWorkUpdateTimes($createSynChunk);
             }
         }
-        if (! empty($updateSynData)) {
+        if (!empty($updateSynData)) {
             //修改同步数据
             $updateSynChunkData = array_chunk($updateSynData, 100);
             foreach ($updateSynChunkData as $key => $updateSynChunk) {

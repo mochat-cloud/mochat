@@ -209,11 +209,11 @@ class Invite extends AbstractAction
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    private function sendMsg(array $user, int $fission_id, $contact, $data): array
+    private function sendMsg(array $user, int $fissionId, $contact, $data): array
     {
         ##EasyWeChat添加企业群发消息模板.
         $easyWeChatParams['text']['content'] = $data['text'];
-        $easyWeChatParams['link']            = ['title' => $data['link_title'], 'picurl' => $data['wx_link_pic'], 'desc' => $data['link_desc'], 'url' => Url::getOperationBaseUrl() . '/auth?jump=workFissionIndex&id=' . $fission_id];
+        $easyWeChatParams['link']            = ['title' => $data['link_title'], 'picurl' => $data['wx_link_pic'], 'desc' => $data['link_desc'], 'url' => Url::getAuthRedirectUrl(7, $fissionId)];
         $easyWeChatParams['external_userid'] = array_column($contact, 'wxExternalUserid');
         $res                                 = $this->wxApp($user['corpIds'][0], 'contact')->external_contact_message->submit($easyWeChatParams);
         if ($res['errcode'] !== 0) {

@@ -13,14 +13,14 @@ import success from "@/views/roomClockIn/success";
 import roomClockIndex from "@/views/roomClockIn/roomClockIndex";
 import roomClockInExplain from "@/views/roomClockIn/roomClockInExplain"
 //门店活码
-import employeeIndex from "@/views/codeShop/employeeIndex";
+import shopCodeIndex from "@/views/shopCode/shopCodeIndex";
 //群裂变
-import fissionIndex from "@/views/groupFission/fissionIndex";
-import fissionSpeed from "@/views/groupFission/fissionSpeed";
+import fissionIndex from "@/views/roomFission/fissionIndex";
+import fissionSpeed from "@/views/roomFission/fissionSpeed";
 //无限拉群
-import infiniteGroup from "@/views/infiniteGroup/infiniteGroup"
+import roomInfinitePull from "@/views/roomInfinitePull/roomInfinitePull"
 //互动雷达
-import interactiveRadar from "@/views/interactiveRadar/interactiveRadar"
+import radar from "@/views/radar/radar"
 
 
 Vue.use(VueRouter)
@@ -32,7 +32,8 @@ const routes = [
     component: index
   },
   {
-    path: '/workFissionIndex',
+    path: '/workFission',
+    name: 'workFissionIndex',
     component: workFissionIndex
   },
   {
@@ -41,7 +42,8 @@ const routes = [
   },
   //抽奖活动
   {
-    path: '/lotteryIndex',
+    path: '/lottery',
+    name: 'lotteryIndex',
     component: lotteryIndex
   },
   //抽奖活动——规则说明
@@ -51,12 +53,14 @@ const routes = [
   },
   //  互动雷达
   {
-    path: '/interactiveRadar',
-    component: interactiveRadar
+    path: '/radar',
+    name: 'radar',
+    component: radar
   },
   //群打卡
   {
-    path: '/roomClockIndex',
+    path: '/roomClockIn',
+    name: '/roomClockIn',
     component: roomClockIndex
   },
 
@@ -66,14 +70,15 @@ const routes = [
     component: roomClockInExplain
   },
 
-//门店活码
+  //门店活码
   {
-    path: '/employeeIndex',
-    component: employeeIndex
+    path: '/shopCode',
+    name: 'shopCodeIndex',
+    component: shopCodeIndex
   },
-//群裂变
+  //群裂变
   {
-    path: '/fissionIndex',
+    path: '/roomFission',
     component: fissionIndex
   },
 
@@ -84,12 +89,12 @@ const routes = [
   },
   //无限拉群
   {
-    path: '/infiniteGroup',
-    component: infiniteGroup
+    path: '/roomInfinitePull',
+    component: roomInfinitePull
   }
 ]
 const router = new VueRouter({
-  mode: 'hash',
+  mode: 'history',
   base: process.env.BASE_URL,
   routes
 })

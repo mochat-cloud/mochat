@@ -8,6 +8,7 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
+
 namespace MoChat\Plugin\RoomFission\Logic;
 
 use Hyperf\Contract\StdoutLoggerInterface;
@@ -76,20 +77,21 @@ class StoreLogic
         RoomFissionWelcomeContract $roomFissionWelcomeService,
         RoomFissionRoomContract $roomFissionRoomService,
         RoomFissionInviteContract $roomFissionInviteService
-    ) {
-        $this->logger                    = $logger;
-        $this->roomFissionService        = $roomFissionService;
-        $this->roomFissionPosterService  = $roomFissionPosterService;
+    )
+    {
+        $this->logger = $logger;
+        $this->roomFissionService = $roomFissionService;
+        $this->roomFissionPosterService = $roomFissionPosterService;
         $this->roomFissionWelcomeService = $roomFissionWelcomeService;
-        $this->roomFissionRoomService    = $roomFissionRoomService;
-        $this->roomFissionInviteService  = $roomFissionInviteService;
+        $this->roomFissionRoomService = $roomFissionRoomService;
+        $this->roomFissionInviteService = $roomFissionInviteService;
     }
 
     /**
      * @param array $user 登录用户信息
      * @param array $params 请求参数
-     * @throws \JsonException|\League\Flysystem\FileExistsException
      * @return array 响应数组
+     * @throws \JsonException|\League\Flysystem\FileExistsException
      */
     public function handle(array $user, array $params): array
     {
@@ -105,74 +107,74 @@ class StoreLogic
      * 处理参数.
      * @param array $user 用户信息
      * @param array $params 接受参数
-     * @throws \JsonException|\League\Flysystem\FileExistsException
      * @return array 响应数组
+     * @throws \JsonException|\League\Flysystem\FileExistsException
      */
     private function handleParam(array $user, array $params): array
     {
         $data['fission'] = [
             'official_account_id' => $params['fission']['official_account_id'],
-            'active_name'         => $params['fission']['active_name'],
-            'end_time'            => $params['fission']['end_time'],
-            'target_count'        => (int) $params['fission']['target_count'],
-            'new_friend'          => (int) $params['fission']['new_friend'],
-            'delete_invalid'      => (int) $params['fission']['delete_invalid'],
-            'receive_employees'   => json_encode($params['fission']['receive_employees'], JSON_THROW_ON_ERROR),
-            'auto_pass'           => (int) $params['fission']['auto_pass'],
-            'tenant_id'           => isset($params['tenant_id']) ? $params['tenant_id'] : 0,
-            'corp_id'             => $user['corpIds'][0],
-            'create_user_id'      => $user['id'],
-            'created_at'          => date('Y-m-d H:i:s'),
+            'active_name' => $params['fission']['active_name'],
+            'end_time' => $params['fission']['end_time'],
+            'target_count' => (int)$params['fission']['target_count'],
+            'new_friend' => (int)$params['fission']['new_friend'],
+            'delete_invalid' => (int)$params['fission']['delete_invalid'],
+            'receive_employees' => json_encode($params['fission']['receive_employees'], JSON_THROW_ON_ERROR),
+            'auto_pass' => (int)$params['fission']['auto_pass'],
+            'tenant_id' => isset($params['tenant_id']) ? $params['tenant_id'] : 0,
+            'corp_id' => $user['corpIds'][0],
+            'create_user_id' => $user['id'],
+            'created_at' => date('Y-m-d H:i:s'),
         ];
 
         ##欢迎语
-        if (! empty($params['welcome']['link_pic'])) {
+        if (!empty($params['welcome']['link_pic'])) {
             $params['welcome']['link_pic'] = File::uploadBase64Image($params['welcome']['link_pic'], 'image/roomFission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg');
         }
         ##EasyWeChat上传图片
-        $wxUrl           = empty($params['welcome']['link_pic']) ? ['url' => ''] : $this->wxApp($user['corpIds'][0], 'contact')->media->uploadImg(dirname(__DIR__, 3) . '/storage/upload/static/' . $params['welcome']['link_pic']);
-        $templateId      = $this->handleWelcome($user['corpIds'][0], $params['welcome'], $wxUrl['url']);
+        $wxUrl = empty($params['welcome']['link_pic']) ? ['url' => ''] : $this->wxApp($user['corpIds'][0], 'contact')->media->uploadImg(dirname(__DIR__, 3) . '/storage/upload/static/' . $params['welcome']['link_pic']);
+        $templateId = $this->handleWelcome($user['corpIds'][0], $params['welcome'], $wxUrl['url']);
         $data['welcome'] = [
-            'text'           => $params['welcome']['text'],
-            'link_title'     => $params['welcome']['link_title'],
-            'link_desc'      => $params['welcome']['link_desc'],
-            'link_pic'       => $params['welcome']['link_pic'],
-            'link_wx_url'    => $wxUrl['url'],
-            'template_id'    => $templateId,
+            'text' => $params['welcome']['text'],
+            'link_title' => $params['welcome']['link_title'],
+            'link_desc' => $params['welcome']['link_desc'],
+            'link_pic' => $params['welcome']['link_pic'],
+            'link_wx_url' => $wxUrl['url'],
+            'template_id' => $templateId,
             'create_user_id' => $user['id'],
-            'created_at'     => date('Y-m-d H:i:s'),
+            'created_at' => date('Y-m-d H:i:s'),
         ];
 
         ##海报
         $data['poster'] = [
-            'cover_pic'      => File::uploadBase64Image($params['poster']['cover_pic'], 'image/roomFission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg'),
-            'avatar_show'    => (int) $params['poster']['avatar_show'],
-            'nickname_show'  => (int) $params['poster']['nickname_show'],
+            'cover_pic' => File::uploadBase64Image($params['poster']['cover_pic'], 'image/roomFission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg'),
+            'avatar_show' => (int)$params['poster']['avatar_show'],
+            'nickname_show' => (int)$params['poster']['nickname_show'],
             'nickname_color' => $params['poster']['nickname_color'],
-            'qrcode_w'       => $params['poster']['qrcode_w'],
-            'qrcode_h'       => $params['poster']['qrcode_h'],
-            'qrcode_x'       => $params['poster']['qrcode_x'],
-            'qrcode_y'       => $params['poster']['qrcode_y'],
+            'qrcode_w' => $params['poster']['qrcode_w'],
+            'qrcode_h' => $params['poster']['qrcode_h'],
+            'qrcode_x' => $params['poster']['qrcode_x'],
+            'qrcode_y' => $params['poster']['qrcode_y'],
             'create_user_id' => $user['id'],
-            'created_at'     => date('Y-m-d H:i:s'),
+            'created_at' => date('Y-m-d H:i:s'),
         ];
         ##群聊
         $data['rooms'] = $params['rooms'];
         ##客户参与
-        if (! empty($params['invite']['link_pic'])) {
+        if (!empty($params['invite']['link_pic'])) {
             $params['invite']['link_pic'] = File::uploadBase64Image($params['invite']['link_pic'], 'image/roomFission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg');
         }
         $data['invite'] = [
-            'type'           => (int) $params['invite']['type'],
-            'employees'      => empty($params['invite']['employees']) ? '{}' : json_encode($params['invite']['employees'], JSON_THROW_ON_ERROR),
+            'type' => (int)$params['invite']['type'],
+            'employees' => empty($params['invite']['employees']) ? '{}' : json_encode($params['invite']['employees'], JSON_THROW_ON_ERROR),
             'choose_contact' => empty($params['invite']['choose_contact']) ? '{}' : json_encode($params['invite']['choose_contact'], JSON_THROW_ON_ERROR),
-            'text'           => $params['invite']['text'],
-            'link_title'     => $params['invite']['link_title'],
-            'link_desc'      => $params['invite']['link_desc'],
-            'link_pic'       => $params['invite']['link_pic'],
+            'text' => $params['invite']['text'],
+            'link_title' => $params['invite']['link_title'],
+            'link_desc' => $params['invite']['link_desc'],
+            'link_pic' => $params['invite']['link_pic'],
             //            'wx_link_pic' => $invite_url['url'],
             'create_user_id' => $user['id'],
-            'created_at'     => date('Y-m-d H:i:s'),
+            'created_at' => date('Y-m-d H:i:s'),
         ];
         return $data;
     }
@@ -197,9 +199,9 @@ class StoreLogic
             $this->roomFissionWelcomeService->createRoomFissionWelcome($params['welcome']);
             ## 群聊
             foreach ($params['rooms'] as $k => $v) {
-                $params['rooms'][$k]['fission_id']  = $id;
+                $params['rooms'][$k]['fission_id'] = $id;
                 $params['rooms'][$k]['room_qrcode'] = File::uploadBase64Image($v['room_qrcode'], 'image/roomFission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg');
-                $params['rooms'][$k]['room']        = json_encode($v['room'], JSON_THROW_ON_ERROR);
+                $params['rooms'][$k]['room'] = json_encode($v['room'], JSON_THROW_ON_ERROR);
             }
             $this->roomFissionRoomService->createRoomFissionRooms($params['rooms']);
             ## 邀请客户
@@ -222,9 +224,9 @@ class StoreLogic
      */
     private function handleWelcome(int $corpId, array $welcome, string $pic_url): string
     {
-        $url                                 = Url::getOperationBaseUrl() . '/auth?jump=employeeIndex&corpId =' . $corpId;
+        $url = Url::getAuthRedirectUrl(3, $corpId);
         $easyWeChatParams['text']['content'] = $welcome['text'];
-        $easyWeChatParams['link']            = ['title' => $welcome['link_title'], 'picurl' => $pic_url, 'desc' => $welcome['link_desc'], 'url' => $url];
+        $easyWeChatParams['link'] = ['title' => $welcome['link_title'], 'picurl' => $pic_url, 'desc' => $welcome['link_desc'], 'url' => $url];
         ##EasyWeChat添加入群欢迎语素材
         $template = $this->wxApp($corpId, 'contact')->external_contact_message_template->create($easyWeChatParams);
         if ($template['errcode'] !== 0) {

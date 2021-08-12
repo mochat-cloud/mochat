@@ -107,9 +107,8 @@
   </div>
 </template>
 <script>
-import { location, addressKeyWordList } from '@/api/shopCode'
+import { location, addressKeyWordList, department, workRoomIndexApi } from '@/api/shopCode'
 // eslint-disable-next-line no-redeclare,no-unused-vars
-import { department, workRoomIndexApi } from '@/api/shopCode'
 
 export default {
   data () {

@@ -21,4 +21,5 @@ if ($appEnv !== 'dev') {
 }
 
 return $dependencies + [
+        Hyperf\HttpServer\CoreMiddleware::class => MoChat\App\Common\Middleware\CoreMiddleware::class,
 ];

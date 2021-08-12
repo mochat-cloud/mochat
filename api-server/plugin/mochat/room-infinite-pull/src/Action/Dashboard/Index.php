@@ -193,7 +193,7 @@ class Index extends AbstractAction
                 'name'       => $val['name'],
                 'avatar'     => file_full_url($val['avatar']),
                 'qwCode'     => $qwCode,
-                'link'       => Url::getOperationBaseUrl() . '/#/infiniteGroup?id=' . $val['id'],
+                'link'       => Url::getOperationBaseUrl() . '/roomInfinitePull?id=' . $val['id'],
                 'total_num'  => $val['totalNum'],
                 'created_at' => $val['createdAt'],
             ];

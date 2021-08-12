@@ -23,3 +23,12 @@ Vue.prototype.$getState = (name, url = '') => {
         return state.match(reg)[2];
     }
 }
+
+Vue.prototype.$redirectAuth = (url = '') => {
+    if (url === '') {
+        return;
+    }
+    url = process.env.BASE_URL + url;
+    console.log(url);
+    // window.location.href = process.env.BASE_URL + url;
+}

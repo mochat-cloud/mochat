@@ -132,7 +132,12 @@ class Info extends AbstractAction
             $rooms[$k]['room']       = json_decode($v['room'], true, 512, JSON_THROW_ON_ERROR);
         }
 
-        return ['fission' => $fission, 'poster' => $poster, 'welcome' => $welcome, 'rooms' => $rooms, 'invite' => $invite, 'link' => Url::getOperationBaseUrl() . '/auth?jump=fissionIndex&modularType=6&fission_id=' . $id . "&parentUnionId=''&wxUserId=''"];
+        $link = Url::getAuthRedirectUrl(8, $id, [
+            'parent_union_id' => 0,
+            'wx_user_id' => $id,
+        ]);
+
+        return ['fission' => $fission, 'poster' => $poster, 'welcome' => $welcome, 'rooms' => $rooms, 'invite' => $invite, 'link' => $link];
     }
 
     /**

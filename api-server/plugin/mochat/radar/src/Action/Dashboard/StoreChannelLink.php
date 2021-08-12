@@ -138,7 +138,11 @@ class StoreChannelLink extends AbstractAction
         try {
             ## 创建渠道链接
             $id   = $this->radarChannelLinkService->createRadarChannelLink($params);
-            $link = Url::getOperationBaseUrl() . '/auth?jump=interactiveRadar&modularType=4&target_type=' . $type . '&staff_id=' . $params['employeeId'] . '&radar_id=' . (int) $params['radar_id'] . '&target_id=' . $id;
+            $link = Url::getAuthRedirectUrl(6, $id, [
+                'type' => $type,
+                'employee_id' => $params['employeeId'],
+                'target_id' => $id,
+                ]);
             $this->radarChannelLinkService->updateRadarChannelLinkById($id, ['link' => $link]);
             Db::commit();
         } catch (\Throwable $e) {

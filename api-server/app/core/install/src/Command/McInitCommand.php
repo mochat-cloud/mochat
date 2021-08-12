@@ -161,21 +161,37 @@ class McInitCommand extends HyperfCommand
      */
     protected function setDomain(): void
     {
-        appDomain:
-        $appDomain = $this->ask('输入后端接口域名', env('APP_DOMAIN', 'http://api.mo.chat'));
-        if (strpos($appDomain, 'http') === false) {
-            $this->warn('后端接口域名请添加 http(s)://');
-            goto appDomain;
+        dashboardBaseUrl:
+        $dashboardBaseUrl = $this->ask('输入商户后台地址，例如：http://scrm.mo.chat', env('DASHBOARD_BASE_URL', 'http://scrm.mo.chat'));
+        if (strpos($dashboardBaseUrl, 'http') === false) {
+            $this->warn('商户后台地址请添加 http(s)://');
+            goto dashboardBaseUrl;
         }
-        $this->setEnvs([['APP_DOMAIN', $appDomain]]);
+        $this->setEnvs([['DASHBOARD_BASE_URL', $dashboardBaseUrl]]);
 
-        jsDomain:
-        $jsDomain = $this->ask('输入H5侧边工具栏前端域名', env('JS_DOMAIN', 'http://h5.mo.chat'));
-        if (strpos($jsDomain, 'http') === false) {
-            $this->warn('H5侧边工具栏前端域名请添加 http(s)://');
-            goto jsDomain;
+        apiBaseUrl:
+        $apiBaseUrl = $this->ask('输入后端接口地址，例如：http://api.mo.chat', env('API_BASE_URL', 'http://api.mo.chat'));
+        if (strpos($apiBaseUrl, 'http') === false) {
+            $this->warn('后端接口地址请添加 http(s)://');
+            goto apiBaseUrl;
         }
-        $this->setEnvs([['JS_DOMAIN', $jsDomain]]);
+        $this->setEnvs([['API_BASE_URL', $apiBaseUrl]]);
+
+        sidebarBaseUrl:
+        $sidebarBaseUrl = $this->ask('输入聊天侧边栏地址，例如：http://sidebar.mo.chat', env('SIDEBAR_BASE_URL', 'http://sidebar.mo.chat'));
+        if (strpos($sidebarBaseUrl, 'http') === false) {
+            $this->warn('聊天侧边栏地址请添加 http(s)://');
+            goto sidebarBaseUrl;
+        }
+        $this->setEnvs([['SIDEBAR_BASE_URL', $sidebarBaseUrl]]);
+
+        operationBaseUrl:
+        $operationBaseUrl = $this->ask('输入运营工具地址，例如：http://op.mo.chat', env('OPERATION_BASE_URL', 'http://op.mo.chat'));
+        if (strpos($operationBaseUrl, 'http') === false) {
+            $this->warn('输入运营工具地址请添加 http(s)://');
+            goto operationBaseUrl;
+        }
+        $this->setEnvs([['OPERATION_BASE_URL', $operationBaseUrl]]);
     }
 
     /**

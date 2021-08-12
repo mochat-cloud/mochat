@@ -34,14 +34,3 @@ export function receiveApi (params) {
         data: params
     })
 }
-//获取用户信息
-export function userInfo (params) {
-    return request({
-        url: '/officialAccount/openUserInfo',
-        method: 'GET',
-        params: {
-            ...params,
-            appid: localStorage.getItem('mochat_component_appid')
-        }
-    })
-}
