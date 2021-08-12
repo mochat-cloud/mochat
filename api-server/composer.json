@@ -37,6 +37,7 @@
         "hyperf/redis": "2.2.*",
         "hyperf/validation": "2.2.*",
         "hyperf/paginator": "2.2.*",
+        "hyperf/session": "2.2.*",
         "mochat/framework": "^1.1",
         "mochat/wework-finance-sdk": "^1.0",
         "overtrue/pinyin": "^4.0",
