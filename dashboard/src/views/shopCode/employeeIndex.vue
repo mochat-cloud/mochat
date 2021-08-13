@@ -851,7 +851,7 @@ export default {
   methods: {
     // 设置公众号
     setUpPublicName () {
-      publicIndexApi({ type: 2 }).then((res) => {
+      publicIndexApi({ type: 3 }).then((res) => {
         this.officialAccount = res.data.nickname
       })
     },

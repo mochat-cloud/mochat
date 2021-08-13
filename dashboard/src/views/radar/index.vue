@@ -203,7 +203,7 @@ export default {
   methods: {
     // 设置公众号
     setUpPublicName () {
-      publicIndexApi({ type: 2 }).then((res) => {
+      publicIndexApi({ type: 6 }).then((res) => {
         this.officialAccount = res.data.nickname
       })
     },
@@ -218,9 +218,9 @@ export default {
       if (this.type.index == 0) {
         this.$router.push({ path: '/radar/detail?id=' + id })
       } else if (this.type.index == 1) {
-        this.$router.push({ path: '/radar/pdfDetails?id=' + id })
+        this.$router.push({ path: '/radar/pdfDetail?id=' + id })
       } else {
-        this.$router.push({ path: '/radar/titleDetails?id=' + id })
+        this.$router.push({ path: '/radar/articleDetail?id=' + id })
       }
     },
     // 修改
@@ -230,7 +230,7 @@ export default {
       } else if (this.type.index == 1) {
         this.$router.push({ path: '/radar/editPdf?id=' + id })
       } else {
-        this.$router.push({ path: '/radar/editTitle?id=' + id })
+        this.$router.push({ path: '/radar/editArticle?id=' + id })
       }
     },
     // 删除
