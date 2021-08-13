@@ -161,16 +161,17 @@ class UpdateLogic
         $res        = ['pic' => '', 'pic_url' => ''];
         $file       = File::uploadBase64Image($file, 'image/roomWelcome/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg'); //将Base64图片转换为本地图片并保存
         $res['pic'] = $file;
+        $localFile = File::download(file_full_url($file), $file);
         if ($type === 1) {
             ##EasyWeChat上传图片
-            $uploadRes = $this->wxApp($user['corpIds'][0], 'contact')->media->uploadImg(dirname(__DIR__, 3) . '/storage/upload/static/' . $file);
+            $uploadRes = $this->wxApp($user['corpIds'][0], 'contact')->media->uploadImg($localFile);
             if ($uploadRes['errcode'] !== 0) {
                 throw new CommonException(ErrorCode::INVALID_PARAMS, '上传图片失败');
             }
             $res['pic_url'] = $uploadRes['url'];
         } else {
             ##EasyWeChat上传临时素材
-            $uploadRes = $this->wxApp($user['corpIds'][0], 'contact')->media->uploadFile(dirname(__DIR__, 3) . '/storage/upload/static/' . $file);
+            $uploadRes = $this->wxApp($user['corpIds'][0], 'contact')->media->uploadFile($localFile);
             if ((int) $uploadRes['errcode'] !== 0) {
                 throw new CommonException(ErrorCode::INVALID_PARAMS, '上传临时素材失败');
             }

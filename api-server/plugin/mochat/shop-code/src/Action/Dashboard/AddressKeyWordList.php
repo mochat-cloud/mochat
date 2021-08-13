@@ -89,7 +89,7 @@ class AddressKeyWordList extends AbstractAction
     protected function rules(): array
     {
         return [
-            'keyword' => 'required',
+//            'keyword' => 'required',
         ];
     }
 

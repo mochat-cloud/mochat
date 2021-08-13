@@ -117,7 +117,7 @@ if (! function_exists('file_full_url')) {
      * @param string $path 文件的路径
      * @return string 上传文件的url
      */
-    function file_full_url(string $path): string
+    function file_full_url(string $path, string $fileDriver = ''): string
     {
         return \Hyperf\Utils\ApplicationContext::getContainer()->get(\MoChat\App\Utils\FilesystemExt::class)->getFullUrl($path);
     }

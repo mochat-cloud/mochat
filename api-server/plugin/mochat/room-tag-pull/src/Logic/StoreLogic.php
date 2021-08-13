@@ -8,6 +8,7 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
+
 namespace MoChat\Plugin\RoomTagPull\Logic;
 
 use Hyperf\Contract\StdoutLoggerInterface;
@@ -98,19 +99,19 @@ class StoreLogic
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
     /**
      * @param array $user 登录用户信息
      * @param array $params 请求参数
-     * @throws \EasyWeChat\Kernel\Exceptions\InvalidArgumentException
+     * @return array 响应数组
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \JsonException
      * @throws \League\Flysystem\FileExistsException
-     * @return array 响应数组
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidArgumentException
      */
     public function handle(array $user, array $params): array
     {
@@ -124,31 +125,31 @@ class StoreLogic
      * 处理参数.
      * @param array $user 用户信息
      * @param array $params 接受参数
-     * @throws \EasyWeChat\Kernel\Exceptions\InvalidArgumentException
+     * @return array 响应数组
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \JsonException
      * @throws \League\Flysystem\FileExistsException
-     * @return array 响应数组
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidArgumentException
      */
     private function handleParam(array $user, array $params): array
     {
-        $rooms   = $this->handleRooms($user, $params['rooms']);
-        $sendRes = $this->sendMsg($user, $rooms, $params['guide'], $params['employees'], $params['choose_contact'], (int) $params['filter_contact']);
+        $rooms = $this->handleRooms($user, $params['rooms']);
+        $sendRes = $this->sendMsg($user, $rooms, $params['guide'], $params['employees'], $params['choose_contact'], (int)$params['filter_contact']);
         ## 基本信息
         return [
-            'name'           => $params['name'],
-            'employees'      => implode(',', $params['employees']),
+            'name' => $params['name'],
+            'employees' => implode(',', $params['employees']),
             'choose_contact' => json_encode($params['choose_contact'], JSON_THROW_ON_ERROR),
-            'guide'          => $params['guide'],
-            'rooms'          => json_encode($rooms),
-            'filter_contact' => (int) $params['filter_contact'],
-            'contact_num'    => $this->filterContact((int) $params['filter_contact'], $user, $rooms, $params['employees'], $params['choose_contact']),
-            'wx_tid'         => json_encode($sendRes),
-            'tenant_id'      => isset($params['tenant_id']) ? $params['tenant_id'] : 0,
-            'corp_id'        => $user['corpIds'][0],
+            'guide' => $params['guide'],
+            'rooms' => json_encode($rooms),
+            'filter_contact' => (int)$params['filter_contact'],
+            'contact_num' => $this->filterContact((int)$params['filter_contact'], $user, $rooms, $params['employees'], $params['choose_contact']),
+            'wx_tid' => json_encode($sendRes),
+            'tenant_id' => isset($params['tenant_id']) ? $params['tenant_id'] : 0,
+            'corp_id' => $user['corpIds'][0],
             'create_user_id' => $user['id'],
-            'created_at'     => date('Y-m-d H:i:s'),
+            'created_at' => date('Y-m-d H:i:s'),
         ];
     }
 
@@ -160,7 +161,8 @@ class StoreLogic
     {
         foreach ($rooms as $key => $room) {
             $rooms[$key]['image'] = File::uploadBase64Image($room['image'], 'image/roomTagPull/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg');
-            $res                  = $this->wxApp($user['corpIds'][0], 'contact')->media->uploadImg(dirname(__DIR__, 3) . '/storage/upload/static/' . $rooms[$key]['image']);
+            $localFile = File::download(file_full_url($rooms[$key]['image']), $rooms[$key]['image']);
+            $res = $this->wxApp($user['corpIds'][0], 'contact')->media->uploadImg($localFile);
             if ($res['errcode'] === 0) {
                 $rooms[$key]['wx_image'] = $res['url'];
             } else {
@@ -184,9 +186,9 @@ class StoreLogic
         $wx = $this->wxApp($user['corpIds'][0], 'contact')->external_contact_message;
         ## 员工
         foreach ($employees as $emp) {
-            $employee = $this->workEmployeeService->getWorkEmployeeById((int) $emp, ['wx_user_id']);
+            $employee = $this->workEmployeeService->getWorkEmployeeById((int)$emp, ['wx_user_id']);
             ## 员工客户
-            $contact = $this->workContactService->getWorkContactsByEmployeeIdSearch($user['corpIds'][0], (int) $emp, $chooseContact);
+            $contact = $this->workContactService->getWorkContactsByEmployeeIdSearch($user['corpIds'][0], (int)$emp, $chooseContact);
             if (empty($contact)) {
                 continue;
             }
@@ -197,7 +199,7 @@ class StoreLogic
                     if (empty($sendContact)) {
                         break;
                     }
-                    $roomContact = $this->workContactRoomService->getWorkContactRoomsByRoomIdContact((int) $rooms[$i]['id'], ['contact_id']);
+                    $roomContact = $this->workContactRoomService->getWorkContactRoomsByRoomIdContact((int)$rooms[$i]['id'], ['contact_id']);
                     foreach ($sendContact as $k => $v) {
                         if (in_array($v['id'], array_column($roomContact, 'contactId'), true)) {
                             $sendContact[$k]['is_join_room'] = 1;
@@ -208,17 +210,17 @@ class StoreLogic
                         }
                     }
                     $easyWeChatParams['text']['content'] = $text;
-                    $easyWeChatParams['image']           = ['pic_url' => $rooms[$i]['wx_image']];
+                    $easyWeChatParams['image'] = ['pic_url' => $rooms[$i]['wx_image']];
                     $easyWeChatParams['external_userid'] = array_unique(array_column($contact, 'wxExternalUserid'));
-                    $easyWeChatParams['sender']          = $employee['wxUserId'];
-                    $res                                 = $wx->submit($easyWeChatParams);
+                    $easyWeChatParams['sender'] = $employee['wxUserId'];
+                    $res = $wx->submit($easyWeChatParams);
                     if ($res['errcode'] !== 0) {
                         throw new CommonException(ErrorCode::INVALID_PARAMS, '发送失败');
                     }
                     $sendRes[] = [
                         'wxUserId' => $employee['wxUserId'],
-                        'tid'      => $res['msgid'],
-                        'status'   => 0,
+                        'tid' => $res['msgid'],
+                        'status' => 0,
                     ];
                     $start += $rooms[$i]['num'];
                 }
@@ -244,8 +246,8 @@ class StoreLogic
             $rooms = json_decode($params['rooms'], true, 512, JSON_THROW_ON_ERROR);
             foreach (explode(',', $params['employees']) as $emp) {
                 ## 员工客户
-                $contact = $this->workContactService->getWorkContactsBySearch($user['corpIds'][0], [(int) $emp], json_decode($params['choose_contact'], true, 512, JSON_THROW_ON_ERROR));
-                $start   = 0;
+                $contact = $this->workContactService->getWorkContactsBySearch($user['corpIds'][0], [(int)$emp], json_decode($params['choose_contact'], true, 512, JSON_THROW_ON_ERROR));
+                $start = 0;
                 if (empty($contact)) {
                     continue;
                 }
@@ -255,11 +257,11 @@ class StoreLogic
                         if (empty($sendContact)) {
                             break;
                         }
-                        $roomContact = $this->workContactRoomService->getWorkContactRoomsByRoomIdContact((int) $rooms[$i]['id'], ['contact_id']);
+                        $roomContact = $this->workContactRoomService->getWorkContactRoomsByRoomIdContact((int)$rooms[$i]['id'], ['contact_id']);
                         foreach ($sendContact as $k => $v) {
                             $sendContact[$k]['room_tag_pull_id'] = $id;
-                            $sendContact[$k]['room_id']          = $rooms[$i]['id'];
-                            $sendContact[$k]['is_join_room']     = 0;
+                            $sendContact[$k]['room_id'] = $rooms[$i]['id'];
+                            $sendContact[$k]['is_join_room'] = 0;
                             if (in_array($v['contactId'], array_column($roomContact, 'contactId'), true)) {
                                 $sendContact[$k]['is_join_room'] = 1;
                                 if ($params['filter_contact'] === 1) {

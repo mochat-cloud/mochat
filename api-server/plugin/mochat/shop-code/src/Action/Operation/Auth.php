@@ -11,17 +11,14 @@ declare(strict_types=1);
 
 namespace MoChat\Plugin\ShopCode\Action\Operation;
 
-use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\RequestMapping;
-use MoChat\App\OfficialAccount\Contract\OfficialAccountContract;
-use MoChat\App\OfficialAccount\Contract\OfficialAccountSetContract;
-use MoChat\App\OfficialAccount\Logic\AuthLogic;
-use MoChat\App\Utils\Url;
 use MoChat\Framework\Action\AbstractAction;
-use MoChat\Framework\Constants\ErrorCode;
-use MoChat\Framework\Exception\CommonException;
+use MoChat\Framework\Request\ValidateSceneTrait;
 use Psr\Http\Message\ResponseInterface as Psr7ResponseInterface;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\Session\Middleware\SessionMiddleware;
+use MoChat\App\OfficialAccount\Action\Operation\Traits\AuthTrait;
 
 /**
  * 公众号授权跳转.
@@ -29,41 +26,19 @@ use Psr\Http\Message\ResponseInterface as Psr7ResponseInterface;
  */
 class Auth extends AbstractAction
 {
-    /**
-     * @Inject
-     * @var OfficialAccountSetContract
-     */
-    protected $officialAccountSetService;
+    use AuthTrait;
+    use ValidateSceneTrait;
 
     /**
-     * @Inject
-     * @var OfficialAccountContract
-     */
-    protected $officialAccountService;
-
-    /**
-     * @Inject()
-     * @var AuthLogic
-     */
-    private $authLogic;
-
-    /**
+     * 为了自动兼容nginx转发规则，此处的路由定义与规范不同
+     *
+     * @Middleware(SessionMiddleware::class)
      * @RequestMapping(path="/operation/auth/shopCode", methods="get,post")
      */
     public function handle(): Psr7ResponseInterface
     {
-        $target = (string) $this->request->input('target');
-        $code = (string) $this->request->input('code');
-        $appId = (string) $this->request->input('appid');
-
-        $officialAccountInfo = [];
-        if (empty($code)) {
-            $officialAccountInfo = $this->getOfficialAccountByInfo();
-        }
-
-        $redirectUriPrefix = Url::getOperationBaseUrl() . '/auth/shopCode';
-        $redirectUri = $this->authLogic->handle($code, $appId, $target, $officialAccountInfo, $redirectUriPrefix, $this->request);
-        return $this->response->redirect($redirectUri);
+        $this->validated($this->request->all());
+        return $this->execute();
     }
 
     /**
@@ -75,7 +50,6 @@ class Auth extends AbstractAction
     {
         return [
             'target' => 'required',
-            'corpId' => 'required',
         ];
     }
 
@@ -87,29 +61,21 @@ class Auth extends AbstractAction
     {
         return [
             'target.required' => 'target 必传',
-            'corpId.required' => 'id 必传',
         ];
     }
 
-    /**
-     * 获取公众号信息
-     *
-     * @return array
-     */
-    protected function getOfficialAccountByInfo()
+    protected function getModuleName()
     {
-        $corpId = (int)$this->request->input('id');
+        return 'shopCode';
+    }
 
-        if ($corpId === 0) {
-            throw new CommonException(ErrorCode::INVALID_PARAMS, '活动不存在');
-        }
+    protected function getType(): int
+    {
+        return 3;
+    }
 
-        $type = 3;
-        $set = $this->officialAccountSetService->getOfficialAccountSetByCorpIdType($corpId, $type, ['official_account_id']);
-        if (!empty($set)) {
-            return $this->officialAccountService->getOfficialAccountById($set['officialAccountId'], ['id', 'appid', 'authorizer_appid']);
-        } else {
-            return $this->officialAccountService->getOfficialAccountByCorpId($corpId, ['id', 'appid', 'authorizer_appid']);
-        }
+    protected function getCorpId(): int
+    {
+        return (int)$this->request->input('id');
     }
 }

@@ -113,10 +113,9 @@ class Medium
      * 音频转amr.
      * @param string $filePath ...
      * @param bool $isOldUnlink 是否删除原文件
-     * @throws \Exception
-     * @return string ...
+     * @return string
      */
-    protected function ffmpegToAmr(string $filePath, bool $isOldUnlink = false): string
+    protected function ffmpegToAmr(string $filePath, bool $isOldUnlink = true): string
     {
         try {
             ## 转amr

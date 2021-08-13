@@ -191,9 +191,8 @@ class Poster extends AbstractAction
 
     /**
      * 生成客户记录.
-     * @throws \Exception
      */
-    private function createRoomFissionContact(array $params, int $roomId): void
+    private function createRoomFissionContact(array $params, int $roomId)
     {
         $contactRecord = $this->roomFissionContactService->getRoomFissionContactByRoomIdUnionIdFissionID($roomId, $params['union_id'], (int) $params['fission_id'], ['id']);
         if (empty($contactRecord)) {

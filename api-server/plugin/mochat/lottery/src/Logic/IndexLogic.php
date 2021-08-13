@@ -130,7 +130,7 @@ class IndexLogic
                 'time'               => $time,
                 'created_at'         => $val['createdAt'],
                 'status'             => $status,
-                'share_link'         => Url::getAuthRedirectUrl(2, $val['id']),
+                'share_link'         => Url::getAuthRedirectUrl(2, $val['id'], ['source' => 'from_pc']),
             ];
         }
         $data['page']['total']     = $lotteryList['total'];

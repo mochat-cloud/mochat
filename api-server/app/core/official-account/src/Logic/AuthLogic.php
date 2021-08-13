@@ -31,18 +31,15 @@ class AuthLogic
             return urldecode($this->authCallback($code, $appId, $target, $request));
         }
 
-
         $weChatUser = $this->session->get('wechat_user_'.$officialAccountInfo['id']);
 
         // 已登录，直接跳转
         if (!empty($weChatUser)) {
             return urldecode($target);
         }
-
         // 未登录，跳转至授权
         $redirectUri = $redirectUriPrefix . '?target='. $target;
-
-        return Url::getOAuthRedirectUrl($officialAccountInfo['authorizerAppid'], $officialAccountInfo['appid'], $redirectUri);
+        return $this->getOAuthRedirectUrl($officialAccountInfo['authorizerAppid'], $officialAccountInfo['appid'], $redirectUri);
     }
 
     protected function getTarget($target): string
@@ -50,10 +47,10 @@ class AuthLogic
         if (false === strpos($target, 'http')) {
             $target = Url::getOperationBaseUrl() . $target;
         }
-        return $target;
+        return urlencode($target);
     }
 
-    public function authCallback(string $code, string $appId, string $target, RequestInterface $request)
+    protected function authCallback(string $code, string $appId, string $target, RequestInterface $request)
     {
         $config = config('framework.wechat_open_platform');
         ## EasyWeChat
@@ -65,10 +62,23 @@ class AuthLogic
             $officialAccount = rebind_app($officialAccount, $request);
             $user = $officialAccount->oauth->userFromCode($code);
             $user = $user->toArray();
-            dump($appId, $user);
-            $this->session->set('wechat_user_' . $appId, $user['raw']);
-            return $target ? $target : Url::getOperationBaseUrl();
+            $this->session->set('wechat_user_' . $appId, $user);
+            return !empty($target) ? $target : Url::getOperationBaseUrl();
         }
         return Url::getOperationBaseUrl();
+    }
+
+    protected function getOAuthRedirectUrl(string $appId, string $componentAppId, string $redirectUri): string
+    {
+        $query = [
+            'appid' => $appId,
+            'component_appid' => $componentAppId,
+            'redirect_uri' => $redirectUri,
+            'response_type' => 'code',
+            'scope' => 'snsapi_userinfo',
+            'state' => '',
+        ];
+
+        return 'https://open.weixin.qq.com/connect/oauth2/authorize?' . http_build_query($query) . '#wechat_redirect';
     }
 }

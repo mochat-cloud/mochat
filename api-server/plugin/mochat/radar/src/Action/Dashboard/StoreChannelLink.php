@@ -138,7 +138,7 @@ class StoreChannelLink extends AbstractAction
         try {
             ## 创建渠道链接
             $id   = $this->radarChannelLinkService->createRadarChannelLink($params);
-            $link = Url::getAuthRedirectUrl(6, $id, [
+            $link = Url::getAuthRedirectUrl(6, $params['radar_id'], [
                 'type' => $type,
                 'employee_id' => $params['employeeId'],
                 'target_id' => $id,

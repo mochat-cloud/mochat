@@ -148,8 +148,12 @@ class StoreLogic
         if (! empty($params['welcome']['link_cover_url'])) {
             $picUrl                              = File::uploadBase64Image($params['welcome']['link_cover_url'], 'image/fission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg');
             $params['welcome']['link_cover_url'] = $picUrl;
+            $localFile = File::download(file_full_url($picUrl), $picUrl);
+            $wxUrl           = $this->wxApp($user['corpIds'][0], 'contact')->media->uploadImg($localFile);
+        } else {
+            $wxUrl           = ['url' => ''];
         }
-        $wxUrl           = empty($params['welcome']['link_cover_url']) ? ['url' => ''] : $this->wxApp($user['corpIds'][0], 'contact')->media->uploadImg(dirname(__DIR__, 3) . '/storage/upload/static/' . $params['welcome']['link_cover_url']);
+
         $data['welcome'] = [
             'msg_text'       => $params['welcome']['msg_text'],
             'link_title'     => $params['welcome']['link_title'],
@@ -193,8 +197,11 @@ class StoreLogic
         if (! empty($params['invite']['link_pic'])) {
             $picUrl                       = File::uploadBase64Image($params['invite']['link_pic'], 'image/fission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg');
             $params['invite']['link_pic'] = $picUrl;
+            $localFile = File::download(file_full_url($picUrl), $picUrl);
+            $inviteUrl      = $this->wxApp($user['corpIds'][0], 'contact')->media->uploadImg($localFile);
+        } else {
+            $inviteUrl      = ['url' => ''];
         }
-        $inviteUrl      = empty($params['invite']['link_pic']) ? ['url' => ''] : $this->wxApp($user['corpIds'][0], 'contact')->media->uploadImg(dirname(__DIR__, 3) . '/storage/upload/static/' . $params['invite']['link_pic']);
         $data['invite'] = [
             'text'           => $params['invite']['text'],
             'link_title'     => $params['invite']['link_title'],
@@ -272,13 +279,15 @@ class StoreLogic
         $res            = [];
         if (! empty($complex['image'])) {
             $pic            = File::uploadBase64Image($complex['image'], 'image/fission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg');
-            $wxPic          = $this->wxApp($user['corpIds'][0], 'contact')->media->uploadImg(dirname(__DIR__, 3) . '/storage/upload/static/' . $pic);
+            $localFile = File::download(file_full_url($pic), $pic);
+            $wxPic          = $this->wxApp($user['corpIds'][0], 'contact')->media->uploadImg($localFile);
             $res['image']   = $pic;
             $res['pic_url'] = $wxPic['url'];
         }
         if (! empty($complex['link']['image'])) {
             $pic            = File::uploadBase64Image($complex['link']['image'], 'image/fission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg');
-            $wxPic          = $this->wxApp($user['corpIds'][0], 'contact')->media->uploadImg(dirname(__DIR__, 3) . '/storage/upload/static/' . $pic);
+            $localFile = File::download(file_full_url($pic), $pic);
+            $wxPic          = $this->wxApp($user['corpIds'][0], 'contact')->media->uploadImg($localFile);
             $res['image']   = $pic;
             $res['pic_url'] = $wxPic['url'];
             $res['title']   = $complex['link']['title'];
@@ -287,7 +296,8 @@ class StoreLogic
         }
         if (! empty($complex['applets']['image'])) {
             $pic            = File::uploadBase64Image($complex['applets']['image'], 'image/fission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg');
-            $wxPic          = $this->wxApp($user['corpIds'][0], 'contact')->media->uploadImg(dirname(__DIR__, 3) . '/storage/upload/static/' . $pic);
+            $localFile = File::download(file_full_url($pic), $pic);
+            $wxPic          = $this->wxApp($user['corpIds'][0], 'contact')->media->uploadImg($localFile);
             $res['image']   = $pic;
             $res['pic_url'] = $wxPic['url'];
             $res['title']   = $complex['applets']['title'];
