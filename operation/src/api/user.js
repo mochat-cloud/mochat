@@ -1,4 +1,4 @@
-import request from "../plugins/axios";
+import {request, request_op} from "../plugins/axios";
 
 //获取微信用户信息
 export function openUserInfoApi (params) {
