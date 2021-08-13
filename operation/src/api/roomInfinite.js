@@ -1,6 +1,4 @@
-import request from "../plugins/axios";
-import $store from "@/store";
-import Storage from "@/store/Storage";
+import {request, request_op} from "../plugins/axios";
 
 export function qrCodeApi (params) {
     return request({

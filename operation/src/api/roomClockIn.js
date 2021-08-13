@@ -1,6 +1,4 @@
-import request from "../plugins/axios";
-import $store from "@/store";
-import Storage from "@/store/Storage";
+import {request, request_op} from "../plugins/axios";
 
 //客户数据
 export function contactDataApi (params) {
@@ -13,7 +11,7 @@ export function contactDataApi (params) {
 //排行榜
 export function clockInRankingApi (params) {
     return request({
-        url: '/roomClockIn/roomClockInRanking',
+        url: '/roomClockIn/clockInRanking',
         method: 'get',
         params: params
     })
@@ -32,5 +30,14 @@ export function receiveApi (params) {
         url: '/roomClockIn/receive',
         method: 'put',
         data: params
+    })
+}
+
+//获取微信用户信息
+export function openUserInfoApi (params) {
+    return request_op({
+        url: '/openUserInfo/roomClockIn',
+        method: 'GET',
+        params: params
     })
 }

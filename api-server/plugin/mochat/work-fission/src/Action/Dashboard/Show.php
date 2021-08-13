@@ -40,55 +40,40 @@ class Show extends AbstractAction
     use ValidateSceneTrait;
 
     /**
-     * @var RequestInterface
-     */
-    protected $request;
-
-    /**
      * @Inject
      * @var WorkFissionContract
      */
     protected $workFissionService;
 
     /**
-     * 海报.
+     * @Inject()
      * @var WorkFissionPosterContract
      */
     protected $workFissionPosterService;
 
     /**
-     * 欢迎语.
+     * @Inject()
      * @var WorkFissionWelcomeContract
      */
     protected $workFissionWelcomeService;
 
     /**
-     * 推送
+     * @Inject()
      * @var WorkFissionPushContract
      */
     protected $workFissionPushService;
 
     /**
-     * 邀请用户.
+     * @Inject()
      * @var WorkFissionInviteContract
      */
     protected $workFissionInviteService;
 
     /**
-     * @Inject
+     * @Inject()
      * @var StdoutLoggerInterface
      */
     private $logger;
-
-    public function __construct(\Hyperf\HttpServer\Contract\RequestInterface $request, WorkFissionContract $workFissionService, WorkFissionPosterContract $fissionPosterService, WorkFissionWelcomeContract $fissionWelcomeService, WorkFissionPushContract $fissionPushService, WorkFissionInviteService $workFissionInviteService)
-    {
-        $this->request                   = $request;
-        $this->workFissionService        = $workFissionService;
-        $this->workFissionPosterService  = $fissionPosterService;
-        $this->workFissionWelcomeService = $fissionWelcomeService;
-        $this->workFissionPushService    = $fissionPushService;
-        $this->workFissionInviteService  = $workFissionInviteService;
-    }
 
     /**
      * @RequestMapping(path="/dashboard/workFission/show", methods="get")
@@ -105,7 +90,7 @@ class Show extends AbstractAction
         ## 接收参数
         $id = $this->request->input('id');
         ## 查询数据
-        return $this->handleDate($id);
+        return $this->handleData($id);
     }
 
     /**
@@ -133,7 +118,7 @@ class Show extends AbstractAction
         ];
     }
 
-    private function handleDate($id): array
+    private function handleData($id): array
     {
         $fission     = $this->workFissionService->getWorkFissionById((int) $id);
         $posterInfo  = $this->workFissionPosterService->getWorkFissionPosterByFissionId((int) $id);
@@ -142,7 +127,7 @@ class Show extends AbstractAction
             'id'                => $fission['id'],
             'active_name'       => $fission['activeName'],
             'qrcode_url'        => $posterInfo['qrcodeUrl'],
-            'link'              => Url::getAuthRedirectUrl(7, $id),
+            'link'              => Url::getAuthRedirectUrl(7, (int)$id),
             'active_time'       => $fission['createdAt'] . '-' . $fission['endTime'],
             'service_employees' => $fission['serviceEmployees'],
             'contact_tags'      => $fission['contactTags'],

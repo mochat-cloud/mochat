@@ -7,6 +7,11 @@ const request = axios.create({
   timeout: 15000
 })
 
+const request_op = axios.create({
+  baseURL: process.env.BASE_URL,
+  timeout: 15000
+})
+
 const errorHandler = (error) => {
   if (error.response) {
     const data = error.response.data
@@ -26,6 +31,14 @@ request.interceptors.response.use((response) => {
   return response.data
 }, errorHandler)
 
+request_op.interceptors.request.use((config) => {
+  return config
+}, errorHandler)
+
+request_op.interceptors.response.use((response) => {
+  return response.data
+}, errorHandler)
+
 Vue.prototype.$http = request;
 
-export default request;
+export {request, request_op};

@@ -93,7 +93,7 @@
 </template>
 
 <script>
-    import {taskDataApi, inviteFriendsApi, receiveApi} from "../../api/workFission";
+    import {taskDataApi, inviteFriendsApi, receiveApi, openUserInfoApi} from "../../api/workFission";
     export default {
         name: "speed",
         data() {
@@ -118,9 +118,22 @@
         created() {
           this.fission_id = this.$route.query.fission_id
           this.union_id = this.$route.query.union_id
-          this.getDataList();
         },
       methods: {
+          getOpenUserInfo() {
+              let that = this;
+              openUserInfoApi({
+                  id: that.fission_id
+              }).then((res) => {
+                  if (res.data.openid === undefined) {
+                      let redirectUrl = '/auth/workFission?id=' + that.fission_id + '&target=' + encodeURIComponent(that.url);
+                      that.$redirectAuth(redirectUrl);
+                  }
+
+                  this.wxUserData = res.data;
+                  this.getDataList();
+              });
+          },
             async getDataList(){
                 //获取任务信息
                 await taskDataApi({
@@ -134,7 +147,7 @@
                   union_id:this.union_id,
                   fission_id:this.fission_id
                 }).then(res => {
-                    console.log(res);
+                    // console.log(res);
                     this.friendList = res.data;
                 })
                 this.setCountDown();
@@ -159,7 +172,7 @@
                 this.getDataList();
             },
             openGiftMask(item, index){
-                console.log(item);
+                // console.log(item);
                 if (this.dataList.invite_count < item.count) return;
                 this.giftMaskFlag = true;
 
@@ -173,7 +186,7 @@
                 //先检测一次
                 let tempNow = Math.floor(new Date().getTime() / 1000);
                 let tempGap = this.dataList.end_time - tempNow;
-                console.log('剩余时间', tempGap)
+                // console.log('剩余时间', tempGap)
                 if (tempGap <= 0) {
                     this.isEnd = true;
                     return;

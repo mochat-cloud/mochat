@@ -9,15 +9,19 @@ declare(strict_types=1);
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
 
-namespace MoChat\Plugin\ShopCode\Action\Operation;
+namespace MoChat\Plugin\RoomFission\Action\Operation;
 
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use MoChat\Framework\Action\AbstractAction;
+use MoChat\Framework\Constants\ErrorCode;
+use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
 use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\Session\Middleware\SessionMiddleware;
 use MoChat\App\OfficialAccount\Action\Operation\Traits\OpenUserInfoTrait;
+use MoChat\Plugin\RoomFission\Contract\RoomFissionContract;
+use Hyperf\Di\Annotation\Inject;
 
 /**
  * 获取用户基本信息(需授权作用域为 snsapi_userinfo).
@@ -29,10 +33,16 @@ class OpenUserInfo extends AbstractAction
     use OpenUserInfoTrait;
 
     /**
+     * @Inject
+     * @var RoomFissionContract
+     */
+    protected $roomFissionService;
+
+    /**
      * 为了自动兼容nginx转发规则，此处的路由定义与规范不同
      *
      * @Middleware(SessionMiddleware::class)
-     * @RequestMapping(path="/operation/openUserInfo/shopCode", methods="GET")
+     * @RequestMapping(path="/operation/openUserInfo/roomFission", methods="GET")
      */
     public function handle()
     {
@@ -63,13 +73,20 @@ class OpenUserInfo extends AbstractAction
         ];
     }
 
-    protected function getType(): int
+    /**
+     * 获取公众号信息
+     *
+     * @return array
+     */
+    protected function getOfficialAccountInfo()
     {
-        return 3;
-    }
+        $id = (int)$this->request->input('id');
 
-    protected function getCorpId(): int
-    {
-        return (int)$this->request->input('id');
+        if ($id === 0) {
+            throw new CommonException(ErrorCode::INVALID_PARAMS, '数据不存在');
+        }
+
+        $set = $this->roomFissionService->getRoomFissionById($id, ['official_account_id']);
+        return $this->officialAccountService->getOfficialAccountById($set['officialAccountId'], ['id', 'appid', 'authorizer_appid']);
     }
 }

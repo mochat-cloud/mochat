@@ -47,7 +47,7 @@ class FilesystemExt
      * @param string $path 文件路径
      * @return string 完整路径
      */
-    public function getFullUrl(string $path): string
+    public function getFullUrl(string $path, string $fileDriver = ''): string
     {
         if (! $path) {
             return '';
@@ -57,7 +57,13 @@ class FilesystemExt
             return $path;
         }
 
-        switch ($this->adapterName) {
+        if (!empty($fileDriver)) {
+            $adapterName = $fileDriver;
+        } else {
+            $adapterName = $this->adapterName;
+        }
+
+        switch ($adapterName) {
             case 'local':
                 $documentRoot = rtrim(config('server.settings.document_root', ''), '\\/');
                 $uploadRoot   = rtrim(realpath($this->config['root']), '/');

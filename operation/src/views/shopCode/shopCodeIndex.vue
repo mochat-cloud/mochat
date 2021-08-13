@@ -89,7 +89,7 @@ export default {
       openUserInfoApi({
         id: that.corpId
       }).then((res) => {
-        if (res.data.length === 0) {
+        if (res.data.openid === undefined) {
           let redirectUrl = '/auth/shopCode?id='+that.corpId+'&target=' + encodeURIComponent(that.url);
           that.$redirectAuth(redirectUrl);
         }

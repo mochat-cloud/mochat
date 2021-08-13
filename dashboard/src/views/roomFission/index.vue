@@ -146,7 +146,7 @@ export default {
      * 什么是群裂变
      */
     showHelp () {
-      window.open('https://baidu.com')
+      window.open('/')
     }
   }
 }

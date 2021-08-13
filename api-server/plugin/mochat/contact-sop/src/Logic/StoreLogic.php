@@ -112,7 +112,8 @@ class StoreLogic
                 if ($item->type == 'image') {
                     $imageTemp = File::uploadBase64Image($item->value, 'image/contactSop/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg');
                     ##EasyWeChat上传图片
-                    $imagePath = $this->wxApp($params['corpId'], 'contact')->media->uploadImg(dirname(__DIR__, 3) . '/storage/upload/static/' . $imageTemp);
+                    $localFile = File::download(file_full_url($imageTemp), $imageTemp);
+                    $imagePath = $this->wxApp($params['corpId'], 'contact')->media->uploadImg($localFile);
                     if ((int) $imagePath['errcode'] === 0) {
                         $item->value = $imagePath['url'];
                     } else {

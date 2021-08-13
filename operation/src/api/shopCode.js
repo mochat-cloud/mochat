@@ -1,6 +1,4 @@
-import request from "../plugins/axios";
-import $store from "@/store";
-import Storage from "@/store/Storage";
+import {request, request_op} from "../plugins/axios";
 
 export function areaCodeApi (params) {
     return request({
@@ -20,8 +18,8 @@ export function weChatSdkConfig (params) {
 
 //获取微信用户信息
 export function openUserInfoApi (params) {
-    return request({
-        url: '/shopCode/openUserInfo',
+    return request_op({
+        url: '/openUserInfo/shopCode',
         method: 'GET',
         params: params
     })

@@ -36,11 +36,6 @@ class ClockInRanking extends AbstractAction
     use ValidateSceneTrait;
 
     /**
-     * @var RequestInterface
-     */
-    protected $request;
-
-    /**
      * @Inject
      * @var ClockInContract
      */
@@ -87,26 +82,6 @@ class ClockInRanking extends AbstractAction
      * @var StdoutLoggerInterface
      */
     private $logger;
-
-    public function __construct(
-        \Hyperf\HttpServer\Contract\RequestInterface $request,
-        ClockInContract $clockInService,
-        ClockInContactContract $clockInContactService,
-        WorkEmployeeContract $workEmployeeService,
-        ClockInContactRecordContract $clockInContactRecordService,
-        CorpContract $corpService,
-        WorkContactContract $workContactService,
-        WorkContactEmployeeContract $workContactEmployeeService
-    ) {
-        $this->request                     = $request;
-        $this->clockInService              = $clockInService;
-        $this->clockInContactService       = $clockInContactService;
-        $this->workEmployeeService         = $workEmployeeService;
-        $this->clockInContactRecordService = $clockInContactRecordService;
-        $this->corpService                 = $corpService;
-        $this->workContactService          = $workContactService;
-        $this->workContactEmployeeService  = $workContactEmployeeService;
-    }
 
     /**
      * @RequestMapping(path="/operation/roomClockIn/clockInRanking", methods="get")
