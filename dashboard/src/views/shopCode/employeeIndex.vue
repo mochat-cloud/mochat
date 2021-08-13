@@ -427,9 +427,8 @@
                     </div>
                   </div>
                   <div slot="operation" slot-scope="text,record">
-                    <a @click="$router.push({ path: '/workContact/contactFieldPivot?contactId='+record.contactId+'&employeeId='+record.employee.employeeId+'&isContact=2'})">
-                      <span v-if="showlookDataPanel==1">客户</span>
-                      <span v-else>员工</span>详情
+                    <a v-if="showlookDataPanel==1" @click="$router.push({ path: '/workContact/contactFieldPivot?contactId='+record.contactId+'&employeeId='+record.employee.employeeId+'&isContact=2'})">
+                      <span v-if="showlookDataPanel==1">客户详情</span>
                     </a>
                   </div>
                 </a-table>

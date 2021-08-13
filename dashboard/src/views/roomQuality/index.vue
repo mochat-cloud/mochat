@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="pageTop">
-      <a-button type="primary" @click="()=>{this.$router.push({ path: '/roomRemind/newRule' })}">新建规则</a-button>
+      <a-button type="primary" @click="()=>{this.$router.push({ path: '/roomQuality/newRule' })}">新建规则</a-button>
       <a-input-search
         placeholder="请输入规则名称搜索"
         style="width: 200px"
@@ -27,7 +27,7 @@
           <a-switch :default-checked="text==1" size="small" @change="statusRule(record)" />
         </div>
         <div slot="action" slot-scope="text, record">
-          <a @click="$router.push('/roomRemind/details?rowId='+record.id)">详情</a>
+          <a @click="$router.push('/roomQuality/detail?rowId='+record.id)">详情</a>
           <a-divider type="vertical"/>
           <a-dropdown>
             <a class="ant-dropdown-link">
@@ -35,7 +35,7 @@
             </a>
             <a-menu slot="overlay">
               <a-menu-item>
-                <a @click="$router.push('/roomRemind/edit?rowId='+record.id)">修改</a>
+                <a @click="$router.push('/roomQuality/edit?rowId='+record.id)">修改</a>
               </a-menu-item>
               <a-menu-item>
                 <a @click="delTableRow(record)">删除</a>
@@ -49,7 +49,7 @@
 </template>
 <script>
 // eslint-disable-next-line no-unused-vars
-import { indexApi, destroyApi, statusApi } from '@/api/roomRemind'
+import { indexApi, destroyApi, statusApi } from '@/api/roomQuality'
 export default {
 
   data () {

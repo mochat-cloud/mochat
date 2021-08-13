@@ -186,7 +186,7 @@ export default {
      * 跳转"什么是入群欢迎语"
      */
     goHelp () {
-      window.open('https://baidu.com')
+      window.open('/')
     }
   },
   components: { Details }

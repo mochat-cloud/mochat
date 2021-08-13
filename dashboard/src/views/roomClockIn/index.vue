@@ -4,7 +4,7 @@
       type="primary"
       class="mb14"
       @click="$router.push('/roomClockIn/create')">
-      创建活动打卡
+      创建打卡活动
     </a-button>
     <div class="switch_account">
       公众号：<a-select style="width: 150px" v-model="officialAccount">
