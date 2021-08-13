@@ -83,7 +83,7 @@
 
 <script>
 import { getList, delList, publicIndexApi } from '@/api/roomClockIn'
-import QRCode from 'qrcodejs2'
+import QRCode from '@/components/qrcode'
 export default {
   data () {
     return {
