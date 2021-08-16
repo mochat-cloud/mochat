@@ -29,6 +29,5 @@ Vue.prototype.$redirectAuth = (url = '') => {
         return;
     }
     url = process.env.BASE_URL + url;
-    console.log(url);
-    // window.location.href = process.env.BASE_URL + url;
+    window.location.href = process.env.BASE_URL + url;
 }

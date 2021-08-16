@@ -54,6 +54,21 @@ class File
         return $pathFileName;
     }
 
+    /**
+     * 下载远程文件
+     *
+     * @param string $url
+     * @param string $localPath
+     * @return string
+     */
+    public static function download(string $url, string $localPath)
+    {
+        $fileSystem = make(\Hyperf\Filesystem\FilesystemFactory::class)->get('local');
+        $fileSystem->write($localPath, file_get_contents($url));
+        $root = config('file.storage.local.root');
+        return realpath(rtrim($root, '/') . '/' . $localPath);
+    }
+
     protected static function logger(): \Psr\Log\LoggerInterface
     {
         $loggerFactory = \Hyperf\Utils\ApplicationContext::getContainer()->get(\Hyperf\Logger\LoggerFactory::class);

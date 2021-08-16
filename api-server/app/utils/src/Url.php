@@ -57,35 +57,35 @@ class Url
         $target = '';
         switch ($moduleType) {
             case 1:
-                $url = '/auth/roomClockIn';
+                $url = '/auth/roomClockIn?id='.$id;
                 $query = http_build_query(['id' => $id]);
                 $target = "/roomClockIn?{$query}";
                 break;
             case 2:
-                $url = '/auth/lottery';
-                $query = http_build_query(['id' => $id]);
+                $url = '/auth/lottery?id='.$id;
+                $query = http_build_query(['id' => $id, 'source' => $query['source']]);
                 $target = "/lottery?{$query}";
                 break;
             case 3:
             case 4:
             case 5:
-                $url = '/auth/shopCode';
+                $url = '/auth/shopCode?id='.$id;
                 $type = static::getShopCode($moduleType);
                 $query = http_build_query(['id' => $id, 'type' => $type]);
                 $target = "/shopCode?{$query}";
                 break;
             case 6:
-                $url = '/auth/radar';
+                $url = '/auth/radar?id='.$id;
                 $query = http_build_query(['id' => $id, 'type' => $query['type'], 'employee_id' => $query['employee_id'], 'target_id' => $query['target_id']]);
                 $target = "/radar?{$query}";
                 break;
             case 7:
-                $url = '/auth/workFission';
+                $url = '/auth/workFission?id='.$id;
                 $query = http_build_query(['id' => $id]);
                 $target = "/workFission?{$query}";
                 break;
             case 8:
-                $url = '/auth/roomFission';
+                $url = '/auth/roomFission?id='.$id;
                 $query = http_build_query(['id' => $id, 'parent_union_id' => $query['parent_union_id'], 'wx_user_id' => $query['wx_user_id']]);
                 $target = "/roomFission?{$query}";
                 break;
@@ -97,7 +97,7 @@ class Url
             return $baseUrl ;
         }
 
-        return $baseUrl . $url . '?target=' . urlencode($target);
+        return $baseUrl . $url . '&target=' . urlencode($target);
     }
 
     protected static function getShopCode($moduleType): int
@@ -110,26 +110,12 @@ class Url
                 $type = 2;
                 break;
             case 5:
-                $type = 4;
+                $type = 3;
                 break;
             default:
                 $type = 1;
                 break;
         }
         return $type;
-    }
-
-    public static function getOAuthRedirectUrl(string $appId, string $componentAppId, string $redirectUri): string
-    {
-        $query = [
-            'appid' => $appId,
-            'component_appid' => $componentAppId,
-            'redirect_uri' => $redirectUri,
-            'response_type' => 'code',
-            'scope' => 'snsapi_userinfo',
-            'state' => '',
-        ];
-
-        return 'https://open.weixin.qq.com/connect/oauth2/authorize?' . http_build_query($query) . '#wechat_redirect';
     }
 }

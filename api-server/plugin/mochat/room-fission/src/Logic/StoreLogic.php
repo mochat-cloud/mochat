@@ -132,7 +132,12 @@ class StoreLogic
             $params['welcome']['link_pic'] = File::uploadBase64Image($params['welcome']['link_pic'], 'image/roomFission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg');
         }
         ##EasyWeChat上传图片
-        $wxUrl = empty($params['welcome']['link_pic']) ? ['url' => ''] : $this->wxApp($user['corpIds'][0], 'contact')->media->uploadImg(dirname(__DIR__, 3) . '/storage/upload/static/' . $params['welcome']['link_pic']);
+        if (empty($params['welcome']['link_pic'])) {
+            $wxUrl = ['url' => ''];
+        } else {
+            $localFile = File::download(file_full_url($params['welcome']['link_pic']), $params['welcome']['link_pic']);
+            $wxUrl = $this->wxApp($user['corpIds'][0], 'contact')->media->uploadImg($localFile);
+        }
         $templateId = $this->handleWelcome($user['corpIds'][0], $params['welcome'], $wxUrl['url']);
         $data['welcome'] = [
             'text' => $params['welcome']['text'],

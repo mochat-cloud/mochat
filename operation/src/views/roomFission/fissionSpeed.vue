@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import { inviteFriendsApi,receiveApi } from '@/api/roomFission'
+import { inviteFriendsApi,receiveApi,openUserInfoApi } from '@/api/roomFission'
 export default {
     data() {
         return {
@@ -72,13 +72,25 @@ export default {
     },
   created() {
     this.fission_id = this.$route.query.fission_id
-    this.wxUserData = JSON.parse(this.$route.query.wxUserData)
-    this.gethelpData({
-      fission_id:this.fission_id,
-      union_id:this.wxUserData.unionid
-    })
   },
   methods: {
+      getOpenUserInfo() {
+          let that = this;
+          openUserInfoApi({
+              id: that.fission_id
+          }).then((res) => {
+              if (res.data.openid === undefined) {
+                  let redirectUrl = '/auth/roomFission?id=' + that.fission_id + '&target=' + encodeURIComponent(that.url);
+                  that.$redirectAuth(redirectUrl);
+              }
+
+              this.wxUserData = res.data;
+              this.gethelpData({
+                  fission_id:this.fission_id,
+                  union_id:this.wxUserData.unionid
+              })
+          });
+      },
       closebtn(){
         this.prizeShow=false
       },

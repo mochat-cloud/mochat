@@ -131,8 +131,12 @@ class Invite extends AbstractAction
         ##邀请客户
         if (! empty($params['link_pic'])) {
             $params['link_pic'] = File::uploadBase64Image($params['link_pic'], 'image/roomFission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg');
+            $localFile = File::download(file_full_url($params['link_pic']), $params['link_pic']);
+            $inviteUrl = $this->wxApp($user['corpIds'][0], 'contact')->media->uploadImg($localFile);
+        } else {
+            $inviteUrl = ['url' => ''];
         }
-        $inviteUrl = empty($params['link_pic']) ? ['url' => ''] : $this->wxApp($user['corpIds'][0], 'contact')->media->uploadImg(dirname(__DIR__, 3) . '/storage/upload/static/' . $params['link_pic']);
+
         $data      = [
             'fission_id'     => (int) $params['fission_id'],
             'employees'      => empty($params['employees']) ? '{}' : json_encode($params['employees'], JSON_THROW_ON_ERROR),

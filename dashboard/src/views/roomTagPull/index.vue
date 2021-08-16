@@ -107,7 +107,7 @@ export default {
     },
 
     async detail (id) {
-      this.$router.push({ path: '/roomTagPull/details', query: { id } })
+      this.$router.push({ path: '/roomTagPull/detail', query: { id } })
     },
 
     deleteRow (id) {

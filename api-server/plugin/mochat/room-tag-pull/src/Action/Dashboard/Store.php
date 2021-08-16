@@ -40,22 +40,6 @@ class Store extends AbstractAction
     protected $storeLogic;
 
     /**
-     * @var RequestInterface
-     */
-    protected $request;
-
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
-
-    public function __construct(RequestInterface $request, ContainerInterface $container)
-    {
-        $this->request   = $request;
-        $this->container = $container;
-    }
-
-    /**
      * @Middlewares({
      *     @Middleware(DashboardAuthMiddleware::class),
      *     @Middleware(PermissionMiddleware::class)
@@ -74,9 +58,7 @@ class Store extends AbstractAction
         ## 参数验证
         $params = $this->request->all();
         $this->validated($params, 'store');
-        $logic = $this->container->get(StoreLogic::class);
-        return $logic->handle($user, $params);
-//        return $this->storeLogic->handle($user, $params);
+        return $this->storeLogic->handle($user, $params);
     }
 
     /**

@@ -229,7 +229,7 @@
 </template>
 <script>
 // eslint-disable-next-line no-unused-vars
-import { infoApi, showContactApi, indexgroupApi, contactDetailApi } from '@/api/roomRemind'
+import { infoApi, showContactApi, indexgroupApi, contactDetailApi } from '@/api/roomQuality'
 import { Empty } from 'ant-design-vue'
 export default {
   components: { Empty },

@@ -109,7 +109,7 @@ export default {
         image.src = img
         if (img) {
           image.onerror = () => {
-            this.getBase64(img, Date.parse(new Date()))
+            // this.getBase64(img, Date.parse(new Date()))
           }
           image.onload = () => {
             resolve(getBase64Image(image))

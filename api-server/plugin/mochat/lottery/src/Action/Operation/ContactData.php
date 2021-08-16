@@ -105,7 +105,7 @@ class ContactData extends AbstractAction
     private $logger;
 
     /**
-     * @RequestMapping(path="/operation/lottery/contactData", methods="get")
+     * @RequestMapping(path="/operation/lottery/contactData", methods="GET,POST")
      * @throws \JsonException
      * @return array 返回数组
      */
@@ -145,7 +145,7 @@ class ContactData extends AbstractAction
             'id.required'       => '活动ID 必填',
             'id.integer'        => '活动ID 必需为整数',
             'id.min  '          => '活动ID 不可小于1',
-            'union_id.required' => 'union_id必填',
+            'union_id.required' => 'union_id必填，请检查所属公众号是否绑定到微信开放平台帐号',
             'nickname.required' => 'nickname必填',
             'avatar.required'   => 'avatar必填',
             'source'            => 'source必填',
@@ -184,6 +184,7 @@ class ContactData extends AbstractAction
 
         return [
             'corp'        => $corp,
+            'lottery' => $lottery,
             'description' => $lottery['description'],
             'time'        => $lottery['timeType'] === 1 ? '永久有效' : $lottery['startTime'] . '-' . $lottery['endTime'],
             'prize'       => $prize,

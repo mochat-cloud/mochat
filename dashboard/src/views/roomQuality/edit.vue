@@ -168,7 +168,7 @@
 </template>
 <script>
 // eslint-disable-next-line no-unused-vars
-import { updateApi, infoApi } from '@/api/roomRemind'
+import { updateApi, infoApi } from '@/api/roomQuality'
 import selectGroup from '@/components/Select/group'
 import selectMember from '@/components/Select/member'
 import moment from 'moment'
@@ -453,7 +453,7 @@ export default {
       // 表单
       updateApi(this.ruleForm).then((res) => {
         this.$message.success('修改成功')
-        this.$router.push({ path: '/roomRemind/index' })
+        this.$router.push({ path: '/roomQuality/index' })
       })
     },
     //  设置自定义质检时间

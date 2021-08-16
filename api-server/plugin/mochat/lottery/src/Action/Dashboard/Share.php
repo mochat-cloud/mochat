@@ -96,7 +96,7 @@ class Share extends AbstractAction
         ## 查询数据
         $info = $this->lotteryService->getLotteryById((int) $id, ['name', 'description', 'create_user_id']);
         unset($info['createUserId']);
-        return ['info' => $info, 'link' => Url::getAuthRedirectUrl(2, $id)];
+        return ['info' => $info, 'link' => Url::getAuthRedirectUrl(2, (int)$id, ['source' => 'from_pc'])];
     }
 
     /**
