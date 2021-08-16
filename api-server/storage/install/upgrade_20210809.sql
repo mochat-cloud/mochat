@@ -874,7 +874,7 @@ ADD COLUMN `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '关键词打标签查
 ALTER TABLE `mc_work_message_10`
 ADD COLUMN `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '关键词打标签查询状态（0：未查询，1：已查询）' AFTER `room_id`;
 
-DELETE FROM `mc_rbac_menu` WHERE `id` < 223;
+TRUNCATE TABLE `mc_rbac_menu`;
 
 INSERT INTO `mc_rbac_menu` (`id`, `parent_id`, `name`, `level`, `path`, `icon`, `status`, `link_type`, `is_page_menu`, `link_url`, `data_permission`, `operate_id`, `operate_name`, `sort`, `created_at`, `updated_at`, `deleted_at`) VALUES ('1','0','企微管理','1','#1#','','1','1','1','/dashboard_baseSysManager','2','0','系统','99','2020-12-31 19:22:04','2021-08-09 17:00:02',null);
 INSERT INTO `mc_rbac_menu` (`id`, `parent_id`, `name`, `level`, `path`, `icon`, `status`, `link_type`, `is_page_menu`, `link_url`, `data_permission`, `operate_id`, `operate_name`, `sort`, `created_at`, `updated_at`, `deleted_at`) VALUES ('2','1','引流获客','2','#1#-#2#','line-chart','1','1','1','/dashboard_baseShunt','2','0','系统','2','2020-12-31 19:22:05','2021-08-09 17:01:36',null);
