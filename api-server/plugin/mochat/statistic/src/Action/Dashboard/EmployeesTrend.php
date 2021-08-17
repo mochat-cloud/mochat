@@ -70,11 +70,14 @@ class EmployeesTrend extends AbstractAction
         $params['endTime']   = $this->request->input('endTime');
         $params['mode']      = $this->request->input('mode');
         $params['employees'] = $this->request->input('employees');
-
-        if (! $params['employees']) {
-            $params['employees'] = '[]';
+        if (empty($params['employees'])) {
+            $params['employees'] = [];
         }
-        $params['employees'] = json_decode($params['employees']);
+
+        if (is_string($params['employees'])) {
+            $params['employees'] = json_decode($params['employees']);
+        }
+
         $params['startTime'] = strtotime($params['startTime']);
         $params['endTime']   = strtotime($params['endTime']);
 
