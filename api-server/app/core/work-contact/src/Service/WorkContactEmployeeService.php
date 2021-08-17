@@ -437,7 +437,7 @@ class WorkContactEmployeeService extends AbstractService implements WorkContactE
             $model = $model->withTrashed();
         }
         if (! empty($where['corpId'])) {
-            $model = $model->whereIn('corp_id', $where['corpId']);
+            $model = $model->where('corp_id', $where['corpId']);
         }
         if (! empty($where['remark'])) {
             $model = $model->where('remark', 'like', "%{$where['remark']}%");
