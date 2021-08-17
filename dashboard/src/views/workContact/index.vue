@@ -165,14 +165,9 @@
           <div slot="news" slot-scope="text, record">
             <div class="news">
               <img :src="record.avatar"/>
-              <div class="name">
+              <sapn class="name">
                 {{ record.name }}
-                <a-icon v-if="record.gender === 1" type="man" />
-                <a-icon v-if="record.gender === 2" type="woman" />
-                <br>
-                {{ record.remark }}
-              </div>
-              <div class="weixin">@微信</div>
+              </sapn>
             </div>
           </div>
           <div slot="businessNo" slot-scope="text, record">
@@ -219,16 +214,21 @@ export default {
         {
           title: '客户信息',
           dataIndex: 'news',
-          align: 'center',
-          width: '200px',
+          align: 'left',
+          width: '250px',
           scopedSlots: { customRender: 'news' }
         },
         {
-          title: '客户编号',
-          dataIndex: 'businessNo',
-          align: 'center',
-          scopedSlots: { customRender: 'businessNo' }
+          title: '所属客服',
+          dataIndex: 'employeeName',
+          align: 'center'
         },
+        // {
+        //   title: '客户编号',
+        //   dataIndex: 'businessNo',
+        //   align: 'center',
+        //   scopedSlots: { customRender: 'businessNo' }
+        // },
         {
           title: '所在群',
           dataIndex: 'roomName',
@@ -246,11 +246,7 @@ export default {
           align: 'center',
           scopedSlots: { customRender: 'tag' }
         },
-        {
-          title: '归属成员',
-          dataIndex: 'employeeName',
-          align: 'center'
-        },
+
         {
           title: '添加时间',
           dataIndex: 'createTime',
@@ -504,7 +500,7 @@ export default {
   }
   .news {
     width: 100%;
-    display: flex;
+    /*display: flex;*/
     justify-content: space-between;
     align-items: center;
     img {

@@ -285,7 +285,7 @@ export default {
       const routerMap = {
         '链接': 'createLink',
         'PDF': 'createPdf',
-        '文章': 'createArticle.vue'
+        '文章': 'createArticle'
       }
       this.$router.push(routerMap[this.type.current])
     }

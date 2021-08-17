@@ -24,7 +24,7 @@ class ChannelCode
      */
     public function execute(): void
     {
-//        (new ChannelCodeLogic())->handle();
+        (new ChannelCodeLogic())->handle();
     }
 
     public function isEnable(): bool
