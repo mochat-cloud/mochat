@@ -145,7 +145,7 @@ class IndexLogic
     {
         $where = [];
         //企业id
-        $where['corpId'] = user()['corpIds'];
+        $where['corpId'] = user()['corpIds'][0];
 
         //数据权限 0-全企业，1-本部门数据，2-当前登录人
         if (user()['dataPermission'] != 0) {
@@ -379,7 +379,8 @@ class IndexLogic
 
             $raw['employeeName'] = [];
             if (isset($employee[$raw['employeeId']])) {
-                $raw['employeeName'] = $employee[$raw['employeeId']]['corpName'] . ' ' . $employee[$raw['employeeId']]['name'];
+//                $raw['employeeName'] = $employee[$raw['employeeId']]['corpName'] . ' ' . $employee[$raw['employeeId']]['name'];
+                $raw['employeeName'] = $employee[$raw['employeeId']]['name'];
             }
 
             //查询客户标签
