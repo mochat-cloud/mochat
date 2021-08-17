@@ -63,7 +63,7 @@ class EmployeeStatisticApply
                 if (! empty($this->cache->has($employeeCache))) {
                     continue;
                 }
-                $this->cache->set($employeeCache, $startTime, -1);
+                $this->cache->set($employeeCache, $startTime, 60 * 60 * 24 + 100);
                 $employeeStatisticsData = $this->client->provider('externalContact')->app()
                     ->external_contact_statistics->userBehavior([$ev->wx_user_id], (string) $startTime, (string) $endTime);
                 if (! empty($employeeStatisticsData['errcode'])) {
