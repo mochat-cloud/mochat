@@ -16,7 +16,7 @@ use MoChat\App\WorkAgent\Contract\WorkAgentContract;
 use MoChat\App\WorkAgent\Logic\StoreLogic;
 
 /**
- * @Crontab(name="pullAgent", rule="* *\/6 * * *", callback="execute", singleton=true, memo="企业微信应用-同步应用")
+ * @Crontab(name="pullAgent", rule="0 * * * *", callback="execute", singleton=true, memo="企业微信应用-同步应用")
  */
 class SyncWorkAgent
 {
