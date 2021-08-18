@@ -1,7 +1,7 @@
 <template>
   <div class="official-account-auth-create">
     <a-card>
-      <a-alert message="请授权认证公众号(群打卡、小红包功能需授权认证服务号)" type="info" show-icon/>
+      <a-alert message="请授权认证公众号(群打卡、门店活码、互动雷达、裂变、抽奖功能需授权认证服务号)" type="info" show-icon/>
       <div class="images">
         <img
           src="../../assets/wx-mp.png"
@@ -14,7 +14,7 @@
           class="icon-logo">
       </div>
       <div class="btn">
-        <a-button type="primary" size="large" @click="go">
+        <a-button type="primary" size="large" @click="go" :disabled="skiplink === ''">
           授权公众号
         </a-button>
       </div>
