@@ -213,7 +213,7 @@ class LossContactLogic
     {
         $where = [];
         //企业id
-        $where['corpId'] = user()['corpIds'];
+        $where['corpId'] = user()['corpIds'][0];
         //状态
         $where['status'] = [Status::REMOVE, Status::PASSIVE_REMOVE];
 
