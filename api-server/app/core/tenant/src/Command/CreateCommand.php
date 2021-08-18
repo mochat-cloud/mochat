@@ -15,7 +15,6 @@ use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
-use Hyperf\Redis\Redis;
 use MoChat\App\User\Contract\UserContract;
 use Psr\Container\ContainerInterface;
 use Qbhy\HyperfAuth\AuthManager;
