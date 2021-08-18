@@ -56,16 +56,21 @@ class AuthEventCallback extends AbstractAction
     protected $config;
 
     /**
+     * @var \EasyWeChat\OpenPlatform\Application
+     */
+    protected $app;
+
+    /**
      * @RequestMapping(path="/dashboard/officialAccount/authEventCallback", methods="get,post")
      */
     public function handle(): string
     {
         $config = config('framework.wechat_open_platform');
         ##EasyWeChat第三方平台推送事件
-        $app = Factory::openPlatform($config);
-        $app = rebind_app($app, $this->request);
+        $this->app = Factory::openPlatform($config);
+        $this->app = rebind_app($this->app, $this->request);
 
-        $app->server->push(function ($message) {
+        $this->app->server->push(function ($message) {
             $this->logger->debug(sprintf('微信回调Message::[%s]', json_encode($message, JSON_THROW_ON_ERROR)));
 
             # 获取授权公众号 AppId： $message['AuthorizerAppid']  获取 AuthCode：$message['AuthorizationCode']
@@ -91,7 +96,7 @@ class AuthEventCallback extends AbstractAction
             }
         }, Guard::EVENT_AUTHORIZED);
 
-        $app->server->push(function ($message) {
+        $this->app->server->push(function ($message) {
             $this->logger->debug(sprintf('微信回调Message::[%s]', json_encode($message, JSON_THROW_ON_ERROR)));
             if (isset($message['InfoType']) && $message['InfoType'] === 'unauthorized') {
                 $data = [
@@ -107,7 +112,7 @@ class AuthEventCallback extends AbstractAction
         }, Guard::EVENT_UNAUTHORIZED);
 
         $this->logger->info(sprintf('微信回调::[%s]', '成功'));
-        $response = $app->server->serve();
+        $response = $this->app->server->serve();
 
         return $response->getContent();
     }

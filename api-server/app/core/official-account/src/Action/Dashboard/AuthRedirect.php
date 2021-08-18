@@ -47,8 +47,12 @@ class AuthRedirect extends AbstractAction
     protected $config;
 
     /**
+     * @var \EasyWeChat\OpenPlatform\Application
+     */
+    protected $openPlatform;
+
+    /**
      * @RequestMapping(path="/dashboard/officialAccount/authRedirect/", methods="get,post")
-     * @throws \JsonException|\League\Flysystem\FileExistsException
      */
     public function handle()
     {
@@ -71,9 +75,9 @@ class AuthRedirect extends AbstractAction
     private function queryAuth($params): array
     {
         ## EasyWeChat
-        $openPlatform = Factory::openPlatform($this->config);
-        $openPlatform = rebind_app($openPlatform, $this->request);
-        $result       = $openPlatform->handleAuthorize($params['auth_code']);
+        $this->openPlatform = Factory::openPlatform($this->config);
+        $this->openPlatform = rebind_app($this->openPlatform, $this->request);
+        $result       = $this->openPlatform->handleAuthorize($params['auth_code']);
         if (! empty($result['authorization_info'])) {
             $res  = $result['authorization_info'];
             $data = [
@@ -104,6 +108,8 @@ class AuthRedirect extends AbstractAction
                 $this->logger->error(sprintf('%s [%s] %s', '授权失败', date('Y-m-d H:i:s'), $e->getMessage()));
                 $this->logger->error($e->getTraceAsString());
             }
+
+            $this->officialAccountBindOpenPlatform($res);
         }
         return ['id' => $id, 'authorizer_appid' => $authorizerAppid];
     }
@@ -117,10 +123,7 @@ class AuthRedirect extends AbstractAction
         if ($authorizer['id'] === 0) {
             return;
         }
-        ## EasyWeChat
-        $openPlatform = Factory::openPlatform($this->config);
-        $openPlatform = rebind_app($openPlatform, $this->request);
-        $result       = $openPlatform->getAuthorizer($authorizer['authorizer_appid']);
+        $result       = $this->openPlatform->getAuthorizer($authorizer['authorizer_appid']);
         if (! empty($result['authorizer_info'])) {
             $res  = $result['authorizer_info'];
             $data = [
@@ -147,5 +150,21 @@ class AuthRedirect extends AbstractAction
                 $this->logger->error($e->getTraceAsString());
             }
         }
+    }
+
+    /**
+     * TODO 可以处理成异步优化性能
+     * 自动绑定公众号至开放平台用来获取unionid
+     *
+     * @param array $authorizationInfo
+     */
+    protected function officialAccountBindOpenPlatform(array $authorizationInfo)
+    {
+        $officialAccount = $this->openPlatform->officialAccount(
+            $authorizationInfo['authorizer_appid'],
+            $authorizationInfo['authorizer_refresh_token'],
+            );
+        $officialAccount = rebind_app($officialAccount, $this->request);
+        $officialAccount->account->create();
     }
 }
