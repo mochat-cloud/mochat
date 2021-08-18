@@ -188,7 +188,11 @@ class ChannelCodeService extends AbstractService implements ChannelCodeContract
             $model = $model->withTrashed();
         }
         if (! empty($where['corpId'])) {
-            $model = $model->whereIn('corp_id', $where['corpId']);
+            if (is_array($where['corpId'])) {
+                $model = $model->whereIn('corp_id', $where['corpId']);
+            } else {
+                $model = $model->where('corp_id', $where['corpId']);
+            }
         }
         if (! empty($where['remark'])) {
             $model = $model->where('remark', 'like', "%{$where['remark']}%");
