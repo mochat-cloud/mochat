@@ -24,31 +24,6 @@ class RoomSopJob extends Job
 
     public $params;
 
-    /**
-     * @Inject
-     * @var CorpContract
-     */
-    protected $corpService;
-
-    /**
-     * 任务执行失败后的重试次数，即最大执行次数为 $maxAttempts+1 次
-     *
-     * @var int
-     */
-    protected $maxAttempts = 2;
-
-    /**
-     * @Inject
-     * @var WorkAgentContract
-     */
-    private $workAgentService;
-
-    /**
-     * @Inject
-     * @var StdoutLoggerInterface
-     */
-    private $logger;
-
     public function __construct($params)
     {
         // 这里最好是普通数据，不要使用携带 IO 的对象，比如 PDO 对象
@@ -60,7 +35,12 @@ class RoomSopJob extends Job
      */
     public function handle()
     {
-        $info = $this->corpService->getCorpById($this->params['corpId']);
+        /** @var CorpContract $corpService */
+        $corpService = make(CorpContract::class);
+        /** @var WorkAgentContract $workAgentService */
+        $workAgentService = make(WorkAgentContract::class);
+        $logger =  make(StdoutLoggerInterface::class);
+        $info = $corpService->getCorpById($this->params['corpId']);
 
         $timestamp = time();
         $nowTime   = date('H:i', $timestamp);
@@ -68,9 +48,9 @@ class RoomSopJob extends Job
 
         $url   = Url::getSidebarBaseUrl() . '/groupSop?id=' . $this->params['roomSopLogId'];
         $text  = "管理员 {$this->params['sopCreatorName']} 创建了群推送任务，提醒你给1个群聊发送消息\n<a href='{$url}'>点击查看详情</a>";
-        $agent = $this->workAgentService->getWorkAgentByCorpIdClose($info['id'], ['wx_agent_id']);
+        $agent = $workAgentService->getWorkAgentByCorpIdClose($info['id'], ['wx_agent_id']);
         if (empty($agent)) {
-            $this->logger->error(sprintf('群SOP提醒失败::[%s]', '企业应用不存在'));
+            $logger->error(sprintf('群SOP提醒失败::[%s]', '企业应用不存在'));
         } else {
             ##EasyWeChat发送应用消息
             $res = $this->wxApp($this->params['corpId'], 'contact')->message->send([
@@ -81,7 +61,7 @@ class RoomSopJob extends Job
                     'content' => $text,
                 ], ]);
             if ($res['errcode'] !== 0) {
-                $this->logger->error(sprintf('个人SOP提醒失败::[%s]', $agent[0]['wxAgentId'] . json_encode($res, JSON_THROW_ON_ERROR)));
+                $logger->error(sprintf('个人SOP提醒失败::[%s]', $agent[0]['wxAgentId'] . json_encode($res, JSON_THROW_ON_ERROR)));
             }
         }
     }
