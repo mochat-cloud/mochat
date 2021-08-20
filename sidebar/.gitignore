@@ -22,3 +22,11 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+
+# bt
+.user.ini
+404.html
+
+# txt
+*.txt

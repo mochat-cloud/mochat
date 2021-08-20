@@ -34,9 +34,9 @@
   </div>
 </template>
 <script>
-import pushRule from '@/views/groupSop/pushRule'
-import setCalendar from '@/views/groupSop/setCalendar'
-import groupTest from '@/views/groupSop/groupTest'
+import pushRule from '@/views/roomSop/pushRule'
+import setCalendar from '@/views/roomSop/setCalendar'
+import groupTest from '@/views/roomSop/groupTest'
 // eslint-disable-next-line no-unused-vars
 import { wxConfig, agentConfig, getCurExternalChat } from '@/utils/wxCodeAuth'
 // eslint-disable-next-line no-unused-vars

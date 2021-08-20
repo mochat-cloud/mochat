@@ -20,7 +20,7 @@
     </div>
     <!-- 备注 -->
     <div class="remark">
-      <van-cell class="cell" is-link to="/customer/remark" >
+      <van-cell class="cell" is-link to="/contact/remark" >
         <template #title>
           <span class="title">备注</span>
           <span type="name">{{ infoDetail.remark }}</span>
@@ -35,7 +35,7 @@
       </div>
     </div>
     <div class="tag-wrapper">
-      <van-cell class="cell" is-link to="/customer/settingTag" >
+      <van-cell class="cell" is-link to="/contact/settingTag" >
         <template #title>
           <div class="title">标签</div>
           <div type="name">
@@ -56,7 +56,7 @@
       </div>
     </div>
 
-    <div class="customer">
+    <div class="contact">
       <!-- <van-sticky :offset-top="50"> -->
       <van-tabs
         v-model:active="activeName"
@@ -167,7 +167,7 @@
                 </div>
               </div>
             </van-cell-group>
-            <div class="popup_box"><personalSopIndex ref="personalSopIndex" /></div>
+            <div class="popup_box"><contactSopIndex ref="contactSopIndex" /></div>
           </div>
         </van-tab>
       </van-tabs>
@@ -181,14 +181,14 @@
 </template>
 
 <script>
-import { getWorkContactInfo, getUserPortrait, track } from '@/api/customer'
-import personalSopIndex from '@/views/personalSop/personalSopIndex'
+import { getWorkContactInfo, getUserPortrait, track } from '@/api/contact'
+import contactSopIndex from '@/views/contactSop/contactSopIndex'
 import { mapGetters } from 'vuex'
 import { getCookie } from 'utils'
 
 export default {
   components: {
-    personalSopIndex
+    contactSopIndex
   },
   data () {
     return {
@@ -228,8 +228,8 @@ export default {
       // contactId: this.contactId,
       //   employeeId: this.userInfo.employeeId
       this.$nextTick(() => {
-        this.$refs.personalSopIndex.show(this.corpId, this.userInfo.employeeId, this.contactId)
-        // this.$refs.personalSopIndex.show(1, 2, 4)
+        this.$refs.contactSopIndex.show(this.corpId, this.userInfo.employeeId, this.contactId)
+        // this.$refs.contactSopIndex.show(1, 2, 4)
       })
     },
     getInfo () {
@@ -253,7 +253,7 @@ export default {
       })
     },
     editDetail () {
-      this.$router.push({ path: '/customer/editDetail' })
+      this.$router.push({ path: '/contact/editDetail' })
     },
     addRemark () {
 
@@ -385,7 +385,7 @@ export default {
     font-weight: 400;
   }
 }
-.customer {
+.contact {
   .list-item {
     padding: 20px 0;
     display: flex;
