@@ -45,7 +45,7 @@
 </template>
 <script>
 // eslint-disable-next-line no-unused-vars
-import { tipSopListApi, tipSopAddRoomApi, tipSopDelRoomApi } from '@/api/pushRule'
+import { tipSopListApi, tipSopAddRoomApi, tipSopDelRoomApi } from '@/api/roomSop'
 import { Step, Steps, Popup, Popover, Toast } from 'vant'
 export default {
   components: {

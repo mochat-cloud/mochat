@@ -2,8 +2,8 @@
   <div class="header">
     <van-nav-bar fixed :z-index="9999" :border="true" safe-area-inset-top placeholder >
       <template #title>
-        <router-link class="nav" :to="{ path: '/customer', query: { agentId } }">客户画像</router-link>
-        <router-link class="nav" to="/mediumGroup">素材库</router-link>
+        <router-link class="nav" :to="{ path: '/contact', query: { agentId } }">客户画像</router-link>
+        <router-link class="nav" to="/medium">素材库</router-link>
       </template>
     </van-nav-bar>
   </div>

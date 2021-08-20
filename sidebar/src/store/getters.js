@@ -1,7 +1,7 @@
 const getters = {
   navShow: state => state.app.navShow,
-  contactId: state => state.app.customerInfo.id || '',
+  contactId: state => state.app.contactInfo.id || '',
   userInfo: state => state.app.userInfo,
-  customerWxUserId: state => state.app.customerWxUserId
+  contactWxUserId: state => state.app.contactWxUserId
 }
 export default getters

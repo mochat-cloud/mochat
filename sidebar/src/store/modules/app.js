@@ -1,4 +1,4 @@
-import { getWorkContactDetail } from '@/api/customer'
+import { getWorkContactDetail } from '@/api/contact'
 import { getUserInfo } from '@/api/wxconfig'
 // eslint-disable-next-line no-unused-vars
 import { getCurExternalContact } from '@/utils/wxCodeAuth'
@@ -8,8 +8,8 @@ const app = {
   state: {
     navShow: false,
     userInfo: {},
-    customerInfo: {},
-    customerWxUserId: ''
+    contactInfo: {},
+    contactWxUserId: ''
   },
   mutations: {
     SET_NAV_SHOW: (state, data) => {
@@ -19,26 +19,26 @@ const app = {
       state.userInfo = data
     },
     SET_CUSTOMER_INFO: (state, data) => {
-      state.customerInfo = data
+      state.contactInfo = data
     },
     SET_CUSTOMER_WX_USER_ID: (state, data) => {
-      state.customerWxUserId = data
-      setStorage('customerWxUserId', data)
+      state.contactWxUserId = data
+      setStorage('contactWxUserId', data)
     }
   },
   actions: {
     async GET_CUSTOMER_INFO ({ dispatch, state, commit }) {
       try {
-        let customerWxUserId = state.customerWxUserId
-        if (!customerWxUserId) {
+        let contactWxUserId = state.contactWxUserId
+        if (!contactWxUserId) {
           await dispatch('GET_CUSTOMER_WX_USER_ID')
-          customerWxUserId = state.customerWxUserId
+          contactWxUserId = state.contactWxUserId
         }
-        const { data: { id, name, avatar, corpId } } = await getWorkContactDetail({ wxExternalUserid: customerWxUserId })
-        const customerInfo = {
+        const { data: { id, name, avatar, corpId } } = await getWorkContactDetail({ wxExternalUserid: contactWxUserId })
+        const contactInfo = {
           id, name, avatar, corpId
         }
-        commit('SET_CUSTOMER_INFO', customerInfo)
+        commit('SET_CUSTOMER_INFO', contactInfo)
       } catch (e) {
         console.log(e)
       }
@@ -54,8 +54,8 @@ const app = {
     },
     async GET_CUSTOMER_WX_USER_ID ({ commit }) {
       try {
-        const customerWxUserId = await getCurExternalContact()
-        commit('SET_CUSTOMER_WX_USER_ID', customerWxUserId)
+        const contactWxUserId = await getCurExternalContact()
+        commit('SET_CUSTOMER_WX_USER_ID', contactWxUserId)
       } catch (e) {
         console.log(e)
       }

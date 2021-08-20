@@ -3,7 +3,7 @@
     <div class="color">
       <div class="tips-box">
         <span>
-          管理员 {{ personalSopData.creator }} 创建了个人SOP任务，提醒你给已添加企业微信 {{ personalSopData.time }} 的新客户发送消息
+          管理员 {{ contactSopData.creator }} 创建了个人SOP任务，提醒你给已添加企业微信 {{ contactSopData.time }} 的新客户发送消息
         </span>
       </div>
       <div class="show">
@@ -14,7 +14,7 @@
           <div class="tips-box">
             <span>
               <van-icon name="bell" color="#1890ff"/>
-              管理员提醒你在 <span style="color: #1890FF;">[{{ personalSopData.tipTime }}]</span>  给以下客户发送消息
+              管理员提醒你在 <span style="color: #1890FF;">[{{ contactSopData.tipTime }}]</span>  给以下客户发送消息
             </span>
           </div>
         </div>
@@ -23,7 +23,7 @@
             <div class="content-title">
               推送内容
             </div>
-            <div class="content-input" v-for="(item,index) in personalSopData.task.content" :key="index">
+            <div class="content-input" v-for="(item,index) in contactSopData.task.content" :key="index">
               <div class="input" v-if="item.type=='text'">{{ item.value }}</div>
               <img :src="item.value" alt="" v-else />
               <div class="button">
@@ -38,16 +38,16 @@
             <div class="content-title">
               选择客户进行任务跟进
             </div>
-            <div class="content-customer">
+            <div class="content-contact">
               <div class="head">
-                <img :src="personalSopData.contact.avatar" alt="" />
+                <img :src="contactSopData.contact.avatar" alt="" />
               </div>
               <div class="name-box">
                 <div class="name">
-                  {{ personalSopData.contact.name }}   <span>@微信</span>
+                  {{ contactSopData.contact.name }}   <span>@微信</span>
                 </div>
                 <div class="time">
-                  添加时间：{{ personalSopData.contact.updatedAt }}
+                  添加时间：{{ contactSopData.contact.updatedAt }}
                 </div>
               </div>
               <div class="button">
@@ -68,7 +68,7 @@
 </template>
 <script>
 // eslint-disable-next-line no-unused-vars
-import { getSopInfoApi } from '@/api/personalSop'
+import { getSopInfoApi } from '@/api/contactSop'
 // eslint-disable-next-line no-unused-vars
 import { wxConfig, agentConfig, openUserProfile } from '@/utils/wxCodeAuth'
 import { Toast } from 'vant'
@@ -79,7 +79,7 @@ export default {
   },
   data () {
     return {
-      personalSopData: {}
+      contactSopData: {}
     }
   },
   created () {
@@ -105,11 +105,11 @@ export default {
       console.log(id)
       getSopInfoApi({ id }).then((res) => {
         console.log(res.data)
-        this.personalSopData = res.data
+        this.contactSopData = res.data
       })
     },
     followUpBtn () {
-      const userid = this.personalSopData.contact.wxExternalUserid
+      const userid = this.contactSopData.contact.wxExternalUserid
       openUserProfile(2, userid)
     },
     // 复制
@@ -247,7 +247,7 @@ export default {
         }
       }
     }
-    .content-customer{
+    .content-contact{
       display: flex;
       align-items: center;
       height: 130px;

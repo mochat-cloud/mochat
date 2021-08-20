@@ -1830,8 +1830,8 @@ INSERT INTO mc_contact_field (id, name, label, type, options, `order`, status, i
 INSERT INTO mc_contact_field (id, name, label, type, options, `order`, status, is_sys, created_at, updated_at, deleted_at) VALUES (10, 'annualIncome', '年收入', 3, '["5万以下", "5万-15万", "15万-30万", "30万以上", "50-100万", "100万-200万", "200万-500万", "500万-1000万", "1000万-5000万"]', 0, 1, 1, '2020-12-29 19:39:45', NULL, NULL);
 
 ## 工具栏
-INSERT INTO mc_chat_tool (id, page_name, page_flag, created_at, updated_at, deleted_at, status) VALUES (1, '客户画像', 'customer', '2020-12-30 17:12:02', NULL, NULL, 1);
-INSERT INTO mc_chat_tool (id, page_name, page_flag, created_at, updated_at, deleted_at, status) VALUES (2, '素材库', 'mediumGroup', '2020-12-30 17:12:02', NULL, NULL, 1);
+INSERT INTO mc_chat_tool (id, page_name, page_flag, created_at, updated_at, deleted_at, status) VALUES (1, '客户画像', 'contact', '2020-12-30 17:12:02', NULL, NULL, 1);
+INSERT INTO mc_chat_tool (id, page_name, page_flag, created_at, updated_at, deleted_at, status) VALUES (2, '素材库', 'medium', '2020-12-30 17:12:02', NULL, NULL, 1);
 
 ## 菜单
 INSERT INTO `mc_rbac_menu` (`id`, `parent_id`, `name`, `level`, `path`, `icon`, `status`, `link_type`, `is_page_menu`, `link_url`, `data_permission`, `operate_id`, `operate_name`, `sort`, `created_at`, `updated_at`, `deleted_at`) VALUES ('1','0','企微管理','1','#1#','','1','1','1','/dashboard_baseSysManager','2','0','系统','99','2020-12-31 19:22:04','2021-08-09 17:00:02',NULL);

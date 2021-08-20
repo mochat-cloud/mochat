@@ -108,14 +108,27 @@ export default {
         await wxConfig(this.corpId, uriPath)
         await agentConfig(this.corpId, uriPath, this.agentId)
         const entry = await getContext()
-        if (entry == 'normal' || entry == 'group_chat_tools') {
-          // this.message = '请从个人聊天工具栏进入'
-          this.$router.push({ path: '/groupSide' })
+        if (entry == 'group_chat_tools' && this.pageFlag === 'contact') {
+          this.$router.push({ path: '/roomSide' })
           this.loading = false
           this.btnShow = false
           return
+        } else if (entry == 'normal') {
+          this.message = '请从个人聊天工具栏进入'
+          this.loading = false
+          this.btnShow = false
+          return
+        } else {
+          let routePath = this.pageFlag
+          if (this.pageFlag === 'customer') {
+            routePath = 'contact'
+          } else if (this.pageFlag === 'mediumGroup') {
+            routePath = 'medium'
+          } else {
+            routePath = this.pageFlag
+          }
+          this.$router.push({ path: `/${routePath}` })
         }
-        this.$router.push({ path: `/${this.pageFlag}` })
       } catch (e) {
         console.log(e)
         this.loading = false
