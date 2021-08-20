@@ -1,36 +1,36 @@
 const routes = [
   {
     path: '/',
-    redirect: '/codeAuth'
+    redirect: { name: 'codeAuth' }
   },
   {
     path: '/codeAuth',
-    name: 'CodeAuth',
+    name: 'codeAuth',
     component: () => import(/* webpackChunkName: "contact" */ 'views/codeAuth')
   },
   {
     path: '/contact',
-    name: 'Customer',
+    name: 'contact',
     component: () => import(/* webpackChunkName: "contact" */ 'views/contact')
   },
   {
     path: '/contact/remark',
-    name: 'Remark',
+    name: 'contactRemark',
     component: () => import(/* webpackChunkName: "remark" */ 'views/contact/remark')
   },
   {
     path: '/contact/settingTag',
-    name: 'SettingTag',
+    name: 'contactSettingTag',
     component: () => import(/* webpackChunkName: "settingTag" */ 'views/contact/settingTag')
   },
   {
     path: '/contact/editDetail',
-    name: 'EditDetail',
+    name: 'contactEditDetail',
     component: () => import(/* webpackChunkName: "editDetail" */ 'views/contact/editDetail')
   },
   {
     path: '/medium',
-    name: 'Medium',
+    name: 'medium',
     component: () => import(/* webpackChunkName: "medium" */ 'views/medium')
   },
   {
