@@ -106,7 +106,7 @@
                         <a-tag v-for="(obj,idx) in item.showEmployee" :key="idx">{{ obj.name }}</a-tag>
                       </div>
                     </div>
-                    发送微伴行为
+                    发送行为
                   </div>
                 </div>
               </div>
