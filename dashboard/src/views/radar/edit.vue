@@ -102,6 +102,7 @@ export default {
       showContactTags: [],
       // 提交表单
       formAskData: {
+        type: 1,
         // 标题
         title: '',
         //  链接

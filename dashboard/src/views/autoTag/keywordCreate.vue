@@ -294,7 +294,7 @@ export default {
       this.formAskData.tag_rule = this.tag_rule
       storeApi(this.formAskData).then((res) => {
         this.$message.success('创建成功')
-        this.$router.push({ path: '/autoTag/keywordIndex' })
+        this.$router.push({ path: '/autoTag/ruleTagging' })
       })
     },
     // 删除规则
