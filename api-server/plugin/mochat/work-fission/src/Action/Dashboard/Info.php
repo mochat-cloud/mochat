@@ -188,7 +188,9 @@ class Info extends AbstractAction
         $msgComplex = '';
         if (! empty($push['msgComplex'])) {
             $msgComplex          = json_decode($push['msgComplex'], true, 512, JSON_THROW_ON_ERROR);
-            $msgComplex['image'] = file_full_url($msgComplex['image']);
+            if (!empty($msgComplex)) {
+                $msgComplex['image'] = file_full_url($msgComplex['image']);
+            }
         }
         $res['push'] = [
             'push_employee'    => $push['pushEmployee'] == 1 ? 'true' : 'false',
