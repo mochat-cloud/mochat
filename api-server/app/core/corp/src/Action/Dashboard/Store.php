@@ -136,11 +136,14 @@ class Store extends AbstractAction
      */
     private function getAesKeyStr(): string
     {
-        $keyStrBase64 = '';
-        while (strlen($keyStrBase64) !== 43) {
-            $keyStr       = random_bytes(32);
-            $keyStrBase64 = str_replace(['/', '+', '='], '', base64_encode($keyStr));
-        }
-        return $keyStrBase64;
+        $baseChars = [
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+        ];
+        shuffle($baseChars);
+
+        $flag = 'MoChat';
+        return implode('', array_slice($baseChars, 0, 43 - strlen($flag))) . $flag;
     }
 }
