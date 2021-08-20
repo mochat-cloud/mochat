@@ -22,7 +22,7 @@
         <div class="content-box">
           <div class="content">
             <div class="content-title">
-              <div class="content-customer">
+              <div class="content-contact">
                 <div class="name-box">
                   <div class="name">
                     {{ sopInfoData.room.name }}
@@ -63,7 +63,7 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { getSopInfoApi, logStateApi } from '@/api/groupSop'
+import { getSopInfoApi, logStateApi } from '@/api/roomSop'
 // eslint-disable-next-line no-unused-vars
 import { wxConfig, agentConfig, openExistedChatWithMsg } from '@/utils/wxCodeAuth'
 import { getCookie } from 'utils'
@@ -251,7 +251,7 @@ export default {
         height: 40px;
       }
     }
-    .content-customer{
+    .content-contact{
       display: flex;
       align-items: center;
       height: 130px;

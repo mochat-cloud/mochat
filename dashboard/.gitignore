@@ -2,6 +2,7 @@
 node_modules
 /dist
 yarn.lock
+public/dll
 # local env files
 .env
 .env.local
@@ -22,3 +23,10 @@ debug.log*
 *.sln
 *.sw*
 package-lock.json
+
+# bt
+.user.ini
+404.html
+
+# txt
+*.txt

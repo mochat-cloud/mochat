@@ -20,7 +20,7 @@ const errorHandler = (error) => {
     if (status === 401) {
       errorMessage(data.msg)
       const agentId = getCookie('agentId')
-      router.push({ path: '/codeAuth', query: { agentId, pageFlag: 'customer' } })
+      router.push({ path: '/codeAuth', query: { agentId, pageFlag: 'contact' } })
     } else {
       errorMessage(`${status || ''}  ${data.msg || 'error'}`)
     }

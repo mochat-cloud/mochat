@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import { getUserPortrait, updateUserPortrait, upload } from '@/api/customer'
+import { getUserPortrait, updateUserPortrait, upload } from '@/api/contact'
 import { mapGetters } from 'vuex'
 
 export default {

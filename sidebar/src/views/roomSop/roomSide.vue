@@ -29,25 +29,25 @@
       </div>
       <pushRule ref="pushRule" @change="handleRule" />
       <setCalendar ref="setCalendar" @change="handleCalendar" />
-      <groupTest ref="groupTest" @change="handleGroupTest" />
+      <roomQuality ref="roomQuality" @change="handleGroupTest" />
     </div>
   </div>
 </template>
 <script>
-import pushRule from '@/views/groupSop/pushRule'
-import setCalendar from '@/views/groupSop/setCalendar'
-import groupTest from '@/views/groupSop/groupTest'
+import pushRule from '@/views/roomSop/pushRule'
+import setCalendar from '@/views/roomSop/setCalendar'
+import roomQuality from '@/views/roomSop/roomQuality'
 // eslint-disable-next-line no-unused-vars
 import { wxConfig, agentConfig, getCurExternalChat } from '@/utils/wxCodeAuth'
 // eslint-disable-next-line no-unused-vars
 import { getCookie } from 'utils'
 // eslint-disable-next-line no-unused-vars
-import { roomManageApi } from '@/api/groupSide'
+import { roomManageApi } from '@/api/room'
 export default {
   components: {
     pushRule,
     setCalendar,
-    groupTest
+    roomQuality
   },
   data () {
     return {
@@ -110,7 +110,7 @@ export default {
     },
     //  设置群聊质检
     setGroupInfo () {
-      this.$refs.groupTest.showPopup(this.corpId, this.groupId)
+      this.$refs.roomQuality.showPopup(this.corpId, this.groupId)
     }
   }
 }

@@ -55,7 +55,7 @@
 // eslint-disable-next-line no-unused-vars
 import { Popup, NoticeBar, Popover, Toast } from 'vant'
 // eslint-disable-next-line no-unused-vars
-import { roomQualityApi, setRoomQualityApi, delRoomQualityApi } from '@/api/groupTest'
+import { roomQualityApi, setRoomQualityApi, delRoomQualityApi } from '@/api/roomQuality'
 export default {
   components: {
     Popup,

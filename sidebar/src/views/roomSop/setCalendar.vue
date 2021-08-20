@@ -31,7 +31,7 @@
 <script>
 import { Popup, NoticeBar, Popover, Toast } from 'vant'
 // eslint-disable-next-line no-unused-vars
-import { roomCalendarApi, setRoomCalendarApi } from '@/api/setCalendar'
+import { roomCalendarApi, setRoomCalendarApi } from '@/api/roomCalendar'
 export default {
   components: {
     Popup,

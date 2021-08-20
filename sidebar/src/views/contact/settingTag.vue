@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { editWorkContactInfo, allTag, workContactTagGroup, getWorkContactInfo } from '@/api/customer'
+import { editWorkContactInfo, allTag, workContactTagGroup, getWorkContactInfo } from '@/api/contact'
 import { mapGetters } from 'vuex'
 
 export default {

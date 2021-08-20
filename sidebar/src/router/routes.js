@@ -6,32 +6,32 @@ const routes = [
   {
     path: '/codeAuth',
     name: 'CodeAuth',
-    component: () => import(/* webpackChunkName: "customer" */ 'views/codeAuth')
+    component: () => import(/* webpackChunkName: "contact" */ 'views/codeAuth')
   },
   {
-    path: '/customer',
+    path: '/contact',
     name: 'Customer',
-    component: () => import(/* webpackChunkName: "customer" */ 'views/customer')
+    component: () => import(/* webpackChunkName: "contact" */ 'views/contact')
   },
   {
-    path: '/customer/remark',
+    path: '/contact/remark',
     name: 'Remark',
-    component: () => import(/* webpackChunkName: "remark" */ 'views/customer/remark')
+    component: () => import(/* webpackChunkName: "remark" */ 'views/contact/remark')
   },
   {
-    path: '/customer/settingTag',
+    path: '/contact/settingTag',
     name: 'SettingTag',
-    component: () => import(/* webpackChunkName: "settingTag" */ 'views/customer/settingTag')
+    component: () => import(/* webpackChunkName: "settingTag" */ 'views/contact/settingTag')
   },
   {
-    path: '/customer/editDetail',
+    path: '/contact/editDetail',
     name: 'EditDetail',
-    component: () => import(/* webpackChunkName: "editDetail" */ 'views/customer/editDetail')
+    component: () => import(/* webpackChunkName: "editDetail" */ 'views/contact/editDetail')
   },
   {
-    path: '/mediumGroup',
-    name: 'MediumGroup',
-    component: () => import(/* webpackChunkName: "mediumGroup" */ 'views/mediumGroup')
+    path: '/medium',
+    name: 'Medium',
+    component: () => import(/* webpackChunkName: "medium" */ 'views/medium')
   },
   {
     path: '/404',
@@ -40,34 +40,34 @@ const routes = [
   },
   { path: '/:pathMatch(.*)', redirect: { name: '404' } },
   {
-    path: '/personalSop',
-    name: 'personalSop',
-    component: () => import(/* webpackChunkName: "404" */ 'views/personalSop/personalSop')
+    path: '/contactSop',
+    name: 'contactSop',
+    component: () => import(/* webpackChunkName: "404" */ 'views/contactSop/contactSop')
   },
   // {
-  //   path: '/personalSopIndex',
-  //   name: 'personalSopIndex',
-  //   component: () => import(/* webpackChunkName: "404" */ 'views/personalSop/personalSopIndex')
+  //   path: '/contactSopIndex',
+  //   name: 'contactSopIndex',
+  //   component: () => import(/* webpackChunkName: "404" */ 'views/contactSop/contactSopIndex')
   // },
   {
-    path: '/groupSop',
-    name: 'groupSop',
-    component: () => import(/* webpackChunkName: "404" */ 'views/groupSop/groupSop')
+    path: '/roomSop',
+    name: 'roomSop',
+    component: () => import(/* webpackChunkName: "404" */ 'views/roomSop/roomSop')
   },
   {
-    path: '/groupSide',
-    name: 'groupSide',
-    component: () => import(/* webpackChunkName: "404" */ 'views/groupSop/groupSide')
+    path: '/roomSide',
+    name: 'roomSide',
+    component: () => import(/* webpackChunkName: "404" */ 'views/roomSop/roomSide')
   }
   // {
   //   path: '/pushRule',
   //   name: 'pushRule',
-  //   component: () => import(/* webpackChunkName: "404" */ 'views/groupSop/pushRule')
+  //   component: () => import(/* webpackChunkName: "404" */ 'views/roomSop/pushRule')
   // },
   // {
   //   path: '/setCalendar',
   //   name: 'setCalendar',
-  //   component: () => import(/* webpackChunkName: "404" */ 'views/groupSop/setCalendar')
+  //   component: () => import(/* webpackChunkName: "404" */ 'views/roomSop/setCalendar')
   // }
 ]
 export default routes

@@ -17,3 +17,12 @@ composer.phar
 *.lock
 node_modules/*
 *.cache
+# bt
+.user.ini
+404.html
+
+# txt
+*.txt
+
+# nohup
+nohup.out

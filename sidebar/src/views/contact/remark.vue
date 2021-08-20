@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { editWorkContactInfo } from '@/api/customer'
+import { editWorkContactInfo } from '@/api/contact'
 import { mapGetters } from 'vuex'
 
 export default {

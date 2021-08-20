@@ -32,7 +32,7 @@
 </template>
 <script>
 // eslint-disable-next-line no-unused-vars
-import { getSopTipInfoApi } from '@/api/personalSop'
+import { getSopTipInfoApi } from '@/api/contactSop'
 // eslint-disable-next-line no-unused-vars
 // import { wxConfig, agentConfig, openUserProfile } from '@/utils/wxCodeAuth'
 import { Loading } from 'vant'
