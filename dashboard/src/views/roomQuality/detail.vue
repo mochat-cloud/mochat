@@ -69,7 +69,7 @@
                   <span v-if="item.employee_type==2">群主</span>
                   <a-tag v-for="(obj,idx) in item.employee" :key="idx">
                     <a-icon type="user" />{{ obj.name }}</a-tag>
-                  发送微伴提醒行为</div>
+                  发送提醒行为</div>
               </div>
             </div>
           </div>
