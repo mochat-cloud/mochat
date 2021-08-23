@@ -33,7 +33,7 @@ trait AppTrait
             $corMethod = 'getCorpsByWxCorpId';
         }
         $corp = make(CorpContract::class)->{$corMethod}($corpId, [
-            'id', 'employee_secret', 'contact_secret', 'wx_corpid',
+            'id', 'employee_secret', 'contact_secret', 'wx_corpid'
         ]);
         if (empty($corp)) {
             throw new CommonException(ErrorCode::SERVER_ERROR, sprintf('无该企业:[%s]', $corpId));

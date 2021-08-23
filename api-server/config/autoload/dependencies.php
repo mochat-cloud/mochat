@@ -9,7 +9,12 @@ declare(strict_types=1);
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
 use Hyperf\Contract\StdoutLoggerInterface;
+use MoChat\App\Utils\Event\EventDispatcherFactory;
 use MoChat\Framework\Log\StdoutLoggerFactory;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use MoChat\App\Common\Middleware\CoreMiddleware;
+use MoChat\App\Utils\EasyWeChat\Work\ExternalContact\MessageClient;
+
 
 $dependencies = [];
 
@@ -21,6 +26,7 @@ if ($appEnv !== 'dev') {
 }
 
 return $dependencies + [
-        Hyperf\HttpServer\CoreMiddleware::class => MoChat\App\Common\Middleware\CoreMiddleware::class,
-        EasyWeChat\Work\ExternalContact\MessageClient::class => MoChat\App\Utils\EasyWeChat\Work\ExternalContact\MessageClient::class,
+        Hyperf\HttpServer\CoreMiddleware::class => CoreMiddleware::class,
+        EasyWeChat\Work\ExternalContact\MessageClient::class => MessageClient::class,
+        EventDispatcherInterface::class => EventDispatcherFactory::class,
 ];

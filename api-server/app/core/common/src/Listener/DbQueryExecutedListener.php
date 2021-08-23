@@ -53,9 +53,9 @@ class DbQueryExecutedListener implements ListenerInterface
                     $sql = Str::replaceFirst('?', "'{$value}'", $sql);
                 }
             }
-//            if (env('APP_ENV') === 'dev') {
-//                dump('queryTime: ' . $event->time . 'ms', $sql);
-//            }
+            if (env('APP_ENV') === 'dev' && config('debug.database', false)) {
+                dump('queryTime: ' . $event->time . 'ms', $sql);
+            }
 
             $this->logger->info(sprintf('[%s] %s', $event->time, $sql), ['execTime' => $event->time]);
         }

@@ -16,6 +16,7 @@ use Hyperf\Utils\ApplicationContext;
 use MoChat\App\Corp\Logic\AppTrait;
 use MoChat\App\Medium\Constants\Type;
 use MoChat\App\Medium\Contract\MediumContract;
+use MoChat\App\Utils\Media;
 
 class Medium
 {
@@ -27,6 +28,18 @@ class Medium
      */
     private $logger;
 
+    /**
+     * @Inject()
+     * @var \League\Flysystem\Filesystem
+     */
+    protected $filesystem;
+
+    /**
+     * @Inject()
+     * @var Media
+     */
+    protected $media;
+
     public function getWxMediumId(array $ids, int $corpId): array
     {
         if (empty($ids)) {
@@ -37,45 +50,39 @@ class Medium
         if (empty($media)) {
             return [];
         }
-        $fileSystem = make(\Hyperf\Filesystem\FilesystemFactory::class)->get('local');
 
         $resData = [];
         $dbData  = [];
-        $wxMedia = $this->wxApp($corpId, 'user')->media;
         foreach ($media as $medium) {
-            if (time() - $medium['lastUploadTime'] > 60 * 60 * 24 * 2.5) {
-                $uploadFile = json_decode($medium['content'], true);
-                $typeText   = self::wxMediaType($medium['type']);
-                if (empty($uploadFile[$typeText . 'Path'])) {
-                    continue;
-                }
+            if (time() - $medium['lastUploadTime'] <= 60 * 60 * 24 * 3 - 60 * 60 * 2) {
+                continue;
+            }
 
-                try {
-                    $tmpPath = '/_medium' . time() . $uploadFile[$typeText . 'Path'];
-                    $tmpFull = $fileSystem->getAdapter()->getPathPrefix() . $tmpPath;
-                    $fileSystem->write($tmpPath, file_get_contents(file_full_url($uploadFile[$typeText . 'Path'])));
-                    // 语音转换amr
-                    if ($medium['type'] === Type::VOICE) {
-                        continue; // todo 等待ffmpeg-amr安装完成
-                        $tmpFull = $this->ffmpegToAmr($tmpFull);
-                    }
+            $uploadFile = json_decode($medium['content'], true);
+            $mediaType   = self::wxMediaType($medium['type']);
+            $path = isset($uploadFile[$mediaType . 'Path']) ? $uploadFile[$mediaType . 'Path'] : '';
+            if (empty($path)) {
+                continue;
+            }
 
-                    $wxReq = $wxMedia->{'upload' . ucfirst($typeText)}($tmpFull);
-                } catch (\Throwable $e) {
-                    ## 记录错误日志
-                    $this->logger->error(sprintf('%s [%s] %s', '上传媒体文件失败', date('Y-m-d H:i:s'), $e->getMessage()));
-                    $this->logger->error($e->getTraceAsString());
-                } finally {
-                    file_exists($tmpFull) && unlink($tmpFull);
-                }
+            if (!$this->filesystem->fileExists($path)) {
+                continue;
+            }
 
+            try {
+                // TODO 语音转换amr
+                $mediaId = $this->media->upload($corpId, $mediaType, $path);
                 $dbData[] = [
                     'id'               => $medium['id'],
-                    'media_id'         => $wxReq['media_id'],
-                    'last_upload_time' => $wxReq['created_at'],
+                    'media_id'         => $mediaId,
+                    'last_upload_time' => time(),
                 ];
-                $medium['mediaId'] = $wxReq['media_id'];
+                $medium['mediaId'] = $mediaId;
+            } catch (\Throwable $e) {
+                ## 记录错误日志
+                $this->logger->error(sprintf('%s [%s] %s', '定时同步临时媒体文件失败', date('Y-m-d H:i:s'), $e->getMessage()));
             }
+
             $resData[$medium['id']] = $medium['mediaId'];
         }
 

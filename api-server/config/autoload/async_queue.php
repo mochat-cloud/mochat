@@ -78,4 +78,26 @@ return [
             'limit' => 10,
         ],
     ],
+    'callback' => [
+        'driver'         => \Hyperf\AsyncQueue\Driver\RedisDriver::class,
+        'channel'        => 'callback.queue',
+        'timeout'        => 10,
+        'retry_seconds'  => 5,
+        'handle_timeout' => 60,
+        'processes'      => 1,
+        'concurrent'     => [
+            'limit' => 10,
+        ],
+    ],
+    'remind' => [
+        'driver'         => \Hyperf\AsyncQueue\Driver\RedisDriver::class,
+        'channel'        => 'remind.queue',
+        'timeout'        => 10,
+        'retry_seconds'  => 5,
+        'handle_timeout' => 60,
+        'processes'      => 1,
+        'concurrent'     => [
+            'limit' => 10,
+        ],
+    ],
 ];
