@@ -99,7 +99,7 @@ class Store
         $corp       = $this->corpService->getCorpById($corpId, ['id', 'wx_corpid']);
         $corpConfig = $this->msgConfigClient->getWorkMessageConfigByCorpId($corpId, ['id', 'chat_rsa_key', 'chat_secret']);
         $rsa        = json_decode($corpConfig['chatRsaKey'], true);
-        $this->logger->info('开始拉取会话消息' . json_encode($corp) . 'corpConfig' . json_encode($corpConfig));
+        $this->logger->info(sprintf("开始拉取会话消息，corpId: %d", (int) $corpId));
         ## 获取会话数据
         $this->sdk = WxFinanceSDK::init([
             'corpid'       => $corp['wxCorpid'],
@@ -163,7 +163,6 @@ class Store
 
     /**
      * 整理入库数据.
-     * @throws \League\Flysystem\FileExistsException
      */
     protected function handleData(array $data, int $corpId): array
     {

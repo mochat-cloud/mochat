@@ -164,7 +164,7 @@ class MediumService extends AbstractService implements MediumContract
     {
         $data = $this->model::query()
             ->where('corp_id', $corpId)
-            ->where('last_upload_time', '<', time() - 60 * 60 * 24 * 2.5)
+            ->where('last_upload_time', '<', time() - 60 * 60 * 24 * 3 - 60 * 60 * 2)
             ->whereIn('type', [Type::PICTURE, Type::VOICE, Type::VIDEO, Type::FILE])
             ->get($columns);
         $data || $data = collect([]);

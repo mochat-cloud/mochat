@@ -113,7 +113,12 @@ export default {
           this.loading = false
           this.btnShow = false
           return
-        } else if (entry == 'normal') {
+        } else if (entry == 'normal' && this.pageFlag === 'contactSop') {
+          this.$router.push({ path: '/contactSop', query: { id: this.$route.query.id } })
+          this.loading = false
+          this.btnShow = false
+          return
+        } else if (entry == 'normal' && this.pageFlag !== 'contactSop') {
           this.message = '请从个人聊天工具栏进入'
           this.loading = false
           this.btnShow = false

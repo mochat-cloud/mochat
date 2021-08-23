@@ -44,7 +44,7 @@ class QueueBeforeListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        if (env('APP_ENV') === 'dev') {
+        if (env('APP_ENV') === 'dev' && config('debug.queue', false)) {
             dump("redis异步队列开始执行中...[任务详情]:\n", $event->getMessage()->job());
         }
         $this->logger->debug(sprintf('redis异步队列开始执行中...[任务详情]::[<<<%s>>>]', serialize($event->getMessage()->job())));
