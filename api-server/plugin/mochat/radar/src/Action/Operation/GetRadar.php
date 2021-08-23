@@ -18,6 +18,7 @@ use Hyperf\HttpServer\Contract\RequestInterface;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Corp\Logic\AppTrait;
 use MoChat\App\WorkAgent\Contract\WorkAgentContract;
+use MoChat\App\WorkAgent\QueueService\MessageRemind;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\App\WorkContact\Contract\WorkContactEmployeeContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
@@ -107,6 +108,12 @@ class GetRadar extends AbstractAction
     private $logger;
 
     /**
+     * @Inject()
+     * @var MessageRemind
+     */
+    protected $messageRemind;
+
+    /**
      * @RequestMapping(path="/operation/radar/getRadar", methods="get")
      * @throws \JsonException
      * @return array 返回数组
@@ -186,7 +193,7 @@ class GetRadar extends AbstractAction
         }
         ## 员工
         $employee = $this->workEmployeeService->getWorkEmployeeById($params['employee_id'], ['name', 'wx_user_id']);
-        $content  = "【雷达文章】\n「{$params['nickname']}」打开了「{$employee['name']}」在「自建渠道-{$channel['name']}」里发送的互动雷达「{$radar['title']}」\n客户昵称:{$params['nickname']}\n客户类型:企业客户\n<a href='{$link['link']}'>点击查看链接</a>,<a href='{}'>点击查看详情 </a>";
+        $content  = "【雷达文章】\n「{$params['nickname']}」打开了「{$employee['name']}」在「自建渠道-{$channel['name']}」里发送的互动雷达「{$radar['title']}」\n客户昵称:{$params['nickname']}\n客户类型:微信客户\n<a href='{$link['link']}'>点击查看链接</a>";
 
         $data = [
             'radar_id'    => $params['radar_id'],
@@ -236,22 +243,7 @@ class GetRadar extends AbstractAction
      */
     private function actionNotice(int $corpId, string $wxUserId, string $content): void
     {
-        $agent = $this->workAgentService->getWorkAgentByCorpIdClose($corpId, ['wx_agent_id']);
-        if (empty($agent)) {
-            $this->logger->error(sprintf('互动雷达行为通知失败::[%s]', '企业应用不存在'));
-            return;
-        }
-        ##EasyWeChat发送应用消息
-        $res = $this->wxApp($corpId, 'contact')->message->send([
-            'touser'  => $wxUserId,
-            'msgtype' => 'text',
-            'agentid' => (int) $agent[0]['wxAgentId'],
-            'text'    => [
-                'content' => $content,
-            ], ]);
-        if ($res['errcode'] !== 0) {
-            $this->logger->error(sprintf('互动雷达行为通知失败::[%s]', $agent[0]['wxAgentId'] . json_encode($res, JSON_THROW_ON_ERROR)));
-        }
+        $this->messageRemind->sendToEmployee($corpId, $wxUserId, 'text', $content);
     }
 
     private function tag(int $contactId, array $tags, int $corpId): void
