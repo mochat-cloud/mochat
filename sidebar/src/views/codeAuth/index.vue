@@ -113,12 +113,12 @@ export default {
           this.loading = false
           this.btnShow = false
           return
-        } else if (entry == 'normal' && this.pageFlag === 'contactSop') {
-          this.$router.push({ path: '/contactSop', query: { id: this.$route.query.id } })
+        } else if (entry == 'normal' && this.pageFlag === 'contactSop' || this.pageFlag === 'roomSop') {
+          this.$router.push({ path: `/${this.pageFlag}`, query: { id: this.$route.query.id } })
           this.loading = false
           this.btnShow = false
           return
-        } else if (entry == 'normal' && this.pageFlag !== 'contactSop') {
+        } else if (entry == 'normal' && this.pageFlag !== 'contactSop' && this.pageFlag !== 'roomSop') {
           this.message = '请从个人聊天工具栏进入'
           this.loading = false
           this.btnShow = false

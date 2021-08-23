@@ -44,7 +44,7 @@ class MessageSendLogic
      */
     protected $media;
 
-    public function handle(array $params): array
+    public function handle(array $params)
     {
         try {
             $agent = $this->workAgentService->getWorkAgentRemindByCorpId((int) $params['corpId'], ['id', 'wx_agent_id', 'wx_secret']);
@@ -90,6 +90,8 @@ class MessageSendLogic
             $this->logger->error(sprintf('%s [%s] %s', '发送应用消息异常', date('Y-m-d H:i:s'), $e->getMessage()));
             $this->logger->error($e->getTraceAsString());
         }
+
+        return [];
     }
 
     protected function addContent(array $params, array $message)

@@ -30,7 +30,7 @@ class MessageRemind
      *
      * @return array
      */
-    public function sendToEmployee($corpId, $to, string $msgType, $content, array $extra = []): array
+    public function sendToEmployee($corpId, $to, string $msgType, $content, array $extra = [])
     {
         return $this->send($corpId, 'user', $to, $msgType, $content, $extra);
     }
@@ -47,7 +47,7 @@ class MessageRemind
      *
      * @return array
      */
-    public function sendToParty($corpId, $to, string $msgType, $content, array $extra = []): array
+    public function sendToParty($corpId, $to, string $msgType, $content, array $extra = [])
     {
         return $this->send($corpId, 'party', $to, $msgType, $content, $extra);
     }
@@ -64,7 +64,7 @@ class MessageRemind
      *
      * @return array
      */
-    public function sendToTag($corpId, $to, string $msgType, $content, array $extra = []): array
+    public function sendToTag($corpId, $to, string $msgType, $content, array $extra = [])
     {
         return $this->send($corpId, 'tag', $to, $msgType, $content, $extra);
     }
@@ -81,7 +81,7 @@ class MessageRemind
      *
      * @return array
      */
-    protected function send($corpId, $toType, $to, string $msgType, $content, array $extra = []): array
+    protected function send($corpId, $toType, $to, string $msgType, $content, array $extra = [])
     {
         $params = [
             'corpId' => (int) $corpId,
