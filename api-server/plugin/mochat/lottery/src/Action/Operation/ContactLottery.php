@@ -18,6 +18,7 @@ use Hyperf\HttpServer\Annotation\RequestMapping;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Corp\Logic\AppTrait;
 use MoChat\App\WorkAgent\Contract\WorkAgentContract;
+use MoChat\App\WorkAgent\QueueService\MessageRemind;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\App\WorkContact\Contract\WorkContactEmployeeContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
@@ -398,24 +399,11 @@ class ContactLottery extends AbstractAction
         $employee = $this->workEmployeeService->getWorkEmployeesById(explode(',', $contact['employeeIds']), ['wx_user_id']);
         $employee = empty($employee) ? '' : array_column($employee, 'wxUserId');
         $touser   = empty($employee) ? '' : implode('|', $employee);
-        if (! empty($touser)) {
-            $content = "【抽奖活动】\n客户昵称：{$params['nickname']}\n活动名称：{$lottery['name']}\n客户行为：客户抽中了奖品:{$win_name}\n<a href='http://work.weixin.qq.com'>点击查看客户详情 </a>";
-            $agent   = $this->workAgentService->getWorkAgentByCorpIdClose((int) $lottery['corpId'], ['wx_agent_id']);
-            if (empty($agent)) {
-                $this->logger->error(sprintf('抽奖活动领奖提醒失败::[%s]', '企业应用不存在'));
-            } else {
-                ##EasyWeChat发送应用消息
-                $res = $this->wxApp((int) $lottery['corpId'], 'contact')->message->send([
-                    'touser'  => $touser,
-                    'msgtype' => 'text',
-                    'agentid' => (int) $agent[0]['wxAgentId'],
-                    'text'    => [
-                        'content' => $content,
-                    ], ]);
-                if ($res['errcode'] !== 0) {
-                    $this->logger->error(sprintf('抽奖活动领奖提醒失败::[%s]', $agent[0]['wxAgentId'] . json_encode($res, JSON_THROW_ON_ERROR)));
-                }
-            }
+        if (empty($touser)) {
+            return;
         }
+        $content = "【抽奖活动】\n客户昵称：{$params['nickname']}\n活动名称：{$lottery['name']}\n客户行为：客户抽中了奖品:{$win_name}\n<a href='#'>点击查看客户详情 </a>";
+        $messageRemind = make(MessageRemind::class);
+        $messageRemind->sendToEmployee((int)$lottery['corpId'], $touser, 'text', $content);
     }
 }
