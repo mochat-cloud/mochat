@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter } from 'vue-router'
 import store from '@/store'
 import routes from './routes'
 import { Toast } from 'vant'
