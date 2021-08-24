@@ -11,7 +11,6 @@
         <router-link :to="{path: '/roomFission/create'}">
           <a-button type="primary">创建活动</a-button>
         </router-link>
-        <span @click="showHelp">什么是群裂变？</span>
       </div>
       <div class="search">
         <a-input-search
