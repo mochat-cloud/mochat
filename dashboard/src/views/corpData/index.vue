@@ -149,17 +149,6 @@
       </a-card>
     </div>
     <div class="right">
-      <a-card>
-        <div class="QR-code">
-          <p class="title">MoChat企业微信开源框架</p>
-          <div class="edition-box"><span class="msg">版本信息：</span><span class="edition">{{ license.licenseType }}版</span></div>
-          <span class="red">{{ license.licenseNote }}</span>
-          <div class="code-img">
-            <img :src="licenseContactLink" alt="">
-          </div>
-          <span class="code-detail">—扫描上方二维码可购买终身商业授权—</span>
-        </div>
-      </a-card>
       <a-card title="入门指引" style="marginTop: 13px;">
         <div class="btn-box">
           <div>

@@ -118,6 +118,7 @@
         created() {
           this.fission_id = this.$route.query.fission_id
           this.union_id = this.$route.query.union_id
+          this.getOpenUserInfo()
         },
       methods: {
           getOpenUserInfo() {
