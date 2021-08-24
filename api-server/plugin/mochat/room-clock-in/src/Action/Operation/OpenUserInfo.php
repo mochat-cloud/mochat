@@ -21,6 +21,7 @@ use MoChat\Framework\Request\ValidateSceneTrait;
 use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\Session\Middleware\SessionMiddleware;
 use MoChat\App\OfficialAccount\Action\Operation\Traits\OpenUserInfoTrait;
+use MoChat\Plugin\RoomClockIn\Contract\ClockInContract;
 use MoChat\Plugin\WorkFission\Contract\WorkFissionContract;
 /**
  * 获取用户基本信息(需授权作用域为 snsapi_userinfo).
@@ -33,9 +34,9 @@ class OpenUserInfo extends AbstractAction
 
     /**
      * @Inject
-     * @var WorkFissionContract
+     * @var ClockInContract
      */
-    protected $workFissionService;
+    protected $clockInService;
 
     /**
      * 为了自动兼容nginx转发规则，此处的路由定义与规范不同
@@ -85,7 +86,7 @@ class OpenUserInfo extends AbstractAction
             throw new CommonException(ErrorCode::INVALID_PARAMS, '数据不存在');
         }
 
-        $info = $this->workFissionService->getWorkFissionById($id, ['corp_id']);
+        $info = $this->clockInService->getClockInById($id, ['corp_id']);
         $corpId = empty($info) ? 0 : $info['corpId'];
         return $corpId;
     }
