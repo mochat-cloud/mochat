@@ -6,3 +6,6 @@
 .git/
 .phpintel/
 .DS_Store
+
+operation.zip
+operation/package-lock.json

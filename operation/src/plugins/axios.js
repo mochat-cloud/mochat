@@ -8,7 +8,7 @@ const request = axios.create({
 })
 
 const request_op = axios.create({
-  baseURL: process.env.BASE_URL,
+  baseURL: process.env.VUE_APP_API_BASE_URL_LOCAL,
   timeout: 15000
 })
 
