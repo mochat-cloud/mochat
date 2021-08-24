@@ -6,7 +6,7 @@ import { Toast } from 'vant'
 import { getStorage, removeStorage } from '@/utils'
 
 const router = createRouter({
-  history: createWebHistory('/'),
+// history: createWebHistory('/'),
   routes
 })
 

@@ -6,7 +6,7 @@ function resolve (dir) {
 const env = process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'preview'
 
 const vueConfig = {
-  publicPath: env ? 'https://assets-gewu.bagrids.com/sidebar_images/' : '/',
+  publicPath: env ? 'http://assets-gewu.bagrids.com/sidebar_images/' : '/',
 
   css: {
     loaderOptions: {

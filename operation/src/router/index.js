@@ -95,7 +95,7 @@ const routes = [
 ]
 const router = new VueRouter({
   mode: 'history',
-  history: createWebHistory('/'),
+//history: createWebHistory('/'),
   routes
 })
 
