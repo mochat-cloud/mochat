@@ -110,7 +110,6 @@ class StoreLogic
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \JsonException
-     * @throws \League\Flysystem\FileExistsException
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidArgumentException
      */
     public function handle(array $user, array $params): array
