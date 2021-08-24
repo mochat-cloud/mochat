@@ -16,6 +16,7 @@ use Hyperf\Di\Annotation\Inject;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Corp\Logic\AppTrait;
 use MoChat\App\WorkAgent\Contract\WorkAgentContract;
+use MoChat\App\WorkAgent\QueueService\MessageRemind;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\App\WorkMessage\Constants\MsgType;
@@ -192,49 +193,40 @@ class RoomQualityLogic
                         continue;
                     }
                     $name = empty($contact) ? '' : $contact['name'];
+                    $messageRemind = make(MessageRemind::class);
                     ## 1：管理员。2：群主
                     if ((int) $rule['employee_type'] === 1) {
                         $employees = $this->workEmployeeService->getWorkEmployeesById($rule['employee'], ['wx_user_id']);
                         $content   = "客户【{$name}】在群聊【{$room['name']}】中，发送信息未回复，请尽快回复";
-                        foreach ($employees as $emp) {
-                            ##EasyWeChat发送应用消息
-                            $res = $this->wxApp($corp['id'], 'contact')->message->send([
-                                'touser'  => $emp['wxUserId'],
-                                'msgtype' => 'text',
-                                'agentid' => $agentId,
-                                'text'    => [
-                                    'content' => $content,
-                                ], ]);
-                            if ($res['errcode'] !== 0) {
-                                $this->logger->error(sprintf('群聊质检提醒失败::[%s]', $agentId . json_encode($res, JSON_THROW_ON_ERROR)));
-                            }
-                            $params = [
-                                'quality_id' => $quality['id'],
-                                'message_id' => $message['id'],
-                                'room_id'    => $message['room_id'],
-                                'type'       => 1,
-                                'content'    => $content,
-                                'corp_id'    => $corp['id'],
-                                'created_at' => date('Y-m-d H:i:s'),
-                            ];
-                            $this->createRemindQuality($params);
+                        if (!empty($employees)) {
+                            $to = array_column($employees, 'wxUserId');
+                            $messageRemind->sendToEmployee(
+                                (int)$corp['id'],
+                                $to,
+                                'text',
+                                $content);
                         }
+
+                        $params = [
+                            'quality_id' => $quality['id'],
+                            'message_id' => $message['id'],
+                            'room_id'    => $message['room_id'],
+                            'type'       => 1,
+                            'content'    => $content,
+                            'corp_id'    => $corp['id'],
+                            'created_at' => date('Y-m-d H:i:s'),
+                        ];
+                        $this->createRemindQuality($params);
                     }
                     if ((int) $rule['employee_type'] === 2) {
-                        $room_info = $this->workRoomService->getWorkRoomById((int) $message['room_id'], ['owner_id', 'name']);
-                        $employee  = $this->workEmployeeService->getWorkEmployeeById((int) $room_info['ownerId'], ['wx_user_id']);
-                        $content   = "客户【{$name}】在群聊【{$room_info['name']}】中，发送信息未回复，请尽快回复";
-                        ##EasyWeChat发送应用消息
-                        $res = $this->wxApp($corp['id'], 'contact')->message->send([
-                            'touser'  => $employee['wxUserId'],
-                            'msgtype' => 'text',
-                            'agentid' => $agentId,
-                            'text'    => [
-                                'content' => $content,
-                            ], ]);
-                        if ($res['errcode'] !== 0) {
-                            $this->logger->error(sprintf('群聊质检提醒失败::[%s]', $agentId . json_encode($res, JSON_THROW_ON_ERROR)));
-                        }
+                        $roomInfo = $this->workRoomService->getWorkRoomById((int) $message['room_id'], ['owner_id', 'name']);
+                        $employee  = $this->workEmployeeService->getWorkEmployeeById((int) $roomInfo['ownerId'], ['wx_user_id']);
+                        $content   = "客户【{$name}】在群聊【{$roomInfo['name']}】中，发送信息未回复，请尽快回复";
+                        $messageRemind->sendToEmployee(
+                            (int)$corp['id'],
+                            $employee['wxUserId'],
+                            'text',
+                            $content);
                         $params = [
                             'quality_id' => $quality['id'],
                             'message_id' => $message['id'],
