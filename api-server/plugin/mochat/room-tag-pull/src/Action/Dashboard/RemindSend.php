@@ -22,6 +22,7 @@ use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Corp\Logic\AppTrait;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkAgent\Contract\WorkAgentContract;
+use MoChat\App\WorkAgent\QueueService\MessageRemind;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\Framework\Action\AbstractAction;
@@ -145,6 +146,7 @@ class RemindSend extends AbstractAction
     private function handleData(array $user, array $params): array
     {
         $roomTagPUll = $this->roomTagPullService->getRoomTagPullById((int) $params['id'], ['employees', 'choose_contact', 'contact_num', 'wx_tid', 'created_at']);
+        $messageRemind = make(MessageRemind::class);
         foreach (json_decode($roomTagPUll['wxTid'], true, 512, JSON_THROW_ON_ERROR) as $item) {
             if (isset($params['wxUserId']) && $item['wxUserId'] !== $params['wxUserId']) {
                 continue;
@@ -153,24 +155,11 @@ class RemindSend extends AbstractAction
                 $employee = $this->workEmployeeService->getWorkEmployeeByCorpIdWxUserId($user['corpIds'][0], $item['wxUserId'], ['wx_user_id']);
                 $contact  = $this->workContactService->getWorkContactsByEmployeeIdSearch($user['corpIds'][0], (int) $item, json_decode($roomTagPUll['chooseContact'], true, 512, JSON_THROW_ON_ERROR));
                 if (! empty($contact)) {
-                    $content = "管理员提醒你发送群发任务\n任务创建于{$roomTagPUll['createdAt']},将群发给{$contact[0]['name']}等{$roomTagPUll['contactNum']}个客户，可前往【客户联系】中确认发送";
-                    $agent   = $this->workAgentService->getWorkAgentByCorpIdClose($user['corpIds'][0], ['wx_agent_id']);
-                    if (empty($agent)) {
-                        $this->logger->error(sprintf('标签建群-提醒发送失败::[%s]', '企业应用不存在'));
-                    } else {
-                        ##EasyWeChat发送应用消息
-                        $res = $this->wxApp($user['corpIds'][0], 'contact')->message->send([
-                            'touser'  => $employee['wxUserId'],
-                            'msgtype' => 'text',
-                            'agentid' => (int) $agent[0]['wxAgentId'],
-                            'text'    => [
-                                'content' => $content,
-                            ], ]);
-                        if ($res['errcode'] !== 0) {
-                            $this->logger->error(sprintf('标签建群-提醒发送失败::[%s]', $agent[0]['wxAgentId'] . json_encode($res, JSON_THROW_ON_ERROR)));
-                        }
-                    }
+                    continue;
                 }
+                $content = "管理员提醒你发送群发任务\n任务创建于{$roomTagPUll['createdAt']},将群发给{$contact[0]['name']}等{$roomTagPUll['contactNum']}个客户，可前往【客户联系】中确认发送";
+                $messageRemind->sendToEmployee((int)$user['corpIds'][0], $employee['wxUserId'],'text',
+                    $content);
             }
         }
         return [];

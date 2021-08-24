@@ -16,6 +16,7 @@ use Hyperf\Di\Annotation\Inject;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Corp\Logic\AppTrait;
 use MoChat\App\WorkAgent\Contract\WorkAgentContract;
+use MoChat\App\WorkAgent\QueueService\MessageRemind;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\App\WorkMessage\Constants\MsgType;
@@ -97,7 +98,6 @@ class RoomRemindLogic
             foreach ($corps as $corp) {
                 $agent = $this->workAgentService->getWorkAgentByCorpIdClose($corp['id'], ['wx_agent_id']);
                 if (empty($agent)) {
-//                $this->logger->error(sprintf('群消息提醒失败::[%s]', $corp['id'].'企业应用不存在'));
                     continue;
                 }
                 $this->roomRemind($corp, (int) $agent[0]['wxAgentId']);
@@ -112,21 +112,20 @@ class RoomRemindLogic
     {
         ## 起始索引
         $startId = $this->workMessageIdService->getWorkMessageLastIdByCorpIdType($corp['id'], 1);
-//        $this->logger->info('群消息提醒起始索引' . json_encode($startId, JSON_THROW_ON_ERROR));
-        $end_id = $startId + 5000;
+        $endId = $startId + 5000;
         $maxId  = make(WorkMessageContract::class, [$corp['id']])->getWorkMessageMaxId();
-        $end_id = $maxId >= $end_id ? $end_id : $maxId;
+        $endId = $maxId >= $endId ? $endId : $maxId;
         ## 提醒方案
         $roomRemind = $this->roomRemindService->getRoomRemindByCorpIdStatus([$corp['id']], 1, ['id', 'rooms', 'is_qrcode', 'is_link', 'is_miniprogram', 'is_card', 'is_keyword', 'keyword']);
-//        $this->logger->info('群消息提醒方案' . json_encode($roomRemind, JSON_THROW_ON_ERROR));
         ## 消息类型
         $allMsgType = array_merge(MsgType::$otherType, MsgType::$fixedType);
+        $messageRemind = make(MessageRemind::class);
         foreach ($roomRemind as $k => $v) {
             $rooms   = json_decode($v['rooms'], true, 512, JSON_THROW_ON_ERROR);
             $roomArr = array_column($rooms, 'id');
             ## 二维码
             if ($v['isQrcode'] === 1) {
-                $message = make(WorkMessageContract::class, [$corp['id']])->getWorkMessageByCorpIdRoomIdMsgType($corp['id'], $roomArr, $allMsgType['weapp'], [$startId, $end_id], ['id', 'from', 'room_id']);
+                $message = make(WorkMessageContract::class, [$corp['id']])->getWorkMessageByCorpIdRoomIdMsgType($corp['id'], $roomArr, $allMsgType['weapp'], [$startId, $endId], ['id', 'from', 'room_id']);
 
                 foreach ($message as $item) {
                     $item     = (array) $item;
@@ -135,17 +134,11 @@ class RoomRemindLogic
                     $contact  = $this->workContactService->getWorkContactByCorpIdWxExternalUserId($corp['id'], $item['from'], ['name']);
                     $name     = empty($contact) ? '' : $contact['name'];
                     $content  = "客户【{$name}】在群聊【{$room['name']}】中，发送了带二维码的图片";
-                    ##EasyWeChat发送应用消息
-                    $res = $this->wxApp($corp['id'], 'contact')->message->send([
-                        'touser'  => $employee['wxUserId'],
-                        'msgtype' => 'text',
-                        'agentid' => $agentId,
-                        'text'    => [
-                            'content' => $content,
-                        ], ]);
-                    if ($res['errcode'] !== 0) {
-                        $this->logger->error(sprintf('群聊质检提醒失败::[%s]', $agentId . json_encode($res, JSON_THROW_ON_ERROR)));
-                    }
+                    $messageRemind->sendToEmployee(
+                        (int)$corp['id'],
+                        $employee['wxUserId'],
+                        'text',
+                        $content);
                     $params = [
                         'remind_id'  => $v['id'],
                         'message_id' => $item['id'],
@@ -160,7 +153,7 @@ class RoomRemindLogic
             }
             ## 链接
             if ($v['isLink'] === 1) {
-                $message = make(WorkMessageContract::class, [$corp['id']])->getWorkMessageByCorpIdRoomIdMsgType($corp['id'], $roomArr, $allMsgType['link'], [$startId, $end_id], ['id', 'from', 'room_id']);
+                $message = make(WorkMessageContract::class, [$corp['id']])->getWorkMessageByCorpIdRoomIdMsgType($corp['id'], $roomArr, $allMsgType['link'], [$startId, $endId], ['id', 'from', 'room_id']);
                 foreach ($message as $item) {
                     $item     = (array) $item;
                     $room     = $this->workRoomService->getWorkRoomById((int) $item['room_id'], ['owner_id', 'name']);
@@ -168,17 +161,11 @@ class RoomRemindLogic
                     $contact  = $this->workContactService->getWorkContactByCorpIdWxExternalUserId($corp['id'], $item['from'], ['name']);
                     $name     = empty($contact) ? '' : $contact['name'];
                     $content  = "客户【{$contact['name']}】在群聊【{$room['name']}】中，发送了链接";
-                    ##EasyWeChat发送应用消息
-                    $res = $this->wxApp($corp['id'], 'contact')->message->send([
-                        'touser'  => $employee['wxUserId'],
-                        'msgtype' => 'text',
-                        'agentid' => $agentId,
-                        'text'    => [
-                            'content' => $content,
-                        ], ]);
-                    if ($res['errcode'] !== 0) {
-                        $this->logger->error(sprintf('群聊质检提醒失败::[%s]', $agentId . json_encode($res, JSON_THROW_ON_ERROR)));
-                    }
+                    $messageRemind->sendToEmployee(
+                        (int)$corp['id'],
+                        $employee['wxUserId'],
+                        'text',
+                        $content);
                     $params = [
                         'remind_id'  => $v['id'],
                         'message_id' => $item['id'],
@@ -193,7 +180,7 @@ class RoomRemindLogic
             }
             ## 小程序
             if ($v['isMiniprogram'] === 1) {
-                $message = make(WorkMessageContract::class, [$corp['id']])->getWorkMessageByCorpIdRoomIdMsgType($corp['id'], $roomArr, $allMsgType['weapp'], [$startId, $end_id], ['id', 'from', 'room_id']);
+                $message = make(WorkMessageContract::class, [$corp['id']])->getWorkMessageByCorpIdRoomIdMsgType($corp['id'], $roomArr, $allMsgType['weapp'], [$startId, $endId], ['id', 'from', 'room_id']);
                 foreach ($message as $item) {
                     $item     = (array) $item;
                     $room     = $this->workRoomService->getWorkRoomById((int) $item['room_id'], ['owner_id', 'name']);
@@ -201,17 +188,11 @@ class RoomRemindLogic
                     $contact  = $this->workContactService->getWorkContactByCorpIdWxExternalUserId($corp['id'], $item['from'], ['name']);
                     $name     = empty($contact) ? '' : $contact['name'];
                     $content  = "客户【{$name}】在群聊【{$room['name']}】中，发送了小程序";
-                    ##EasyWeChat发送应用消息
-                    $res = $this->wxApp($corp['id'], 'contact')->message->send([
-                        'touser'  => $employee['wxUserId'],
-                        'msgtype' => 'text',
-                        'agentid' => $agentId,
-                        'text'    => [
-                            'content' => $content,
-                        ], ]);
-                    if ($res['errcode'] !== 0) {
-                        $this->logger->error(sprintf('群聊质检提醒失败::[%s]', $agentId . json_encode($res, JSON_THROW_ON_ERROR)));
-                    }
+                    $messageRemind->sendToEmployee(
+                        (int)$corp['id'],
+                        $employee['wxUserId'],
+                        'text',
+                        $content);
                     $params = [
                         'remind_id'  => $v['id'],
                         'message_id' => $item['id'],
@@ -226,7 +207,7 @@ class RoomRemindLogic
             }
             ## 名片
             if ($v['isCard'] === 1) {
-                $message = make(WorkMessageContract::class, [$corp['id']])->getWorkMessageByCorpIdRoomIdMsgType($corp['id'], $roomArr, $allMsgType['card'], [$startId, $end_id], ['id', 'from', 'room_id']);
+                $message = make(WorkMessageContract::class, [$corp['id']])->getWorkMessageByCorpIdRoomIdMsgType($corp['id'], $roomArr, $allMsgType['card'], [$startId, $endId], ['id', 'from', 'room_id']);
                 foreach ($message as $item) {
                     $item     = (array) $item;
                     $room     = $this->workRoomService->getWorkRoomById((int) $item['room_id'], ['owner_id', 'name']);
@@ -234,17 +215,11 @@ class RoomRemindLogic
                     $contact  = $this->workContactService->getWorkContactByCorpIdWxExternalUserId($corp['id'], $item['from'], ['name']);
                     $name     = empty($contact) ? '' : $contact['name'];
                     $content  = "客户【{$name}】在群聊【{$room['name']}】中，发送了名片";
-                    ##EasyWeChat发送应用消息
-                    $res = $this->wxApp($corp['id'], 'contact')->message->send([
-                        'touser'  => $employee['wxUserId'],
-                        'msgtype' => 'text',
-                        'agentid' => $agentId,
-                        'text'    => [
-                            'content' => $content,
-                        ], ]);
-                    if ($res['errcode'] !== 0) {
-                        $this->logger->error(sprintf('群聊质检提醒失败::[%s]', $agentId . json_encode($res, JSON_THROW_ON_ERROR)));
-                    }
+                    $messageRemind->sendToEmployee(
+                        (int)$corp['id'],
+                        $employee['wxUserId'],
+                        'text',
+                        $content);
                     $params = [
                         'remind_id'  => $v['id'],
                         'message_id' => $item['id'],
@@ -260,7 +235,7 @@ class RoomRemindLogic
             ## 关键词
             if ($v['isKeyword'] === 1) {
                 foreach (explode(',', $v['keyword']) as $keyword) {
-                    $message = make(WorkMessageContract::class, [$corp['id']])->getWorkMessageByCorpIdRoomIdMsgTypeKeyword($corp['id'], $roomArr, $allMsgType['text'], $keyword, [$startId, $end_id], ['id', 'from', 'room_id']);
+                    $message = make(WorkMessageContract::class, [$corp['id']])->getWorkMessageByCorpIdRoomIdMsgTypeKeyword($corp['id'], $roomArr, $allMsgType['text'], $keyword, [$startId, $endId], ['id', 'from', 'room_id']);
                     $this->logger->info('群消息提醒-消息' . json_encode($message, JSON_THROW_ON_ERROR));
                     foreach ($message as $item) {
                         $item     = (array) $item;
@@ -269,17 +244,11 @@ class RoomRemindLogic
                         $contact  = $this->workContactService->getWorkContactByCorpIdWxExternalUserId($corp['id'], $item['from'], ['name']);
                         $name     = empty($contact) ? '' : $contact['name'];
                         $content  = "客户【{$name}】在群聊【{$room['name']}】中，发送了关键词：{$keyword}";
-                        ##EasyWeChat发送应用消息
-                        $res = $this->wxApp($corp['id'], 'contact')->message->send([
-                            'touser'  => $employee['wxUserId'],
-                            'msgtype' => 'text',
-                            'agentid' => $agentId,
-                            'text'    => [
-                                'content' => $content,
-                            ], ]);
-                        if ($res['errcode'] !== 0) {
-                            $this->logger->error(sprintf('群聊质检提醒失败::[%s]', $agentId . json_encode($res, JSON_THROW_ON_ERROR)));
-                        }
+                        $messageRemind->sendToEmployee(
+                            (int)$corp['id'],
+                            $employee['wxUserId'],
+                            'text',
+                            $content);
                         $params = [
                             'remind_id'  => $v['id'],
                             'message_id' => $item['id'],
@@ -296,11 +265,11 @@ class RoomRemindLogic
         }
         $info = $this->workMessageIdService->getWorkMessageIdByCorpIdType($corp['id'], 1, ['id']);
         if (empty($info)) {
-            $this->workMessageIdService->createWorkMessageId(['corp_id' => $corp['id'], 'type' => 1, 'last_id' => $end_id, 'created_at' => date('Y-m-d H:i:s')]);
+            $this->workMessageIdService->createWorkMessageId(['corp_id' => $corp['id'], 'type' => 1, 'last_id' => $endId, 'created_at' => date('Y-m-d H:i:s')]);
         } else {
-            $this->workMessageIdService->updateWorkMessageIdById((int) $info['id'], ['last_id' => $end_id]);
+            $this->workMessageIdService->updateWorkMessageIdById((int) $info['id'], ['last_id' => $endId]);
         }
-        return [$end_id];
+        return [$endId];
     }
 
     /**

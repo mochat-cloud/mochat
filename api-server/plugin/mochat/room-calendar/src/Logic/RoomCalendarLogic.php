@@ -16,6 +16,7 @@ use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Corp\Logic\AppTrait;
 use MoChat\App\Utils\Url;
 use MoChat\App\WorkAgent\Contract\WorkAgentContract;
+use MoChat\App\WorkAgent\QueueService\MessageRemind;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\Plugin\RoomCalendar\Contract\RoomCalendarContract;
 use MoChat\Plugin\RoomCalendar\Contract\RoomCalendarPushContract;
@@ -81,27 +82,18 @@ class RoomCalendarLogic
                 ## 推送
                 $roomArr = json_decode($calendar['rooms'], true, 512, JSON_THROW_ON_ERROR);
                 $room    = array_count_values(array_column($roomArr, 'ownerId'));
+                $messageRemind = make(MessageRemind::class);
                 foreach ($room as $k => $v) {
                     $ownerInfo = $this->workEmployeeService->getWorkEmployeeById($k, ['wx_user_id']);
                     $this->logger->info('群日历任务-群主' . $k);
-                    $link    = Url::getSidebarBaseUrl() . "/***?id={$calendar['id']}&owner={$k}&day={$val['day']}";
+//                    $link    = Url::getSidebarBaseUrl() . "/***?id={$calendar['id']}&owner={$k}&day={$val['day']}";
+                    $link = '#'; // TODO 需要新增sidebar页面
                     $content = "管理员{$employee['name']}创建了群日历推送任务，提醒你给{$v}个群聊发送消息<a href='{$link}'>查看推送详情 </a>";
-                    $agent   = $this->workAgentService->getWorkAgentByCorpIdClose($calendar['corpId'], ['wx_agent_id']);
-                    if (empty($agent)) {
-                        $this->logger->error(sprintf('群日历推送失败::[%s]', '企业应用不存在'));
-                    } else {
-                        ##EasyWeChat发送应用消息
-                        $res = $this->wxApp($calendar['corpId'], 'contact')->message->send([
-                            'touser'  => $ownerInfo['wxUserId'],
-                            'msgtype' => 'text',
-                            'agentid' => (int) $agent[0]['wxAgentId'],
-                            'text'    => [
-                                'content' => $content,
-                            ], ]);
-                        if ($res['errcode'] !== 0) {
-                            $this->logger->error(sprintf('群日历推送失败::[%s]', $agent[0]['wxAgentId'] . json_encode($res, JSON_THROW_ON_ERROR)));
-                        }
-                    }
+                    $messageRemind->sendToEmployee(
+                        (int)$calendar['corpId'],
+                        $ownerInfo['wxUserId'],
+                        'text',
+                        $content);
                 }
                 $this->roomCalendarPushService->updateRoomCalendarPushById($val['id'], ['status' => 2]);
             }

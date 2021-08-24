@@ -3,7 +3,11 @@ const path = require('path')// 引入path模块
 function resolve (dir) {
   return path.join(__dirname, dir)// path.join(__dirname)设置绝对路径
 }
+const env = process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'preview'
+
 const vueConfig = {
+  publicPath: env ? 'https://assets-gewu.bagrids.com/sidebar_images/' : '/',
+
   css: {
     loaderOptions: {
       less: {
@@ -49,6 +53,5 @@ const vueConfig = {
     // set第一个参数：设置的别名，第二个参数：设置的路径
   }
 }
-
 
 module.exports = vueConfig

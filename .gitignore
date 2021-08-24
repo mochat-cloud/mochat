@@ -8,3 +8,6 @@
 .DS_Store
 
 operation.zip
+operation/package-lock.json
+dashboard/package-lock.json
+sidebar/package-lock.json

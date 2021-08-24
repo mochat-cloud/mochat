@@ -18,6 +18,8 @@ function getGitHash () {
 
 const isProd = process.env.NODE_ENV === 'production'
 
+const env = process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'preview'
+
 const assetsCDN = {
   // webpack build externals
   externals: {
@@ -39,6 +41,9 @@ const assetsCDN = {
 
 // vue.config.js
 const vueConfig = {
+  publicPath: env
+    ? 'https://assets-gewu.bagrids.com/dashboard_images/'
+    : '/',
   configureWebpack: config => {
     // webpack plugins
     config.plugins.concat([

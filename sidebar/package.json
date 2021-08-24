@@ -5,13 +5,15 @@
   "scripts": {
     "dev": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "upload_image": "npx upyun-upload -v -c upyun.js"
   },
   "dependencies": {
     "amfe-flexible": "^2.2.1",
     "axios": "^0.21.0",
     "core-js": "^3.6.5",
     "mockjs": "^1.1.0",
+    "upyun-upload": "^1.0.1",
     "vant": "^3.0.0-beta.8",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
