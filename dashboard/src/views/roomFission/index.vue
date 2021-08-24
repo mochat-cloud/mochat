@@ -25,7 +25,7 @@
     <a-card>
       <a-table :columns="table.columns" :data-source="table.data">
         <div class="btn-group" slot="operating" slot-scope="row">
-          <a @click="$router.push('/roomFission/invite?id='+row.id)">邀请</a>
+          <a @click="$router.push('/roomFission/invite?id='+row.id)">邀请客户参与</a>
           <a-divider type="vertical"/>
           <a @click="$refs.details.show(row.id)">详情</a>
           <a-divider type="vertical"/>

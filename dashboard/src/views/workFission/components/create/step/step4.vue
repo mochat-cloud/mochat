@@ -109,12 +109,6 @@
       </div>
     </div>
 
-    <img
-      class="instructions-img"
-      src="../../../../../assets/room-fission-create-step-4.png"
-      v-if="inviteValue === '暂不邀请'"
-    >
-
     <selectMember ref="selectMember" @change="selectMemberChange"/>
   </div>
 </template>

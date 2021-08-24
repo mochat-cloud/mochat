@@ -185,7 +185,7 @@ export default {
           loading.then(() => {
             this.$message.success('发送成功', 2.5)
           }).then(() => {
-            this.$router.push('/workFission/index')
+            this.$router.push('/workFission/taskpage')
           })
         }
       })
