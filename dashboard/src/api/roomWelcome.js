@@ -19,7 +19,7 @@ export function del (params) {
 }
 
 // 获取详情
-export function getDetails (params) {
+export function getDetail (params) {
   return request({
     url: '/roomWelcome/show',
     method: 'GET',

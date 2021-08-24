@@ -17,7 +17,7 @@
         <div class="btn-group" slot="operating" slot-scope="row">
           <a @click="detailsShow(row)">详情</a>
           <a-divider type="vertical"/>
-          <a @click="$router.push({ path: '/roomWelcome/create?update=true&&rowData='+JSON.stringify(row) })">修改</a>
+          <a @click="$router.push({ path: '/roomWelcome/create?update=true&id='+row.id })">修改</a>
           <a-divider type="vertical"/>
           <a @click="del(row)">删除</a>
         </div>
