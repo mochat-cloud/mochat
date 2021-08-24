@@ -83,7 +83,7 @@ class Invite extends AbstractAction
      *     @Middleware(PermissionMiddleware::class)
      * })
      * @RequestMapping(path="/dashboard/workFission/invite", methods="post")
-     * @throws \JsonException|\League\Flysystem\FileExistsException
+     * @throws \JsonException
      * @return array 返回数组
      */
     public function handle(): array
@@ -123,7 +123,7 @@ class Invite extends AbstractAction
      * 处理参数.
      * @param array $user 用户信息
      * @param array $params 接受参数
-     * @throws \JsonException|\League\Flysystem\FileExistsException
+     * @throws \JsonException
      * @return array 响应数组
      */
     private function handleParam(array $user, array $params): array
@@ -131,10 +131,6 @@ class Invite extends AbstractAction
         ##邀请客户
         if (! empty($params['link_pic'])) {
             $params['link_pic'] = File::uploadBase64Image($params['link_pic'], 'image/roomFission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg');
-            $localFile = File::download(file_full_url($params['link_pic']), $params['link_pic']);
-            $inviteUrl = $this->wxApp($user['corpIds'][0], 'contact')->media->uploadImg($localFile);
-        } else {
-            $inviteUrl = ['url' => ''];
         }
 
         $data      = [
@@ -145,7 +141,6 @@ class Invite extends AbstractAction
             'link_title'     => $params['link_title'],
             'link_desc'      => $params['link_desc'],
             'link_pic'       => $params['link_pic'],
-            'wx_link_pic'    => $inviteUrl['url'],
             'create_user_id' => $user['id'],
             'created_at'     => date('Y-m-d H:i:s'),
         ];
@@ -191,16 +186,16 @@ class Invite extends AbstractAction
     }
 
     /**
-     * @param $fission_id
+     * @param $fissionId
      * @param $params
      */
-    private function handleInvite($fission_id, $params): array
+    private function handleInvite($fissionId, $params): array
     {
-        $info = $this->workFissionInviteService->getWorkFissionInviteByFissionId((int) $fission_id);
+        $info = $this->workFissionInviteService->getWorkFissionInviteByFissionId((int) $fissionId);
         if (empty($info)) {
             $this->workFissionInviteService->createWorkFission($params);
         } else {
-            $this->workFissionInviteService->updateWorkFissionById((int) $fission_id, $params);
+            $this->workFissionInviteService->updateWorkFissionById((int) $fissionId, $params);
         }
         return [];
     }
@@ -217,7 +212,7 @@ class Invite extends AbstractAction
     {
         ##EasyWeChat添加企业群发消息模板.
         $easyWeChatParams['text']['content'] = $data['text'];
-        $easyWeChatParams['link']            = ['title' => $data['link_title'], 'picurl' => $data['wx_link_pic'], 'desc' => $data['link_desc'], 'url' => Url::getAuthRedirectUrl(7, $fissionId)];
+        $easyWeChatParams['link']            = ['title' => $data['link_title'], 'picurl' => $data['link_pic'], 'desc' => $data['link_desc'], 'url' => Url::getAuthRedirectUrl(7, $fissionId)];
         $easyWeChatParams['external_userid'] = array_column($contact, 'wxExternalUserid');
         $res                                 = $this->wxApp($user['corpIds'][0], 'contact')->external_contact_message->submit($easyWeChatParams);
         if ($res['errcode'] !== 0) {

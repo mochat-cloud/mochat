@@ -72,15 +72,21 @@ trait OpenUserInfoTrait
         $corpId = $this->getCorpId();
 
         if ($corpId === 0) {
-            throw new CommonException(ErrorCode::INVALID_PARAMS, '活动不存在');
+            throw new CommonException(ErrorCode::INVALID_PARAMS, '数据不存在');
         }
 
         $type = $this->getType();
         $set = $this->officialAccountSetService->getOfficialAccountSetByCorpIdType($corpId, $type, ['official_account_id']);
         if (!empty($set)) {
-            return $this->officialAccountService->getOfficialAccountById($set['officialAccountId'], ['id', 'appid', 'authorizer_appid']);
+            $res = $this->officialAccountService->getOfficialAccountById($set['officialAccountId'], ['id', 'appid', 'authorizer_appid']);
         } else {
-            return $this->officialAccountService->getOfficialAccountByCorpId($corpId, ['id', 'appid', 'authorizer_appid']);
+            $res = $this->officialAccountService->getOfficialAccountByCorpId($corpId, ['id', 'appid', 'authorizer_appid']);
         }
+
+        if (empty($res)) {
+            throw new CommonException(ErrorCode::INVALID_PARAMS, '未找到授权公众号');
+        }
+
+        return $res;
     }
 }

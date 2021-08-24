@@ -13,7 +13,7 @@
     <a-card>
       <a-table :columns="table.columns" :data-source="table.data">
         <div class="btn-group" slot="operating" slot-scope="item">
-          <a @click="goInvite(item)">邀请</a>
+          <a @click="goInvite(item)">邀请客户参与</a>
           <a-divider type="vertical"/>
           <a @click="$refs.details.show(item.id)">详情</a>
           <a-divider type="vertical"/>
