@@ -13,13 +13,11 @@ Vue.use(Router)
 
 export default new Router({
   mode: 'history',
-  history: Router.createWebHistory('/'),
   routes: baseRouterMap
 })
 export function newRouter () {
   return new Router({
     mode: 'history',
-    history: Router.createWebHistory('/'),
     routes: baseRouterMap
   })
 }
