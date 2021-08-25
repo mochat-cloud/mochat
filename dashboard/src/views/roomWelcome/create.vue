@@ -109,7 +109,7 @@
 <script>
 import AddApplets from '../../components/Select/applets'
 // eslint-disable-next-line no-unused-vars
-import { add, update } from '@/api/roomWelcome'
+import { add, update, getDetail } from '@/api/roomWelcome'
 
 export default {
   data () {
@@ -190,44 +190,47 @@ export default {
   created () {
     if (this.$route.query.update === 'true') {
       this.update.flag = true
-      const data = JSON.parse(this.$route.query.rowData)
-      this.update.id = data.id
-      // 欢迎语1
-      this.$nextTick(() => {
-        this.$refs.enterText.addUserName(data.msg_text)
-      })
-      // 欢迎语2
-      if (data.complex_type) {
-        this.form.type.select = data.complex_type
-        if (data.complex_type == 'image') {
-          if (data.msg_complex.pic_url) {
+      this.update.id = this.$route.query.id
+      getDetail({ id: this.update.id }).then(res => {
+        const data = res.data
+        data.msgComplex = JSON.parse(data.msgComplex)
+        // 欢迎语1
+        this.$nextTick(() => {
+          this.$refs.enterText.addUserName(data.msgText)
+        })
+        // 欢迎语2
+        if (data.complexType) {
+          this.form.type.select = data.complexType
+          if (data.complexType == 'image') {
+            if (data.msgComplex.pic_url) {
+              this.$nextTick(() => {
+                this.$refs.uploadImg.setUrl(data.msgComplex.pic)
+              })
+            }
+          } else if (data.complexType == 'link') {
+            const linkInput = {
+              title: data.msgComplex.title,
+              desc: data.msgComplex.desc,
+              url: data.msgComplex.url
+            }
+            this.form.type.link.input = linkInput
             this.$nextTick(() => {
-              this.$refs.uploadImg.setUrl(data.msg_complex.pic)
+              this.$refs.linkOverImg.setUrl(data.msgComplex.pic)
             })
+          } else if (data.complexType == 'miniprogram') {
+            const appletsData = {
+              title: data.msgComplex.title,
+              appid: data.msgComplex.appid,
+              path: data.msgComplex.page,
+              image: data.msgComplex.pic
+            }
+            this.$nextTick(() => {
+              this.$refs.preview.setApplets(appletsData.title, appletsData.image)
+            })
+            this.form.type.applets = appletsData
           }
-        } else if (data.complex_type == 'link') {
-          const linkInput = {
-            title: data.msg_complex.title,
-            desc: data.msg_complex.desc,
-            url: data.msg_complex.url
-          }
-          this.form.type.link.input = linkInput
-          this.$nextTick(() => {
-            this.$refs.linkOverImg.setUrl(data.msg_complex.pic)
-          })
-        } else if (data.complex_type == 'miniprogram') {
-          const appletsData = {
-            title: data.msg_complex.title,
-            appid: data.msg_complex.appid,
-            path: data.msg_complex.page,
-            image: data.msg_complex.pic
-          }
-          this.$nextTick(() => {
-            this.$refs.preview.setApplets(appletsData.title, appletsData.image)
-          })
-          this.form.type.applets = appletsData
         }
-      }
+      })
     }
   },
   methods: {
@@ -253,7 +256,6 @@ export default {
      * 添加按钮
      */
     addClick () {
-      console.log('auhdewfhreig')
       const form = this.form
       const msg = this.$message.loading(this.update.flag ? '修改中' : '添加中', 1.5)
       const params = {
@@ -356,7 +358,7 @@ export default {
 }
 
 .content-wrap {
-  height: 100vh;
+  /*height: 100vh;*/
 }
 
 .form {
@@ -364,7 +366,7 @@ export default {
   min-width: 500px;
   flex: 1;
   margin-right: 40px;
-  height: 500px;
+  height: 600px;
 
   .input-msg {
     width: 100%;

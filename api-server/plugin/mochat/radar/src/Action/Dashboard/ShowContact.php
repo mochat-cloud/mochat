@@ -201,21 +201,23 @@ class ShowContact extends AbstractAction
     {
         $list  = [];
         $radar = $this->radarService->getRadarById((int) $params['radar_id'], ['title']);
+        // TODO 优化在循环中查表，改为提前统一查好再组装数据
         foreach ($contactList['data'] as $key => $val) {
             $contact        = $this->workContactService->getWorkContactById($val['contactId'], ['name', 'avatar']);
             $contactAvatar  = empty($contact) ? '' : file_full_url($contact['avatar']);
+            $contactName = isset($contact['name']) ? $contact['name'] : $val['nickname'];
             $employee       = $this->workEmployeeService->getWorkEmployeeById($val['employeeId'], ['name', 'avatar']);
             $employeeAvatar = empty($employee) ? '' : file_full_url($employee['avatar']);
             $channel        = $this->radarChannelService->getRadarChannelById($val['channelId'], ['name']);
             $clickInfo      = $this->radarRecordService->getRadarRecordByCorpIdContactIdSearch($val['corpId'], $val['contactId'], $params, ['channel_id', 'content', 'created_at']);
             foreach ($clickInfo as $k => $v) {
                 $channelInfo = $this->radarChannelService->getRadarChannelById((int) $v['channelId'], ['name']);
-//                $clickInfo[$k]['content'] = "<img src="'".{$contactAvatar}."'" />{$contact['name']}客户 打开了<img src={$employeeAvatar} />{$employee['name']}员工 在「{$channelInfo['name']}」里发送的雷达链接 「{$radar['title']}」";
-                $clickInfo[$k]['content'] = "<img src='{$contactAvatar}' />{$contact['name']}客户 打开了<img src='{$employeeAvatar}' />{$employee['name']}员工 在「{$channelInfo['name']}」里发送的雷达链接 「{$radar['title']}」";
+                // TODO 优化掉 HTML 标签
+                $clickInfo[$k]['content'] = "<img src='{$contactAvatar}' />{$contactName}客户 打开了<img src='{$employeeAvatar}' />{$employee['name']}员工 在「{$channelInfo['name']}」里发送的雷达链接 「{$radar['title']}」";
                 unset($clickInfo[$k]['channelId']);
             }
             $list[$key] = [
-                'contactName' => $contact['name'],
+                'contactName' => $contactName,
                 'avatar'      => $contactAvatar,
                 'employee'    => $employee['name'],
                 'createdAt'   => $val['createdAt'],

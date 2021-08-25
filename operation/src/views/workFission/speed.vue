@@ -17,7 +17,8 @@
             </div>
 
             <div class="gift">
-                <div :class="{item: true}" @click="openGiftMask(item, index)" v-for="(item, index) of dataList.task" :key="index">
+                <div :class="{item: true}" @click="openGiftMask(item, index)" v-for="(item, index) of dataList.task"
+                     :key="index">
                     <div :class="{top: true, 'top-received': item.receive_status || item.count > dataList.invite_count}">
                         <img src="../../static/images/gift.png" alt="" class="icon">
                         <div class="received" v-if="item.receive_status">已领取</div>
@@ -25,7 +26,8 @@
                     <div class="bottom">
                         <div class="lines">
                             <div :class="{line: true, light: item.count <= dataList.invite_count}"></div>
-                            <div :class="{line: true, light: dataList.task[index + 1] ? dataList.task[index + 1].count <= dataList.invite_count : false}" v-show="index !== dataList.task.length - 1"></div>
+                            <div :class="{line: true, light: dataList.task[index + 1] ? dataList.task[index + 1].count <= dataList.invite_count : false}"
+                                 v-show="index !== dataList.task.length - 1"></div>
                         </div>
                         <div :class="{round: true, light: item.count <= dataList.invite_count}"></div>
                         <div class="level">+{{item.count}}人</div>
@@ -94,6 +96,7 @@
 
 <script>
     import {taskDataApi, inviteFriendsApi, receiveApi, openUserInfoApi} from "../../api/workFission";
+
     export default {
         name: "speed",
         data() {
@@ -116,47 +119,47 @@
             }
         },
         created() {
-          this.fission_id = this.$route.query.fission_id
-          this.union_id = this.$route.query.union_id
-          this.getOpenUserInfo()
+            this.fission_id = this.$route.query.fission_id
+            this.union_id = this.$route.query.union_id
+            this.getOpenUserInfo()
         },
-      methods: {
-          getOpenUserInfo() {
-              let that = this;
-              openUserInfoApi({
-                  id: that.fission_id
-              }).then((res) => {
-                  if (res.data.openid === undefined) {
-                      let redirectUrl = '/auth/workFission?id=' + that.fission_id + '&target=' + encodeURIComponent(that.url);
-                      that.$redirectAuth(redirectUrl);
-                  }
+        methods: {
+            getOpenUserInfo() {
+                let that = this;
+                openUserInfoApi({
+                    id: that.fission_id
+                }).then((res) => {
+                    if (res.data.openid === undefined) {
+                        let redirectUrl = '/auth/workFission?id=' + that.fission_id + '&target=' + encodeURIComponent(that.url);
+                        that.$redirectAuth(redirectUrl);
+                    }
 
-                  this.wxUserData = res.data;
-                  this.getDataList();
-              });
-          },
-            async getDataList(){
+                    this.wxUserData = res.data;
+                    this.getDataList();
+                });
+            },
+            async getDataList() {
                 //获取任务信息
                 await taskDataApi({
-                  union_id:this.union_id,
-                  fission_id:this.fission_id
+                    union_id: this.union_id,
+                    fission_id: this.fission_id
                 }).then(res => {
                     this.dataList = res.data;
                 })
                 //获取邀请的好友列表
                 await inviteFriendsApi({
-                  union_id:this.union_id,
-                  fission_id:this.fission_id
+                    union_id: this.union_id,
+                    fission_id: this.fission_id
                 }).then(res => {
                     // console.log(res);
                     this.friendList = res.data;
                 })
                 this.setCountDown();
             },
-            getGift(){
+            getGift() {
                 receiveApi({
-                    union_id:this.union_id,
-                    fission_id:this.fission_id,
+                    union_id: this.union_id,
+                    fission_id: this.fission_id,
                     level: this.giftInfo.level
                 }).then(res => {
                 })
@@ -172,7 +175,7 @@
 
                 this.getDataList();
             },
-            openGiftMask(item, index){
+            openGiftMask(item, index) {
                 // console.log(item);
                 if (this.dataList.invite_count < item.count) return;
                 this.giftMaskFlag = true;
@@ -181,7 +184,7 @@
                 clone.level = index + 1;
                 this.giftInfo = clone;
             },
-            setCountDown(){
+            setCountDown() {
                 clearInterval(this.timer);
 
                 //先检测一次
@@ -205,7 +208,7 @@
                     this.setTime(gap);
                 }, 1000);
             },
-            setTime(time){
+            setTime(time) {
                 this.countDown.day = Math.floor(time / 60 / 60 / 24);
                 this.countDown.hour = Math.floor(time / 60 / 60 % 24);
                 this.countDown.min = Math.floor(time / 60 % 60);
@@ -216,7 +219,7 @@
 </script>
 
 <style lang="scss" scoped>
-    .page{
+    .page {
         width: 100vw;
         height: 100vh;
         background-color: #ff5636;
@@ -227,34 +230,35 @@
         display: flex;
         flex-direction: column;
 
-        .info{
+        .info {
             background-color: #ffefdf;
             border-radius: 10px;
             padding: 20px;
             margin-bottom: 20px;
 
-            .tips{
+            .tips {
                 display: flex;
                 align-items: center;
                 flex-direction: column;
                 margin-bottom: 10px;
 
-                .tip{
+                .tip {
                     color: saddlebrown;
                 }
-                .num{
+
+                .num {
                     padding: 0 6px;
                     color: #ff5636;
                     font-weight: bold;
                 }
             }
 
-            .total{
+            .total {
                 display: flex;
                 align-items: center;
                 margin-bottom: 20px;
 
-                .icon{
+                .icon {
                     width: 4px;
                     height: 14px;
                     border-radius: 3px;
@@ -262,17 +266,18 @@
                     margin-right: 6px;
                 }
 
-                .num{
+                .num {
                     padding: 0 6px;
                     color: #ff5636;
                 }
             }
-            .gift{
+
+            .gift {
                 display: flex;
                 overflow: auto;
                 margin-bottom: 8px;
 
-                .item{
+                .item {
                     $size: 86px;
                     min-width: $size;
                     display: flex;
@@ -280,7 +285,7 @@
                     align-items: center;
                     flex-grow: 1;
 
-                    .top{
+                    .top {
                         $size: 70px;
                         width: $size;
                         height: $size;
@@ -293,12 +298,12 @@
                         position: relative;
                         overflow: hidden;
 
-                        .icon{
+                        .icon {
                             width: 50%;
                             height: 50%;
                         }
 
-                        .received{
+                        .received {
                             width: 100%;
                             text-align: center;
                             position: absolute;
@@ -309,34 +314,36 @@
                         }
                     }
 
-                    .top-received{
+                    .top-received {
                         background-color: #ffd6a1;
 
-                        .icon{
+                        .icon {
                             opacity: .5;
                         }
                     }
 
-                    .bottom{
+                    .bottom {
                         width: 100%;
                         position: relative;
 
                         $lineHeight: 4px;
 
-                        .lines{
+                        .lines {
                             display: flex;
                             align-items: center;
 
-                            .line{
+                            .line {
                                 width: 50%;
                                 height: $lineHeight;
                                 background-color: #ffe1c4;
                             }
-                            .light{
+
+                            .light {
                                 background-color: orange;
                             }
                         }
-                        .round{
+
+                        .round {
                             $size: 12px;
                             position: absolute;
                             top: 0 - $size / 2 + $lineHeight / 2;
@@ -346,11 +353,13 @@
                             background-color: #ffd6a1;
                             border-radius: $size;
                         }
-                        .light{
+
+                        .light {
                             background-color: orange;
                         }
                     }
-                    .level{
+
+                    .level {
                         font-size: 12px;
                         margin-top: 2px;
                         text-align: center;
@@ -358,14 +367,15 @@
                     }
                 }
             }
-            .countdown{
+
+            .countdown {
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 font-size: 13px;
                 color: grey;
 
-                .time{
+                .time {
                     $size: 24px;
                     width: $size;
                     height: $size;
@@ -382,7 +392,7 @@
             }
         }
 
-        .list{
+        .list {
             background-color: #ffefdf;
             border-radius: 10px;
             padding: 30px 30px 1px;
@@ -391,7 +401,7 @@
             display: flex;
             flex-direction: column;
 
-            .title{
+            .title {
                 $size: 100px;
                 width: 100%;
                 top: -4px;
@@ -400,7 +410,7 @@
                 display: flex;
                 justify-content: center;
 
-                .text{
+                .text {
                     padding: 3px 8px;
                     color: white;
                     $radius: 6px;
@@ -409,21 +419,21 @@
                 }
             }
 
-            .content{
+            .content {
                 height: 0;
                 flex-grow: 1;
                 overflow-y: auto;
 
-                .row{
+                .row {
                     padding: 14px 0;
                     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
                     display: flex;
                     align-items: center;
 
-                    .left{
+                    .left {
                         margin-right: 14px;
 
-                        .avatar{
+                        .avatar {
                             $size: 44px;
                             width: $size;
                             height: $size;
@@ -431,27 +441,28 @@
                             border: 2px solid #ffaf45;
                         }
                     }
-                    .right{
+
+                    .right {
                         flex-grow: 1;
                         display: flex;
                         justify-content: space-between;
                         align-items: center;
 
-                        .user-info{
-                            .name{
+                        .user-info {
+                            .name {
                                 color: saddlebrown;
                                 font-size: 16px;
                                 font-weight: bold;
                             }
 
-                            .time{
+                            .time {
                                 color: #bd6e3a;
                                 font-size: 12px;
                             }
                         }
 
-                        .tips{
-                            .tip{
+                        .tips {
+                            .tip {
                                 font-size: 12px;
                                 color: #bd6e3a;
                             }
@@ -461,7 +472,7 @@
             }
         }
 
-        .mask{
+        .mask {
             position: fixed;
             top: 0;
             left: 0;
@@ -472,7 +483,7 @@
             justify-content: center;
             align-items: center;
 
-            .content{
+            .content {
                 width: 84%;
                 padding: 20px 0 30px;
                 background-color: white;
@@ -481,21 +492,21 @@
                 flex-direction: column;
                 align-items: center;
 
-                .title{
+                .title {
                     font-size: 16px;
                     color: black;
                 }
 
-                .gift-image{
+                .gift-image {
                     width: 70%;
                 }
 
-                .tip{
+                .tip {
                     margin-top: -15%;
                     margin-bottom: 10px;
                 }
 
-                .get-gift{
+                .get-gift {
                     background-color: #ff5636;
                     width: 50%;
                     height: 32px;
@@ -509,7 +520,7 @@
             }
         }
 
-        .code-mask{
+        .code-mask {
             position: fixed;
             top: 0;
             left: 0;
@@ -520,7 +531,7 @@
             justify-content: center;
             align-items: center;
 
-            .content{
+            .content {
                 width: 84%;
                 padding: 20px 0 30px;
                 background-color: white;
@@ -529,29 +540,29 @@
                 flex-direction: column;
                 align-items: center;
 
-                .title{
+                .title {
                     color: black;
                     margin-bottom: 10px;
                     font-size: 16px;
                 }
 
-                .tip{
+                .tip {
                     color: saddlebrown;
                     font-size: 13px;
                 }
 
-                .code-image{
+                .code-image {
                     width: 70%;
                     margin-bottom: 20px;
                 }
 
-                .bottom-tip{
+                .bottom-tip {
                     font-size: 15px;
                 }
             }
         }
 
-        .fail-mask{
+        .fail-mask {
             position: fixed;
             top: 0;
             left: 0;
@@ -562,7 +573,7 @@
             justify-content: center;
             align-items: center;
 
-            .content{
+            .content {
                 width: 84%;
                 padding: 20px 0 30px;
                 background-color: white;
@@ -571,22 +582,22 @@
                 flex-direction: column;
                 align-items: center;
 
-                .title{
+                .title {
                     font-size: 17px;
                     color: black;
                     margin-bottom: 20px;
                 }
 
-                .fail-image{
+                .fail-image {
                     width: 34%;
                     margin-bottom: 12px;
                 }
 
-                .tip{
+                .tip {
                     margin-bottom: 20px;
                 }
 
-                .fail-btn{
+                .fail-btn {
                     background-color: #ff5636;
                     width: 70%;
                     height: 40px;

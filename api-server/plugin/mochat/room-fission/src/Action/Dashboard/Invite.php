@@ -8,6 +8,7 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
+
 namespace MoChat\Plugin\RoomFission\Action\Dashboard;
 
 use Hyperf\Contract\StdoutLoggerInterface;
@@ -16,6 +17,7 @@ use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\Utils\Codec\Json;
 use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use MoChat\App\Corp\Contract\CorpContract;
@@ -103,10 +105,10 @@ class Invite extends AbstractAction
      */
     public function __construct(\Hyperf\HttpServer\Contract\RequestInterface $request, CorpContract $corpService, WorkContactEmployeeContract $contactEmployeeService, WorkContactContract $workContactService)
     {
-        $this->request                = $request;
-        $this->corpService            = $corpService;
+        $this->request = $request;
+        $this->corpService = $corpService;
         $this->contactEmployeeService = $contactEmployeeService;
-        $this->workContactService     = $workContactService;
+        $this->workContactService = $workContactService;
     }
 
     /**
@@ -115,21 +117,21 @@ class Invite extends AbstractAction
      *     @Middleware(PermissionMiddleware::class)
      * })
      * @RequestMapping(path="/dashboard/roomFission/invite", methods="post")
-     * @throws \Exception
      * @return array 返回数组
+     * @throws \Exception
      */
     public function handle(): array
     {
         $user = user();
         ## 判断用户绑定企业信息
-        if (! isset($user['corpIds']) || count($user['corpIds']) !== 1) {
+        if (!isset($user['corpIds']) || count($user['corpIds']) !== 1) {
             throw new CommonException(ErrorCode::INVALID_PARAMS, '未选择登录企业，不可操作');
         }
         ## 参数验证
         $params = $this->request->all();
         ## 处理参数
         $data = $this->handleParam($user, $params);
-        return $this->handleInvite((int) $params['id'], $data);
+        return $this->handleInvite((int)$params['id'], $data);
     }
 
     /**
@@ -155,53 +157,46 @@ class Invite extends AbstractAction
      * 处理参数.
      * @param array $user 用户信息
      * @param array $params 接受参数
-     * @throws \Exception
      * @return array 响应数组
+     * @throws \Exception
      */
     private function handleParam(array $user, array $params): array
     {
         ##邀请客户
-        if (! empty($params['link_pic'])) {
+        if (!empty($params['link_pic'])) {
             $params['link_pic'] = File::uploadBase64Image($params['link_pic'], 'image/roomFission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg');
         }
-        if (empty($params['link_pic'])) {
-            $inviteUrl = ['url' => ''];
-        } else {
-            $localFile = File::download(file_full_url($params['link_pic']), $params['link_pic']);
-            $inviteUrl = $this->wxApp($user['corpIds'][0], 'contact')->media->uploadImg($localFile);
-        }
 
-        $data      = [
-            'type'           => (int) $params['type'],
-            'employees'      => empty($params['employees']) ? '{}' : json_encode($params['employees'], JSON_THROW_ON_ERROR),
+        $data = [
+            'type' => (int)$params['type'],
+            'employees' => empty($params['employees']) ? '{}' : json_encode($params['employees'], JSON_THROW_ON_ERROR),
             'choose_contact' => empty($params['choose_contact']) ? '{}' : json_encode($params['choose_contact'], JSON_THROW_ON_ERROR),
-            'text'           => $params['text'],
-            'link_title'     => $params['link_title'],
-            'link_desc'      => $params['link_desc'],
-            'link_pic'       => $params['link_pic'],
-            'wx_link_pic'    => $inviteUrl['url'],
+            'text' => $params['text'],
+            'link_title' => $params['link_title'],
+            'link_desc' => $params['link_desc'],
+            'link_pic' => $params['link_pic'],
             'create_user_id' => $user['id'],
-            'created_at'     => date('Y-m-d H:i:s'),
+            'created_at' => date('Y-m-d H:i:s'),
         ];
 
         ## 发送微信邀请
-        if ((int) $params['type'] === 1) {
+        if ((int)$params['type'] === 1) {
             ##EasyWeChat添加企业群发消息模板.
             $wx = $this->wxApp($user['corpIds'][0], 'contact')->external_contact_message;
             foreach ($params['employees'] as $employeeId) {
-                $contact  = $this->workContactService->getWorkContactsBySearch($user['corpIds'][0], [$employeeId], $params['choose_contact']);
-                $employee = $this->workEmployeeService->getWorkEmployeeById((int) $employeeId, ['wx_user_id']);
+                $contact = $this->workContactService->getWorkContactsBySearch($user['corpIds'][0], [$employeeId], $params['choose_contact']);
+                $employee = $this->workEmployeeService->getWorkEmployeeById((int)$employeeId, ['wx_user_id']);
 
                 $easyWeChatParams['text']['content'] = $data['text'];
-                $easyWeChatParams['link']            = ['title' => $data['link_title'], 'picurl' => $data['wx_link_pic'], 'desc' => $data['link_desc'], 'url' => Url::getAuthRedirectUrl(8, $params['id'], [
+                $easyWeChatParams['link'] = ['title' => $data['link_title'], 'picurl' => $data['link_pic'], 'desc' => $data['link_desc'], 'url' => Url::getAuthRedirectUrl(8, (int)$params['id'], [
                     'parent_union_id' => '',
-                        'wx_user_id' => $employee['wxUserId'],
-                    ])];
+                    'wx_user_id' => $employee['wxUserId'],
+                ])];
                 $easyWeChatParams['external_userid'] = array_column($contact, 'wxExternalUserid');
-                $easyWeChatParams['sender']          = $employee['wxUserId'];
-                return $res                          = $wx->submit($easyWeChatParams);
+                $easyWeChatParams['sender'] = $employee['wxUserId'];
+                $res = $wx->submit($easyWeChatParams);
                 if ($res['errcode'] !== 0) {
-                    throw new CommonException(ErrorCode::INVALID_PARAMS, '发送失败');
+                    $this->logger->error(sprintf('%s [%s] 请求数据：%s 响应结果：%s', '发送群裂变邀请通知消息失败', date('Y-m-d H:i:s'), Json::encode($easyWeChatParams), Json::encode($res)));
                 }
             }
         }

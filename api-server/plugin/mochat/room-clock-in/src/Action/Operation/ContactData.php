@@ -276,21 +276,21 @@ class ContactData extends AbstractAction
      * 客户标签.
      * @throws \JsonException
      */
-    private function tag(int $clock_id, int $id, int $contact_id): void
+    private function tag(int $clock_id, int $id, int $contactId): void
     {
         $clockIn = $this->clockInService->getClockInById($clock_id, ['corp_id', 'contact_clock_tags']);
-        if ($contact_id > 0 && ! empty($clockIn['contactClockTags'])) {
+        if ($contactId > 0 && ! empty($clockIn['contactClockTags'])) {
             $contactTags = json_decode($clockIn['contactClockTags'], true, 512, JSON_THROW_ON_ERROR);
             foreach ($contactTags as $item) {
                 if ((int) $item['count'] === 0) {
                     $data = ['contactId' => 0, 'employeeId' => 0, 'tagArr' => array_column($item['tags'], 'tagid'), 'employeeWxUserId' => '', 'contactWxExternalUserid' => ''];
                     ## 客户id
-                    $data['contactId'] = $contact_id;
+                    $data['contactId'] = $contactId;
                     ## 员工id
-                    $contactEmployee    = $this->workContactEmployeeService->getWorkContactEmployeeByCorpIdContactId($contact_id, (int) $clockIn['corpId'], ['employee_id']);
+                    $contactEmployee    = $this->workContactEmployeeService->getWorkContactEmployeeByCorpIdContactId($contactId, (int) $clockIn['corpId'], ['employee_id']);
                     $data['employeeId'] = $contactEmployee['employeeId'];
                     ## 客户
-                    $contact                         = $this->workContactService->getWorkContactById($contact_id, ['wx_external_userid']);
+                    $contact                         = $this->workContactService->getWorkContactById($contactId, ['wx_external_userid']);
                     $data['contactWxExternalUserid'] = $contact['wxExternalUserid'];
                     ## 员工
                     $employee                 = $this->workEmployeeService->getWorkEmployeeById($contactEmployee['employeeId'], ['wx_user_id']);

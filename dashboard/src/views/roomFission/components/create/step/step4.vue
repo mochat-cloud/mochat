@@ -115,11 +115,6 @@
       </div>
     </div>
 
-    <img
-      class="instructions-img"
-      src="../../../../../assets/room-fission-create-step-4.png"
-      v-if="invite.type == 2"
-    >
     <selectMember ref="selectMember" @change="acceptMemberNews"/>
   </div>
 </template>

@@ -132,7 +132,6 @@
           <a-switch size="small" v-model="seniorSet.auto_pass"/>
         </div>
       </div>
-      <a href="#">如何查看用户是否完成任务？</a>
     </div>
     <selectMember ref="selectMember" @change="acceptMemberNews"/>
   </div>

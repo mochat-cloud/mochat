@@ -25,7 +25,7 @@ use MoChat\Framework\Request\ValidateSceneTrait;
 use MoChat\Plugin\RoomWelcome\Contract\RoomWelcomeContract;
 
 /**
- * 企业微信授权- 详情.
+ * 入群欢迎语详情.
  *
  * Class Show.
  * @Controller

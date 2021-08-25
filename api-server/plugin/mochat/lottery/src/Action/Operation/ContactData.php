@@ -180,7 +180,7 @@ class ContactData extends AbstractAction
         ## 判断参与
         $lotteryContact = $this->lotteryContactService->getLotteryContactByLotteryIdUnionId((int) $params['id'], $params['union_id'], ['id']);
         if (empty($lotteryContact)) {
-            return $this->createLotteryContact($params, $lottery);
+            $this->createLotteryContact($params, $lottery);
         }
 
         return [

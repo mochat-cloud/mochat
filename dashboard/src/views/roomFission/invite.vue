@@ -115,14 +115,9 @@
             </div>
           </div>
         </div>
-        <img
-          class="instructions-img"
-          src="../../assets/room-fission-create-step-4.png"
-          v-show="invite.type == 2"
-        >
         <selectMember ref="selectMember" @change="acceptMemberNews"/>
       </div>
-      <a-button type="primary" @click="sendOutNotice">通知成员发送</a-button>
+      <a-button type="primary" @click="sendOutNotice" v-show="invite.type == 1">通知成员发送</a-button>
     </a-card>
   </div>
 </template>
@@ -259,8 +254,14 @@ export default {
         }
       })
       //  处理开始时间和结束时间
-      this.showSetTime[0] = moment(this.invite.choose_contact.start_time)
-      this.showSetTime[1] = moment(this.invite.choose_contact.end_time)
+      if (this.invite.choose_contact.start_time !== '') {
+        this.showSetTime[0] = moment(this.invite.choose_contact.start_time)
+      }
+
+      if (this.invite.choose_contact.end_time !== '') {
+        this.showSetTime[1] = moment(this.invite.choose_contact.end_time)
+      }
+
       // 处理客户等级
       this.rankTags.forEach((item, index) => {
         const tagIndex = this.invite.choose_contact.tag_ids.indexOf(item.id)
@@ -330,13 +331,14 @@ export default {
       console.log(this.invite)
       inviteApi(this.invite).then((res) => {
         this.$message.success('通知成功')
-        this.$router.push({ path: 'roomFission/index' })
+        this.$router.push({ path: '/roomFission/index' })
       })
     },
     // 获取封面
     linkCover (e) {
       if (this.imglink <= 1) {
         this.imglink++
+        this.link_pic = e
       } else {
         this.link_pic = e
       }
