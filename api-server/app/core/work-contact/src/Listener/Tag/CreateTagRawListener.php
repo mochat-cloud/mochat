@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
-namespace MoChat\App\WorkContact\Listener;
+namespace MoChat\App\WorkContact\Listener\Tag;
 
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
