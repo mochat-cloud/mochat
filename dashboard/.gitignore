@@ -2,7 +2,7 @@
 node_modules
 /dist
 yarn.lock
-public/dll
+/public/dll
 # local env files
 .env
 .env.local
@@ -29,4 +29,4 @@ package-lock.json
 404.html
 
 # txt
-*.txt
+/*.txt

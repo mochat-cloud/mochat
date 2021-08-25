@@ -22,7 +22,9 @@ node_modules/*
 404.html
 
 # txt
-*.txt
+/*.txt
+public/.user.ini
+public/*.txt
 
 # nohup
 nohup.out
