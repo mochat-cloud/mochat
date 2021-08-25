@@ -150,8 +150,9 @@ export default {
         if (res.code === 200) {
           loading.then(() => {
             this.$message.success('修改成功', 2.5)
+            this.$router.push('/workFission/taskpage')
           }).then(() => {
-            this.$router.push('/workFission/index')
+
           })
         }
       })
