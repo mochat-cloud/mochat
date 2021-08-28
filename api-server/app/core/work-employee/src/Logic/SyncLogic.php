@@ -174,8 +174,6 @@ class SyncLogic
             }
         }
 
-        dump("fileQueueData:");
-        dump($fileQueueData);
         //上传图片
         if (!empty($fileQueueData)) {
             file_upload_queue($fileQueueData);
