@@ -150,6 +150,16 @@ class MsgType extends AbstractConstants
     public const VOIP_DOC_SHARE = 26;
 
     /**
+     * @Message("互通红包消息")
+     */
+    public const EXTERNAL_REDPACKET = 27;
+
+    /**
+     * @Message("视频号消息")
+     */
+    public const SPHFEED = 28;
+
+    /**
      * @var array 固定的类型
      */
     public static $fixedType = [
@@ -185,5 +195,7 @@ class MsgType extends AbstractConstants
         'mixed'              => self::MIXED,
         'meeting_voice_call' => self::MEETING_VOICE_CALL,
         'voip_doc_share'     => self::VOIP_DOC_SHARE,
+        'external_redpacket' => self::EXTERNAL_REDPACKET,
+        'sphfeed' => self::SPHFEED,
     ];
 }

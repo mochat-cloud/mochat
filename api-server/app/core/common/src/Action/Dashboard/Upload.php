@@ -13,6 +13,7 @@ namespace MoChat\App\Common\Action\Dashboard;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use League\Flysystem\Filesystem;
+use MoChat\App\Utils\File;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
@@ -46,10 +47,8 @@ class Upload extends AbstractAction
         $originalFilename = $this->request->post('name', false) ?: $file->getClientFilename();
 
         // 不再支持自定义path
-        $path = date('Y/md/Hi');
         $extension = $file->getExtension();
-        $filename = strval(microtime(true) * 10000) . uniqid() . '.' . $extension;
-        $pathFileName = $path . '/' . $filename;
+        $pathFileName = File::generateFullFilename($extension);
 
         try {
             $stream = fopen($file->getRealPath(), 'r+');

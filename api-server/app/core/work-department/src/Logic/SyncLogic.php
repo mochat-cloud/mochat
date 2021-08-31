@@ -58,6 +58,7 @@ class SyncLogic
             $this->logger->error('WorkDepartmentSynLogic->handle同步部门corp不能为空');
             return [];
         }
+
         foreach ($corpData as $corpId => $cdv) {
             $wxDepartment = $this->client->provider('user')->app($cdv)->department->list();
             if (empty($wxDepartment['errcode']) && $wxDepartment['department']) {

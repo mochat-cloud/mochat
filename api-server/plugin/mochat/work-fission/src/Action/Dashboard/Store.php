@@ -46,7 +46,6 @@ class Store extends AbstractAction
      * })
      * @RequestMapping(path="/dashboard/workFission/store", methods="post")
      * @throws \JsonException
-     * @throws \League\Flysystem\FileExistsException
      * @return array 返回数组
      */
     public function handle(): array

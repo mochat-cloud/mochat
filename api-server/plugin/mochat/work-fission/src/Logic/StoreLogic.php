@@ -99,8 +99,7 @@ class StoreLogic
     /**
      * @param array $user 登录用户信息
      * @param array $params 请求参数
-     * @throws \JsonException
-     * @throws FileExistsException
+     *
      * @return array 响应数组
      */
     public function handle(array $user, array $params): array
@@ -117,7 +116,6 @@ class StoreLogic
      * 处理参数.
      * @param array $user 用户信息
      * @param array $params 接受参数
-     * @throws FileExistsException|\JsonException
      * @return array 响应数组
      */
     private function handleParam(array $user, array $params): array
@@ -269,7 +267,6 @@ class StoreLogic
     /**
      * @param $user
      * @param $complex
-     * @throws FileExistsException
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
