@@ -102,7 +102,7 @@ class ContactCallBackLogic
         $data['content']['medium']['mediumContent']['title']       = $welcome['linkTitle'];
         $data['content']['medium']['mediumContent']['description'] = $welcome['linkDesc'];
         $data['content']['medium']['mediumContent']['imagePath']   = $welcome['linkCoverUrl'];
-        $data['content']['medium']['mediumContent']['imageLink']   = Url::getOperationBaseUrl() . '/auth/workFission?id=' . $contact['fissionId'];
+        $data['content']['medium']['mediumContent']['imageLink']   = Url::getAuthRedirectUrl(7, (int) $contact['fissionId']);
         return $data;
     }
 }
