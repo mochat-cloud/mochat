@@ -195,5 +195,7 @@ class MsgType extends AbstractConstants
         'mixed'              => self::MIXED,
         'meeting_voice_call' => self::MEETING_VOICE_CALL,
         'voip_doc_share'     => self::VOIP_DOC_SHARE,
+        'external_redpacket' => self::EXTERNAL_REDPACKET,
+        'sphfeed' => self::SPHFEED,
     ];
 }
