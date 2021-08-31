@@ -16,6 +16,7 @@ use MoChat\App\WorkDepartment\Event\DeleteDepartmentRawEvent;
 use MoChat\App\WorkDepartment\Event\UpdateDepartmentRawEvent;
 use MoChat\App\WorkEmployee\Event\DeleteEmployeeRawEvent;
 use MoChat\App\WorkMessage\Event\MessageArchiveRawEvent;
+use MoChat\App\WorkMessage\Event\MessageNotifyRawEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Hyperf\AsyncQueue\Annotation\AsyncQueueMessage;
 use MoChat\App\WorkEmployee\Event\CreateEmployeeRawEvent;
@@ -84,7 +85,8 @@ class WeWorkCallback
             'event.change_contact.update_party' => UpdateDepartmentRawEvent::class,
             'event.change_contact.delete_party' => DeleteDepartmentRawEvent::class,
             'event.change_contact.update_tag' => UpdateContactTagRawEvent::class,
-            'event.conversation_archive' => MessageArchiveRawEvent::class
+            'event.conversation_archive' => MessageArchiveRawEvent::class,
+            'event.msgaudit_notify' => MessageNotifyRawEvent::class
         ];
     }
 }

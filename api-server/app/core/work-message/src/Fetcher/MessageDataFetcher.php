@@ -92,7 +92,7 @@ class MessageDataFetcher implements DataFetcherInterface
 
     public function pull(int $limit = self::MESSAGE_LIMIT): array
     {
-        $messages =  $this->sdk->getDecryptChatData($this->getLastSeq(), $limit);
+        $messages = $this->sdk->getDecryptChatData($this->getLastSeq(), $limit);
 
         if (empty($messages)) {
             return $messages;

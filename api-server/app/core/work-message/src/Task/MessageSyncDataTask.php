@@ -16,6 +16,8 @@ use MoChat\App\WorkMessage\Fetcher\MessageDataFetcher;
 use MoChat\App\SyncData\Annotation\DynamicCrontab;
 
 /**
+ * TODO 本功能暂未启用
+ *
  * @DynamicCrontab(name="messageSyncDataTask", scheduleRule="*\/5 * * * *", rule="*\/3 * * * * *", callback="execute", singleton=true)
  */
 class MessageSyncDataTask extends AbstractSyncDataTask

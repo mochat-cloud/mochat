@@ -133,16 +133,16 @@
                       </div>
                     </div>
                     <div v-else :class="[ 'info', 'white', item.isCurrentUser == 1 ? 'self-info' : '']">
-                      <a :href="item.content.ossFullPath" target="blank" v-if="item.type == 2">
+                      <a :href="item.content.fullPath" target="blank" v-if="item.type == 2">
                         <img
-                          :src="item.content.ossFullPath"
+                          :src="item.content.fullPath"
                           :onerror="errorImg"
                           class="img"
                           alt="">
                       </a>
                       <audio controls class="audio" v-if="item.type == 4">
-                        <source :src="item.content.ossFullPath" type="audio/mpeg">
-                        <source :src="item.content.ossFullPath" type="audio/ogg">
+                        <source :src="item.content.fullPath" type="audio/mpeg">
+                        <source :src="item.content.fullPath" type="audio/ogg">
                       </audio>
                       <video
                         v-if="item.type == 5"
@@ -151,7 +151,7 @@
                         controls
                         data-setup="{}"
                         preload="auto">
-                        <source :src="item.content.ossFullPath">
+                        <source :src="item.content.fullPath">
                       </video>
                       <div v-if="item.type == 6" class="little">
                         <div class="wrpper">小程序</div>
@@ -164,7 +164,7 @@
                         </div>
 
                       </div>
-                      <a v-if="item.type == 7" :href="item.content.ossFullPath" target="blank">
+                      <a v-if="item.type == 7" :href="item.content.fullPath" target="blank">
                         <div class="other">
                           <a-icon type="file" class="file" />
                           <span class="file-name">文件</span>

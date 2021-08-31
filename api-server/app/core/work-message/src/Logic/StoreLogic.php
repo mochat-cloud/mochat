@@ -136,12 +136,13 @@ class StoreLogic
         $allMsgType   = array_merge(MsgType::$otherType, MsgType::$fixedType);
 
         foreach ($data as $item) {
+            $item['roomid'] = isset($item['roomid']) ? $item['roomid'] : '';
             ## 切换企业日志
             if ($item['action'] === 'switch') {
                 $msgData[]                        = $this->switchData($corpId, $item);
                 [$toListType, $tolistId, $roomId] = [0, [], 0];
             } else {
-                [$toListType, $tolistId, $roomId] = $this->userIdFormat($item['roomid'], $item['tolist'][0]);
+                [$toListType, $tolistId, $roomId] = $this->userIdFormat($corpId, $item['roomid'], $item['tolist'][0]);
                 ## 消息表
                 $msgData[] = [
                     'corp_id'     => $corpId,
@@ -161,7 +162,7 @@ class StoreLogic
             }
 
             ## 消息检索表
-            $fromId = isset($item['from']) ? $this->getEmployeeId($item['from']) : 0;
+            $fromId = isset($item['from']) ? $this->getEmployeeId($corpId, $item['from']) : 0;
             if (! empty($fromId)) {
                 $msgIndexData = $msgIndexData + $this->msgIndexParams($corpId, $fromId, $tolistId, $toListType);
             }
@@ -212,7 +213,7 @@ class StoreLogic
      */
     protected function switchData(int $corpId, array $data): array
     {
-        $fromId = $this->getEmployeeId($data['user']);
+        $fromId = $this->getEmployeeId($corpId, $data['user']);
         return [
             'corp_id'     => $corpId,
             'seq'         => $data['seq'],
@@ -246,11 +247,13 @@ class StoreLogic
 
     /**
      * 用户ID处理.
+     *
+     * @param int $corpId
      * @param string $wxRoomId ...
      * @param string $toUserId ...
      * @return array ...
      */
-    protected function userIdFormat(string $wxRoomId, string $toUserId): array
+    protected function userIdFormat(int $corpId, string $wxRoomId, string $toUserId): array
     {
         // $toListType, $tolistId, $roomId
         $resData = [2, [], 0];
@@ -268,15 +271,15 @@ class StoreLogic
         ## 员工
         if (! in_array(substr($toUserId, 0, 2), ['wo', 'wm'])) {
             $resData[0]                            = 0;
-            $employeeData                          = $this->employeeService->getWorkEmployeeByWxUserId($toUserId, ['id']);
-            empty($employeeData) || $resData[1][0] = $employeeData['id'];
+            $employeeData                          = $this->employeeService->getWorkEmployeeByWxUserIdCorpId($toUserId, $corpId, ['id']);
+            empty($employeeData) || $resData[1][0] = (string)$employeeData['id'];
             return $resData;
         }
 
         ## 客户
         $resData[0]                           = 1;
         $contactData                          = $this->contactService->getWorkContactByWxExternalUserId($toUserId, ['id']);
-        empty($contactData) || $resData[1][0] = $contactData['id'];
+        empty($contactData) || $resData[1][0] = (string)$contactData['id'];
         return $resData;
     }
 
@@ -290,6 +293,11 @@ class StoreLogic
         $msgType = $data['msgtype'];
         if ($msgType === 'docmsg') {
             $content = $data['doc'];
+        } else if ($msgType === 'external_redpacket') {
+            $content = $data['redpacket'];
+        } else if ($msgType === 'meeting_voice_call') {
+            $content = $data[$msgType];
+            $content['voiceid'] = $data['voiceid'];
         } else {
             $content = $data[$msgType];
         }
@@ -355,10 +363,10 @@ class StoreLogic
      * @param string $wxUserId ...
      * @return int ...
      */
-    protected function getEmployeeId(string $wxUserId): int
+    protected function getEmployeeId(int $corpId, string $wxUserId): int
     {
         $id                         = 0;
-        $employeeData               = $this->employeeService->getWorkEmployeeByWxUserId($wxUserId, ['id']);
+        $employeeData               = $this->employeeService->getWorkEmployeeByWxUserIdCorpId($wxUserId, $corpId, ['id']);
         empty($employeeData) || $id = $employeeData['id'];
         return $id;
     }

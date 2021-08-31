@@ -17,7 +17,6 @@ use Hyperf\Process\Event\BeforeProcessHandle;
 use MoChat\App\SyncData\DynamicCrontabManager;
 
 /**
-* @Listener()
  */
 class DynamicCrontabRegisterListener implements ListenerInterface
 {
