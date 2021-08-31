@@ -229,7 +229,7 @@ class StoreLogic
      */
     private function handleWelcome(int $corpId, array $welcome, string $pic_url): string
     {
-        $url = Url::getAuthRedirectUrl(3, $corpId);
+        $url = Url::getAuthRedirectUrl(8, $corpId, ['parent_union_id' => '', 'wx_user_id' => '']);
         $easyWeChatParams['text']['content'] = $welcome['text'];
         $easyWeChatParams['link'] = ['title' => $welcome['link_title'], 'picurl' => $pic_url, 'desc' => $welcome['link_desc'], 'url' => $url];
         ##EasyWeChat添加入群欢迎语素材
