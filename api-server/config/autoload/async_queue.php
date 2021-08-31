@@ -100,4 +100,15 @@ return [
             'limit' => 10,
         ],
     ],
+    'message_media' => [
+        'driver'         => \Hyperf\AsyncQueue\Driver\RedisDriver::class,
+        'channel'        => 'message_media.queue',
+        'timeout'        => 10,
+        'retry_seconds'  => 5,
+        'handle_timeout' => 300,
+        'processes'      => 1,
+        'concurrent'     => [
+            'limit' => 50,
+        ],
+    ],
 ];

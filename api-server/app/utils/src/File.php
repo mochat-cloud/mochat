@@ -69,6 +69,25 @@ class File
         return realpath(rtrim($root, '/') . '/' . $localPath);
     }
 
+    /**
+     * 生成完整的文件名
+     *
+     * @param string $extension
+     * @param string $path
+     *
+     * @return string
+     */
+    public static function generateFullFilename(string $extension, string $path = '')
+    {
+        if (empty($path)) {
+            $path = date('Y/md/Hi');
+        }
+
+        $filename = strval(microtime(true) * 10000) . uniqid() . '.' . $extension;
+        $pathFileName = $path . '/' . $filename;
+        return ltrim($pathFileName, '/');
+    }
+
     protected static function logger(): \Psr\Log\LoggerInterface
     {
         $loggerFactory = \Hyperf\Utils\ApplicationContext::getContainer()->get(\Hyperf\Logger\LoggerFactory::class);

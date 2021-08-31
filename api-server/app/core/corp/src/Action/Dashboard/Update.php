@@ -16,6 +16,7 @@ use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use MoChat\App\Corp\Action\Dashboard\Traits\RequestTrait;
 use MoChat\App\Corp\Contract\CorpContract;
+use MoChat\App\Corp\Utils\WeWorkFactory;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
@@ -49,6 +50,12 @@ class Update extends AbstractAction
     private $logger;
 
     /**
+     * @Inject()
+     * @var WeWorkFactory
+     */
+    protected $weWorkFactory;
+
+    /**
      * @RequestMapping(path="/dashboard/corp/update", methods="put")
      * @Middlewares({
      *     @Middleware(DashboardAuthMiddleware::class),
@@ -78,6 +85,7 @@ class Update extends AbstractAction
         try {
             ## 数据入表
             $this->corpService->updateCorpById($corpId, $params);
+            $this->weWorkFactory->unbindApp((int) $corpId);
         } catch (\Throwable $e) {
             $this->logger->error(sprintf('%s [%s] %s', '企业微信授信更新失败', date('Y-m-d H:i:s'), $e->getMessage()));
             $this->logger->error($e->getTraceAsString());

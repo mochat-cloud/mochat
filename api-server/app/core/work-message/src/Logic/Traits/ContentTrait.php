@@ -24,12 +24,13 @@ trait ContentTrait
     {
         $newContent = [
             'content'     => '',
-            'ossFullPath' => '',
+            'fullPath' => '',
         ];
         ## 文字
         isset($content['content']) && $newContent['content'] = $content['content'];
         ## 图片全地址
-        isset($content['ossPath']) && $newContent['ossFullPath'] = file_full_url($content['ossPath']);
+        isset($item['ossPath']) && $newItem['fullPath'] = file_full_url($content['ossPath']);
+        isset($content['path']) && $newContent['fullPath'] = file_full_url($content['path']);
 
         ## 其它类型
         if (in_array($msgType, MsgType::$otherType, true)) {
@@ -80,7 +81,7 @@ trait ContentTrait
     {
         $newItem = [
             'content'     => '',
-            'ossFullPath' => '',
+            'fullPath' => '',
         ];
 
         switch ($item['type']) {
@@ -89,7 +90,8 @@ trait ContentTrait
                 break;
             case 'image':
             case 'emotion':
-            isset($item['ossPath']) && $newItem['ossFullPath'] = file_full_url($item['ossPath']);
+                isset($item['ossPath']) && $newItem['fullPath'] = file_full_url($item['ossPath']);
+                isset($item['path']) && $newItem['fullPath'] = file_full_url($item['path']);
                 break;
             default:
                 break;

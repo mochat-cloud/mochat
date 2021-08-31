@@ -189,8 +189,7 @@ class Index extends AbstractAction
             $where[]    = [
                 "((`from` = ? AND `tolist_id`->'$[0]' = ?) OR (`from` = ? AND `tolist_id`->'$[0]' = ?))",
                 'RAW',
-                [$fromUserId, $params['toUserId'], $toUserId, $params['workEmployeeId'],
-                ], ];
+                [$fromUserId, $params['toUserId'], $toUserId, $params['workEmployeeId'],], ];
         }
 
         if ($params['content']) {
