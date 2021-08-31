@@ -109,7 +109,8 @@
             "MoChat\\App\\WorkDepartment\\": "app/core/work-department/src/",
             "MoChat\\App\\WorkEmployee\\": "app/core/work-employee/src/",
             "MoChat\\App\\WorkMessage\\": "app/core/work-message/src/",
-            "MoChat\\App\\WorkRoom\\": "app/core/work-room/src/"
+            "MoChat\\App\\WorkRoom\\": "app/core/work-room/src/",
+            "MoChat\\App\\SyncData\\": "app/core/sync-data/src/"
         },
         "files": [
           "app/utils/src/Functions.php"

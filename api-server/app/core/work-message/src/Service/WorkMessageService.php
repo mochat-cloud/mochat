@@ -12,10 +12,12 @@ namespace MoChat\App\WorkMessage\Service;
 
 use Hyperf\Database\Query\Builder;
 use Hyperf\DbConnection\Db;
+use Hyperf\Di\Annotation\Inject;
 use Hyperf\Utils\Str;
 use MoChat\App\WorkMessage\Contract\WorkMessageContract;
 use MoChat\App\WorkMessage\Model\WorkMessage;
 use MoChat\Framework\Service\AbstractService;
+use Psr\SimpleCache\CacheInterface;
 
 class WorkMessageService extends AbstractService implements WorkMessageContract
 {
@@ -28,6 +30,12 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
      * @var Builder
      */
     protected $query;
+
+    /**
+     * @Inject()
+     * @var CacheInterface
+     */
+    protected $cache;
 
     /**
      * {@inheritdoc}
@@ -364,5 +372,32 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
             $newData[Str::camel($key)] = $item;
         }
         return $newData;
+    }
+
+    /**
+     * 获取最近一条seq.
+     * @param int $corpId
+     *
+     * @return int ...
+     */
+    public function getWorkMessageLastSeqByCorpId(int $corpId): int
+    {
+        if ($seq = $this->cache->get(sprintf("mochat:messageLastSeq:%d", $corpId))) {
+            return (int) $seq;
+        }
+        return (int) $this->query->where('corp_id', $corpId)->orderBy('msg_time', 'desc')->limit(1)->value('seq');
+    }
+
+    /**
+     * 设置最后一次更新的seq
+     *
+     * @param int $corpId
+     * @param int $seq
+     *
+     * @return mixed
+     */
+    public function updateWorkMessageLastSeqByCorpId(int $corpId, int $seq)
+    {
+        return $this->cache->set(sprintf("mochat:messageLastSeq:%d", $corpId), $seq, -1);
     }
 }

@@ -14,18 +14,19 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Redis\Redis;
-use League\Flysystem\Filesystem;
 use MoChat\App\Corp\Contract\CorpContract;
+use MoChat\App\Utils\File;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\App\WorkMessage\Constants\MsgType;
 use MoChat\App\WorkMessage\Contract\WorkMessageConfigContract;
 use MoChat\App\WorkMessage\Contract\WorkMessageContract;
 use MoChat\App\WorkMessage\Contract\WorkMessageIndexContract;
+use MoChat\App\WorkMessage\Queue\MessageMediaSyncQueue;
 use MoChat\App\WorkRoom\Contract\WorkRoomContract;
 use MoChat\WeWorkFinanceSDK\WxFinanceSDK;
 
-class Store
+class StoreLogic
 {
     /**
      * @Inject
@@ -38,12 +39,6 @@ class Store
      * @var CorpContract
      */
     protected $corpService;
-
-    /**
-     * @Inject
-     * @var WorkMessageConfigContract
-     */
-    protected $msgConfigClient;
 
     /**
      * @var WorkMessageContract
@@ -75,15 +70,10 @@ class Store
     protected $contactService;
 
     /**
-     * @Inject
-     * @var Filesystem
+     * @Inject()
+     * @var MessageMediaSyncQueue
      */
-    protected $fileSystem;
-
-    /**
-     * @var WxFinanceSDK
-     */
-    protected $sdk;
+    protected $messageMediaSyncQueue;
 
     /**
      * @Inject
@@ -91,42 +81,17 @@ class Store
      */
     private $logger;
 
-    public function handle(int $corpId, int $limit = 100): void
+    public function handle(int $corpId, array $data): void
     {
         $this->workMessageService = make(WorkMessageContract::class, [$corpId]);
 
-        ## 查询微信配置
-        $corp       = $this->corpService->getCorpById($corpId, ['id', 'wx_corpid']);
-        $corpConfig = $this->msgConfigClient->getWorkMessageConfigByCorpId($corpId, ['id', 'chat_rsa_key', 'chat_secret']);
-        $rsa        = json_decode($corpConfig['chatRsaKey'], true);
-        $this->logger->info(sprintf("开始拉取会话消息，corpId: %d", (int) $corpId));
-        ## 获取会话数据
-        $this->sdk = WxFinanceSDK::init([
-            'corpid'       => $corp['wxCorpid'],
-            'secret'       => $corpConfig['chatSecret'],
-            'private_keys' => [
-                $rsa['version'] => $rsa['privateKey'],
-            ],
-        ]);
-        while (true) {
-            $msgIndex = $this->workMessageService->getWorkMessageIndexEndSeq();
-            $chatData = $this->sdk->getDecryptChatData($msgIndex, $limit);
-            if (empty($chatData)) {
-                $this->logger->info('wxMsgPull::stoneTag::会话消息为空::seq.' . $msgIndex);
-                break;
-            }
-
-            $this->logger->info('wxMsgPull::stoneTag::会话消息拉取成功::seq.' . $msgIndex);
-            $this->pullUpdate($corpId, $chatData);
-            unset($chatData);
-        }
+        $this->pullUpdate($corpId, $data);
     }
 
     /**
      * 企业聊天信息更新.
      * @param $corpId ...
      * @param array $chatData ...
-     * @throws \League\Flysystem\FileExistsException
      */
     protected function pullUpdate($corpId, array $chatData): void
     {
@@ -188,7 +153,7 @@ class Store
                     'tolist_id'   => json_encode($tolistId),
                     'tolist_type' => $toListType,
                     'msg_type'    => $allMsgType[$item['msgtype']],
-                    'content'     => json_encode($this->contentFormat($item), JSON_UNESCAPED_UNICODE),
+                    'content'     => json_encode($this->contentFormat($corpId, $item), JSON_UNESCAPED_UNICODE),
                     'msg_time'    => (string) $item['msgtime'],
                     'wx_room_id'  => $item['roomid'],
                     'room_id'     => $roomId,
@@ -318,10 +283,9 @@ class Store
     /**
      * 处理消息内容.
      * @param array $data 消息数组
-     * @throws \League\Flysystem\FileExistsException ...
      * @return array ...
      */
-    protected function contentFormat(array $data): array
+    protected function contentFormat(int $corpId, array $data): array
     {
         $msgType = $data['msgtype'];
         if ($msgType === 'docmsg') {
@@ -331,23 +295,26 @@ class Store
         }
 
         if (! isset($content['item'])) {
-            return $this->sdkFileIdToOss($content, $msgType);
+            return $this->asyncDownloadSdkFile($corpId, $data['msgid'], $msgType, $content);
         }
 
-        $items = array_map(function ($item) {
-            return $this->sdkFileIdToOss(json_decode($item['content'], true), $item['type']);
+        $msgId = $data['msgid'];
+        $items = array_map(function ($item) use ($corpId, $msgId) {
+            return $this->asyncDownloadSdkFile($corpId, $msgId, json_decode($item['content'], true), $item['type']);
         }, $content['item']);
         return ['item' => $items];
     }
 
     /**
      * 文件地址处理.
-     * @param array $content ...
-     * @param string $msgType ...
-     * @throws \League\Flysystem\FileExistsException ...
-     * @return array ...
+     *
+     * @param int $corpId
+     * @param string $msgId
+     * @param string $msgType
+     * @param array $content
+     * @return array
      */
-    protected function sdkFileIdToOss(array $content, string $msgType): array
+    protected function asyncDownloadSdkFile(int $corpId, string $msgId, string $msgType, array $content): array
     {
         ## 加类型
         $content['type'] = $msgType;
@@ -357,17 +324,12 @@ class Store
         }
 
         // 图片是jpg格式、语音是amr格式、视频是mp4格式、文件格式类型包括在消息体内，表情分为动图与静态图，在消息体内定义
-        $file = false;
         switch ($msgType) {
             case 'image':
                 $ext = 'jpg';
                 break;
             case 'voice':
                 $ext = 'amr';
-                ## 转mp3
-                $amrFile = $this->sdk->getMediaData($content['sdkfileid'], $ext);
-                $file    = $this->ffmpegToMp3($amrFile);
-                file_exists($amrFile->getRealPath()) && unlink($amrFile->getRealPath());
                 break;
             case 'video':
                 $ext = 'mp4';
@@ -381,36 +343,11 @@ class Store
             default:
                 $ext = '';
         }
-        $file || $file      = $this->sdk->getMediaData($content['sdkfileid'], $ext);
-        $content['ossPath'] = date('Y/m/d/His/') . random_int(0, 100) . '/' . $file->getFilename();
-//        $this->fileSystem->writeStream($content['ossPath'], fopen($file->getRealPath(), 'rb'));
-        file_upload_queue([
-            [$file->getRealPath(), $content['ossPath'], 1],
-        ]);
-//        unlink($file->getRealPath());
+
+        $content['path'] = File::generateFullFilename($ext);
+        $this->messageMediaSyncQueue->handle($corpId, $msgId, $content['sdkfileid'], $content['path'], $ext);
 
         return $content;
-    }
-
-    /**
-     * 音频转MP3.
-     * @param \SplFileInfo $file ...
-     * @return \SplFileInfo ...
-     */
-    protected function ffmpegToMp3(\SplFileInfo $file): \SplFileInfo
-    {
-        try {
-            ## 转mp3
-            $ffmpeg = \FFMpeg\FFMpeg::create();
-            $audio  = $ffmpeg->open($file->getRealPath());
-
-            $format  = new \FFMpeg\Format\Audio\Mp3();
-            $mp3Path = $file->getPath() . '/' . md5((string) time()) . '.mp3';
-            $audio->save($format, $mp3Path);
-            return new \SplFileInfo($mp3Path);
-        } catch (\Exception $e) {
-            return $file;
-        }
     }
 
     /**
