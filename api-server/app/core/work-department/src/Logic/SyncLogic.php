@@ -78,24 +78,27 @@ class SyncLogic
                     }
                 }
                 if (! empty($createData)) {
-                    //创建部门
-                    $result = $this->workDepartmentService->createWorkDepartments($createData);
-                    if ($result) {
-                        //处理父部门
-                        $parentDepartment = $this->getDepartmentIds($corpId);
-                        $updateData       = $this->getDepartmentUpdateData($parentDepartment);
-                        if (! empty($updateData)) {
-                            $updateResult = $this->workDepartmentService->updateWorkDepartmentByIds($updateData);
-                            if (empty($updateResult)) {
-                                $this->logger->error('WorkDepartmentSynLogic->handle同步部门失败');
+                    $createChunkData = array_chunk($createData, 100);
+                    foreach ($createChunkData as $newCreateData) {
+                        //创建部门
+                        $result = $this->workDepartmentService->createWorkDepartments($newCreateData);
+                        if ($result) {
+                            //处理父部门
+                            $parentDepartment = $this->getDepartmentIds($corpId);
+                            $updateData       = $this->getDepartmentUpdateData($parentDepartment);
+                            if (! empty($updateData)) {
+                                $updateResult = $this->workDepartmentService->updateWorkDepartmentByIds($updateData);
+                                if (empty($updateResult)) {
+                                    $this->logger->error('WorkDepartmentSynLogic->handle同步部门失败');
+                                    return [];
+                                }
                                 return [];
                             }
-                            return [];
                         }
                     }
                 }
             }
-            unset($wxDepartment, $createData, $result, $parentDepartment, $updateData);
+            unset($wxDepartment, $createChunkData, $createData, $result, $parentDepartment, $updateData);
         }
         return [];
     }

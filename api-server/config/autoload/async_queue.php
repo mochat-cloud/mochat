@@ -28,10 +28,10 @@ return [
         'channel'        => 'employee.queue',
         'timeout'        => 2,
         'retry_seconds'  => 5,
-        'handle_timeout' => 60,
+        'handle_timeout' => 60 * 3,
         'processes'      => 1,
         'concurrent'     => [
-            'limit' => 2,
+            'limit' => 20,
         ],
     ],
     'contact' => [
