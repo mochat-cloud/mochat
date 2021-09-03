@@ -18,6 +18,7 @@ composer.phar
 node_modules/*
 *.cache
 # bt
+config/autoload/menu.php
 .user.ini
 404.html
 
