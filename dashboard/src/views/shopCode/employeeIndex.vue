@@ -452,7 +452,7 @@ import {
   // eslint-disable-next-line no-unused-vars
   updateEmployeeApi, showApi, showContactApi, showShopApi, shareApi, updateApi, workRoomIndexApi, updateQrcodeApi
 } from '@/api/shopCode'
-import QRCode from 'qrcodejs2'
+import QRCode from '@/components/qrcode'
 import shopkeeperUpdate from '@/views/shopCode/components/shopkeeperUpdate'
 import shopkeeperCreate from '@/views/shopCode/components/shopkeeperCreate'
 import shopkeeperSetup from '@/views/shopCode/components/shopkeeperSetup'

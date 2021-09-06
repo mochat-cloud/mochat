@@ -102,7 +102,7 @@ import {
   storeChannelLinkApi,
   indexChannelLinkApi
 } from '@/api/radar'
-import QRCode from 'qrcodejs2'
+import QRCode from '@/components/qrcode'
 export default {
   data () {
     return {

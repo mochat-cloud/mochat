@@ -56,7 +56,7 @@
 <script>
 import { getList, del } from '@/api/roomInfinitePull'
 import Details from '@/views/roomInfinitePull/components/details'
-import QRCode from 'qrcodejs2'
+import QRCode from '@/components/qrcode'
 
 export default {
   data () {

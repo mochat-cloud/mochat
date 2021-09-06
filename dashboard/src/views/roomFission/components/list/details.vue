@@ -129,7 +129,7 @@
 // eslint-disable-next-line no-unused-vars
 import { infoApi, department } from '@/api/roomFission'
 // eslint-disable-next-line no-unused-vars
-import QRCode from 'qrcodejs2'
+import QRCode from '@/components/qrcode'
 export default {
   data () {
     return {

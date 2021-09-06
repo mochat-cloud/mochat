@@ -64,7 +64,7 @@
 </template>
 <script>
 import { share } from '@/api/lottery'
-import QRCode from 'qrcodejs2'
+import QRCode from '@/components/qrcode'
 
 export default {
   data () {
