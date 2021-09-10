@@ -13,10 +13,10 @@ namespace MoChat\Plugin\Greeting\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
@@ -101,8 +101,8 @@ class Destroy extends AbstractAction
     {
         return [
             'greetingId.required' => '欢迎语ID 必填',
-            'greetingId.integer'  => '欢迎语ID 必需为整数',
-            'greetingId.min  '    => '欢迎语ID 不可小于1',
+            'greetingId.integer' => '欢迎语ID 必需为整数',
+            'greetingId.min  ' => '欢迎语ID 不可小于1',
         ];
     }
 }

@@ -71,14 +71,14 @@ class IndexLogic
     private function handleParams(array $user, array $params): array
     {
         $where['tenant_id'] = $user['tenantId'];
-        $this->corpId       = $user['corpIds'][0];
+        $this->corpId = $user['corpIds'][0];
         if (! empty($params['name'])) {
             $where['name'] = $params['name'];
         }
 
         $options = [
-            'perPage'    => $params['perPage'],
-            'page'       => $params['page'],
+            'perPage' => $params['perPage'],
+            'page' => $params['page'],
             'orderByRaw' => 'id desc',
         ];
 
@@ -92,14 +92,14 @@ class IndexLogic
      */
     private function getRolesList(array $params): array
     {
-        $columns  = ['id', 'name', 'remarks', 'updated_at', 'status'];
+        $columns = ['id', 'name', 'remarks', 'updated_at', 'status'];
         $roleList = $this->roleService->getRbacRoleList($params['where'], $columns, $params['options']);
 
         $list = [];
         $data = [
             'page' => [
-                'perPage'   => $this->perPage,
-                'total'     => '0',
+                'perPage' => $this->perPage,
+                'total' => '0',
                 'totalPage' => '0',
             ],
             'list' => $list,
@@ -118,17 +118,17 @@ class IndexLogic
         $list = [];
         foreach ($roleList['data'] as $key => $val) {
             $list[$key] = [
-                'roleId'      => $val['id'],
-                'name'        => $val['name'],
-                'remarks'     => $val['remarks'],
-                'updatedAt'   => $val['updatedAt'],
-                'status'      => $val['status'],
+                'roleId' => $val['id'],
+                'name' => $val['name'],
+                'remarks' => $val['remarks'],
+                'updatedAt' => $val['updatedAt'],
+                'status' => $val['status'],
                 'employeeNum' => $this->getEmployeesCountByRoleId($val['id']),
             ];
         }
-        $data['page']['total']     = $roleList['total'];
+        $data['page']['total'] = $roleList['total'];
         $data['page']['totalPage'] = $roleList['last_page'];
-        $data['list']              = $list;
+        $data['list'] = $list;
 
         return $data;
     }

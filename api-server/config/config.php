@@ -12,9 +12,9 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Psr\Log\LogLevel;
 
 return [
-    'app_name'                   => env('APP_NAME', 'MoChat'),
-    'app_env'                    => env('APP_ENV', 'dev'),
-    'scan_cacheable'             => env('SCAN_CACHEABLE', false),
+    'app_name' => env('APP_NAME', 'MoChat'),
+    'app_env' => env('APP_ENV', 'dev'),
+    'scan_cacheable' => env('SCAN_CACHEABLE', false),
     'debug' => [
         'event' => env('DEBUG_EVENT', false),
         'database' => env('DEBUG_DATABASE', false),

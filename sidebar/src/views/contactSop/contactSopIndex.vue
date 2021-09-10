@@ -34,7 +34,6 @@
 // eslint-disable-next-line no-unused-vars
 import { getSopTipInfoApi } from '@/api/contactSop'
 // eslint-disable-next-line no-unused-vars
-// import { wxConfig, agentConfig, openUserProfile } from '@/utils/wxCodeAuth'
 import { Loading } from 'vant'
 export default {
   components: {
@@ -57,16 +56,9 @@ export default {
         this.showLoad = false
       }, 1000)
     },
-    show (corpId, employeeWxId, contactWxId) {
-      // console.log(corpId)
-      // console.log(employeeWxId)
-      // console.log(contactWxId)
+    show (contactId) {
       this.showPopup = true
-      this.corpId = corpId
-      this.employeeWxId = employeeWxId
-      this.contactWxId = contactWxId
-      // wxConfig(corpId, uriPath)
-      // agentConfig(corpId, uriPath, agentId)
+      this.contactId = contactId
       this.getCorpData()
     },
     noSentout () {
@@ -79,24 +71,13 @@ export default {
       this.showPopup = false
     },
     getCorpData () {
-      // const params = {
-      //   corpId: 1,
-      //   employeeWxId: 'air',
-      //   contactWxId: 'wmWGBlCwAAMPefWgV-xYbrJCxY2gNGmg'
-      // }
       this.sopTipInfoData = []
       const params = {
-        corpId: this.corpId,
-        employeeWxId: this.employeeWxId,
-        contactWxId: this.contactWxId
+        contactId: this.contactId
       }
       getSopTipInfoApi(params).then((res) => {
         this.totalSopData = res.data
         this.sopTipInfoData.push(this.totalSopData[0])
-        console.log('数据1')
-        console.log(this.totalSopData)
-        console.log('数据2')
-        console.log(this.sopTipInfoData)
       })
     }
   }

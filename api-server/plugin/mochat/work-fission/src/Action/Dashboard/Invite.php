@@ -12,10 +12,10 @@ namespace MoChat\Plugin\WorkFission\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Corp\Logic\AppTrait;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
@@ -70,11 +70,11 @@ class Invite extends AbstractAction
 
     public function __construct(\Hyperf\HttpServer\Contract\RequestInterface $request, CorpContract $corpService, WorkFissionInviteContract $workFissionInviteService, WorkContactEmployeeContract $contactEmployeeService, WorkContactContract $workContactService)
     {
-        $this->request                  = $request;
-        $this->corpService              = $corpService;
+        $this->request = $request;
+        $this->corpService = $corpService;
         $this->workFissionInviteService = $workFissionInviteService;
-        $this->contactEmployeeService   = $contactEmployeeService;
-        $this->workContactService       = $workContactService;
+        $this->contactEmployeeService = $contactEmployeeService;
+        $this->workContactService = $workContactService;
     }
 
     /**
@@ -133,16 +133,16 @@ class Invite extends AbstractAction
             $params['link_pic'] = File::uploadBase64Image($params['link_pic'], 'image/roomFission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg');
         }
 
-        $data      = [
-            'fission_id'     => (int) $params['fission_id'],
-            'employees'      => empty($params['employees']) ? '{}' : json_encode($params['employees'], JSON_THROW_ON_ERROR),
+        $data = [
+            'fission_id' => (int) $params['fission_id'],
+            'employees' => empty($params['employees']) ? '{}' : json_encode($params['employees'], JSON_THROW_ON_ERROR),
             'choose_contact' => empty($params['choose_contact']) ? '{}' : json_encode($params['choose_contact'], JSON_THROW_ON_ERROR),
-            'text'           => $params['text'],
-            'link_title'     => $params['link_title'],
-            'link_desc'      => $params['link_desc'],
-            'link_pic'       => $params['link_pic'],
+            'text' => $params['text'],
+            'link_title' => $params['link_title'],
+            'link_desc' => $params['link_desc'],
+            'link_pic' => $params['link_pic'],
             'create_user_id' => $user['id'],
-            'created_at'     => date('Y-m-d H:i:s'),
+            'created_at' => date('Y-m-d H:i:s'),
         ];
 
         $this->sendMsg($user, (int) $params['fission_id'], $this->handleContact($params['filter']), $data);
@@ -158,7 +158,7 @@ class Invite extends AbstractAction
     {
         ##邀请客户
         $userList = [];
-        $where    = [];
+        $where = [];
         if (! empty($params['employee_ids'])) {
             $where[] = ['employee_id', 'in', json_decode($params['employee_ids'], true, 512, JSON_THROW_ON_ERROR)];
         }
@@ -174,10 +174,10 @@ class Invite extends AbstractAction
         }
         $whereContact = [];
         if (isset($params['gender']) && is_numeric($params['gender'] && ! empty($user['data']))) {
-            $whereContact[]         = ['id', 'in', array_column($user['data'], 'contactId')];
+            $whereContact[] = ['id', 'in', array_column($user['data'], 'contactId')];
             $whereContact['gender'] = $params['gender'];
-            $contact                = $this->workContactService->getWorkContactList($whereContact, ['wx_external_userid']);
-            $userList               = $contact['data'];
+            $contact = $this->workContactService->getWorkContactList($whereContact, ['wx_external_userid']);
+            $userList = $contact['data'];
         }
         if (empty($userList)) {
             throw new CommonException(ErrorCode::SERVER_ERROR, '没有客户');
@@ -212,9 +212,9 @@ class Invite extends AbstractAction
     {
         ##EasyWeChat添加企业群发消息模板.
         $easyWeChatParams['text']['content'] = $data['text'];
-        $easyWeChatParams['link']            = ['title' => $data['link_title'], 'picurl' => $data['link_pic'], 'desc' => $data['link_desc'], 'url' => Url::getAuthRedirectUrl(7, $fissionId)];
+        $easyWeChatParams['link'] = ['title' => $data['link_title'], 'picurl' => $data['link_pic'], 'desc' => $data['link_desc'], 'url' => Url::getAuthRedirectUrl(7, $fissionId)];
         $easyWeChatParams['external_userid'] = array_column($contact, 'wxExternalUserid');
-        $res                                 = $this->wxApp($user['corpIds'][0], 'contact')->external_contact_message->submit($easyWeChatParams);
+        $res = $this->wxApp($user['corpIds'][0], 'contact')->external_contact_message->submit($easyWeChatParams);
         if ($res['errcode'] !== 0) {
             throw new CommonException(ErrorCode::INVALID_PARAMS, '发送失败');
         }

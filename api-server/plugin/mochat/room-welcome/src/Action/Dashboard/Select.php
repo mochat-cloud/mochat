@@ -12,10 +12,10 @@ namespace MoChat\Plugin\RoomWelcome\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
@@ -96,8 +96,8 @@ class Select extends AbstractAction
     {
         return [
             'id.required' => '入群欢迎语ID 必填',
-            'id.integer'  => '入群欢迎语ID 必需为整数',
-            'id.min  '    => '入群欢迎语ID 不可小于1',
+            'id.integer' => '入群欢迎语ID 必需为整数',
+            'id.min  ' => '入群欢迎语ID 不可小于1',
         ];
     }
 }

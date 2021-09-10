@@ -14,10 +14,10 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Contract\WorkContactEmployeeContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
@@ -91,13 +91,13 @@ class BatchContactTags extends AbstractAction
                 if ($contactId['contactId'] > 0) {
                     $data['contactId'] = $contactId['contactId'];
                     ## 员工id
-                    $contactEmployee    = $this->workContactEmployeeService->getWorkContactEmployeeByCorpIdContactId($contactId['contactId'], $user['corpIds'][0], ['employee_id']);
+                    $contactEmployee = $this->workContactEmployeeService->getWorkContactEmployeeByCorpIdContactId($contactId['contactId'], $user['corpIds'][0], ['employee_id']);
                     $data['employeeId'] = $contactEmployee['employeeId'];
                     ## 客户
-                    $contact                         = $this->workContactService->getWorkContactById($contactId['contactId'], ['wx_external_userid']);
+                    $contact = $this->workContactService->getWorkContactById($contactId['contactId'], ['wx_external_userid']);
                     $data['contactWxExternalUserid'] = $contact['wxExternalUserid'];
                     ## 员工
-                    $employee                 = $this->workEmployeeService->getWorkEmployeeById($contactEmployee['employeeId'], ['wx_user_id']);
+                    $employee = $this->workEmployeeService->getWorkEmployeeById($contactEmployee['employeeId'], ['wx_user_id']);
                     $data['employeeWxUserId'] = $employee['wxUserId'];
                     $this->autoTag($data);
                     $this->clockInContactService->updateClockInContact([$item], ['contact_clock_tags' => json_encode($params['tags'], JSON_THROW_ON_ERROR)]);
@@ -123,7 +123,7 @@ class BatchContactTags extends AbstractAction
     protected function rules(): array
     {
         return [
-            'ids'  => 'required',
+            'ids' => 'required',
             'tags' => 'required',
         ];
     }
@@ -135,7 +135,7 @@ class BatchContactTags extends AbstractAction
     protected function messages(): array
     {
         return [
-            'ids.required'  => '客户id 必填',
+            'ids.required' => '客户id 必填',
             'tags.required' => '标签 必填',
         ];
     }

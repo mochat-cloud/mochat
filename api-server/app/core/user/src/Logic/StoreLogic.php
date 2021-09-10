@@ -87,8 +87,8 @@ class StoreLogic
         ## 生成初始密码
         $guard = $this->authManager->guard('jwt');
         /** @var JWTManager $jwt */
-        $jwt                  = $guard->getJwtManager();
-        $params['password']   = $jwt->getEncrypter()->signature('123456');
+        $jwt = $guard->getJwtManager();
+        $params['password'] = $jwt->getEncrypter()->signature($params['password']);
         $params['created_at'] = date('Y-m-d H:i:s');
 
         return $params;
@@ -103,8 +103,9 @@ class StoreLogic
         ## 角色信息
         $roleId = $params['roleId'];
         unset($params['roleId']);
+        $corpId = (int) $user['corpIds'][0];
         ## 根据手机号
-        $employeeData = $this->employeeService->getWorkEmployeesByMobile($params['phone'], ['id']);
+        $employeeData = $this->employeeService->getWorkEmployeesByMobile($corpId, $params['phone'], ['id']);
         ## 数据操作
         Db::beginTransaction();
         try {
@@ -117,8 +118,8 @@ class StoreLogic
             }, $employeeData));
             ## 插入用户角色
             empty($roleId) || $this->rbacUserRoleService->createRbacUserRole([
-                'user_id'    => $userId,
-                'role_id'    => $roleId,
+                'user_id' => $userId,
+                'role_id' => $roleId,
                 'created_at' => date('Y-m-d H:i:s'),
             ]);
 

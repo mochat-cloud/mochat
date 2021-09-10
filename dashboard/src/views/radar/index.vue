@@ -91,6 +91,8 @@
     </a-card>
 
     <share ref="share"/>
+    <!--    授权提示-->
+    <warrantTip ref="warrantTip" />
   </div>
 </template>
 
@@ -98,8 +100,9 @@
 // eslint-disable-next-line no-unused-vars
 import { indexApi, destroyApi, publicIndexApi } from '@/api/radar'
 import share from '@/views/radar/components/share'
+import warrantTip from '@/components/warrantTip/warrantTip'
 export default {
-  components: { share },
+  components: { share, warrantTip },
   data () {
     return {
       // 公众号列表
@@ -211,6 +214,9 @@ export default {
     getPublicList () {
       publicIndexApi().then((res) => {
         this.publiclist = res.data
+        if (this.publiclist.length == 0) {
+          this.$refs.warrantTip.show()
+        }
       })
     },
     // 详情

@@ -12,10 +12,10 @@ namespace MoChat\App\Rbac\Action\Dashboard\Role;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Logic\Role\IndexLogic;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
@@ -57,8 +57,8 @@ class Index extends AbstractAction
             throw new CommonException(ErrorCode::INVALID_PARAMS, '未选择登录企业，不可操作');
         }
         $params = [
-            'name'    => $this->request->input('name', null),
-            'page'    => $this->request->input('page', 1),
+            'name' => $this->request->input('name', null),
+            'page' => $this->request->input('page', 1),
             'perPage' => $this->request->input('perPage', 10),
         ];
         return $this->indexLogic->handle($user, $params);

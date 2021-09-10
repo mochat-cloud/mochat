@@ -14,10 +14,10 @@ $dir = ['app', 'config'];
 
 return [
     'driver' => ScanFileDriver::class,
-    'bin'    => 'php',
-    'watch'  => [
-        'dir'           => $dir,
-        'file'          => ['.env'],
+    'bin' => 'php',
+    'watch' => [
+        'dir' => $dir,
+        'file' => ['.env'],
         'scan_interval' => 2000,
     ],
 ];

@@ -41,18 +41,18 @@ class UpdateApply
     {
         $this->logger->error(sprintf('%s [%s]', '同步客户群测试', date('Y-m-d H:i:s')));
         ## 获取企业微信授信信息
-        $corp     = make(CorpContract::class)->getCorpById($corpId, ['id', 'wx_corpid']);
+        $corp = make(CorpContract::class)->getCorpById($corpId, ['id', 'wx_corpid']);
         $ecClient = $this->wxApp($corp['wxCorpid'], 'contact')->external_contact;
 
         ## 获取客户群列表
         $chatListParams = [
             'status_filter' => 0,
-            'owner_filter'  => [
-                'userid_list'  => [],
+            'owner_filter' => [
+                'userid_list' => [],
                 'partyid_list' => [],
             ],
             'offset' => 0,
-            'limit'  => 100,
+            'limit' => 100,
         ];
         $groupChatList = $ecClient->getGroupChats($chatListParams);
 

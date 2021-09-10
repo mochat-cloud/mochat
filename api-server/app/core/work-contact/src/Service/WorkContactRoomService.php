@@ -188,7 +188,7 @@ class WorkContactRoomService extends AbstractService implements WorkContactRoomC
         } elseif (isset($where['contactIds'])) {
             $model = $model->whereIn('contact_id', $where['contactIds']);
         }
-        $data          = $model->paginate($perPage, $columns, 'page', $page);
+        $data = $model->paginate($perPage, $columns, 'page', $page);
         $data || $data = collect([]);
         return $data->toArray();
     }
@@ -398,7 +398,7 @@ class WorkContactRoomService extends AbstractService implements WorkContactRoomC
      * @param int $status 状态
      * @return int 返回值
      */
-    public function countWorkContactRoomByRoomId(int $roomId, int $employee = 0, int $status = 0): int
+    public function countWorkContactRoomByRoomId(int $roomId, int $employee = 0, int $status = 0, int $contactId = 0): int
     {
         $res = $this->model::query()
             ->where('room_id', $roomId);
@@ -407,6 +407,9 @@ class WorkContactRoomService extends AbstractService implements WorkContactRoomC
         }
         if ($status > 0) {
             $res = $res->where('status', $status);
+        }
+        if ($contactId > 0) {
+            $res = $res->where('contact_id', '>', 0);
         }
         return $res->count();
     }

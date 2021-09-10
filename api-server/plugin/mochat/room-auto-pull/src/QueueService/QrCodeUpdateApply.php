@@ -56,8 +56,8 @@ class QrCodeUpdateApply
             ## 配置
             $config = [
                 'skip_verify' => $skipVerify,
-                'state'       => $state,
-                'user'        => $wxUserId,
+                'state' => $state,
+                'user' => $wxUserId,
             ];
             if (empty($workRoomAutoPull['wxConfigId'])) {
                 $AddQrCode = $this->AddQrCode($corp['wxCorpid'], 2, 2, $config);

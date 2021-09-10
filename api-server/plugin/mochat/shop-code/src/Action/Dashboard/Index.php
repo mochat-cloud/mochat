@@ -13,11 +13,11 @@ namespace MoChat\Plugin\ShopCode\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\User\Contract\UserContract;
 use MoChat\Framework\Action\AbstractAction;
@@ -71,7 +71,7 @@ class Index extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -95,15 +95,15 @@ class Index extends AbstractAction
         $this->validated($this->request->all());
         ## 接收参数
         $params = [
-            'type'     => $this->request->input('type'),
-            'name'     => $this->request->input('name'),
+            'type' => $this->request->input('type'),
+            'name' => $this->request->input('name'),
             'province' => $this->request->input('province'),
-            'city'     => $this->request->input('city'),
-            'qw_code'  => $this->request->input('qw_code'),
+            'city' => $this->request->input('city'),
+            'qw_code' => $this->request->input('qw_code'),
             'employee' => $this->request->input('employee'),
-            'status'   => $this->request->input('status'),
-            'page'     => $this->request->input('page', 1),
-            'perPage'  => $this->request->input('perPage', 10000),
+            'status' => $this->request->input('status'),
+            'page' => $this->request->input('page', 1),
+            'perPage' => $this->request->input('perPage', 10000),
         ];
 
         $data = $this->handleParams($user, $params);
@@ -143,13 +143,13 @@ class Index extends AbstractAction
     private function handleParams(array $user, array $params): array
     {
         $where['corp_id'] = $user['corpIds'][0];
-        $where['type']    = (int) $params['type'];
+        $where['type'] = (int) $params['type'];
         if (isset($params['name']) && ! empty($params['name'])) {
             $where[] = ['name', 'LIKE', '%' . $params['name'] . '%'];
         }
         if (isset($params['province']) && ! empty($params['province'])) {
             $where['province'] = $params['province'];
-            $where['city']     = $params['city'];
+            $where['city'] = $params['city'];
         }
         if (isset($params['employee']) && ! empty($params['employee'])) {
             $where['employee->id'] = $params['employee'];
@@ -161,8 +161,8 @@ class Index extends AbstractAction
             $where['status'] = $params['status'];
         }
         $options = [
-            'perPage'    => $params['perPage'],
-            'page'       => $params['page'],
+            'perPage' => $params['perPage'],
+            'page' => $params['page'],
             'orderByRaw' => 'id desc',
         ];
 
@@ -177,14 +177,14 @@ class Index extends AbstractAction
      */
     private function getRoomQuality(array $user, array $params): array
     {
-        $columns         = ['id', 'type', 'name', 'employee', 'qw_code', 'status', 'address', 'province', 'city'];
+        $columns = ['id', 'type', 'name', 'employee', 'qw_code', 'status', 'address', 'province', 'city'];
         $roomQualityList = $this->shopCodeService->getShopCodeList($params['where'], $columns, $params['options']);
 
         $list = [];
         $data = [
             'page' => [
-                'perPage'   => $this->perPage,
-                'total'     => '0',
+                'perPage' => $this->perPage,
+                'total' => '0',
                 'totalPage' => '0',
             ],
             'list' => $list,
@@ -204,19 +204,19 @@ class Index extends AbstractAction
         $list = [];
         foreach ($roomTagPullList['data'] as $key => $val) {
             $list[$key] = [
-                'id'       => $val['id'],
-                'name'     => $val['name'],
-                'address'  => $val['address'],
+                'id' => $val['id'],
+                'name' => $val['name'],
+                'address' => $val['address'],
                 'employee' => json_decode($val['employee'], true, 512, JSON_THROW_ON_ERROR),
-                'qwCode'   => ($val['type'] > 1) ? json_decode($val['qwCode'], true, 512, JSON_THROW_ON_ERROR) : $val['qwCode'],
+                'qwCode' => ($val['type'] > 1) ? json_decode($val['qwCode'], true, 512, JSON_THROW_ON_ERROR) : $val['qwCode'],
                 'province' => $val['province'],
-                'city'     => $val['city'],
-                'status'   => $val['status'],
+                'city' => $val['city'],
+                'status' => $val['status'],
             ];
         }
-        $data['page']['total']     = $roomTagPullList['total'];
+        $data['page']['total'] = $roomTagPullList['total'];
         $data['page']['totalPage'] = $roomTagPullList['last_page'];
-        $data['list']              = $list;
+        $data['list'] = $list;
         return $data;
     }
 }

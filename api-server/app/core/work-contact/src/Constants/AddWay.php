@@ -102,21 +102,21 @@ class AddWay extends AbstractConstants
 //    const DRAW = 1004;
 
     public static $Enum = [
-        self::OTHER_CHANNELS   => '其他渠道',
-        self::SCAN_QR_CODE     => '扫描二维码', //以下四个为扫描二维码的方式
-        self::CHANNEL_CODE     => '渠道活码',
-        self::AUTO_GROUP       => '自动拉群',
+        self::OTHER_CHANNELS => '其他渠道',
+        self::SCAN_QR_CODE => '扫描二维码', //以下四个为扫描二维码的方式
+        self::CHANNEL_CODE => '渠道活码',
+        self::AUTO_GROUP => '自动拉群',
         self::FISSION_DRAINAGE => '裂变引流',
         // self::DRAW             => '抽奖引流',
-        self::SEARCH_MOBILE_PHONE       => '搜索手机号',
-        self::BUSINESS_CARD_SHARING     => '名片分享',
-        self::GROUP_CHAT                => '群聊',
+        self::SEARCH_MOBILE_PHONE => '搜索手机号',
+        self::BUSINESS_CARD_SHARING => '名片分享',
+        self::GROUP_CHAT => '群聊',
         self::MOBILE_PHONE_ADDRESS_BOOK => '手机通讯录',
-        self::WE_CHAT_CONTACT           => '微信联系人',
-        self::ADD_FRIEND_FROM_WE_CHAT   => '来自微信的添加好友申请',
-        self::CUSTOMER_SERVICE          => '安装第三方应用时自动添加的客服人员',
-        self::SEARCH_EMAIL              => '搜索邮箱',
-        self::IN_MEMBER_SHARE           => '内部成员共享',
-        self::ADMIN_ASSIGNMENT          => '管理员/负责人分配',
+        self::WE_CHAT_CONTACT => '微信联系人',
+        self::ADD_FRIEND_FROM_WE_CHAT => '来自微信的添加好友申请',
+        self::CUSTOMER_SERVICE => '安装第三方应用时自动添加的客服人员',
+        self::SEARCH_EMAIL => '搜索邮箱',
+        self::IN_MEMBER_SHARE => '内部成员共享',
+        self::ADMIN_ASSIGNMENT => '管理员/负责人分配',
     ];
 }

@@ -12,14 +12,14 @@ namespace MoChat\App\Corp\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 企业微信授权-企业下拉列表.
@@ -62,11 +62,11 @@ class Select extends AbstractAction
         ## 超级管理员
         if ($user['isSuperAdmin']) {
             $tenantCorps = $this->corpService->getCorpsByTenantId($user['tenantId'], ['id']);
-            $corpIds     = array_column($tenantCorps, 'id');
+            $corpIds = array_column($tenantCorps, 'id');
         } else {
             ## 获取当前登录用户所归属的所有企业通讯录信息
             $employeeList = $this->getEmployeeList((int) $user['id']);
-            $corpIds      = array_column($employeeList, 'corpId');
+            $corpIds = array_column($employeeList, 'corpId');
         }
 
         ## 企业详情
@@ -77,7 +77,7 @@ class Select extends AbstractAction
         if (! empty($res)) {
             foreach ($res as $v) {
                 $data[] = [
-                    'corpId'   => $v['id'],
+                    'corpId' => $v['id'],
                     'corpName' => $v['name'],
                 ];
             }

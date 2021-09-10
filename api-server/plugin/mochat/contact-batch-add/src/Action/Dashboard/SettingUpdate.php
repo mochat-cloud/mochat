@@ -12,11 +12,11 @@ namespace MoChat\Plugin\ContactBatchAdd\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\Validation\Rule;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
@@ -49,15 +49,15 @@ class SettingUpdate extends AbstractAction
      */
     public function handle(): array
     {
-        $params['pending_status']        = $this->request->input('pendingStatus');
-        $params['pending_time_out']      = $this->request->input('pendingTimeOut');
+        $params['pending_status'] = $this->request->input('pendingStatus');
+        $params['pending_time_out'] = $this->request->input('pendingTimeOut');
         $params['pending_reminder_time'] = $this->request->input('pendingReminderTime');
-        $params['pending_leader_id']     = $this->request->input('pendingLeaderId', 0);
-        $params['undone_status']         = $this->request->input('undoneStatus');
-        $params['undone_time_out']       = $this->request->input('undoneTimeOut');
-        $params['undone_reminder_time']  = $this->request->input('undoneReminderTime');
-        $params['recycle_status']        = $this->request->input('recycleStatus');
-        $params['recycle_time_out']      = $this->request->input('recycleTimeOut');
+        $params['pending_leader_id'] = $this->request->input('pendingLeaderId', 0);
+        $params['undone_status'] = $this->request->input('undoneStatus');
+        $params['undone_time_out'] = $this->request->input('undoneTimeOut');
+        $params['undone_reminder_time'] = $this->request->input('undoneReminderTime');
+        $params['recycle_status'] = $this->request->input('recycleStatus');
+        $params['recycle_time_out'] = $this->request->input('recycleTimeOut');
         $this->validated($params);
         $bool = $this->contactBatchAddConfigService->updateContactBatchAddConfigByCorpId((int) user()['corpIds'][0], $params);
         return [
@@ -77,16 +77,16 @@ class SettingUpdate extends AbstractAction
                 'required',
                 Rule::in(['0', '1']),
             ],
-            'pending_time_out'      => 'required|numeric',
+            'pending_time_out' => 'required|numeric',
             'pending_reminder_time' => 'required|date_format:H:i:s',
-            'pending_leader_id'     => 'numeric',
-            'undone_status'         => [
+            'pending_leader_id' => 'numeric',
+            'undone_status' => [
                 'required',
                 Rule::in(['0', '1']),
             ],
-            'undone_time_out'      => 'required|numeric',
+            'undone_time_out' => 'required|numeric',
             'undone_reminder_time' => 'required|date_format:H:i:s',
-            'recycle_status'       => [
+            'recycle_status' => [
                 'required',
                 Rule::in(['0', '1']),
             ],

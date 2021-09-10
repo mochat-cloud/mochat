@@ -50,14 +50,14 @@ class DepartmentStoreHandler extends AbstractEventHandler
         }
         //获取公司corpId
         $this->corpService = make(CorpContract::class);
-        $corpIds           = $this->getCorpId();
+        $corpIds = $this->getCorpId();
         if (empty($corpIds)) {
             $this->logger->error('DeparmentStoreHandler->process同步新增部门corpIds不能为空');
             return 'success';
         }
         //部门
         $this->workDepartmentService = make(WorkDepartmentContract::class);
-        $departments                 = $this->getDepartmentData($corpIds);
+        $departments = $this->getDepartmentData($corpIds);
         if (empty($departments)) {
             $this->logger->error('DeparmentStoreHandler->process同步新增部门部门不能为空');
             return 'success';
@@ -69,12 +69,12 @@ class DepartmentStoreHandler extends AbstractEventHandler
         //添加部门
         $createDepartment = [
             'wx_department_id' => $this->message['Id'],
-            'corp_id'          => current($corpIds),
-            'name'             => $this->message['Name'],
-            'parent_id'        => ! empty($departments[$this->message['ParentId']]['id']) ? $departments[$this->message['ParentId']]['id'] : 0,
-            'wx_parentid'      => $this->message['ParentId'],
-            'order'            => $this->message['Order'],
-            'created_at'       => date('Y-m-d H:i:s'),
+            'corp_id' => current($corpIds),
+            'name' => $this->message['Name'],
+            'parent_id' => ! empty($departments[$this->message['ParentId']]['id']) ? $departments[$this->message['ParentId']]['id'] : 0,
+            'wx_parentid' => $this->message['ParentId'],
+            'order' => $this->message['Order'],
+            'created_at' => date('Y-m-d H:i:s'),
         ];
         $insertId = $this->workDepartmentService->createWorkDepartment($createDepartment);
         if (empty($insertId)) {
@@ -103,7 +103,7 @@ class DepartmentStoreHandler extends AbstractEventHandler
      */
     private function getDepartmentData(array $corpIds): array
     {
-        $department     = [];
+        $department = [];
         $departmentData = $this->workDepartmentService->getWorkDepartmentsByCorpIds($corpIds);
         if (empty($departmentData)) {
             return [];
@@ -123,14 +123,14 @@ class DepartmentStoreHandler extends AbstractEventHandler
     private function updateDepartment($departmentId, $wxParentId, $departments): bool
     {
         $departmentData = [
-            'id'         => $departmentId,
+            'id' => $departmentId,
             'wxParentid' => $wxParentId,
         ];
-        $relation   = $this->getDepartmentRelation($departmentData, $departments);
+        $relation = $this->getDepartmentRelation($departmentData, $departments);
         $updateData = [
             'updated_at' => date('Y-m-d H:i:s'),
-            'path'       => $relation['path'],
-            'level'      => $relation['level'],
+            'path' => $relation['path'],
+            'level' => $relation['level'],
         ];
         $updateResult = $this->workDepartmentService->updateWorkDepartmentById($departmentId, $updateData);
         if (! $updateResult) {

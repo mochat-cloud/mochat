@@ -12,16 +12,16 @@ namespace MoChat\App\Corp\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\Utils\ApplicationContext;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 企业微信授权- 登录用户绑定企业信息.
@@ -53,25 +53,25 @@ class Bind extends AbstractAction
         ## 获取登录用户信息
         $user = user();
         ## 接收参数
-        $corpId     = $this->request->input('corpId');
+        $corpId = $this->request->input('corpId');
         $employeeId = 0;
 
         ## 验证当前用户是否归属绑定企业
         if (! $user['isSuperAdmin']) {
             ## 查询当前用户归属的公司
             $employees = $this->workEmployeeService->getWorkEmployeesByLogUserId((int) $user['id'], ['corp_id']);
-            $corpIds   = array_column($employees, 'corpId');
+            $corpIds = array_column($employees, 'corpId');
             if (! in_array($corpId, $corpIds)) {
                 throw new CommonException(ErrorCode::INVALID_PARAMS, '当前用户不归属该企业，不可操作');
             }
             ## 查询登录用户通讯录信息
-            $employee   = $this->workEmployeeService->getWorkEmployeeByCorpIdLogUserId((int) $corpId, (int) $user['id'], ['id']);
+            $employee = $this->workEmployeeService->getWorkEmployeeByCorpIdLogUserId((int) $corpId, (int) $user['id'], ['id']);
             $employeeId = $employee['id'];
         }
 
         ## 存入缓存(key:mc:user.userId   value:corpId-workEmployeeId
         $container = ApplicationContext::getContainer();
-        $redis     = $container->get(\Hyperf\Redis\Redis::class);
+        $redis = $container->get(\Hyperf\Redis\Redis::class);
         $redis->set('mc:user.' . $user['id'], $corpId . '-' . $employeeId);
 
         return $data = [];
@@ -97,8 +97,8 @@ class Bind extends AbstractAction
     {
         return [
             'corpId.required' => '企业授信ID 必填',
-            'corpId.integer'  => '企业授信ID 必需为整数',
-            'corpId.min'      => '企业授信ID 不可小于1',
+            'corpId.integer' => '企业授信ID 必需为整数',
+            'corpId.min' => '企业授信ID 不可小于1',
         ];
     }
 }

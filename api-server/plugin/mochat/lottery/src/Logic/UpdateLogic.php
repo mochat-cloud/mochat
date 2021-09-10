@@ -80,8 +80,8 @@ class UpdateLogic
         ## 基本信息
         $data['lottery'] = [
             'description' => $params['lottery']['description'],
-            'start_time'  => isset($params['lottery']['start_time']) ? $params['lottery']['start_time'] : '',
-            'end_time'    => isset($params['lottery']['end_time']) ? $params['lottery']['end_time'] : '',
+            'start_time' => isset($params['lottery']['start_time']) ? $params['lottery']['start_time'] : '',
+            'end_time' => isset($params['lottery']['end_time']) ? $params['lottery']['end_time'] : '',
         ];
 
         ##奖品

@@ -12,12 +12,12 @@ namespace MoChat\Plugin\ChannelCode\Action\Dashboard\Group;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Plugin\ChannelCode\Contract\ChannelCodeGroupContract;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 渠道码分组列表.
@@ -55,7 +55,7 @@ class Index extends AbstractAction
         });
 
         $data = [
-            'name'    => '未分组',
+            'name' => '未分组',
             'groupId' => 0,
         ];
 

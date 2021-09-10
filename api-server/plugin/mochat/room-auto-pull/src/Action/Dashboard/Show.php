@@ -12,10 +12,10 @@ namespace MoChat\Plugin\RoomAutoPull\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
@@ -76,8 +76,8 @@ class Show extends AbstractAction
     {
         return [
             'workRoomAutoPullId.required' => '自动拉群ID 必填',
-            'workRoomAutoPullId.integer'  => '自动拉群ID 必需为整数',
-            'workRoomAutoPullId.min'      => '自动拉群ID 不可小于1',
+            'workRoomAutoPullId.integer' => '自动拉群ID 必需为整数',
+            'workRoomAutoPullId.min' => '自动拉群ID 不可小于1',
         ];
     }
 }

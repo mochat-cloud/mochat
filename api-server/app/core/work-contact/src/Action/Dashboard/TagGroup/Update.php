@@ -12,15 +12,15 @@ namespace MoChat\App\WorkContact\Action\Dashboard\TagGroup;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\WorkContact\Contract\WorkContactTagGroupContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 修改客户标签分组.
@@ -47,9 +47,9 @@ class Update extends AbstractAction
     public function handle()
     {
         //接收参数
-        $params['groupId']   = $this->request->input('groupId');
+        $params['groupId'] = $this->request->input('groupId');
         $params['groupName'] = $this->request->input('groupName');
-        $params['isUpdate']  = $this->request->input('isUpdate');
+        $params['isUpdate'] = $this->request->input('isUpdate');
 
         //验证参数
         $this->validated($params);
@@ -78,9 +78,9 @@ class Update extends AbstractAction
     public function rules(): array
     {
         return [
-            'groupId'   => 'required|int',
+            'groupId' => 'required|int',
             'groupName' => 'required',
-            'isUpdate'  => 'required',
+            'isUpdate' => 'required',
         ];
     }
 
@@ -90,9 +90,9 @@ class Update extends AbstractAction
     public function messages(): array
     {
         return [
-            'groupId.required'   => '分组id必传',
+            'groupId.required' => '分组id必传',
             'groupName.required' => '分组名称必传',
-            'isUpdate.required'  => '是否修改信息必传',
+            'isUpdate.required' => '是否修改信息必传',
         ];
     }
 }

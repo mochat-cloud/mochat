@@ -12,10 +12,10 @@ namespace MoChat\App\Medium\Action\Dashboard\Group;
 
 use Hyperf\DbConnection\Db;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Medium\Contract\MediumContract;
 use MoChat\App\Medium\Contract\MediumGroupContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
@@ -43,7 +43,7 @@ class Destroy extends AbstractAction
             throw new CommonException(ErrorCode::INVALID_PARAMS, '唯一标识ID必须');
         }
         $mediumGroupService = $this->container->get(MediumGroupContract::class);
-        $mediumService      = $this->container->get(MediumContract::class);
+        $mediumService = $this->container->get(MediumContract::class);
 
         Db::beginTransaction();
         try {

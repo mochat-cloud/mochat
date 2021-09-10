@@ -67,10 +67,12 @@ export default {
     // this.getRuleList()
   },
   methods: {
-    showPopup (corpId, roomId, sopName) {
+    showPopup (roomId, sopName) {
+      if (!sopName) {
+        return
+      }
       this.show = true
       this.sopName = sopName
-      this.corpId = corpId
       this.roomId = roomId
       this.getRuleList()
     },
@@ -78,7 +80,6 @@ export default {
     removeGroup () {
       const params = {
         id: this.showRule.id,
-        corpId: this.corpId,
         roomId: this.roomId
       }
       tipSopDelRoomApi(params).then((res) => {
@@ -91,7 +92,6 @@ export default {
     confirmBtn () {
       tipSopAddRoomApi({
         id: this.showRule.id,
-        corpId: this.corpId,
         roomId: this.roomId
       }).then((res) => {
         Toast({ position: 'top', message: '设置成功' })
@@ -111,7 +111,6 @@ export default {
     },
     getRuleList () {
       tipSopListApi({
-        corpId: this.corpId
       }).then((res) => {
         this.listRuleData = res.data
         this.listRuleData.forEach((item) => {
@@ -167,7 +166,7 @@ export default {
   font-size: 28px;
   font-weight: 700;
 }
-/deep/ .van-popup--center{
+:deep(.van-popup--center){
   width: 92%;
 }
 .tags_box{

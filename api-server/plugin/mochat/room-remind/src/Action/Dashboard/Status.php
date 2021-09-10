@@ -14,11 +14,11 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
@@ -59,7 +59,7 @@ class Status extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -106,7 +106,7 @@ class Status extends AbstractAction
     protected function rules(): array
     {
         return [
-            'id'     => 'required',
+            'id' => 'required',
             'status' => 'required',
         ];
     }
@@ -118,7 +118,7 @@ class Status extends AbstractAction
     protected function messages(): array
     {
         return [
-            'id.required'     => 'id 必传',
+            'id.required' => 'id 必传',
             'status.required' => '状态 必传',
         ];
     }

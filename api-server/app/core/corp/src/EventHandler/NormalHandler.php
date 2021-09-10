@@ -12,13 +12,13 @@ namespace MoChat\App\Corp\EventHandler;
 
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
+use MoChat\App\Corp\QueueService\WeWorkCallback;
 use MoChat\Framework\Annotation\WeChatEventHandler;
 use MoChat\Framework\WeWork\EventHandler\AbstractEventHandler;
-use MoChat\App\Corp\QueueService\WeWorkCallback;
 
 /**
- * 默认回调处理
- * @WeChatEventHandler()
+ * 默认回调处理.
+ * @WeChatEventHandler
  */
 class NormalHandler extends AbstractEventHandler
 {
@@ -28,7 +28,7 @@ class NormalHandler extends AbstractEventHandler
     protected $logger;
 
     /**
-     * @Inject()
+     * @Inject
      * @var WeWorkCallback
      */
     protected $weWorkCallback;

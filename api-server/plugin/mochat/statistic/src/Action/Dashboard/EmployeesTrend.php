@@ -13,11 +13,11 @@ namespace MoChat\Plugin\Statistic\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Logic\AppTrait;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
@@ -53,7 +53,7 @@ class EmployeesTrend extends AbstractAction
     public function __construct(EmployeesLogic $employeesLogic, RequestInterface $request)
     {
         $this->employeesLogic = $employeesLogic;
-        $this->request        = $request;
+        $this->request = $request;
     }
 
     /**
@@ -62,13 +62,13 @@ class EmployeesTrend extends AbstractAction
      *     @Middleware(DashboardAuthMiddleware::class),
      *     @Middleware(PermissionMiddleware::class)
      * })
-     * @RequestMapping(path="/dashboard/count/employeesTrend", methods="GET")
+     * @RequestMapping(path="/dashboard/statistic/employeesTrend", methods="GET")
      */
     public function handle(): array
     {
         $params['startTime'] = $this->request->input('startTime');
-        $params['endTime']   = $this->request->input('endTime');
-        $params['mode']      = $this->request->input('mode');
+        $params['endTime'] = $this->request->input('endTime');
+        $params['mode'] = $this->request->input('mode');
         $params['employees'] = $this->request->input('employees');
         if (empty($params['employees'])) {
             $params['employees'] = [];
@@ -79,7 +79,7 @@ class EmployeesTrend extends AbstractAction
         }
 
         $params['startTime'] = strtotime($params['startTime']);
-        $params['endTime']   = strtotime($params['endTime']);
+        $params['endTime'] = strtotime($params['endTime']);
 
         if ($params['endTime'] - $params['startTime'] > 2592000) {
             //大于30天 不行
@@ -102,7 +102,7 @@ class EmployeesTrend extends AbstractAction
             $userIds[] = $item['wxUserId'];
         }
         ##EasyWeChat获取「联系客户统计」数据
-        $wx  = $this->wxApp($user['corpIds'][0], 'contact')->external_contact_statistics;
+        $wx = $this->wxApp($user['corpIds'][0], 'contact')->external_contact_statistics;
         $res = $wx->userBehavior($userIds, (string) $params['startTime'], (string) $params['endTime']);
         if ($res['errcode'] !== 0) {
             $this->logger->error(sprintf('获取「联系客户统计」数据 失败::[%s]', json_encode($res, JSON_THROW_ON_ERROR)));
@@ -112,11 +112,11 @@ class EmployeesTrend extends AbstractAction
         $result = [];
         foreach ($res as $re) {
             $result['list'][] = [
-                'date'             => date('Y-m-d', @$re['stat_time']),
-                'chat_cnt'         => @$re['chat_cnt'] ? $re['chat_cnt'] : 0,
-                'message_cnt'      => @$re['message_cnt'] ? $re['message_cnt'] : 0,
+                'date' => date('Y-m-d', @$re['stat_time']),
+                'chat_cnt' => @$re['chat_cnt'] ? $re['chat_cnt'] : 0,
+                'message_cnt' => @$re['message_cnt'] ? $re['message_cnt'] : 0,
                 'reply_percentage' => @$re['reply_percentage'] ? $re['reply_percentage'] : 0,
-                'avg_reply_time'   => @$re['avg_reply_time'] ? $re['avg_reply_time'] : 0,
+                'avg_reply_time' => @$re['avg_reply_time'] ? $re['avg_reply_time'] : 0,
             ];
         }
 

@@ -1,5 +1,5 @@
 import { getWorkContactDetail } from '@/api/contact'
-import { getUserInfo } from '@/api/wxconfig'
+// import { getUserInfo } from '@/api/wxconfig'
 // eslint-disable-next-line no-unused-vars
 import { getCurExternalContact } from '@/utils/wxCodeAuth'
 import { setStorage } from '@/utils'
@@ -7,23 +7,27 @@ import { setStorage } from '@/utils'
 const app = {
   state: {
     navShow: false,
-    userInfo: {},
+    // userInfo: {},
     contactInfo: {},
-    contactWxUserId: ''
+    contactWxUserId: '',
+    initAgentConfig: false
   },
   mutations: {
     SET_NAV_SHOW: (state, data) => {
       state.navShow = data
     },
-    SET_USER_INFO: (state, data) => {
-      state.userInfo = data
-    },
+    // SET_USER_INFO: (state, data) => {
+    //   state.userInfo = data
+    // },
     SET_CUSTOMER_INFO: (state, data) => {
       state.contactInfo = data
     },
     SET_CUSTOMER_WX_USER_ID: (state, data) => {
       state.contactWxUserId = data
       setStorage('contactWxUserId', data)
+    },
+    SET_INIT_AGENT_CONFIG: (state, data) => {
+      state.initAgentConfig = data
     }
   },
   actions: {
@@ -39,15 +43,6 @@ const app = {
           id, name, avatar, corpId
         }
         commit('SET_CUSTOMER_INFO', contactInfo)
-      } catch (e) {
-        console.log(e)
-      }
-    },
-    async GET_USER_INFO ({ commit }) {
-      try {
-        const { data } = await getUserInfo()
-        const userInfo = data
-        commit('SET_USER_INFO', userInfo)
       } catch (e) {
         console.log(e)
       }

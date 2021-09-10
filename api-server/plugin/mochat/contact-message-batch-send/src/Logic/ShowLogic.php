@@ -38,21 +38,37 @@ class ShowLogic
         }
 
         return [
-            'id'                 => $batch['id'],
-            'creator'            => $batch['userName'],
-            'createdAt'          => $batch['createdAt'],
-            'content'            => $batch['content'],
-            'sendTime'           => $batch['sendTime'],
-            'filterParams'       => $batch['filterParams'],
+            'id' => $batch['id'],
+            'creator' => $batch['userName'],
+            'createdAt' => $batch['createdAt'],
+            'content' => $this->handleData($batch['content']),
+            'sendTime' => $batch['sendTime'],
+            'filterParams' => $batch['filterParams'],
             'filterParamsDetail' => $batch['filterParamsDetail'],
-            'sendEmployeeTotal'  => $batch['sendEmployeeTotal'],
-            'sendContactTotal'   => $batch['sendContactTotal'],
-            'sendTotal'          => $batch['sendTotal'],
-            'receivedTotal'      => $batch['receivedTotal'],
-            'notSendTotal'       => $batch['notSendTotal'],
-            'notReceivedTotal'   => $batch['notReceivedTotal'],
-            'receiveLimitTotal'  => $batch['receiveLimitTotal'],
-            'notFriendTotal'     => $batch['notFriendTotal'],
+            'sendEmployeeTotal' => $batch['sendEmployeeTotal'],
+            'sendContactTotal' => $batch['sendContactTotal'],
+            'sendTotal' => $batch['sendTotal'],
+            'receivedTotal' => $batch['receivedTotal'],
+            'notSendTotal' => $batch['notSendTotal'],
+            'notReceivedTotal' => $batch['notReceivedTotal'],
+            'receiveLimitTotal' => $batch['receiveLimitTotal'],
+            'notFriendTotal' => $batch['notFriendTotal'],
         ];
+    }
+
+    protected function handleData($content): array
+    {
+        if (empty($content)) {
+            return $content;
+        }
+
+        foreach ($content as $key => $value) {
+            if ($value['msgType'] === 'text') {
+                continue;
+            }
+
+            $content[$key]['pic_url'] = file_full_url($value['pic_url']);
+        }
+        return $content;
     }
 }

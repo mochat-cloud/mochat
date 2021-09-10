@@ -12,10 +12,10 @@ namespace MoChat\App\WorkContact\Action\Dashboard\FieldPivot;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Constants\Field\Options;
 use MoChat\App\WorkContact\Constants\Field\Status;
@@ -76,8 +76,8 @@ class Index extends AbstractAction
 
         foreach ($fieldInfo as &$raw) {
             $raw['contactFieldId'] = $raw['id'];
-            $raw['name']           = $raw['label'];
-            $raw['value']          = '';
+            $raw['name'] = $raw['label'];
+            $raw['value'] = '';
             //多选
             if ($raw['type'] == Options::CHECKBOX) {
                 //默认值
@@ -89,13 +89,13 @@ class Index extends AbstractAction
                 $raw['pictureFlag'] = ''; //前端存值需要
             }
 
-            $raw['typeText']            = Options::getMessage($raw['type']);
+            $raw['typeText'] = Options::getMessage($raw['type']);
             $raw['contactFieldPivotId'] = '';
 
             //客户 用户画像
             if (isset($info[$raw['id']])) {
                 $raw['contactFieldPivotId'] = $info[$raw['id']]['id'];
-                $raw['value']               = $info[$raw['id']]['value'];
+                $raw['value'] = $info[$raw['id']]['value'];
                 //图片
                 if ($raw['type'] == Options::PICTURE && ! empty($raw['value'])) {
                     $raw['pictureFlag'] = file_full_url($raw['value']); //前端存值需要

@@ -63,10 +63,10 @@ class InviteFriends extends AbstractAction
      */
     public function __construct(RequestInterface $request, WorkFissionContactContract $workFissionContactService, WorkFissionContract $workFissionService, WorkContactContract $workContactService)
     {
-        $this->request                   = $request;
+        $this->request = $request;
         $this->workFissionContactService = $workFissionContactService;
-        $this->workFissionService        = $workFissionService;
-        $this->workContactService        = $workContactService;
+        $this->workFissionService = $workFissionService;
+        $this->workContactService = $workContactService;
     }
 
     /**
@@ -90,7 +90,7 @@ class InviteFriends extends AbstractAction
     protected function rules(): array
     {
         return ['union_id' => 'required',
-            'fission_id'   => 'required',
+            'fission_id' => 'required',
         ];
     }
 
@@ -102,7 +102,7 @@ class InviteFriends extends AbstractAction
     {
         return [
             'union_id.required' => '客户微信id 必填',
-            'fission_id'        => '活动id 必填',
+            'fission_id' => '活动id 必填',
         ];
     }
 
@@ -115,8 +115,8 @@ class InviteFriends extends AbstractAction
         $options = [
             'orderByRaw' => 'id desc',
         ];
-        $user    = $this->workFissionContactService->getWorkFissionContactByUnionId($params['union_id'], ['id']);
-        $list    = $this->workFissionContactService->getWorkFissionContactList(['contact_superior_user_parent' => $user['id'], 'fission_id' => $params['fission_id']], $columns, $options);
+        $user = $this->workFissionContactService->getWorkFissionContactByUnionId($params['union_id'], ['id']);
+        $list = $this->workFissionContactService->getWorkFissionContactList(['contact_superior_user_parent' => $user['id'], 'fission_id' => $params['fission_id']], $columns, $options);
         $fission = $this->workFissionService->getWorkFissionById((int) $params['fission_id']);
 
         foreach ($list['data'] as $key => $val) {
@@ -124,7 +124,7 @@ class InviteFriends extends AbstractAction
             if ($fission['deleteInvalid'] == 1 && $val['loss'] == 1) {
                 $list['data'][$key]['fail'] = 1;
             }
-            $url                          = $this->workContactService->getWorkContactByUnionId($val['unionId'], ['avatar']);
+            $url = $this->workContactService->getWorkContactByUnionId($val['unionId'], ['avatar']);
             $list['data'][$key]['avatar'] = file_full_url($url['avatar']);
         }
         return $list['data'];

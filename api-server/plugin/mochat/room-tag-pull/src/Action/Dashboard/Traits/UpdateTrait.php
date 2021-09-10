@@ -42,7 +42,7 @@ trait UpdateTrait
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 

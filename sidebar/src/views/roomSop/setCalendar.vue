@@ -56,9 +56,8 @@ export default {
         }
       })
     },
-    showPopup (corpId, roomId) {
+    showPopup (roomId) {
       this.show = true
-      this.corpId = corpId
       this.roomId = roomId
       this.getCalendarlist()
     },
@@ -66,7 +65,6 @@ export default {
     confirmBtn () {
       const parmas = {
         id: this.showRule.id,
-        corpId: this.corpId,
         roomId: this.roomId
       }
       setRoomCalendarApi(parmas).then((res) => {
@@ -78,7 +76,6 @@ export default {
     //  获取群日历列表
     getCalendarlist () {
       roomCalendarApi({
-        corpId: this.corpId
       }).then((res) => {
         console.log(res)
         this.listRuleData = res.data
@@ -106,7 +103,7 @@ export default {
 .option_box option{
   height: 50px;
 }
-/deep/ .van-popup--center{
+:deep(.van-popup--center){
   width: 92%;
 }
 .pop_foot{

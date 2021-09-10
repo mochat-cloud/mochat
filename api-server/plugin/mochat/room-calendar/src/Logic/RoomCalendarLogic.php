@@ -69,7 +69,7 @@ class RoomCalendarLogic
     {
         try {
             ## 待发送信息
-            $day  = date('Y-m-d H:i', strtotime('+1 minute'));
+            $day = date('Y-m-d H:i', strtotime('+1 minute'));
             $push = $this->roomCalendarPushService->getRoomCalendarPushByDay($day, ['id', 'room_calendar_id', 'name', 'day', 'push_content']);
 //            $this->logger->info('群日历任务推送内容'. json_encode($push, JSON_THROW_ON_ERROR));
             if (empty($push)) {
@@ -81,7 +81,7 @@ class RoomCalendarLogic
                 $employee = $this->workEmployeeService->getWorkEmployeeById($calendar['createUserId'], ['name']);
                 ## 推送
                 $roomArr = json_decode($calendar['rooms'], true, 512, JSON_THROW_ON_ERROR);
-                $room    = array_count_values(array_column($roomArr, 'ownerId'));
+                $room = array_count_values(array_column($roomArr, 'ownerId'));
                 $messageRemind = make(MessageRemind::class);
                 foreach ($room as $k => $v) {
                     $ownerInfo = $this->workEmployeeService->getWorkEmployeeById($k, ['wx_user_id']);
@@ -90,10 +90,11 @@ class RoomCalendarLogic
                     $link = '#'; // TODO 需要新增sidebar页面
                     $content = "管理员{$employee['name']}创建了群日历推送任务，提醒你给{$v}个群聊发送消息<a href='{$link}'>查看推送详情 </a>";
                     $messageRemind->sendToEmployee(
-                        (int)$calendar['corpId'],
+                        (int) $calendar['corpId'],
                         $ownerInfo['wxUserId'],
                         'text',
-                        $content);
+                        $content
+                    );
                 }
                 $this->roomCalendarPushService->updateRoomCalendarPushById($val['id'], ['status' => 2]);
             }

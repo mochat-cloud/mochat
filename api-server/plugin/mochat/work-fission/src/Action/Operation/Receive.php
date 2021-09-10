@@ -63,10 +63,10 @@ class Receive extends AbstractAction
      */
     public function __construct(RequestInterface $request, WorkFissionContactContract $workFissionContactService, WorkFissionContract $workFissionService, WorkEmployeeContract $workEmployeeService)
     {
-        $this->request                   = $request;
+        $this->request = $request;
         $this->workFissionContactService = $workFissionContactService;
-        $this->workFissionService        = $workFissionService;
-        $this->workEmployeeService       = $workEmployeeService;
+        $this->workFissionService = $workFissionService;
+        $this->workEmployeeService = $workEmployeeService;
     }
 
     /**

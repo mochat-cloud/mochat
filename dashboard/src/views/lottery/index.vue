@@ -305,6 +305,7 @@
                 :columns="dataAnalysis.detailed.col"
                 :data-source="dataAnalysis.detailed.data"
                 :scroll="{ y: 240 }"
+                :pagination="false"
               />
             </div>
           </a-card>
@@ -394,19 +395,23 @@
       </div>
     </div>
     <share ref="share"/>
+    <!--    授权提示-->
+    <warrantTip ref="warrantTip" />
   </div>
 </template>
 
 <script>
 import share from '@/views/lottery/components/share'
 import addlableIndex from '@/components/addlabel/index'
-// eslint-disable-next-line no-unused-vars
+import warrantTip from '@/components/warrantTip/warrantTip'
+// eslint-disable-next-line no-unused-vars  warrantTip
 import { getList, dataDetails, getDetails, del, writeOffApi, batchContactTagsApi, publicIndexApi } from '@/api/lottery'
 
 export default {
   components: {
     share,
-    addlableIndex
+    addlableIndex,
+    warrantTip
   },
   data () {
     return {
@@ -591,6 +596,9 @@ export default {
     getPublicList () {
       publicIndexApi().then((res) => {
         this.publiclist = res.data
+        if (this.publiclist.length == 0) {
+          this.$refs.warrantTip.show()
+        }
       })
     },
     // 获取选中 的客户表格数据

@@ -11,10 +11,10 @@ declare(strict_types=1);
 namespace MoChat\App\Medium\Action\Dashboard\Group;
 
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Medium\Contract\MediumGroupContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\User\Logic\Traits\UserTrait;
@@ -41,11 +41,11 @@ class Store extends AbstractAction
     {
         ## 数据验证
         $corpId = $this->corpId();
-        $name   = $this->request->post('name', false);
+        $name = $this->request->post('name', false);
         if (! $name) {
             throw new CommonException(ErrorCode::INVALID_PARAMS, '请输入分组名称');
         }
-        $client    = $this->container->get(MediumGroupContract::class);
+        $client = $this->container->get(MediumGroupContract::class);
         $existData = $client->getMediumGroupByName($name, ['id']);
         if (! empty($existData)) {
             throw new CommonException(ErrorCode::INVALID_PARAMS, '分组名称已存在');

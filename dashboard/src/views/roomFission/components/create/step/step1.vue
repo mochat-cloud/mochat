@@ -134,18 +134,21 @@
       </div>
     </div>
     <selectMember ref="selectMember" @change="acceptMemberNews"/>
+    <!--    授权提示-->
+    <warrantTip ref="warrantTip" />
   </div>
 </template>
 
 <script>
 import selectMember from '@/components/Select/member'
+import warrantTip from '@/components/warrantTip/warrantTip'
 // eslint-disable-next-line no-unused-vars
 import { department, publicApi } from '@/api/roomFission'
 // eslint-disable-next-line no-unused-vars
 import moment from 'moment'
 
 export default {
-  components: { selectMember },
+  components: { selectMember, warrantTip },
   data () {
     return {
       // 公众号id
@@ -188,7 +191,7 @@ export default {
   created () {
     this.getEmployeesData()
     // 获取公众号列表
-    this.getpublicList()
+    this.getPublicList()
   },
   methods: {
     selectMemberShow () {
@@ -200,7 +203,7 @@ export default {
       this.fission.official_account_id = e
     },
     // 获取公众号列表
-    getpublicList () {
+    getPublicList () {
       publicApi().then((res) => {
         this.publiclist = res.data
       })

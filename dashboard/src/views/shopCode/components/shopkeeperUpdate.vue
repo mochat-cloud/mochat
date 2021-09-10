@@ -28,7 +28,7 @@
             </a-select-option>
           </a-select>
         </div>
-        <div else>
+        <div v-else>
           <a-select
             placeholder="请选择拉群活码"
             :showSearch="true"

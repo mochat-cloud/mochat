@@ -14,7 +14,6 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\RequestMapping;
-use Laminas\Stdlib\RequestInterface;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\App\WorkContact\Contract\WorkContactEmployeeContract;
@@ -105,7 +104,7 @@ class ClockInRanking extends AbstractAction
     protected function rules(): array
     {
         return [
-            'id'       => 'required | integer | min:0 | bail',
+            'id' => 'required | integer | min:0 | bail',
             'union_id' => 'required',
         ];
     }
@@ -117,27 +116,27 @@ class ClockInRanking extends AbstractAction
     protected function messages(): array
     {
         return [
-            'id.required'       => '活动ID 必填',
-            'id.integer'        => '活动ID 必需为整数',
-            'id.min  '          => '活动ID 不可小于1',
+            'id.required' => '活动ID 必填',
+            'id.integer' => '活动ID 必需为整数',
+            'id.min  ' => '活动ID 不可小于1',
             'union_id.required' => 'union_id必填',
         ];
     }
 
     private function handleData($params): array
     {
-        $clockIn     = $this->clockInService->getClockInById((int) $params['id'], ['name', 'corp_id', 'type', 'tasks']);
-        $contact     = $this->clockInContactService->getClockInContactByClockInIdUnionId((int) $params['id'], $params['union_id'], ['id', 'total_day', 'series_day', 'receive_level']);
+        $clockIn = $this->clockInService->getClockInById((int) $params['id'], ['name', 'corp_id', 'type', 'tasks']);
+        $contact = $this->clockInContactService->getClockInContactByClockInIdUnionId((int) $params['id'], $params['union_id'], ['id', 'total_day', 'series_day', 'receive_level']);
         $todayRecord = [];
         if (! empty($contact)) {
             $todayRecord = $this->clockInContactRecordService->getClockInContactRecordByClockInIdContactId((int) $params['id'], $contact['id'], ['id']);
         }
 
         return [
-            'total_user'      => $this->clockInContactService->countClockInContactByClockInId((int) $params['id']),
+            'total_user' => $this->clockInContactService->countClockInContactByClockInId((int) $params['id']),
             'clock_in_status' => empty($todayRecord) ? 0 : 1,
             'contact_ranking' => empty($contact) ? 0 : $this->contactRanking($params, $clockIn, $contact),
-            'contact_list'    => $this->contactList($params, $clockIn),
+            'contact_list' => $this->contactList($params, $clockIn),
         ];
     }
 
@@ -176,8 +175,8 @@ class ClockInRanking extends AbstractAction
     {
         $contactList = $this->clockInContactService->getClockInContactListGroupTotalDayLimit((int) $params['id'], ['id', 'nickname', 'avatar', 'total_day', 'series_day']);
         foreach ($contactList as $key => $val) {
-            $contactList[$key]['avatar']    = file_full_url($val['avatar']);
-            $contactList[$key]['ranking']   = $key + 1;
+            $contactList[$key]['avatar'] = file_full_url($val['avatar']);
+            $contactList[$key]['ranking'] = $key + 1;
             $contactList[$key]['day_count'] = $clockIn['type'] === 1 ? $val['seriesDay'] : $val['totalDay'];
             unset($contactList[$key]['id'], $contactList[$key]['seriesDay'], $contactList[$key]['totalDay']);
         }

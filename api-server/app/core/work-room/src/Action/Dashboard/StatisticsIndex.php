@@ -12,10 +12,10 @@ namespace MoChat\App\WorkRoom\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Constants\Room\Status as WorkContactRoomStatus;
 use MoChat\App\WorkContact\Contract\WorkContactRoomContract;
@@ -62,11 +62,11 @@ class StatisticsIndex extends AbstractAction
         ## 接收参数
         $params = [
             'workRoomId' => $this->request->input('workRoomId'),
-            'type'       => $this->request->input('type'),
-            'startTime'  => $this->request->input('startTime'),
-            'endTime'    => $this->request->input('endTime'),
-            'page'       => $this->request->input('page', 1),
-            'perPage'    => $this->request->input('perPage', 10),
+            'type' => $this->request->input('type'),
+            'startTime' => $this->request->input('startTime'),
+            'endTime' => $this->request->input('endTime'),
+            'page' => $this->request->input('page', 1),
+            'perPage' => $this->request->input('perPage', 10),
         ];
 
         ## 参数校验-当type = 1(按天统计)时间必传
@@ -85,8 +85,8 @@ class StatisticsIndex extends AbstractAction
         ## 组织返回结构
         $data = [
             'page' => [
-                'perPage'   => $params['perPage'],
-                'total'     => 0,
+                'perPage' => $params['perPage'],
+                'total' => 0,
                 'totalPage' => 0,
             ],
             'list' => [],
@@ -95,10 +95,10 @@ class StatisticsIndex extends AbstractAction
         ## 归纳数据
         foreach ($contactRoomList as $v) {
             if (in_array($params['type'], [1, 2])) { ## 按天统计||按自然周统计
-                $inKey  = date('Y-m-d', strtotime($v['joinTime']));
+                $inKey = date('Y-m-d', strtotime($v['joinTime']));
                 $outKey = empty($v['outTime']) ? 'outTime' : date('Y-m-d', strtotime($v['outTime']));
             } else { ## 按自然年统计
-                $inKey  = date('Y-m', strtotime($v['joinTime']));
+                $inKey = date('Y-m', strtotime($v['joinTime']));
                 $outKey = empty($v['outTime']) ? 'outTime' : date('Y-m', strtotime($v['outTime']));
             }
             ## 入群
@@ -115,10 +115,10 @@ class StatisticsIndex extends AbstractAction
         }
         $list = array_values($list);
 
-        $data['page']['total']     = count($list);
+        $data['page']['total'] = count($list);
         $data['page']['totalPage'] = ceil(count($list) / $params['perPage']);
-        $startKey                  = ($params['page'] - 1) * $params['perPage'];
-        $data['list']              = array_slice($list, $startKey, $params['perPage']);
+        $startKey = ($params['page'] - 1) * $params['perPage'];
+        $data['list'] = array_slice($list, $startKey, $params['perPage']);
 
         return $data;
     }
@@ -132,7 +132,7 @@ class StatisticsIndex extends AbstractAction
     {
         return [
             'workRoomId' => 'required | integer | min:0, | bail',
-            'type'       => 'required | integer | in:1,2,3, | bail',
+            'type' => 'required | integer | in:1,2,3, | bail',
         ];
     }
 
@@ -144,11 +144,11 @@ class StatisticsIndex extends AbstractAction
     {
         return [
             'workRoomId.required' => '客户群ID 必填',
-            'workRoomId.integer'  => '客户群ID 必需为整数',
-            'workRoomId.min'      => '客户群ID 值不可小于1',
-            'type.required'       => '统计类型 必填',
-            'type.integer'        => '统计类型 必需为整数',
-            'type.in'             => '统计类型 值必须在列表内：[1,2,3]',
+            'workRoomId.integer' => '客户群ID 必需为整数',
+            'workRoomId.min' => '客户群ID 值不可小于1',
+            'type.required' => '统计类型 必填',
+            'type.integer' => '统计类型 必需为整数',
+            'type.in' => '统计类型 值必须在列表内：[1,2,3]',
         ];
     }
 
@@ -164,10 +164,10 @@ class StatisticsIndex extends AbstractAction
             $etime = strtotime($params['endTime']);
             while ($stime <= $etime) {
                 $data[] = [
-                    'time'     => date('Y-m-d', $stime),
-                    'addNum'   => 0,
-                    'outNum'   => 0,
-                    'total'    => 0,
+                    'time' => date('Y-m-d', $stime),
+                    'addNum' => 0,
+                    'outNum' => 0,
+                    'total' => 0,
                     'outTotal' => 0,
                 ];
                 $stime = $stime + 86400;
@@ -176,10 +176,10 @@ class StatisticsIndex extends AbstractAction
             $beforeWeekDay = date('Y-m-d', strtotime('-1 week'));
             for ($i = 1; $i <= 7; ++$i) {
                 $data[] = [
-                    'time'     => date('Y-m-d', strtotime('+' . $i . ' days', strtotime($beforeWeekDay))),
-                    'addNum'   => 0,
-                    'outNum'   => 0,
-                    'total'    => 0,
+                    'time' => date('Y-m-d', strtotime('+' . $i . ' days', strtotime($beforeWeekDay))),
+                    'addNum' => 0,
+                    'outNum' => 0,
+                    'total' => 0,
                     'outTotal' => 0,
                 ];
             }
@@ -187,10 +187,10 @@ class StatisticsIndex extends AbstractAction
             $beforeYearMonth = date('Y-m', strtotime('-1 year'));
             for ($i = 1; $i <= 12; ++$i) {
                 $data[] = [
-                    'time'     => date('Y-m', strtotime('+' . $i . ' months', strtotime($beforeYearMonth))),
-                    'addNum'   => 0,
-                    'outNum'   => 0,
-                    'total'    => 0,
+                    'time' => date('Y-m', strtotime('+' . $i . ' months', strtotime($beforeYearMonth))),
+                    'addNum' => 0,
+                    'outNum' => 0,
+                    'total' => 0,
                     'outTotal' => 0,
                 ];
             }

@@ -17,3 +17,12 @@ export function mediumDetail (params) {
     params: params
   })
 }
+
+// 素材库
+export function mediaIdUpdate (params) {
+  return request({
+    url: '/medium/mediaIdUpdate',
+    method: 'get',
+    params: params
+  })
+}

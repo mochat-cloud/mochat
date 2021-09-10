@@ -12,14 +12,14 @@ namespace MoChat\App\WorkRoom\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\WorkContact\Contract\WorkContactRoomContract;
 use MoChat\App\WorkRoom\Contract\WorkRoomContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 群聊列表下拉框.
@@ -52,14 +52,14 @@ class RoomIndex extends AbstractAction
     public function handle()
     {
         //接收参数
-        $params['name']        = $this->request->input('name');
+        $params['name'] = $this->request->input('name');
         $params['roomGroupId'] = $this->request->input('roomGroupId');
         //验证参数
         $this->validated($params);
 
         // 组织查询条件
-        $where                                                          = [];
-        empty($params['name']) || $where['name']                        = $params['name'];
+        $where = [];
+        empty($params['name']) || $where['name'] = $params['name'];
         ! is_numeric($params['roomGroupId']) || $where['room_group_id'] = $params['roomGroupId'];
 
         //查询总群聊数
@@ -74,16 +74,16 @@ class RoomIndex extends AbstractAction
         if (empty($list)) {
             return [
                 'total' => 0,
-                'list'  => [],
+                'list' => [],
             ];
         }
         //查询当前群聊人数
-        $roomNum                    = $this->contactRoom->countWorkContactRoomsByRoomIds(array_column($list, 'id'), 1);
+        $roomNum = $this->contactRoom->countWorkContactRoomsByRoomIds(array_column($list, 'id'), 1);
         empty($roomNum) || $roomNum = array_column($roomNum, null, 'roomId');
 
         foreach ($list as &$raw) {
-            $raw['roomId']     = $raw['id'];
-            $raw['roomName']   = $raw['name'];
+            $raw['roomId'] = $raw['id'];
+            $raw['roomName'] = $raw['name'];
             $raw['currentNum'] = 0;
 
             if (isset($roomNum[$raw['id']])) {
@@ -94,7 +94,7 @@ class RoomIndex extends AbstractAction
 
         return [
             'total' => $total,
-            'list'  => $list,
+            'list' => $list,
         ];
     }
 }

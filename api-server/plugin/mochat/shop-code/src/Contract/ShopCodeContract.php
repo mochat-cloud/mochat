@@ -101,4 +101,10 @@ interface ShopCodeContract
      * @param array|string[] $columns
      */
     public function getShopCodeByCorpIdTypeStatusProvinceName(int $corpId, int $type, int $status, string $province, string $city, string $name, array $columns = ['*']): array;
+
+    /**
+     * 查询一条
+     * @param array|string[] $columns
+     */
+    public function getShopCodeByNameAddress(int $corpId, string $address, int $id = 0, array $columns = ['*']): array;
 }

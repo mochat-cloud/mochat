@@ -57,9 +57,10 @@
           <span>
             请选择员工：
           </span>
-          <a-button @click="$refs.selectMember.show()">
-            选择
-          </a-button>
+          <a-button @click="$refs.selectMember.setSelect(memberData)">选择</a-button>
+        </div>
+        <div style="margin-left: 10px;">
+          <a-tag v-for="(item,index) in memberData" :key="index">{{ item.name }}</a-tag>
         </div>
         <div class="item ml60">
           <a-button @click="reset">
@@ -85,7 +86,7 @@
 
 <script>
 import echarts from 'echarts'
-import { contactInfo } from '@/api/contactCount'
+import { contactInfo } from '@/api/statistic'
 import moment from 'moment'
 import selectMember from '@/components/Select/member'
 
@@ -133,7 +134,8 @@ export default {
           loss: 0,
           net: 0
         }
-      }
+      },
+      memberData: []
     }
   },
   mounted () {
@@ -141,10 +143,10 @@ export default {
   },
   methods: {
     selectMemberChange (e) {
+      this.memberData = e
       const ids = e.map(v => {
         return v.id
       })
-
       this.getData(ids)
     },
 
@@ -153,19 +155,18 @@ export default {
         moment('2021-6-16').subtract(1, 'weeks').format('YYYY-MM-DD'),
         moment().format('YYYY-MM-DD')
       ]
-
       this.filterTypeRadio.current = '1'
-
+      this.memberData = []
       this.getData()
     },
-
     getData (employeeId = '') {
-      contactInfo({
+      const params = {
         startTime: moment(this.date[0]).format('YYYY-MM-DD'),
         endTime: moment(this.date[1]).format('YYYY-MM-DD'),
         mode: this.filterTypeRadio.current,
         employeeId
-      }).then(res => {
+      }
+      contactInfo(params).then(res => {
         this.data = res.data
         this.table.data = res.data.any
         this.initChart()

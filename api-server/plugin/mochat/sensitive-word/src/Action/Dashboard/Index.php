@@ -12,12 +12,12 @@ namespace MoChat\Plugin\SensitiveWord\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use MoChat\App\Common\Constants\BusinessLog\Event;
 use MoChat\App\Common\Logic\Traits\BusinessLogTrait;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
@@ -82,13 +82,13 @@ class Index extends AbstractAction
 
         ## 搜索参数
         $params['keyWords'] = $this->request->input('keyWords', null);
-        $params['groupId']  = $this->request->input('groupId', null);
-        $params['page']     = $this->request->input('page', 1);
-        $params['perPage']  = $this->request->input('perPage', $this->perPage);
-        $where              = $this->getWhere($user, $params);
+        $params['groupId'] = $this->request->input('groupId', null);
+        $params['page'] = $this->request->input('page', 1);
+        $params['perPage'] = $this->request->input('perPage', $this->perPage);
+        $where = $this->getWhere($user, $params);
 
         ## 请求
-        $columns           = ['id', 'name', 'group_id', 'employee_num', 'contact_num', 'created_at', 'status'];
+        $columns = ['id', 'name', 'group_id', 'employee_num', 'contact_num', 'created_at', 'status'];
         $sensitiveWordList = $this->sensitiveWordService->getSensitiveWordList($where['where'], $columns, $where['options']);
 
         ## 格式化数据
@@ -108,7 +108,7 @@ class Index extends AbstractAction
             ## 企业id
             $where['corp_id'] = (int) $user['corpIds'][0];
         } else {
-            $ids     = $this->getBusinessIds($user['deptEmployeeIds'], [Event::SENSITIVE_WORD_CREATE]);
+            $ids = $this->getBusinessIds($user['deptEmployeeIds'], [Event::SENSITIVE_WORD_CREATE]);
             $where[] = ['id', 'IN', $ids];
         }
 
@@ -122,8 +122,8 @@ class Index extends AbstractAction
         }
         ## 分页参数
         $options = [
-            'perPage'    => $params['perPage'],
-            'page'       => $params['page'],
+            'perPage' => $params['perPage'],
+            'page' => $params['page'],
             'orderByRaw' => 'id desc',
         ];
 
@@ -138,8 +138,8 @@ class Index extends AbstractAction
     {
         $data = [
             'page' => [
-                'perPage'   => $this->perPage,
-                'total'     => '0',
+                'perPage' => $this->perPage,
+                'total' => '0',
                 'totalPage' => '0',
             ],
             'list' => [],
@@ -150,8 +150,8 @@ class Index extends AbstractAction
 
         ## 获取触发次数
         $sensitiveIds = array_column($listRes['data'], 'id');
-        $employeeNum  = $this->getSensitiveNum($sensitiveIds, Source::EMPLOYEE);
-        $contactNum   = $this->getSensitiveNum($sensitiveIds);
+        $employeeNum = $this->getSensitiveNum($sensitiveIds, Source::EMPLOYEE);
+        $contactNum = $this->getSensitiveNum($sensitiveIds);
         ## 处理敏感词数据
         array_walk($listRes['data'], function (&$v) use ($employeeNum, $contactNum) {
             $v['sensitiveWordId'] = $v['id'];
@@ -161,9 +161,9 @@ class Index extends AbstractAction
         });
 
         ## 分页数据
-        $data['page']['total']     = $listRes['total'];
+        $data['page']['total'] = $listRes['total'];
         $data['page']['totalPage'] = $listRes['last_page'];
-        $data['list']              = $listRes['data'];
+        $data['list'] = $listRes['data'];
         return $data;
     }
 

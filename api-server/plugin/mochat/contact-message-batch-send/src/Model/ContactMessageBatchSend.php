@@ -36,11 +36,11 @@ use MoChat\Framework\Model\AbstractModel;
  * @property \Carbon\Carbon $createdAt
  * @property \Carbon\Carbon $updatedAt
  * @property string $deletedAt
- * @property \App\Model\ContactMessageBatchSendEmployee[]|\Hyperf\Database\Model\Collection $employees
- * @property  $content
- * @property  $filter_params
- * @property  $filter_params_detail
- * @property \App\Model\ContactMessageBatchSendResult[]|\Hyperf\Database\Model\Collection $results
+ * @property ContactMessageBatchSendEmployee[]|\Hyperf\Database\Model\Collection $employees
+ * @property $content
+ * @property $filter_params
+ * @property $filter_params_detail
+ * @property ContactMessageBatchSendResult[]|\Hyperf\Database\Model\Collection $results
  */
 class ContactMessageBatchSend extends AbstractModel
 {
@@ -59,7 +59,7 @@ class ContactMessageBatchSend extends AbstractModel
      *
      * @var array
      */
-    protected $fillable = ['id', 'corp_id', 'user_id', 'user_name', 'filter_params', 'filter_params_detail', 'content', 'send_way', 'definite_time', 'send_time', 'send_employee_total', 'send_contact_total', 'send_total', 'not_send_total', 'received_total', 'not_received_total', 'receive_limit_total', 'not_friend_total', 'send_status', 'created_at', 'updated_at', 'deleted_at'];
+    protected $fillable = ['id', 'corp_id', 'user_id', 'user_name', 'employee_ids', 'filter_params', 'filter_params_detail', 'content', 'send_way', 'definite_time', 'send_time', 'send_employee_total', 'send_contact_total', 'send_total', 'not_send_total', 'received_total', 'not_received_total', 'receive_limit_total', 'not_friend_total', 'send_status', 'created_at', 'updated_at', 'deleted_at'];
 
     /**
      * The attributes that should be cast to native types.
@@ -71,7 +71,7 @@ class ContactMessageBatchSend extends AbstractModel
     public function getFilterParamsAttribute($value)
     {
         $value = json_decode($value, true);
-        return ! empty($value) ? $value : null;
+        return ! empty($value) ? $value : [];
     }
 
     public function setFilterParamsAttribute($value)
@@ -82,7 +82,7 @@ class ContactMessageBatchSend extends AbstractModel
     public function getFilterParamsDetailAttribute($value)
     {
         $value = json_decode($value, true);
-        return ! empty($value) ? $value : null;
+        return ! empty($value) ? $value : [];
     }
 
     public function setFilterParamsDetailAttribute($value)
@@ -92,11 +92,21 @@ class ContactMessageBatchSend extends AbstractModel
 
     public function getContentAttribute($value)
     {
-        return empty($value) ? null : json_decode($value, true);
+        return empty($value) ? [] : json_decode($value, true);
     }
 
     public function setContentAttribute($value)
     {
         $this->attributes['content'] = is_string($value) ? $value : json_encode($value, JSON_UNESCAPED_UNICODE);
+    }
+
+    public function getEmployeeIdsAttribute($value)
+    {
+        return empty($value) ? [] : json_decode($value, true);
+    }
+
+    public function setEmployeeIdsAttribute($value)
+    {
+        $this->attributes['employee_ids'] = is_string($value) ? $value : json_encode($value, JSON_UNESCAPED_UNICODE);
     }
 }

@@ -10,14 +10,11 @@ declare(strict_types=1);
  */
 namespace MoChat\App\SyncData\Listener;
 
-use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Process\Event\BeforeCoroutineHandle;
 use Hyperf\Process\Event\BeforeProcessHandle;
 use MoChat\App\SyncData\DynamicCrontabManager;
 
-/**
- */
 class DynamicCrontabRegisterListener implements ListenerInterface
 {
     /**

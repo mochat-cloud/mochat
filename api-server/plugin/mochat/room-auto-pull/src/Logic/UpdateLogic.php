@@ -80,11 +80,11 @@ class UpdateLogic
             $this->workRoomAutoPullService->updateWorkRoomAutoPullById($workRoomAutoPullId, $params);
             ## 记录业务日志
             $businessLog = [
-                'business_id'  => $workRoomAutoPullId,
-                'params'       => json_encode($params),
-                'event'        => Event::ROOM_AUTO_PULL_UPDATE,
+                'business_id' => $workRoomAutoPullId,
+                'params' => json_encode($params),
+                'event' => Event::ROOM_AUTO_PULL_UPDATE,
                 'operation_id' => user()['workEmployeeId'],
-                'created_at'   => date('Y-m-d H:i:s'),
+                'created_at' => date('Y-m-d H:i:s'),
             ];
             $this->businessLogService->createBusinessLog($businessLog);
 

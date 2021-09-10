@@ -12,10 +12,10 @@ namespace MoChat\App\WorkContact\Action\Dashboard\Room;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Logic\Room\IndexLogic;
 use MoChat\Framework\Action\AbstractAction;
@@ -52,12 +52,12 @@ class Index extends AbstractAction
         ## 接收参数
         $params = [
             'workRoomId' => $this->request->input('workRoomId'),
-            'status'     => $this->request->input('status'),
-            'name'       => $this->request->input('name'),
-            'startTime'  => $this->request->input('startTime'),
-            'endTime'    => $this->request->input('endTime'),
-            'page'       => $this->request->input('page', 1),
-            'perPage'    => $this->request->input('perPage', '10'),
+            'status' => $this->request->input('status'),
+            'name' => $this->request->input('name'),
+            'startTime' => $this->request->input('startTime'),
+            'endTime' => $this->request->input('endTime'),
+            'page' => $this->request->input('page', 1),
+            'perPage' => $this->request->input('perPage', '10'),
         ];
 
         return $this->indexLogic->handle($params);
@@ -83,8 +83,8 @@ class Index extends AbstractAction
     {
         return [
             'workRoomId.required' => '客户群ID 必填',
-            'workRoomId.integer'  => '客户群ID 必需为整数',
-            'workRoomId.min'      => '客户群ID 值不可小于1',
+            'workRoomId.integer' => '客户群ID 必需为整数',
+            'workRoomId.min' => '客户群ID 值不可小于1',
         ];
     }
 }

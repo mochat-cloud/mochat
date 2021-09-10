@@ -128,11 +128,11 @@ class ContactData extends AbstractAction
     protected function rules(): array
     {
         return [
-            'id'       => 'required | integer | min:0 | bail',
+            'id' => 'required | integer | min:0 | bail',
             'union_id' => 'required',
             'nickname' => 'required',
-            'avatar'   => 'required',
-            'source'   => 'required',
+            'avatar' => 'required',
+            'source' => 'required',
         ];
     }
 
@@ -143,13 +143,13 @@ class ContactData extends AbstractAction
     protected function messages(): array
     {
         return [
-            'id.required'       => '活动ID 必填',
-            'id.integer'        => '活动ID 必需为整数',
-            'id.min  '          => '活动ID 不可小于1',
+            'id.required' => '活动ID 必填',
+            'id.integer' => '活动ID 必需为整数',
+            'id.min  ' => '活动ID 不可小于1',
             'union_id.required' => 'union_id必填，请检查所属公众号是否绑定到微信开放平台帐号',
             'nickname.required' => 'nickname必填',
-            'avatar.required'   => 'avatar必填',
-            'source'            => 'source必填',
+            'avatar.required' => 'avatar必填',
+            'source' => 'source必填',
         ];
     }
 
@@ -160,9 +160,9 @@ class ContactData extends AbstractAction
     private function handleDate($params): array
     {
         $lottery = $this->lotteryService->getLotteryById((int) $params['id'], ['name', 'description', 'corp_id', 'time_type', 'start_time', 'end_time', 'contact_tags']);
-        $prize   = $this->lotteryPrizeService->getLotteryPrizeByLotteryId((int) $params['id'], ['corp_card', 'prize_set', 'is_show', 'draw_set', 'exchange_set']);
+        $prize = $this->lotteryPrizeService->getLotteryPrizeByLotteryId((int) $params['id'], ['corp_card', 'prize_set', 'is_show', 'draw_set', 'exchange_set']);
         ## 企业名片
-        $corp         = json_decode($prize['corpCard'], true, 512, JSON_THROW_ON_ERROR);
+        $corp = json_decode($prize['corpCard'], true, 512, JSON_THROW_ON_ERROR);
         $corp['logo'] = file_full_url($corp['logo']);
         ## 奖项设置
         $prizeSet = json_decode($prize['prizeSet'], true, 512, JSON_THROW_ON_ERROR);
@@ -171,8 +171,8 @@ class ContactData extends AbstractAction
             unset($prizeSet[$key]['num'], $prizeSet[$key]['rate']);
         }
         $prize['prizeSet'] = $prizeSet;
-        $corpCard          = json_decode($prize['corpCard'], true, 512, JSON_THROW_ON_ERROR);
-        $corpCard['logo']  = file_full_url($corpCard['logo']);
+        $corpCard = json_decode($prize['corpCard'], true, 512, JSON_THROW_ON_ERROR);
+        $corpCard['logo'] = file_full_url($corpCard['logo']);
         $prize['corpCard'] = $corpCard;
 
         $draw = json_decode($prize['drawSet'], true, 512, JSON_THROW_ON_ERROR);
@@ -184,14 +184,14 @@ class ContactData extends AbstractAction
         }
 
         return [
-            'corp'        => $corp,
+            'corp' => $corp,
             'lottery' => $lottery,
             'description' => $lottery['description'],
-            'time'        => $lottery['timeType'] === 1 ? '永久有效' : $lottery['startTime'] . '-' . $lottery['endTime'],
-            'prize'       => $prize,
-            'point'       => $draw,
-            'message'     => $this->message((int) $prize['isShow'], (int) $params['id']),
-            'win_list'    => $this->winList($params, $lotteryContact, json_decode($prize['exchangeSet'], true, 512, JSON_THROW_ON_ERROR)),
+            'time' => $lottery['timeType'] === 1 ? '永久有效' : $lottery['startTime'] . '-' . $lottery['endTime'],
+            'prize' => $prize,
+            'point' => $draw,
+            'message' => $this->message((int) $prize['isShow'], (int) $params['id']),
+            'win_list' => $this->winList($params, $lotteryContact, json_decode($prize['exchangeSet'], true, 512, JSON_THROW_ON_ERROR)),
         ];
     }
 
@@ -220,9 +220,9 @@ class ContactData extends AbstractAction
             $record = $this->lotteryContactRecordService->getLotteryContactRecordByLotteryId((int) $lottery_id, ['contact_id', 'prize_name']);
             if (! empty($record)) {
                 $message['prize_name'] = $record['prizeName'];
-                $contact               = $this->lotteryContactService->getLotteryContactById((int) $record['contactId'], ['nickname', 'avatar']);
-                $message['nickname']   = $contact['nickname'];
-                $message['avatar']     = file_full_url($contact['avatar']);
+                $contact = $this->lotteryContactService->getLotteryContactById((int) $record['contactId'], ['nickname', 'avatar']);
+                $message['nickname'] = $contact['nickname'];
+                $message['avatar'] = file_full_url($contact['avatar']);
             }
         }
         return $message;
@@ -234,18 +234,18 @@ class ContactData extends AbstractAction
      */
     private function createLotteryContact(array $params, array $lottery): array
     {
-        $corp            = $this->corpService->getCorpById((int) $lottery['corpId'], ['id', 'name', 'wx_corpid', 'contact_secret']);
+        $corp = $this->corpService->getCorpById((int) $lottery['corpId'], ['id', 'name', 'wx_corpid', 'contact_secret']);
         $contactEmployee = $this->getContactEmployee($params['union_id'], (int) $lottery['corpId']);
-        $data            = [
-            'lottery_id'   => (int) $params['id'],
-            'union_id'     => $params['union_id'],
-            'contact_id'   => $contactEmployee['contact_id'],
-            'nickname'     => $params['nickname'],
-            'avatar'       => File::uploadUrlImage($params['avatar'], 'image/lottery/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg'),
+        $data = [
+            'lottery_id' => (int) $params['id'],
+            'union_id' => $params['union_id'],
+            'contact_id' => $contactEmployee['contact_id'],
+            'nickname' => $params['nickname'],
+            'avatar' => File::uploadUrlImage($params['avatar'], 'image/lottery/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg'),
             'employee_ids' => $contactEmployee['employee_ids'],
-            'city'         => empty($params['city']) ? '' : $params['city'],
-            'source'       => $params['source'],
-            'created_at'   => date('Y-m-d H:i:s'),
+            'city' => empty($params['city']) ? '' : $params['city'],
+            'source' => $params['source'],
+            'created_at' => date('Y-m-d H:i:s'),
         ];
 
         ## 数据操作
@@ -273,13 +273,13 @@ class ContactData extends AbstractAction
                     ## 客户id
                     $data['contactId'] = $contactEmployee['contact_id'];
                     ## 员工id
-                    $contactEmp         = $this->workContactEmployeeService->getWorkContactEmployeeByCorpIdContactId($contactEmployee['contact_id'], (int) $lottery['corpId'], ['employee_id']);
+                    $contactEmp = $this->workContactEmployeeService->getWorkContactEmployeeByCorpIdContactId($contactEmployee['contact_id'], (int) $lottery['corpId'], ['employee_id']);
                     $data['employeeId'] = $contactEmp['employeeId'];
                     ## 客户
-                    $contact                         = $this->workContactService->getWorkContactById($contactEmployee['contact_id'], ['wx_external_userid']);
+                    $contact = $this->workContactService->getWorkContactById($contactEmployee['contact_id'], ['wx_external_userid']);
                     $data['contactWxExternalUserid'] = $contact['wxExternalUserid'];
                     ## 员工
-                    $employee                 = $this->workEmployeeService->getWorkEmployeeById($contactEmp['employeeId'], ['wx_user_id']);
+                    $employee = $this->workEmployeeService->getWorkEmployeeById($contactEmp['employeeId'], ['wx_user_id']);
                     $data['employeeWxUserId'] = $employee['wxUserId'];
                     $this->autoTag($data);
                     $this->lotteryContactService->updateLotteryContactById($id, ['contact_tags' => json_encode($item['tags'], JSON_THROW_ON_ERROR)]);
@@ -298,12 +298,12 @@ class ContactData extends AbstractAction
      */
     private function getContactEmployee($union_id, $corpId): array
     {
-        $contact         = $this->workContactService->getWorkContactByCorpIdUnionId((int) $corpId, $union_id, ['id']);
+        $contact = $this->workContactService->getWorkContactByCorpIdUnionId((int) $corpId, $union_id, ['id']);
         $contactEmployee = empty($contact) ? '' : $this->workContactEmployeeService->getWorkContactEmployeesByContactId((int) $contact['id'], ['employee_id']);
-        $employee        = empty($contactEmployee) ? '' : array_column($contactEmployee, 'employeeId');
-        $employeeIds     = empty($employee) ? '' : implode(',', $employee);
+        $employee = empty($contactEmployee) ? '' : array_column($contactEmployee, 'employeeId');
+        $employeeIds = empty($employee) ? '' : implode(',', $employee);
         return [
-            'contact_id'   => empty($contact) ? 0 : $contact['id'],
+            'contact_id' => empty($contact) ? 0 : $contact['id'],
             'employee_ids' => $employeeIds,
         ];
     }
@@ -316,12 +316,12 @@ class ContactData extends AbstractAction
     {
         $employee = $this->workEmployeeService->getWorkEmployeesById(explode(',', $contactEmployee['employee_ids']), ['wx_user_id']);
         $employee = empty($employee) ? '' : array_column($employee, 'wxUserId');
-        $touser   = empty($employee) ? '' : implode('|', $employee);
+        $touser = empty($employee) ? '' : implode('|', $employee);
         if (! empty($touser)) {
             return;
         }
         $content = "【抽奖活动】\n客户昵称：{$params['nickname']}\n活动名称：{$lottery['name']}\n客户行为：客户进入了抽奖活动页面\n<a href='#'>点击查看客户详情 </a>";
         $messageRemind = make(MessageRemind::class);
-        $messageRemind->sendToEmployee((int)$corp['id'], $touser, 'text', $content);
+        $messageRemind->sendToEmployee((int) $corp['id'], $touser, 'text', $content);
     }
 }

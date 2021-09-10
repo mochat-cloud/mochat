@@ -68,7 +68,7 @@ class SyncContactApply
         }
         $this->logger->error(sprintf('同步客户: %s [%s]', json_encode($employee), date('Y-m-d H:i:s')));
         ## 从数据表中当前员工所有的客户
-        $oldContactList   = $this->getOldContactList((int) $employee['id'], $corpId);
+        $oldContactList = $this->getOldContactList((int) $employee['id'], $corpId);
         $deleteContactIds = [];
         if (! empty($oldContactList)) {
             foreach ($oldContactList as $oldContact) {
@@ -78,7 +78,7 @@ class SyncContactApply
         ## 删除员工不存在的客户
         $this->deleteContacts((int) $employee['id'], $deleteContactIds);
 
-        $wxContactList           = array_chunk($wxContactList, 100);
+        $wxContactList = array_chunk($wxContactList, 100);
         $syncContactApplyByGroup = (new SyncContactApplyByGroup());
         foreach ($wxContactList as $v) {
             $syncContactApplyByGroup->handle($employee, $corpId, $wxCorpid, $v);

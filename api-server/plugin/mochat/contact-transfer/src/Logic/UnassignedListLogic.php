@@ -80,35 +80,35 @@ class UnassignedListLogic
     public function getUnassignedList($params)
     {
         $this->workMessageService = make(WorkMessageContract::class, [$params['corpId']]);
-        $unassignedList           = $this->workUnassignedService->getWorkUnassignedByCorpId([$params['corpId']]);
+        $unassignedList = $this->workUnassignedService->getWorkUnassignedByCorpId([$params['corpId']]);
 
         $lastTime = '无数据';
         if (count($unassignedList)) {
             $lastTime = $unassignedList[0]['createdAt'];
         }
 
-        $res      = [];
+        $res = [];
         $wayTexts = [
-            0   => '未知来源',
-            1   => '扫描二维码',
-            2   => '搜索手机号',
-            3   => '名片分享',
-            4   => '群聊',
-            5   => '手机通讯录',
-            6   => '微信联系人',
-            7   => '来自微信的添加好友申请',
-            8   => '安装第三方应用时自动添加的客服人员',
-            9   => '搜索邮箱',
+            0 => '未知来源',
+            1 => '扫描二维码',
+            2 => '搜索手机号',
+            3 => '名片分享',
+            4 => '群聊',
+            5 => '手机通讯录',
+            6 => '微信联系人',
+            7 => '来自微信的添加好友申请',
+            8 => '安装第三方应用时自动添加的客服人员',
+            9 => '搜索邮箱',
             201 => '内部成员共享',
             202 => '管理员/负责人分配',
         ];
 
         foreach ($unassignedList as $item) {
-            $employee        = $this->workEmployeeService->getWorkEmployeeByCorpIdAndWxUserId($params['corpId'], $item['handoverUserid']);
-            $contact         = $this->workContactService->getWorkContactByCorpIdWxExternalUserId($params['corpId'], $item['externalUserid']);
+            $employee = $this->workEmployeeService->getWorkEmployeeByCorpIdAndWxUserId($params['corpId'], $item['handoverUserid']);
+            $contact = $this->workContactService->getWorkContactByCorpIdWxExternalUserId($params['corpId'], $item['externalUserid']);
             $contactEmployee = $this->workContactEmployeeService->findWorkContactEmployeeByOtherIds($employee['id'], $contact['id']);
-            $tags            = $this->workContactTagPivotService->getWorkContactTagPivotsByContactIdEmployeeId([$contactEmployee['contactId']], $contactEmployee['employeeId']);
-            $tagName         = [];
+            $tags = $this->workContactTagPivotService->getWorkContactTagPivotsByContactIdEmployeeId([$contactEmployee['contactId']], $contactEmployee['employeeId']);
+            $tagName = [];
             foreach ($tags as $tag) {
                 $tagName[] = $this->workContactTagService->getWorkContactTagById($tag['contactTagId'])['name'];
             }
@@ -125,18 +125,18 @@ class UnassignedListLogic
 //            ];
 
             $res[] = [
-                'contactId'    => $contactEmployee['contactId'],
-                'employeeId'   => $employee['id'],
+                'contactId' => $contactEmployee['contactId'],
+                'employeeId' => $employee['id'],
                 'employeeWxId' => $employee['wxUserId'],
-                'contactWxId'  => $contact['wxExternalUserid'],
-                'contactName'  => $contactEmployee['remark'],
-                'nickName'     => $contact['name'],
-                'corpName'     => $contact['corpName'],
+                'contactWxId' => $contact['wxExternalUserid'],
+                'contactName' => $contactEmployee['remark'],
+                'nickName' => $contact['name'],
+                'corpName' => $contact['corpName'],
                 'employeeName' => $employee['name'],
-                'tags'         => $tagName,
-                'addTime'      => date('Y-m-d H:i', strtotime($contactEmployee['createTime'])),
-                'lastMsgTime'  => $lastMsg,
-                'addWay'       => $wayTexts[$contactEmployee['addWay']],
+                'tags' => $tagName,
+                'addTime' => date('Y-m-d H:i', strtotime($contactEmployee['createTime'])),
+                'lastMsgTime' => $lastMsg,
+                'addWay' => $wayTexts[$contactEmployee['addWay']],
             ];
         }
 
@@ -169,8 +169,8 @@ class UnassignedListLogic
 
             if ($params['addTimeStart'] && $params['addTimeEnd']) {
                 $startTime = strtotime($params['addTimeStart']);
-                $endTime   = strtotime($params['addTimeEnd']);
-                $time      = strtotime($re['addTime']);
+                $endTime = strtotime($params['addTimeEnd']);
+                $time = strtotime($re['addTime']);
                 if ($time > $startTime && $time < $endTime) {
                     ++$tempNum;
                 }
@@ -182,7 +182,7 @@ class UnassignedListLogic
         }
 
         return [
-            'list'     => $result,
+            'list' => $result,
             'lastTime' => $lastTime,
         ];
     }

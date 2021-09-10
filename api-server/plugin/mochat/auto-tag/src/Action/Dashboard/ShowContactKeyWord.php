@@ -13,11 +13,11 @@ namespace MoChat\Plugin\AutoTag\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
@@ -94,13 +94,13 @@ class ShowContactKeyWord extends AbstractAction
         $this->validated($this->request->all());
         ## 接收参数
         $params = [
-            'auto_tag_id'  => $this->request->input('id'),
+            'auto_tag_id' => $this->request->input('id'),
             'contact_name' => $this->request->input('contact_name'),
-            'employee'     => $this->request->input('employee', ''),
-            'start_time'   => $this->request->input('start_time', null),
-            'end_time'     => $this->request->input('end_time', null),
-            'page'         => $this->request->input('page', 1),
-            'perPage'      => $this->request->input('perPage', 10000),
+            'employee' => $this->request->input('employee', ''),
+            'start_time' => $this->request->input('start_time', null),
+            'end_time' => $this->request->input('end_time', null),
+            'page' => $this->request->input('page', 1),
+            'perPage' => $this->request->input('perPage', 10000),
         ];
         $this->updateContactId();
         return $this->handleData($params);
@@ -126,8 +126,8 @@ class ShowContactKeyWord extends AbstractAction
     {
         return [
             'id.required' => '活动ID 必填',
-            'id.integer'  => '活动ID 必需为整数',
-            'id.min  '    => '活动ID 不可小于1',
+            'id.integer' => '活动ID 必需为整数',
+            'id.min  ' => '活动ID 不可小于1',
         ];
     }
 
@@ -138,8 +138,8 @@ class ShowContactKeyWord extends AbstractAction
         ## 组织响应数据
         $data = [
             'page' => [
-                'perPage'   => $params['perPage'],
-                'total'     => 0,
+                'perPage' => $params['perPage'],
+                'total' => 0,
                 'totalPage' => 0,
             ],
             'list' => [],
@@ -148,12 +148,12 @@ class ShowContactKeyWord extends AbstractAction
             return $data;
         }
         ## 处理分页数据
-        $data['page']['total']     = $res['total'];
+        $data['page']['total'] = $res['total'];
         $data['page']['totalPage'] = $res['last_page'];
-        $data['list']              = [];
+        $data['list'] = [];
         foreach ($res['data'] as $item) {
             $item['contactAvatar'] = file_full_url($item['contactAvatar']);
-            $data['list'][]        = $item;
+            $data['list'][] = $item;
         }
         return $data;
     }

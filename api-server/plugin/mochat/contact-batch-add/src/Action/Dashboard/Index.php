@@ -12,11 +12,11 @@ namespace MoChat\Plugin\ContactBatchAdd\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\Validation\Rule;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
@@ -48,9 +48,9 @@ class Index extends AbstractAction
      */
     public function handle(): array
     {
-        $params['status']    = $this->request->input('status', null);
+        $params['status'] = $this->request->input('status', null);
         $params['searchKey'] = $this->request->input('searchKey', null);
-        $params['recordId']  = $this->request->input('recordId', 0);
+        $params['recordId'] = $this->request->input('recordId', 0);
         $this->validated($params);
         $params['corpId'] = user()['corpIds'][0];
 
@@ -69,7 +69,7 @@ class Index extends AbstractAction
                 Rule::in([null, '0', '1', '2', '3']),
             ],
             'searchKey' => 'max:255',
-            'recordId'  => 'numeric',
+            'recordId' => 'numeric',
         ];
     }
 

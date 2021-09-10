@@ -70,21 +70,21 @@ class RecycleContactLogic
     private function handleRecycle(array $contact): array
     {
         ## 回收记录
-        $co            = collect($contact);
-        $allotRecycle  = []; ## 回收分配记录
+        $co = collect($contact);
+        $allotRecycle = []; ## 回收分配记录
         $updateContact = []; ## 客户回收修改数据
         foreach ($contact as $item) {
             $allotRecycle[] = [
-                'import_id'   => $item['id'],
+                'import_id' => $item['id'],
                 'employee_id' => $item['employeeId'],
-                'type'        => 0,
-                'operate_id'  => 0,
-                'created_at'  => date('Y-m-d H:i:s'),
+                'type' => 0,
+                'operate_id' => 0,
+                'created_at' => date('Y-m-d H:i:s'),
             ];
 
             $updateContact[] = [
-                'id'          => $item['id'],
-                'status'      => 0,
+                'id' => $item['id'],
+                'status' => 0,
                 'employee_id' => 0,
             ];
         }

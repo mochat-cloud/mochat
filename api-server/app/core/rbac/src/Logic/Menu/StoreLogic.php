@@ -75,20 +75,20 @@ class StoreLogic
         }
         ## 处理数据并创建菜单
         foreach ($data as $key => $val) {
-            $level      = ! empty($parentLinkUrl) ? $parentMenu['level'] + 1 : 1;
+            $level = ! empty($parentLinkUrl) ? $parentMenu['level'] + 1 : 1;
             $createData = [
-                'name'            => $val['name'],
-                'level'           => $level,
-                'parent_id'       => ! empty($parentLinkUrl) ? $parentMenu['id'] : 0,
-                'path'            => ! empty($parentLinkUrl) ? $parentMenu['path'] : '',
-                'icon'            => ! empty($val['icon']) ? $val['icon'] : '',
-                'is_page_menu'    => ! empty($val['is_page_menu']) ? $val['is_page_menu'] : IsPageMenu::YES,
-                'link_type'       => empty($val['link_type']) ? LinkType::INSIDE : LinkType::OUTSIDE,
-                'link_url'        => $val['link_url'],
+                'name' => $val['name'],
+                'level' => $level,
+                'parent_id' => ! empty($parentLinkUrl) ? $parentMenu['id'] : 0,
+                'path' => ! empty($parentLinkUrl) ? $parentMenu['path'] : '',
+                'icon' => ! empty($val['icon']) ? $val['icon'] : '',
+                'is_page_menu' => ! empty($val['is_page_menu']) ? $val['is_page_menu'] : IsPageMenu::YES,
+                'link_type' => empty($val['link_type']) ? LinkType::INSIDE : LinkType::OUTSIDE,
+                'link_url' => $val['link_url'],
                 'data_permission' => ! empty($val['data_permission']) ? $val['data_permission'] : DataPermission::CLOSE,
-                'operate_id'      => 0,
-                'operate_name'    => '系统',
-                'created_at'      => date('Y-m-d H:i:s'),
+                'operate_id' => 0,
+                'operate_name' => '系统',
+                'created_at' => date('Y-m-d H:i:s'),
             ];
 
             ## 创建菜单
@@ -110,24 +110,24 @@ class StoreLogic
     private function handleParams(array $user, array $params): array
     {
         $data = [
-            'name'         => $params['name'],
-            'level'        => $params['level'],
-            'operate_id'   => $user['id'],
+            'name' => $params['name'],
+            'level' => $params['level'],
+            'operate_id' => $user['id'],
             'operate_name' => $user['name'],
             'is_page_menu' => IsPageMenu::YES,
-            'created_at'   => date('Y-m-d H:i:s'),
+            'created_at' => date('Y-m-d H:i:s'),
         ];
 
         if ($params['level'] == Level::FIRST_LEVEL) {
             $data['parentId'] = 0;
-            $data['path']     = '';
+            $data['path'] = '';
         }
         if ($params['level'] == Level::SECOND_LEVEL) {
             if (empty($params['firstMenuId'])) {
                 throw new CommonException(ErrorCode::INVALID_PARAMS, '一级菜单id不能为空');
             }
             $data['parentId'] = $params['firstMenuId'];
-            $data['path']     = '#' . $params['firstMenuId'] . '#';
+            $data['path'] = '#' . $params['firstMenuId'] . '#';
         }
         if ($params['level'] == Level::THIRD_LEVEL) {
             if (empty($params['firstMenuId'])) {
@@ -137,7 +137,7 @@ class StoreLogic
                 throw new CommonException(ErrorCode::INVALID_PARAMS, '二级菜单id不能为空');
             }
             $data['parentId'] = $params['secondMenuId'];
-            $data['path']     = '#' . $params['firstMenuId'] . '#-#' . $params['secondMenuId'] . '#';
+            $data['path'] = '#' . $params['firstMenuId'] . '#-#' . $params['secondMenuId'] . '#';
         }
         if ($params['level'] == Level::FOURTH_LEVEL) {
             if (empty($params['firstMenuId'])) {
@@ -150,7 +150,7 @@ class StoreLogic
                 throw new CommonException(ErrorCode::INVALID_PARAMS, '三级菜单id不能为空');
             }
             $data['parentId'] = $params['thirdMenuId'];
-            $data['path']     = '#' . $params['firstMenuId'] . '#-#' . $params['secondMenuId'] . '#-#' . $params['thirdMenuId'] . '#';
+            $data['path'] = '#' . $params['firstMenuId'] . '#-#' . $params['secondMenuId'] . '#-#' . $params['thirdMenuId'] . '#';
         }
         if ($params['level'] == Level::FIFTH_LEVEL) {
             if (empty($params['firstMenuId'])) {
@@ -166,11 +166,11 @@ class StoreLogic
                 throw new CommonException(ErrorCode::INVALID_PARAMS, '四级菜单id不能为空');
             }
             $data['parentId'] = $params['fourthMenuId'];
-            $data['path']     = '#' . $params['firstMenuId'] . '#-#' . $params['secondMenuId'] . '#-#' . $params['thirdMenuId'] . '#-#' . $params['fourthMenuId'] . '#';
+            $data['path'] = '#' . $params['firstMenuId'] . '#-#' . $params['secondMenuId'] . '#-#' . $params['thirdMenuId'] . '#-#' . $params['fourthMenuId'] . '#';
         }
         if (in_array($params['level'], [Level::THIRD_LEVEL, Level::FOURTH_LEVEL, Level::FIFTH_LEVEL])) {
-            $data['link_type']       = $params['linkType'];
-            $data['link_url']        = $params['linkUrl'];
+            $data['link_type'] = $params['linkType'];
+            $data['link_url'] = $params['linkUrl'];
             $data['data_permission'] = isset($params['dataPermission']) ? $params['dataPermission'] : DataPermission::CLOSE;
         }
         if (in_array($params['level'], [Level::FOURTH_LEVEL, Level::FIFTH_LEVEL])) {
@@ -181,7 +181,7 @@ class StoreLogic
         }
 
         if (in_array($params['level'], [Level::FIRST_LEVEL, Level::SECOND_LEVEL])) {
-            $data['icon']     = $params['icon'];
+            $data['icon'] = $params['icon'];
             $data['link_url'] = 'path/' . time();
         }
 

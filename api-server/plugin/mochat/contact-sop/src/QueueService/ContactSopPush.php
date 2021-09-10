@@ -15,13 +15,10 @@ use MoChat\Plugin\ContactSop\Job\ContactSopJob;
 
 class ContactSopPush
 {
-
     /**
      * 加好友回调中的 个人sop异步队列.
      * @param array $params 数据
      * @param int $delay 延时时间 单位秒
-     *
-     * @return bool
      */
     public function push(array $params, int $delay = 0): bool
     {

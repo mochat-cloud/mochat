@@ -12,15 +12,15 @@ namespace MoChat\App\Corp\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkMessage\Contract\WorkMessageConfigContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 企业微信授权-列表.
@@ -60,14 +60,14 @@ class Index extends AbstractAction
         $user = user();
         ## 接收参数
         $corpName = $this->request->input('corpName', '');
-        $page     = $this->request->input('page', 1);
-        $perPage  = $this->request->input('perPage', 10);
+        $page = $this->request->input('page', 1);
+        $perPage = $this->request->input('perPage', 10);
 
         ## 组织查询条件
-        $where   = ['tenant_id' => $user['tenantId']];
+        $where = ['tenant_id' => $user['tenantId']];
         $options = [
-            'page'       => $page,
-            'perPage'    => $perPage,
+            'page' => $page,
+            'perPage' => $perPage,
             'orderByRaw' => 'id desc',
         ];
         empty($corpName) || $where[] = ['name', 'LIKE', '%' . $corpName . '%'];
@@ -86,8 +86,8 @@ class Index extends AbstractAction
         ## 组织响应数据
         $data = [
             'page' => [
-                'perPage'   => $perPage,
-                'total'     => 0,
+                'perPage' => $perPage,
+                'total' => 0,
                 'totalPage' => 0,
             ],
             'list' => [],
@@ -97,19 +97,19 @@ class Index extends AbstractAction
             return $data;
         }
         ## 获取企业聊天记录申请
-        $messageConfigList                              = $this->workMessageConfigService->getWorkMessageConfigsByCorpId(array_column($res['data'], 'id'), ['corp_id', 'chat_status', 'chat_apply_status', 'created_at']);
+        $messageConfigList = $this->workMessageConfigService->getWorkMessageConfigsByCorpId(array_column($res['data'], 'id'), ['corp_id', 'chat_status', 'chat_apply_status', 'created_at']);
         empty($messageConfigList) || $messageConfigList = array_column($messageConfigList, null, 'corpId');
         ## 处理分页数据
-        $data['page']['total']     = $res['total'];
+        $data['page']['total'] = $res['total'];
         $data['page']['totalPage'] = $res['last_page'];
 
         ## 处理数据
         foreach ($res['data'] as &$corp) {
-            $corp['wxCorpId']         = $corp['wxCorpid'];
-            $corp['corpId']           = $corp['id'];
-            $corp['corpName']         = $corp['name'];
-            $corp['chatStatus']       = isset($messageConfigList[$corp['id']]) ? $messageConfigList[$corp['id']]['chatStatus'] : 0;
-            $corp['chatApplyStatus']  = isset($messageConfigList[$corp['id']]) ? $messageConfigList[$corp['id']]['chatApplyStatus'] : 0;
+            $corp['wxCorpId'] = $corp['wxCorpid'];
+            $corp['corpId'] = $corp['id'];
+            $corp['corpName'] = $corp['name'];
+            $corp['chatStatus'] = isset($messageConfigList[$corp['id']]) ? $messageConfigList[$corp['id']]['chatStatus'] : 0;
+            $corp['chatApplyStatus'] = isset($messageConfigList[$corp['id']]) ? $messageConfigList[$corp['id']]['chatApplyStatus'] : 0;
             $corp['messageCreatedAt'] = isset($messageConfigList[$corp['id']]) ? $messageConfigList[$corp['id']]['createdAt'] : '';
             unset($corp['id'], $corp['name']);
         }

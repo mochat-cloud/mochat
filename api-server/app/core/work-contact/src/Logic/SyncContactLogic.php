@@ -97,7 +97,7 @@ class SyncContactLogic
     {
         $this->createAvatar = [];
         $this->updateAvatar = [];
-        $this->corpId       = $corpId;
+        $this->corpId = $corpId;
         ## 查询客户列表
         $oldContactList = $this->workContact->getWorkContactByCorpIdWxExternalUserIds($corpId, array_column(array_column($wxContactDetails, 'external_contact'), 'external_userid'), ['id', 'wx_external_userid']);
         ## 查询当前公司所有的客户标签
@@ -143,70 +143,70 @@ class SyncContactLogic
         ## 处理客户数据
         $createContactData = [];
         $updateContactData = [];
-        $wxTag             = [];
-        $wxContactTag      = [];
-        $followUserList    = [];
+        $wxTag = [];
+        $wxContactTag = [];
+        $followUserList = [];
         foreach ($wxContactDetails as &$val) {
             ## 处理客户标签信息
-            $followUser                    = array_column($val['follow_user'], null, 'userid');
-            $followUser                    = $followUser[$employee['wxUserId']];
+            $followUser = array_column($val['follow_user'], null, 'userid');
+            $followUser = $followUser[$employee['wxUserId']];
             $followUser['wxExternalUerid'] = $val['external_contact']['external_userid'];
-            $followUserList[]              = $followUser;
+            $followUserList[] = $followUser;
             if (! empty($followUser['tags'])) {
                 foreach ($followUser['tags'] as $tag) {
                     if ($tag['type'] == 1) {
                         $wxContactTag[] = [
-                            'tagId'           => $tag['tag_id'],
+                            'tagId' => $tag['tag_id'],
                             'wxExternalUerid' => $val['external_contact']['external_userid'],
                         ];
                         isset($wxContactTag[$tag['tag_id']]) || $wxTag[$tag['tag_id']] = [
                             'groupName' => $tag['group_name'],
-                            'tagName'   => $tag['tag_name'],
+                            'tagName' => $tag['tag_name'],
                         ];
                     }
                 }
             }
             ## 本地头像存储路径
 //            $pathFileName = 'contact/avatar/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg';
-            $contact      = $val['external_contact'];
-            $contactData  = [
-                'corp_id'            => $corpId,
+            $contact = $val['external_contact'];
+            $contactData = [
+                'corp_id' => $corpId,
                 'wx_external_userid' => $contact['external_userid'],
-                'name'               => $contact['name'],
-                'avatar'             => empty($contact['avatar']) ? '' : $contact['avatar'],
-                'type'               => isset($contact['type']) ? $contact['type'] : 0,
-                'gender'             => isset($contact['gender']) ? $contact['gender'] : 0,
-                'unionid'            => isset($contact['unionid']) ? $contact['unionid'] : '',
-                'position'           => isset($contact['position']) ? $contact['position'] : '',
-                'corp_name'          => isset($contact['corp_name']) ? $contact['corp_name'] : '',
-                'corp_full_name'     => isset($contact['corp_full_name']) ? $contact['corp_full_name'] : '',
-                'external_profile'   => isset($contact['external_profile']) ? json_encode($contact['external_profile']) : json_encode([]),
-                'updated_at'         => date('Y-m-d H:i:s'),
+                'name' => $contact['name'],
+                'avatar' => empty($contact['avatar']) ? '' : $contact['avatar'],
+                'type' => isset($contact['type']) ? $contact['type'] : 0,
+                'gender' => isset($contact['gender']) ? $contact['gender'] : 0,
+                'unionid' => isset($contact['unionid']) ? $contact['unionid'] : '',
+                'position' => isset($contact['position']) ? $contact['position'] : '',
+                'corp_name' => isset($contact['corp_name']) ? $contact['corp_name'] : '',
+                'corp_full_name' => isset($contact['corp_full_name']) ? $contact['corp_full_name'] : '',
+                'external_profile' => isset($contact['external_profile']) ? json_encode($contact['external_profile']) : json_encode([]),
+                'updated_at' => date('Y-m-d H:i:s'),
             ];
             if (isset($oldContactList[$contact['external_userid']])) {
-                $contactData['id']                                 = $oldContactList[$contact['external_userid']];
-                $updateContactData[]                               = $contactData;
+                $contactData['id'] = $oldContactList[$contact['external_userid']];
+                $updateContactData[] = $contactData;
 //                empty($contact['avatar']) || $this->updateAvatar[] = [$contact['avatar'], $pathFileName];
             } else {
-                $contactData['created_at']                         = date('Y-m-d H:i:s');
-                $createContactData[]                               = $contactData;
+                $contactData['created_at'] = date('Y-m-d H:i:s');
+                $createContactData[] = $contactData;
 //                empty($contact['avatar']) || $this->createAvatar[] = [$contact['avatar'], $pathFileName];
             }
         }
         ## 查询
         empty($oldTagGroups) || $oldTagGroups = array_column($oldTagGroups, 'id', 'groupName');
-        empty($oldTags) || $oldTags           = array_column($oldTags, 'id', 'wxContactTagId');
-        $createTagData                        = [];
+        empty($oldTags) || $oldTags = array_column($oldTags, 'id', 'wxContactTagId');
+        $createTagData = [];
         if (! empty($wxTag)) {
             foreach ($wxTag as $k => $tag) {
                 if (! isset($oldTags[$k])) {
                     $createTagData[] = [
-                        'wx_contact_tag_id'    => $k,
-                        'corp_id'              => $corpId,
-                        'name'                 => $tag['tagName'],
+                        'wx_contact_tag_id' => $k,
+                        'corp_id' => $corpId,
+                        'name' => $tag['tagName'],
                         'contact_tag_group_id' => isset($oldTagGroups[$tag['tagName']]) ? $oldTagGroups[$tag['tagName']] : 0,
-                        'created_at'           => date('Y-m-d H:i:s'),
-                        'updated_at'           => date('Y-m-d H:i:s'),
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'updated_at' => date('Y-m-d H:i:s'),
                     ];
                 }
             }
@@ -216,11 +216,11 @@ class SyncContactLogic
         $res = $this->updateContactAndTag($createContactData, $updateContactData, $createTagData);
 
         return [
-            'wxContactTag'      => $wxContactTag,
-            'followUserList'    => $followUserList,
+            'wxContactTag' => $wxContactTag,
+            'followUserList' => $followUserList,
             'createContactData' => $createContactData,
-            'createTagData'     => $createTagData,
-            'res'               => $res,
+            'createTagData' => $createTagData,
+            'res' => $res,
         ];
     }
 
@@ -277,61 +277,61 @@ class SyncContactLogic
      */
     private function handleEmployeeContact(array $employee, int $corpId, array $handleContactRes, array $oldContactList, array $oldTags, array $oldContactEmployeeList, array $oldContactTagList)
     {
-        $oldContactList         = array_column($oldContactList, 'id', 'wxExternalUserid');
+        $oldContactList = array_column($oldContactList, 'id', 'wxExternalUserid');
         $oldContactEmployeeList = array_column($oldContactEmployeeList, 'id', 'contactId');
         ## 处理用户-客户关联信息
         $createEmployeeContactData = [];
         $updateEmployeeContactData = [];
         foreach ($handleContactRes['followUserList'] as $followUser) {
-            $contactId       = $oldContactList[$followUser['wxExternalUerid']];
+            $contactId = $oldContactList[$followUser['wxExternalUerid']];
             $contactEmployee = [
-                'remark'           => isset($followUser['remark']) ? $followUser['remark'] : '',
-                'description'      => isset($followUser['description']) ? $followUser['description'] : '',
+                'remark' => isset($followUser['remark']) ? $followUser['remark'] : '',
+                'description' => isset($followUser['description']) ? $followUser['description'] : '',
                 'remark_corp_name' => isset($followUser['remark_corp_name']) ? $followUser['remark_corp_name'] : '',
-                'remark_mobiles'   => isset($followUser['remark_mobiles']) ? json_encode($followUser['remark_mobiles']) : json_encode([]),
-                'add_way'          => isset($followUser['add_way']) ? $followUser['add_way'] : 0,
-                'oper_userid'      => isset($followUser['oper_userid']) ? $followUser['oper_userid'] : '',
-                'state'            => isset($followUser['state']) ? $followUser['state'] : '',
-                'updated_at'       => date('Y-m-d H:i:s'),
+                'remark_mobiles' => isset($followUser['remark_mobiles']) ? json_encode($followUser['remark_mobiles']) : json_encode([]),
+                'add_way' => isset($followUser['add_way']) ? $followUser['add_way'] : 0,
+                'oper_userid' => isset($followUser['oper_userid']) ? $followUser['oper_userid'] : '',
+                'state' => isset($followUser['state']) ? $followUser['state'] : '',
+                'updated_at' => date('Y-m-d H:i:s'),
             ];
             if (isset($oldContactEmployeeList[$contactId])) {
-                $contactEmployee['id']       = $oldContactEmployeeList[$contactId];
+                $contactEmployee['id'] = $oldContactEmployeeList[$contactId];
                 $updateEmployeeContactData[] = $contactEmployee;
             } else {
                 $contactEmployee['employee_id'] = $employee['id'];
-                $contactEmployee['contact_id']  = $contactId;
-                $contactEmployee['corp_id']     = $corpId;
+                $contactEmployee['contact_id'] = $contactId;
+                $contactEmployee['corp_id'] = $corpId;
                 $contactEmployee['create_time'] = isset($followUser['createtime']) ? date('Y-m-d H:i:s', $followUser['createtime']) : '';
-                $contactEmployee['created_at']  = date('Y-m-d H:i:s');
-                $createEmployeeContactData[]    = $contactEmployee;
+                $contactEmployee['created_at'] = date('Y-m-d H:i:s');
+                $createEmployeeContactData[] = $contactEmployee;
             }
         }
         ## 处理客户-标签关联信息
         $createContactTag = [];
         $deleteContactTag = [];
         if (! empty($handleContactRes['wxContactTag'])) {
-            $oldTags        = array_column($oldTags, 'id', 'wxContactTagId');
+            $oldTags = array_column($oldTags, 'id', 'wxContactTagId');
             $contactTagList = [];
             if (! empty($oldContactTagList)) {
                 foreach ($oldContactTagList as $val) {
-                    $key                  = $val['contactId'] . $val['contactTagId'];
+                    $key = $val['contactId'] . $val['contactTagId'];
                     $contactTagList[$key] = $val['id'];
                 }
             }
             foreach ($handleContactRes['wxContactTag'] as $v) {
-                $contactId    = $oldContactList[$v['wxExternalUerid']];
+                $contactId = $oldContactList[$v['wxExternalUerid']];
                 $contactTagId = $oldTags[$v['tagId']];
-                $k            = $contactId . $contactTagId;
+                $k = $contactId . $contactTagId;
                 if (isset($contactTagList[$k])) {
                     unset($contactTagList[$k]);
                 } else {
                     $createContactTag[] = [
-                        'contact_id'     => $contactId,
-                        'employee_id'    => $employee['id'],
+                        'contact_id' => $contactId,
+                        'employee_id' => $employee['id'],
                         'contact_tag_id' => $contactTagId,
-                        'type'           => 1,
-                        'updated_at'     => date('Y-m-d H:i:s'),
-                        'created_at'     => date('Y-m-d H:i:s'),
+                        'type' => 1,
+                        'updated_at' => date('Y-m-d H:i:s'),
+                        'created_at' => date('Y-m-d H:i:s'),
                     ];
                 }
             }

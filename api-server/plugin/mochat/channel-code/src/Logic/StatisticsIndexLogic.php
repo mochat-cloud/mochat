@@ -69,11 +69,11 @@ class StatisticsIndexLogic
             $etime = strtotime($params['endTime']);
             while ($stime <= $etime) {
                 $data[] = [
-                    'time'             => date('Y-m-d', $stime),
-                    'addNumRange'      => 0,
+                    'time' => date('Y-m-d', $stime),
+                    'addNumRange' => 0,
                     'defriendNumRange' => 0,
-                    'deleteNumRange'   => 0,
-                    'netNumRange'      => 0,
+                    'deleteNumRange' => 0,
+                    'netNumRange' => 0,
                 ];
                 $stime = $stime + 86400;
             }
@@ -81,22 +81,22 @@ class StatisticsIndexLogic
             $beforeWeekDay = date('Y-m-d', strtotime('-1 week'));
             for ($i = 1; $i <= 7; ++$i) {
                 $data[] = [
-                    'time'             => date('Y-m-d', strtotime('+' . $i . ' days', strtotime($beforeWeekDay))),
-                    'addNumRange'      => 0,
+                    'time' => date('Y-m-d', strtotime('+' . $i . ' days', strtotime($beforeWeekDay))),
+                    'addNumRange' => 0,
                     'defriendNumRange' => 0,
-                    'deleteNumRange'   => 0,
-                    'netNumRange'      => 0,
+                    'deleteNumRange' => 0,
+                    'netNumRange' => 0,
                 ];
             }
         } else { ## 按自然年统计
             $beforeYearMonth = date('Y-m', strtotime('-1 year'));
             for ($i = 1; $i <= 12; ++$i) {
                 $data[] = [
-                    'time'             => date('Y-m', strtotime('+' . $i . ' months', strtotime($beforeYearMonth))),
-                    'addNumRange'      => 0,
+                    'time' => date('Y-m', strtotime('+' . $i . ' months', strtotime($beforeYearMonth))),
+                    'addNumRange' => 0,
                     'defriendNumRange' => 0,
-                    'deleteNumRange'   => 0,
-                    'netNumRange'      => 0,
+                    'deleteNumRange' => 0,
+                    'netNumRange' => 0,
                 ];
             }
         }
@@ -115,8 +115,8 @@ class StatisticsIndexLogic
         ## 组织响应格式
         $data = [
             'page' => [
-                'perPage'   => $params['perPage'],
-                'total'     => 0,
+                'perPage' => $params['perPage'],
+                'total' => 0,
                 'totalPage' => 0,
             ],
             'list' => [],
@@ -124,10 +124,10 @@ class StatisticsIndexLogic
         ## 归纳数据
         foreach ($contactList as $v) {
             if (in_array($params['type'], [1, 2])) { ## 按天统计||按自然周统计
-                $inKey  = date('Y-m-d', strtotime($v['createTime']));
+                $inKey = date('Y-m-d', strtotime($v['createTime']));
                 $outKey = empty($v['deletedAt']) ? 'outTime' : date('Y-m-d', strtotime($v['deletedAt']));
             } else { ## 按自然年统计
-                $inKey  = date('Y-m', strtotime($v['createTime']));
+                $inKey = date('Y-m', strtotime($v['createTime']));
                 $outKey = empty($v['deletedAt']) ? 'outTime' : date('Y-m', strtotime($v['deletedAt']));
             }
             isset($formData[$inKey]) && ++$formData[$inKey]['addNumRange'];
@@ -143,10 +143,10 @@ class StatisticsIndexLogic
         }
         $formData = array_values($formData);
         ## 分页处理
-        $data['page']['total']     = count($formData);
+        $data['page']['total'] = count($formData);
         $data['page']['totalPage'] = ceil(count($formData) / $params['perPage']);
-        $startKey                  = ($params['page'] - 1) * $params['perPage'];
-        $data['list']              = array_slice($formData, $startKey, $params['perPage']);
+        $startKey = ($params['page'] - 1) * $params['perPage'];
+        $data['list'] = array_slice($formData, $startKey, $params['perPage']);
         return $data;
     }
 }

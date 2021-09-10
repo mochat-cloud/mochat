@@ -12,13 +12,13 @@ namespace MoChat\Plugin\ContactSop\Action\Sidebar;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\SidebarAuthMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Plugin\ContactSop\Logic\GetSopInfoLogic;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\SidebarAuthMiddleware;
 
 /**
  * h5弹窗接口.
@@ -40,7 +40,7 @@ class GetSopInfo extends AbstractAction
     public function __construct(GetSopInfoLogic $getSopInfo, RequestInterface $request)
     {
         $this->getSopInfo = $getSopInfo;
-        $this->request    = $request;
+        $this->request = $request;
     }
 
     /**

@@ -13,7 +13,10 @@ namespace MoChat\App\User\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\User\Contract\UserContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
@@ -21,9 +24,6 @@ use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
 use Qbhy\HyperfAuth\AuthManager;
 use Qbhy\SimpleJwt\JWTManager;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 子账户管理- 更新员工账户登录密码
@@ -75,14 +75,13 @@ class PasswordUpdate extends AbstractAction
         if (empty($userInfo)) {
             throw new CommonException(ErrorCode::INVALID_PARAMS, '当前账户不存在，不可操作');
         }
-
         ## 旧密码验证
         $guard = $this->authManager->guard('jwt');
         /** @var JWTManager $jwt */
-        $jwt      = $guard->getJwtManager();
+        $jwt = $guard->getJwtManager();
         $checkRes = $jwt->getEncrypter()->check($oldPassword, $userInfo['password']);
         if (! $checkRes) {
-            throw new CommonException(ErrorCode::INVALID_PARAMS, '旧密码错误，不可操作');
+            throw new CommonException(ErrorCode::INVALID_PARAMS, '密码错误，不可操作');
         }
         ## 生成新密码
         $newPassword = $jwt->getEncrypter()->signature($newPassword);
@@ -108,8 +107,8 @@ class PasswordUpdate extends AbstractAction
     protected function rules(): array
     {
         return [
-            'oldPassword'      => 'required|min:1|alpha_num|bail',
-            'newPassword'      => 'required|min:1|alpha_num|bail',
+            'oldPassword' => 'required|min:1|alpha_num|bail',
+            'newPassword' => 'required|min:1|alpha_num|bail',
             'againNewPassword' => 'required|same:newPassword|bail',
         ];
     }
@@ -121,14 +120,14 @@ class PasswordUpdate extends AbstractAction
     protected function messages(): array
     {
         return [
-            'oldPassword.required'      => '旧密码 必填',
-            'oldPassword.min'           => '旧密码 不可为空',
-            'oldPassword.alpha_num'     => '旧密码 组成必须是字母或数字',
-            'newPassword.required'      => '新密码 必填',
-            'newPassword.min'           => '新密码 不可为空',
-            'newPassword.alpha_num'     => '新密码 组成必须是字母或数字',
+            'oldPassword.required' => '旧密码 必填',
+            'oldPassword.min' => '旧密码 不可为空',
+            'oldPassword.alpha_num' => '旧密码 组成必须是字母或数字',
+            'newPassword.required' => '新密码 必填',
+            'newPassword.min' => '新密码 不可为空',
+            'newPassword.alpha_num' => '新密码 组成必须是字母或数字',
             'againNewPassword.required' => '确认新密码 必填',
-            'againNewPassword.same'     => '确认新密码 必须和新密码一致',
+            'againNewPassword.same' => '确认新密码 必须和新密码一致',
         ];
     }
 }

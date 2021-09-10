@@ -77,8 +77,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'contactId',
-      'userInfo'
+      'contactId'
     ])
   },
   created () {
@@ -92,8 +91,7 @@ export default {
   },
   methods: {
     getInfo () {
-      const employeeId = this.userInfo.employeeId
-      getWorkContactInfo({ contactId: this.contactId, employeeId }).then(res => {
+      getWorkContactInfo({ contactId: this.contactId }).then(res => {
         this.selectedTag = res.data.tag && res.data.tag.map(item => {
           this.selectedId.push(item.tagId)
           return {
@@ -108,11 +106,9 @@ export default {
       this.$router.go(-1)
     },
     submit () {
-      const employeeId = this.userInfo.employeeId
       editWorkContactInfo({
         contactId: this.contactId,
-        tag: this.selectedId,
-        employeeId
+        tag: this.selectedId
       }).then(res => {
         this.$router.go(-1)
       })

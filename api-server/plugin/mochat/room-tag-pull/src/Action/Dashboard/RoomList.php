@@ -13,11 +13,11 @@ namespace MoChat\Plugin\RoomTagPull\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Corp\Logic\AppTrait;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
@@ -88,7 +88,7 @@ class RoomList extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -162,8 +162,8 @@ class RoomList extends AbstractAction
             }
             foreach ($list as $key => $val) {
                 $list[$key]['audit_status'] = 0;
-                $roomEmployee               = $this->workContactRoomService->getWorkContactRoomsByRoomIdEmployee($val['id'], ['employee_id']);
-                $audit                      = $this->workEmployeeService->getWorkEmployeesByIdAuditStatus(array_column($roomEmployee, 'employeeId'), 1);
+                $roomEmployee = $this->workContactRoomService->getWorkContactRoomsByRoomIdEmployee($val['id'], ['employee_id']);
+                $audit = $this->workEmployeeService->getWorkEmployeesByIdAuditStatus(array_column($roomEmployee, 'employeeId'), 1);
                 if (! empty($audit)) {
                     $list[$key]['audit_status'] = 1;
                 }

@@ -22,18 +22,18 @@ trait RequestTrait
     public function attributes(): array
     {
         return [
-            'id'                    => 'ID',
-            'socialCode'            => '企业代码',
-            'chatAdmin'             => '企业负责人',
-            'chatAdminPhone'        => '企业负责人手机号',
-            'chatAdminIdcard'       => '企业负责人身份证',
-            'chatStatus'            => '会话存档状态',
-            'chatApplyStatus'       => '会话存档申请进度',
-            'chatRsaKey'            => 'rsa密钥',
-            'chatWhitelistIp'       => '会话服务器白名单',
-            'chatRsaKey.publicKey'  => '公钥',
+            'id' => 'ID',
+            'socialCode' => '企业代码',
+            'chatAdmin' => '企业负责人',
+            'chatAdminPhone' => '企业负责人手机号',
+            'chatAdminIdcard' => '企业负责人身份证',
+            'chatStatus' => '会话存档状态',
+            'chatApplyStatus' => '会话存档申请进度',
+            'chatRsaKey' => 'rsa密钥',
+            'chatWhitelistIp' => '会话服务器白名单',
+            'chatRsaKey.publicKey' => '公钥',
             'chatRsaKey.privateKey' => '私钥',
-            'chatRsaKey.version'    => 'rsa密钥版本号',
+            'chatRsaKey.version' => 'rsa密钥版本号',
         ];
     }
 
@@ -44,9 +44,9 @@ trait RequestTrait
     public function scene(): array
     {
         return [
-            'store'      => ['socialCode', 'chatAdmin', 'chatAdminPhone', 'chatAdminIdcard', 'chatApplyStatus'],
+            'store' => ['socialCode', 'chatAdmin', 'chatAdminPhone', 'chatAdminIdcard', 'chatApplyStatus'],
             'stepSecond' => ['chatApplyStatus'],
-            'stepThird'  => [
+            'stepThird' => [
                 'chatWhitelistIp', 'chatRsaKey', 'chatSecret', 'chatStatus', 'chatApplyStatus',
                 'chatRsaKey.publicKey', 'chatRsaKey.privateKey', 'chatRsaKey.version',
             ],
@@ -77,18 +77,18 @@ trait RequestTrait
     protected function rules(): array
     {
         return [
-            'socialCode'            => 'required|alpha_num|size:18',
-            'chatAdmin'             => 'required',
-            'chatAdminPhone'        => 'required|phone',
-            'chatAdminIdcard'       => 'required|alpha_num|size:18',
-            'chatStatus'            => 'integer|in:0,1,2',
-            'chatApplyStatus'       => 'integer|in:0,1,2,3,4',
-            'chatSecret'            => 'required',
-            'chatWhitelistIp'       => 'required',
-            'chatRsaKey'            => 'required',
-            'chatRsaKey.publicKey'  => 'required',
+            'socialCode' => 'required|alpha_num|size:18',
+            'chatAdmin' => 'required',
+            'chatAdminPhone' => 'required|phone',
+            'chatAdminIdcard' => 'required|alpha_num|size:18',
+            'chatStatus' => 'integer|in:0,1,2',
+            'chatApplyStatus' => 'integer|in:0,1,2,3,4',
+            'chatSecret' => 'required',
+            'chatWhitelistIp' => 'required',
+            'chatRsaKey' => 'required',
+            'chatRsaKey.publicKey' => 'required',
             'chatRsaKey.privateKey' => 'required',
-            'chatRsaKey.version'    => 'required',
+            'chatRsaKey.version' => 'required',
         ];
     }
 }

@@ -8,15 +8,14 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
-
-use Symfony\Component\HttpFoundation\HeaderBag;
-use Symfony\Component\HttpFoundation\Request;
-use Psr\SimpleCache\CacheInterface;
-use Hyperf\Utils\ApplicationContext;
-use Hyperf\HttpServer\Contract\RequestInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use Hyperf\Guzzle\CoroutineHandler;
+use Hyperf\HttpServer\Contract\RequestInterface;
+use Hyperf\Utils\ApplicationContext;
+use Psr\SimpleCache\CacheInterface;
+use Symfony\Component\HttpFoundation\HeaderBag;
+use Symfony\Component\HttpFoundation\Request;
 
 if (! function_exists('di_get')) {
     /**
@@ -66,17 +65,23 @@ if (! function_exists('user')) {
      */
     function user(?string $field = null)
     {
-        /** @var \Qbhy\HyperfAuth\AuthManager $auth */
-        $auth = \Hyperf\Utils\ApplicationContext::getContainer()->get(\Qbhy\HyperfAuth\AuthManager::class);
+//        /** @var \Qbhy\HyperfAuth\AuthManager $auth */
+//        $auth = \Hyperf\Utils\ApplicationContext::getContainer()->get(\Qbhy\HyperfAuth\AuthManager::class);
+//
+//        /** @var \App\Model\User $userModel */
+//        $userModel = $auth->guard('jwt')->user();
+//
+//        if (! $userModel) {
+//            return [];
+//        }
+//        $resData  = $userModel->toArray();
+        $request = \Hyperf\Utils\Context::get(\Psr\Http\Message\ServerRequestInterface::class);
+        $resData = $request->getAttribute('user');
 
-        /** @var \App\Model\User $userModel */
-        $userModel = $auth->guard('jwt')->user();
-
-        if (! $userModel) {
+        if (! $resData) {
             return [];
         }
-        $resData  = $userModel->toArray();
-        $request  = \Hyperf\Utils\Context::get(\Psr\Http\Message\ServerRequestInterface::class);
+
         $userData = $request->getAttributes();
         foreach ($userData as $key => $val) {
             if (strpos($key, '_user_') === 0) {
@@ -96,7 +101,7 @@ if (! function_exists('rsa_keys')) {
     function rsa_keys(): array
     {
         $ssl = openssl_pkey_new([
-            'digest_alg'       => 'sha256', //可以用openssl_get_md_methods() 查看支持的加密方法
+            'digest_alg' => 'sha256', //可以用openssl_get_md_methods() 查看支持的加密方法
             'private_key_bits' => 2048,
             'private_key_type' => OPENSSL_KEYTYPE_RSA,
         ]);
@@ -157,11 +162,11 @@ if (! function_exists('service_map')) {
     function service_map(string $path, string $namespacePrefix): array
     {
         $namespacePrefix = ltrim($namespacePrefix, '\\');
-        $services        = readFileName($path . '/Service');
+        $services = readFileName($path . '/Service');
 
         $dependencies = [];
         foreach ($services as $service) {
-            $contractFilename                                                    = str_replace('Service', 'Contract', $service);
+            $contractFilename = str_replace('Service', 'Contract', $service);
             $dependencies[$namespacePrefix . '\\Contract\\' . $contractFilename] = $namespacePrefix . '\\Service\\' . $service;
         }
 
@@ -195,7 +200,7 @@ if (! function_exists('register_service_map')) {
             array_walk($arr, function (&$val) {
                 $val = ucfirst($val);
             });
-            $namespace    = $namespacePrefix . implode('', $arr);
+            $namespace = $namespacePrefix . implode('', $arr);
             $dependencies = array_merge(service_map($path . '/' . $file . '/src', $namespace), $dependencies);
         }
         return $dependencies;
@@ -204,10 +209,9 @@ if (! function_exists('register_service_map')) {
 
 if (! function_exists('rebind_app')) {
     /**
-     * 重置APP
+     * 重置APP.
      *
      * @param $app
-     * @param RequestInterface $request
      * @return mixed
      */
     function rebind_app($app, RequestInterface $request)

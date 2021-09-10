@@ -50,14 +50,14 @@ class DepartmentMoveHandler extends AbstractEventHandler
         }
         //获取公司corpId
         $this->corpService = make(CorpContract::class);
-        $corpIds           = $this->getCorpId();
+        $corpIds = $this->getCorpId();
         if (empty($corpIds)) {
             $this->logger->error('DepartmentMoveHandler->process同步删除部门corpIds不能为空');
             return 'success';
         }
         //部门
         $this->workDepartmentService = make(WorkDepartmentContract::class);
-        $departments                 = $this->getDepartmentData($corpIds);
+        $departments = $this->getDepartmentData($corpIds);
         if (empty($departments)) {
             $this->logger->info('DepartmentMoveHandler->process同步删除部门部门为空');
             return 'success';
@@ -89,7 +89,7 @@ class DepartmentMoveHandler extends AbstractEventHandler
      */
     private function getDepartmentData($corpIds): array
     {
-        $department     = [];
+        $department = [];
         $departmentData = $this->workDepartmentService->getWorkDepartmentsByCorpIds($corpIds, ['id', 'wx_department_id']);
         if (empty($departmentData)) {
             return [];

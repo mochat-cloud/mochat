@@ -71,7 +71,7 @@ class UpdateLogic
         $sqlData = $this->createSalData($params, $user);
 
         ## 数据入表
-        $this->insertData($params, $sqlData);
+        $this->insertData($params, $user, $sqlData);
 
         return [];
     }
@@ -83,7 +83,7 @@ class UpdateLogic
      */
     private function createSalData(array $params, array $user): array
     {
-        $data   = [];
+        $data = [];
         $userId = (int) $params['userId'];
         ## 角色信息
         $oldRoleInfo = $this->findOldRoleInfo($userId);
@@ -93,15 +93,15 @@ class UpdateLogic
                     'roleId' => (int) $oldRoleInfo['id'],
                 ];
                 empty($params['roleId']) || $data['addRole'] = [
-                    'user_id'    => $userId,
-                    'role_id'    => $params['roleId'],
+                    'user_id' => $userId,
+                    'role_id' => $params['roleId'],
                     'created_at' => date('Y-m-d H:i:s'),
                 ];
             }
         } else {
             empty($params['roleId']) || $data['addRole'] = [
-                'user_id'    => $userId,
-                'role_id'    => $params['roleId'],
+                'user_id' => $userId,
+                'role_id' => $params['roleId'],
                 'created_at' => date('Y-m-d H:i:s'),
             ];
         }
@@ -109,7 +109,7 @@ class UpdateLogic
         ## 用户信息
         $data['updateUser'] = [
             'where' => ['id' => $userId],
-            'data'  => $params,
+            'data' => $params,
         ];
         return $data;
     }
@@ -128,10 +128,11 @@ class UpdateLogic
      * @param array $params 请求参数
      * @param array $sqlData 入表数据
      */
-    private function insertData(array $params, array $sqlData)
+    private function insertData(array $params, array $user, array $sqlData)
     {
-        $userId       = $sqlData['updateUser']['where']['id'];
-        $employeeData = $this->employeeService->getWorkEmployeesByMobile($params['phone'], ['id']);
+        $userId = $sqlData['updateUser']['where']['id'];
+        $corpId = (int) $user['corpIds'][0];
+        $employeeData = $this->employeeService->getWorkEmployeesByMobile($corpId, $params['phone'], ['id']);
         ## 数据操作
         Db::beginTransaction();
         try {

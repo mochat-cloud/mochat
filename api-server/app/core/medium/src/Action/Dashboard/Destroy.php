@@ -11,10 +11,10 @@ declare(strict_types=1);
 namespace MoChat\App\Medium\Action\Dashboard;
 
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Medium\Action\Dashboard\Traits\RequestTrait;
 use MoChat\App\Medium\Contract\MediumContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
@@ -45,7 +45,7 @@ class Destroy extends AbstractAction
         $this->validated(['id' => $id], 'destroy');
 
         $client = $this->container->get(MediumContract::class);
-        $res    = $client->deleteMedium($id);
+        $res = $client->deleteMedium($id);
         if (! $res) {
             throw new CommonException(ErrorCode::SERVER_ERROR, '删除失败');
         }

@@ -12,10 +12,10 @@ namespace MoChat\Plugin\Radar\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
@@ -54,9 +54,9 @@ class Index extends AbstractAction
         $this->validated($this->request->all());
         ## 接收参数
         $params = [
-            'type'    => $this->request->input('type'),
-            'title'   => $this->request->input('title', null),
-            'page'    => $this->request->input('page', 1),
+            'type' => $this->request->input('type'),
+            'title' => $this->request->input('title', null),
+            'page' => $this->request->input('page', 1),
             'perPage' => $this->request->input('perPage', 10000),
         ];
 

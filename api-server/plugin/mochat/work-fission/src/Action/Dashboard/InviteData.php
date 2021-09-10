@@ -12,11 +12,11 @@ namespace MoChat\Plugin\WorkFission\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\App\WorkContact\Contract\WorkContactEmployeeContract;
@@ -83,10 +83,10 @@ class InviteData extends AbstractAction
      */
     public function __construct(RequestInterface $request, WorkFissionContactContract $workFissionContactService, WorkFissionContract $workFissionService, WorkEmployeeContract $workEmployeeService)
     {
-        $this->request                   = $request;
+        $this->request = $request;
         $this->workFissionContactService = $workFissionContactService;
-        $this->workFissionService        = $workFissionService;
-        $this->workEmployeeService       = $workEmployeeService;
+        $this->workFissionService = $workFissionService;
+        $this->workEmployeeService = $workEmployeeService;
     }
 
     /**
@@ -109,9 +109,9 @@ class InviteData extends AbstractAction
         $params = $this->request->all();
         $this->validated($params);
         ##处理参数
-        $params['page']    = $this->request->input('page', 1);
+        $params['page'] = $this->request->input('page', 1);
         $params['perPage'] = $this->request->input('perPage', 10000);
-        $data              = $this->handleParams($params);
+        $data = $this->handleParams($params);
 
         return $this->getUserList($data);
     }
@@ -164,8 +164,8 @@ class InviteData extends AbstractAction
         }
 
         $options = [
-            'perPage'    => $params['perPage'],
-            'page'       => $params['page'],
+            'perPage' => $params['perPage'],
+            'page' => $params['page'],
             'orderByRaw' => 'id desc',
         ];
 
@@ -174,13 +174,13 @@ class InviteData extends AbstractAction
 
     private function getUserList($params): array
     {
-        $columns  = ['id', 'fission_id', 'union_id', 'nickname', 'avatar', 'employee', 'contact_superior_user_parent', 'level', 'loss', 'status', 'invite_count', 'created_at'];
+        $columns = ['id', 'fission_id', 'union_id', 'nickname', 'avatar', 'employee', 'contact_superior_user_parent', 'level', 'loss', 'status', 'invite_count', 'created_at'];
         $userList = $this->workFissionContactService->getWorkFissionContactList($params['where'], $columns, $params['options']);
 
         $data = [
             'page' => [
-                'perPage'   => $this->perPage,
-                'total'     => '0',
+                'perPage' => $this->perPage,
+                'total' => '0',
                 'totalPage' => '0',
             ],
             'list' => [],
@@ -198,30 +198,30 @@ class InviteData extends AbstractAction
     {
         $list = [];
         foreach ($userList['data'] as $key => $val) {
-            $contact    = $this->workContactService->getWorkContactByCorpIdUnionId(user()['corpIds'][0], $val['unionId'], ['id']);
+            $contact = $this->workContactService->getWorkContactByCorpIdUnionId(user()['corpIds'][0], $val['unionId'], ['id']);
             $employeeId = 0;
             if (! empty($contact)) {
-                $employee   = $this->workContactEmployeeService->getWorkContactEmployeeByCorpIdContactId(user()['corpIds'][0], $contact['id'], ['employee_id']);
+                $employee = $this->workContactEmployeeService->getWorkContactEmployeeByCorpIdContactId(user()['corpIds'][0], $contact['id'], ['employee_id']);
                 $employeeId = empty($employee) ? 0 : $employee['employeeId'];
             }
             $list[$key] = [
-                'id'           => $val['id'],
-                'nickname'     => $val['nickname'],
-                'avatar'       => $val['avatar'],
-                'active_name'  => $this->getFissionName((int) $val['fissionId']),
-                'employees'    => empty($val['employee']) ? '未知' : $this->getEmployee($val['employee']),
-                'created_at'   => $val['createdAt'],
-                'loss'         => $val['loss'] == 1 ? '已流失' : '未流失',
-                'level'        => $val['level'],
-                'status'       => $val['status'] == 1 ? '已完成' : '未完成',
+                'id' => $val['id'],
+                'nickname' => $val['nickname'],
+                'avatar' => $val['avatar'],
+                'active_name' => $this->getFissionName((int) $val['fissionId']),
+                'employees' => empty($val['employee']) ? '未知' : $this->getEmployee($val['employee']),
+                'created_at' => $val['createdAt'],
+                'loss' => $val['loss'] == 1 ? '已流失' : '未流失',
+                'level' => $val['level'],
+                'status' => $val['status'] == 1 ? '已完成' : '未完成',
                 'invite_count' => $val['inviteCount'],
-                'contact_id'   => empty($contact) ? 0 : $contact['id'],
-                'employee_id'  => $employeeId,
+                'contact_id' => empty($contact) ? 0 : $contact['id'],
+                'employee_id' => $employeeId,
             ];
         }
-        $data['page']['total']     = $userList['total'];
+        $data['page']['total'] = $userList['total'];
         $data['page']['totalPage'] = $userList['last_page'];
-        $data['list']              = $list;
+        $data['list'] = $list;
 
         return $data;
     }

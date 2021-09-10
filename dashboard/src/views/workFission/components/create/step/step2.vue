@@ -244,7 +244,7 @@ export default {
   methods: {
     getVerify () {
       if (this.posterRadio.value === '0') {
-        if (!this.form.poster.imageUrl) return '海报未上传'
+        if (!this.form.poster.imageUrl) return '未上传封面海报'
       } else {
         if (!this.form.card.nickname) return '企业形象名称未填写'
         if (!this.form.card.name) return '企业名称未填写'

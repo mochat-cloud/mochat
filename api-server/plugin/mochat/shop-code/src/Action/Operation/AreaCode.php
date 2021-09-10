@@ -69,7 +69,7 @@ class AreaCode extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -128,9 +128,9 @@ class AreaCode extends AbstractAction
                 ++$num;
             }
             $record = [
-                'type'       => $params['type'],
-                'corp_id'    => (int) $params['corpId'],
-                'shop_id'    => $info['id'],
+                'type' => $params['type'],
+                'corp_id' => (int) $params['corpId'],
+                'shop_id' => $info['id'],
                 'created_at' => date('Y-m-d H:i:s'),
             ];
             $this->shopCodeRecordService->createShopCodeRecord($record);
@@ -145,19 +145,19 @@ class AreaCode extends AbstractAction
             throw new CommonException(ErrorCode::INVALID_PARAMS, '页面未设置~~');
         }
         if ($page['showType'] === 1 && ! empty($page['default'])) {
-            $default         = json_decode($page['default'], true, 512, JSON_THROW_ON_ERROR);
+            $default = json_decode($page['default'], true, 512, JSON_THROW_ON_ERROR);
             $default['logo'] = file_full_url($default['logo']);
             $page['default'] = $default;
         }
 
         if ((int) $params['type'] === 1 && ! empty($info)) {
-            $code                   = json_decode($info['employeeQrcode'], true, 512, JSON_THROW_ON_ERROR);
-            $localQrcode            = file_full_url($code['local_qrcode']);
+            $code = json_decode($info['employeeQrcode'], true, 512, JSON_THROW_ON_ERROR);
+            $localQrcode = file_full_url($code['local_qrcode']);
             $info['employeeQrcode'] = $localQrcode;
             unset($info['lat'], $info['lng']);
         }
         if ((int) $params['type'] > 1 && ! empty($info)) {
-            $code                   = json_decode($info['qwCode'], true, 512, JSON_THROW_ON_ERROR);
+            $code = json_decode($info['qwCode'], true, 512, JSON_THROW_ON_ERROR);
             $info['employeeQrcode'] = $code['qrcodeUrl'];
             unset($info['lat'], $info['lng']);
         }
@@ -177,9 +177,9 @@ class AreaCode extends AbstractAction
     {
         $radLat1 = $this->rad($lat1);
         $radLat2 = $this->rad($lat2);
-        $a       = $radLat1 - $radLat2;
-        $b       = $this->rad($lng1) - $this->rad($lng2);
-        $s       = 2 * asin(sqrt(pow(sin($a / 2), 2) +
+        $a = $radLat1 - $radLat2;
+        $b = $this->rad($lng1) - $this->rad($lng2);
+        $s = 2 * asin(sqrt(pow(sin($a / 2), 2) +
                 cos($radLat1) * cos($radLat2) * pow(sin($b / 2), 2)));
         $s = $s * 6378.137;
         return round($s * 10000) / 10000;
@@ -194,7 +194,7 @@ class AreaCode extends AbstractAction
     {
         return [
             'corpId' => 'required',
-            'type'   => 'required',
+            'type' => 'required',
         ];
     }
 
@@ -206,7 +206,7 @@ class AreaCode extends AbstractAction
     {
         return [
             'corpId.required' => '企业id 必传',
-            'type.required'   => '类型 必传',
+            'type.required' => '类型 必传',
         ];
     }
 

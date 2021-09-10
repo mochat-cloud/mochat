@@ -44,7 +44,7 @@ class File
     public static function uploadUrlImage($url, $pathFileName): string
     {
         $filesystem = make(Filesystem::class);
-        $stream     = file_get_contents($url, true);
+        $stream = file_get_contents($url, true);
         try {
             $filesystem->write($pathFileName, $stream);
         } catch (\Exception $e) {
@@ -55,10 +55,8 @@ class File
     }
 
     /**
-     * 下载远程文件
+     * 下载远程文件.
      *
-     * @param string $url
-     * @param string $localPath
      * @return string
      */
     public static function download(string $url, string $localPath)
@@ -70,10 +68,7 @@ class File
     }
 
     /**
-     * 生成完整的文件名
-     *
-     * @param string $extension
-     * @param string $path
+     * 生成完整的文件名.
      *
      * @return string
      */

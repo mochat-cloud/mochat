@@ -12,15 +12,15 @@ namespace MoChat\Plugin\ChannelCode\Action\Dashboard\Group;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
 use MoChat\Plugin\ChannelCode\Contract\ChannelCodeGroupContract;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 创建渠道码分组.
@@ -62,7 +62,7 @@ class Store extends AbstractAction
         foreach ($params['name'] as $val) {
             $data[] = [
                 'corp_id' => $corpIds[0],
-                'name'    => $val,
+                'name' => $val,
             ];
         }
         //查询是否已存在相同分组名称

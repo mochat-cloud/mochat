@@ -11,10 +11,10 @@ declare(strict_types=1);
 namespace MoChat\App\WorkContact\Action\Dashboard\Field;
 
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Action\Dashboard\Field\Traits\RequestTrait;
 use MoChat\App\WorkContact\Constants\Field\Options;
@@ -50,7 +50,7 @@ class Show extends AbstractAction
 
         ## 契约模型
         $client = $this->container->get(ContactFieldContract::class);
-        $data   = $client->getContactFieldById($id, ['id', 'name', 'label', 'type', 'options', 'status', 'order', 'is_sys']);
+        $data = $client->getContactFieldById($id, ['id', 'name', 'label', 'type', 'options', 'status', 'order', 'is_sys']);
         if (empty($data)) {
             throw new CommonException(ErrorCode::INVALID_PARAMS, '无此条信息');
         }

@@ -109,12 +109,12 @@ class UpdateLogic
     {
         //编辑参数
         $data = [
-            'group_id'          => $this->params['baseInfo']['groupId'],
-            'auto_add_friend'   => $this->params['baseInfo']['autoAddFriend'],
-            'tags'              => json_encode($this->params['baseInfo']['tags']),
-            'type'              => $this->params['drainageEmployee']['type'],
+            'group_id' => $this->params['baseInfo']['groupId'],
+            'auto_add_friend' => $this->params['baseInfo']['autoAddFriend'],
+            'tags' => json_encode($this->params['baseInfo']['tags']),
+            'type' => $this->params['drainageEmployee']['type'],
             'drainage_employee' => json_encode($this->params['drainageEmployee']),
-            'welcome_message'   => json_encode($this->params['welcomeMessage']),
+            'welcome_message' => json_encode($this->params['welcomeMessage']),
         ];
 
         $res = $this->channelCode->updateChannelCodeById((int) $this->params['channelCodeId'], $data);
@@ -129,19 +129,19 @@ class UpdateLogic
     private function recordLog()
     {
         $params = [
-            'channelCodeId'    => $this->params['channelCodeId'],
-            'baseInfo'         => $this->params['baseInfo'],
+            'channelCodeId' => $this->params['channelCodeId'],
+            'baseInfo' => $this->params['baseInfo'],
             'drainageEmployee' => $this->params['drainageEmployee'],
-            'welcomeMessage'   => $this->params['welcomeMessage'],
+            'welcomeMessage' => $this->params['welcomeMessage'],
         ];
 
         //记录日志表
         $data = [
-            'business_id'  => $this->params['channelCodeId'],
-            'params'       => json_encode($params),
-            'event'        => Event::CHANNEL_CODE_UPDATE,
+            'business_id' => $this->params['channelCodeId'],
+            'params' => json_encode($params),
+            'event' => Event::CHANNEL_CODE_UPDATE,
             'operation_id' => user()['workEmployeeId'],
-            'updated_at'   => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
         ];
 
         $logRes = $this->businessLog->createBusinessLog($data);

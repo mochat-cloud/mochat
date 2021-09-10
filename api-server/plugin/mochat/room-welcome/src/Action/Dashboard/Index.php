@@ -12,14 +12,14 @@ namespace MoChat\Plugin\RoomWelcome\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
 use MoChat\Plugin\RoomWelcome\Logic\IndexLogic;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 入群欢迎语-列表.
@@ -51,8 +51,8 @@ class Index extends AbstractAction
         }
         ## 接收参数
         $params = [
-            'text'    => $this->request->input('text', null),
-            'page'    => $this->request->input('page', 1),
+            'text' => $this->request->input('text', null),
+            'page' => $this->request->input('page', 1),
             'perPage' => $this->request->input('perPage', 10),
         ];
 

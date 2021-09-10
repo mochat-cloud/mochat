@@ -16,7 +16,7 @@ use Monolog\Logger;
 $logDir = rtrim(env('WWW_LOG_DIR', BASE_PATH . '/runtime'), '/') . '/logs/';
 
 $formatter = [
-    'class'       => LogstashFormatter::class,
+    'class' => LogstashFormatter::class,
     'constructor' => [
         'applicationName' => 'mochat',
     ],
@@ -26,34 +26,34 @@ $handlers = [
     'default' => [
         'handlers' => [
             [
-                'class'       => RotatingFileHandler::class,
+                'class' => RotatingFileHandler::class,
                 'constructor' => [
                     'filename' => $logDir . '/info.log',
-                    'level'    => Logger::INFO,
+                    'level' => Logger::INFO,
                 ],
                 'formatter' => $formatter,
             ],
             [
-                'class'       => RotatingFileHandler::class,
+                'class' => RotatingFileHandler::class,
                 'constructor' => [
                     'filename' => $logDir . '/error.log',
-                    'level'    => Logger::ERROR,
+                    'level' => Logger::ERROR,
                 ],
                 'formatter' => $formatter,
             ],
             [
-                'class'       => RotatingFileHandler::class,
+                'class' => RotatingFileHandler::class,
                 'constructor' => [
                     'filename' => $logDir . '/warning.log',
-                    'level'    => Logger::WARNING,
+                    'level' => Logger::WARNING,
                 ],
                 'formatter' => $formatter,
             ],
             [
-                'class'       => RotatingFileHandler::class,
+                'class' => RotatingFileHandler::class,
                 'constructor' => [
                     'filename' => $logDir . '/critical.log',
-                    'level'    => Logger::CRITICAL,
+                    'level' => Logger::CRITICAL,
                 ],
                 'formatter' => $formatter,
             ],
@@ -64,10 +64,10 @@ $handlers = [
 $appEnv = env('APP_ENV', 'production');
 if ($appEnv !== 'production') {
     $handlers['default']['handlers'][] = [
-        'class'       => RotatingFileHandler::class,
+        'class' => RotatingFileHandler::class,
         'constructor' => [
             'filename' => $logDir . '/debug.log',
-            'level'    => Logger::DEBUG,
+            'level' => Logger::DEBUG,
         ],
         'formatter' => $formatter,
     ];

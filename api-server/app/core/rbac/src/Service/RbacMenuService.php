@@ -200,7 +200,7 @@ class RbacMenuService extends AbstractService implements RbacMenuContract
      */
     public function getMenusByStatus(int $status = 1, array $columns = ['*']): array
     {
-        $data          = $this->model::query()->where('status', $status)->get($columns);
+        $data = $this->model::query()->where('status', $status)->get($columns);
         $data || $data = collect([]);
 
         return $data->toArray();
@@ -260,7 +260,7 @@ class RbacMenuService extends AbstractService implements RbacMenuContract
      */
     public function getMenuByLinkUrl(string $linkUrl, array $columns = ['*']): array
     {
-        $data          = $this->model::query()->where('link_url', $linkUrl)->first($columns);
+        $data = $this->model::query()->where('link_url', $linkUrl)->first($columns);
         $data || $data = collect([]);
 
         return $data->toArray();

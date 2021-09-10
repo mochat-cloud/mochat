@@ -173,7 +173,7 @@ class RoomQualityLogic
                     }
                     ## 质检白名单
                     $keyword_status = 0;
-                    $allMsgType     = array_merge(MsgType::$otherType, MsgType::$fixedType);
+                    $allMsgType = array_merge(MsgType::$otherType, MsgType::$fixedType);
                     if ($quality['whiteListStatus'] === 1 && $message['msg_type'] === $allMsgType['text']) {
                         $content = json_decode($message['content'], true, 512, JSON_THROW_ON_ERROR);
                         if (isset($content['content'])) {
@@ -197,43 +197,45 @@ class RoomQualityLogic
                     ## 1：管理员。2：群主
                     if ((int) $rule['employee_type'] === 1) {
                         $employees = $this->workEmployeeService->getWorkEmployeesById($rule['employee'], ['wx_user_id']);
-                        $content   = "客户【{$name}】在群聊【{$room['name']}】中，发送信息未回复，请尽快回复";
-                        if (!empty($employees)) {
+                        $content = "客户【{$name}】在群聊【{$room['name']}】中，发送信息未回复，请尽快回复";
+                        if (! empty($employees)) {
                             $to = array_column($employees, 'wxUserId');
                             $messageRemind->sendToEmployee(
-                                (int)$corp['id'],
+                                (int) $corp['id'],
                                 $to,
                                 'text',
-                                $content);
+                                $content
+                            );
                         }
 
                         $params = [
                             'quality_id' => $quality['id'],
                             'message_id' => $message['id'],
-                            'room_id'    => $message['room_id'],
-                            'type'       => 1,
-                            'content'    => $content,
-                            'corp_id'    => $corp['id'],
+                            'room_id' => $message['room_id'],
+                            'type' => 1,
+                            'content' => $content,
+                            'corp_id' => $corp['id'],
                             'created_at' => date('Y-m-d H:i:s'),
                         ];
                         $this->createRemindQuality($params);
                     }
                     if ((int) $rule['employee_type'] === 2) {
                         $roomInfo = $this->workRoomService->getWorkRoomById((int) $message['room_id'], ['owner_id', 'name']);
-                        $employee  = $this->workEmployeeService->getWorkEmployeeById((int) $roomInfo['ownerId'], ['wx_user_id']);
-                        $content   = "客户【{$name}】在群聊【{$roomInfo['name']}】中，发送信息未回复，请尽快回复";
+                        $employee = $this->workEmployeeService->getWorkEmployeeById((int) $roomInfo['ownerId'], ['wx_user_id']);
+                        $content = "客户【{$name}】在群聊【{$roomInfo['name']}】中，发送信息未回复，请尽快回复";
                         $messageRemind->sendToEmployee(
-                            (int)$corp['id'],
+                            (int) $corp['id'],
                             $employee['wxUserId'],
                             'text',
-                            $content);
+                            $content
+                        );
                         $params = [
                             'quality_id' => $quality['id'],
                             'message_id' => $message['id'],
-                            'room_id'    => $message['room_id'],
-                            'type'       => 1,
-                            'content'    => $content,
-                            'corp_id'    => $corp['id'],
+                            'room_id' => $message['room_id'],
+                            'type' => 1,
+                            'content' => $content,
+                            'corp_id' => $corp['id'],
                             'created_at' => date('Y-m-d H:i:s'),
                         ];
                         $this->createRemindQuality($params);

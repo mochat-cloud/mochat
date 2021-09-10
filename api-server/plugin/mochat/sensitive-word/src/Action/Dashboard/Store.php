@@ -14,12 +14,12 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use MoChat\App\Common\Constants\BusinessLog\Event;
 use MoChat\App\Common\Contract\BusinessLogContract;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\User\Logic\Traits\UserTrait;
@@ -89,7 +89,7 @@ class Store extends AbstractAction
 
         ## 参数验证
         $this->corpId = (int) $user['corpIds'][0];
-        $params       = $this->request->all();
+        $params = $this->request->all();
         $this->validated($params, 'store');
 
         ## 创建
@@ -109,7 +109,7 @@ class Store extends AbstractAction
     protected function rules(): array
     {
         return [
-            'name'    => 'required | string | min:1 | bail',
+            'name' => 'required | string | min:1 | bail',
             'groupId' => 'required | integer | bail',
         ];
     }
@@ -121,11 +121,11 @@ class Store extends AbstractAction
     protected function messages(): array
     {
         return [
-            'name.required'    => '敏感词分组名称 必填',
-            'name.string'      => '敏感词分组名称 必须为字符串',
-            'name.min'         => '敏感词分组名称 字符串长度不可小于1',
+            'name.required' => '敏感词分组名称 必填',
+            'name.string' => '敏感词分组名称 必须为字符串',
+            'name.min' => '敏感词分组名称 字符串长度不可小于1',
             'groupId.required' => '敏感词分组id 必填',
-            'groupId.integer'  => '敏感词分组id 必须为整型',
+            'groupId.integer' => '敏感词分组id 必须为整型',
         ];
     }
 
@@ -158,7 +158,7 @@ class Store extends AbstractAction
      */
     private function nameIsUnique(string $name): bool
     {
-        $client    = $this->container->get(SensitiveWordContract::class);
+        $client = $this->container->get(SensitiveWordContract::class);
         $existData = $client->getSensitiveWordByNameCorpId($name, $this->corpId);
         if (! empty($existData)) {
             throw new CommonException(ErrorCode::INVALID_PARAMS, $name . '-该敏感词已存在');
@@ -181,10 +181,10 @@ class Store extends AbstractAction
             foreach ($name as $key => $val) {
                 $this->nameIsUnique($val);
                 $data = [
-                    'name'     => $val,
+                    'name' => $val,
                     'group_id' => $params['groupId'],
-                    'corp_id'  => $this->corpId,
-                    'status'   => 1,
+                    'corp_id' => $this->corpId,
+                    'status' => 1,
                 ];
                 ## 创建敏感词
                 $sensitiveId = $this->sensitiveWordService->createSensitiveWord($data);
@@ -193,11 +193,11 @@ class Store extends AbstractAction
                 }
                 ## 记录业务日志
                 $businessLog = [
-                    'business_id'  => $sensitiveId,
-                    'params'       => json_encode($data),
-                    'event'        => Event::SENSITIVE_WORD_CREATE,
+                    'business_id' => $sensitiveId,
+                    'params' => json_encode($data),
+                    'event' => Event::SENSITIVE_WORD_CREATE,
                     'operation_id' => $user['workEmployeeId'],
-                    'created_at'   => date('Y-m-d H:i:s'),
+                    'created_at' => date('Y-m-d H:i:s'),
                 ];
                 $businessId = $this->businessLogService->createBusinessLog($businessLog);
                 if (! $businessId) {
@@ -226,10 +226,10 @@ class Store extends AbstractAction
     {
         $this->nameIsUnique((string) $name);
         $data = [
-            'name'     => $name,
+            'name' => $name,
             'group_id' => $params['groupId'],
-            'corp_id'  => $this->corpId,
-            'status'   => 1,
+            'corp_id' => $this->corpId,
+            'status' => 1,
         ];
 
         ## 数据操作
@@ -239,11 +239,11 @@ class Store extends AbstractAction
             $sensitiveId = $this->sensitiveWordService->createSensitiveWord($data);
             ## 记录业务日志
             $businessLog = [
-                'business_id'  => $sensitiveId,
-                'params'       => json_encode($data),
-                'event'        => Event::SENSITIVE_WORD_CREATE,
+                'business_id' => $sensitiveId,
+                'params' => json_encode($data),
+                'event' => Event::SENSITIVE_WORD_CREATE,
                 'operation_id' => $user['workEmployeeId'],
-                'created_at'   => date('Y-m-d H:i:s'),
+                'created_at' => date('Y-m-d H:i:s'),
             ];
             $this->businessLogService->createBusinessLog($businessLog);
             Db::commit();

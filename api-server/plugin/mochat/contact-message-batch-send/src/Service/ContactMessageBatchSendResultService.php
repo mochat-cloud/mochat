@@ -93,11 +93,11 @@ class ContactMessageBatchSendResultService extends AbstractService implements Co
      */
     public function getContactMessageBatchSendResultsBySearch(array $params): array
     {
-        $batchId    = $params['batchId'];
+        $batchId = $params['batchId'];
         $sendStatus = $params['sendStatus'] ?? '';
-        $keyWords   = $params['keyWords'];
-        $page       = (int) $params['page'];
-        $perPage    = (int) $params['perPage'];
+        $keyWords = $params['keyWords'];
+        $page = (int) $params['page'];
+        $perPage = (int) $params['perPage'];
 
         $data = $this->model::from($this->model::query()->getModel()->getTable() . ' as a')
             ->join(WorkContact::query()->getModel()->getTable() . ' as c', 'a.contact_id', 'c.id')

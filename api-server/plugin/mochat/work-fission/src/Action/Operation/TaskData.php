@@ -70,10 +70,10 @@ class TaskData extends AbstractAction
      */
     public function __construct(RequestInterface $request, WorkFissionContactContract $workFissionContactService, WorkFissionContract $workFissionService, WorkEmployeeContract $workEmployeeService, WorkFissionWelcomeContract $fissionWelcomeService)
     {
-        $this->request                   = $request;
+        $this->request = $request;
         $this->workFissionContactService = $workFissionContactService;
-        $this->workFissionService        = $workFissionService;
-        $this->workEmployeeService       = $workEmployeeService;
+        $this->workFissionService = $workFissionService;
+        $this->workEmployeeService = $workEmployeeService;
         $this->workFissionWelcomeService = $fissionWelcomeService;
     }
 
@@ -99,7 +99,7 @@ class TaskData extends AbstractAction
     protected function rules(): array
     {
         return ['union_id' => 'required',
-            'fission_id'   => 'required',
+            'fission_id' => 'required',
         ];
     }
 
@@ -111,7 +111,7 @@ class TaskData extends AbstractAction
     {
         return [
             'union_id.required' => '客户微信id 必填',
-            'fission_id'        => '活动id 必填',
+            'fission_id' => '活动id 必填',
         ];
     }
 
@@ -124,7 +124,7 @@ class TaskData extends AbstractAction
         $user = $this->workFissionContactService->getWorkFissionContactByUnionId($params['union_id']);
         ## 裂变
         $contact = $this->workFissionContactService->getWorkFissionContactById((int) $user['id'], ['level', 'invite_count', 'receive_level']);
-        $level   = $contact['level'] ?? 0;
+        $level = $contact['level'] ?? 0;
         ## 活动
         $fission = $this->workFissionService->getWorkFissionById((int) $params['fission_id'], ['receive_prize', 'receive_prize_employees', 'receive_links', 'receive_qrcode', 'tasks', 'end_time', 'delete_invalid']);
         ## 邀请数量
@@ -138,7 +138,7 @@ class TaskData extends AbstractAction
         }
         $task = [];
         foreach (json_decode($fission['tasks'], true, 512, JSON_THROW_ON_ERROR) as $key => $val) {
-            $task[$key]['count']  = $val['count'];
+            $task[$key]['count'] = $val['count'];
             $task[$key]['status'] = 0;
             if ($inviteCount >= $val['count']) {
                 $task[$key]['status'] = 1;
@@ -155,7 +155,7 @@ class TaskData extends AbstractAction
                 $task[$key]['gift_url'] = json_decode($fission['receiveLinks'], true, 512, JSON_THROW_ON_ERROR)[$key];
             }
         }
-        $total       = 0;
+        $total = 0;
         $differCount = 0;
         foreach (json_decode($fission['tasks'], true) as $key => $val) {
             if ($val['count'] > $inviteCount) {
@@ -167,8 +167,8 @@ class TaskData extends AbstractAction
         return [
             'invite_count' => $inviteCount,
             'differ_count' => $differCount,
-            'end_time'     => strtotime($fission['endTime']),
-            'task'         => $task,
+            'end_time' => strtotime($fission['endTime']),
+            'task' => $task,
         ];
     }
 }

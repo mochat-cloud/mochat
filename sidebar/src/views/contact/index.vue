@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page" v-if="showContact">
     <div class="header">
       <van-image
         class="img"
@@ -183,8 +183,8 @@
 <script>
 import { getWorkContactInfo, getUserPortrait, track } from '@/api/contact'
 import contactSopIndex from '@/views/contactSop/contactSopIndex'
-import { mapGetters } from 'vuex'
-import { getCookie } from 'utils'
+import { mapGetters, mapActions } from 'vuex'
+import { getContext } from '@/utils/wxCodeAuth'
 
 export default {
   components: {
@@ -202,40 +202,48 @@ export default {
       trackFinished: true,
       trackList: [],
       detail: [],
-      editPivotDis: false
+      editPivotDis: false,
+      showContact: false
     }
   },
-  created () {
-    this.corpId = getCookie('corpId')
-    // this.agentId = getCookie('agentId')
-    // this.uriPath = this.$route.fullPath.substr(1, this.$route.fullPath.length - 1)
+  async created () {
+    const entry = await getContext()
+    if (entry === 'group_chat_tools') {
+      this.$router.push({ path: '/room' })
+      return
+    }
+
+    if (entry !== 'single_chat_tools') {
+      this.$toast({ position: 'top', message: '请从单聊会话的工具栏进入' })
+      return
+    }
+
+    this.showContact = true
+
+    await this.getContactInfo()
     if (!this.contactId) {
       this.$toast({ position: 'top', message: '请重新进入应用' })
       return
     }
+
     this.getInfo()
     this.getTrackData()
     this.getDetail()
   },
   computed: {
     ...mapGetters([
-      'contactId',
-      'userInfo'
+      'contactId'
     ])
   },
   methods: {
     switchTabs () {
-      // contactId: this.contactId,
-      //   employeeId: this.userInfo.employeeId
       this.$nextTick(() => {
-        this.$refs.contactSopIndex.show(this.corpId, this.userInfo.employeeId, this.contactId)
-        // this.$refs.contactSopIndex.show(1, 2, 4)
+        this.$refs.contactSopIndex.show(this.contactId)
       })
     },
     getInfo () {
       const params = {
-        contactId: this.contactId,
-        employeeId: this.userInfo.employeeId
+        contactId: this.contactId
       }
       getWorkContactInfo(params).then(res => {
         this.infoDetail = res.data
@@ -263,7 +271,10 @@ export default {
     },
     trackOnLoad () {
 
-    }
+    },
+    ...mapActions({
+      getContactInfo: 'GET_CUSTOMER_INFO'
+    })
 
   }
 }

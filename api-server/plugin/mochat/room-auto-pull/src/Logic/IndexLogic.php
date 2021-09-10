@@ -97,10 +97,10 @@ class IndexLogic
     {
         ## 组织响应数据
         $data = [
-            'where'   => [],
+            'where' => [],
             'options' => [
-                'page'       => $params['page'],
-                'perPage'    => $params['perPage'],
+                'page' => $params['page'],
+                'perPage' => $params['perPage'],
                 'orderByRaw' => 'id desc',
             ],
         ];
@@ -109,7 +109,7 @@ class IndexLogic
         ## 自动拉群名称
         empty($params['qrcodeName']) || $data['where'][] = ['qrcode_name', 'LIKE',  '%' . $params['qrcodeName'] . '%'];
         ## 归属企业
-        $corpIds         = isset($user['corpIds']) ? $user['corpIds'] : [];
+        $corpIds = isset($user['corpIds']) ? $user['corpIds'] : [];
         $data['where'][] = ['corp_id', 'IN',  $corpIds];
 
         return $data;
@@ -124,8 +124,8 @@ class IndexLogic
         ## 组织响应数据
         $data = [
             'page' => [
-                'perPage'   => $params['options']['perPage'],
-                'total'     => 0,
+                'perPage' => $params['options']['perPage'],
+                'total' => 0,
                 'totalPage' => 0,
             ],
             'list' => [],
@@ -138,17 +138,17 @@ class IndexLogic
             return $data;
         }
         ## 处理分页数据
-        $data['page']['total']     = $res['total'];
+        $data['page']['total'] = $res['total'];
         $data['page']['totalPage'] = $res['last_page'];
 
         ## 处理列表数据
         $employeeIds = [];
-        $tagIds      = [];
-        $roomIds     = [];
+        $tagIds = [];
+        $roomIds = [];
         foreach ($res['data'] as $v) {
             empty($v['employees']) || $employeeIds = array_merge($employeeIds, json_decode($v['employees'], true));
-            empty($v['tags']) || $tagIds           = array_merge($tagIds, json_decode($v['tags'], true));
-            empty($v['rooms']) || $roomIds         = array_merge($roomIds, array_column(json_decode($v['rooms'], true), 'roomId'));
+            empty($v['tags']) || $tagIds = array_merge($tagIds, json_decode($v['tags'], true));
+            empty($v['rooms']) || $roomIds = array_merge($roomIds, array_column(json_decode($v['rooms'], true), 'roomId'));
         }
         ## 使用成员
         $workEmployeeList = $this->getWorkEmployeeList($employeeIds);
@@ -161,21 +161,21 @@ class IndexLogic
 
         foreach ($res['data'] as &$v) {
             $v['workRoomAutoPullId'] = $v['id'];
-            $v['qrcodeUrl']          = empty($v['qrcodeUrl']) ? '' : file_full_url($v['qrcodeUrl']);
+            $v['qrcodeUrl'] = empty($v['qrcodeUrl']) ? '' : file_full_url($v['qrcodeUrl']);
             ## 使用成员
-            $employees      = json_decode($v['employees'], true);
+            $employees = json_decode($v['employees'], true);
             $v['employees'] = [];
             foreach ($employees as $employee) {
                 ! isset($workEmployeeList[$employee]) || $v['employees'][] = $workEmployeeList[$employee];
             }
             ## 客户标签
-            $tags      = json_decode($v['tags'], true);
+            $tags = json_decode($v['tags'], true);
             $v['tags'] = [];
             foreach ($tags as $tag) {
                 ! isset($workContactTagList[$tag]) || $v['tags'][] = $workContactTagList[$tag];
             }
             ## 客户群聊
-            $rooms      = json_decode($v['rooms'], true);
+            $rooms = json_decode($v['rooms'], true);
             $v['rooms'] = [];
             ## 客户数量
             $v['contactNum'] = 0;
@@ -186,18 +186,18 @@ class IndexLogic
                     continue;
                 }
                 $v['contactNum'] += $roomStatistics[$room['roomId']]['contactNum'];
-                $num   = $roomStatistics[$room['roomId']]['total'];
+                $num = $roomStatistics[$room['roomId']]['total'];
                 $state = DrawState::NO_STARTED;
                 if ($num < $workRoomList[$room['roomId']]['roomMax'] && $num < $room['maxNum']) {
                     if ($isDrawing == 0) {
-                        $state     = DrawState::DRAWING;
+                        $state = DrawState::DRAWING;
                         $isDrawing = 1;
                     }
                 } else {
                     $state = DrawState::FULL;
                 }
                 $v['rooms'][] = [
-                    'roomName'  => $workRoomList[$room['roomId']]['name'],
+                    'roomName' => $workRoomList[$room['roomId']]['name'],
                     'stateText' => DrawState::getMessage($state),
                 ];
             }

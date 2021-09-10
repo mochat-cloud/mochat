@@ -13,10 +13,10 @@ namespace MoChat\App\WorkRoom\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkRoom\Contract\WorkRoomContract;
 use MoChat\App\WorkRoom\Contract\WorkRoomGroupContract;
@@ -69,7 +69,7 @@ class BatchUpdate extends AbstractAction
         $user = user();
         ## 接收参数
         $workRoomGroupId = $this->request->input('workRoomGroupId');
-        $workRoomIds     = $this->request->input('workRoomIds');
+        $workRoomIds = $this->request->input('workRoomIds');
         ## 此操作登录用户必须选择登录企业
         if (! isset($user['corpIds']) || count($user['corpIds']) >= 2) {
             throw new CommonException(ErrorCode::INVALID_PARAMS, '未选择登录企业，不可操作');
@@ -105,7 +105,7 @@ class BatchUpdate extends AbstractAction
     protected function rules(): array
     {
         return [
-            'workRoomIds'     => 'required | string| min:1 | bail',
+            'workRoomIds' => 'required | string| min:1 | bail',
             'workRoomGroupId' => 'required | integer | bail',
         ];
     }
@@ -117,11 +117,11 @@ class BatchUpdate extends AbstractAction
     protected function messages(): array
     {
         return [
-            'workRoomIds.required'     => '客户群ID 必填',
-            'workRoomIds.string'       => '客户群ID 必需为字符串',
-            'workRoomIds.min'          => '客户群ID 字符串长度不可小于1',
+            'workRoomIds.required' => '客户群ID 必填',
+            'workRoomIds.string' => '客户群ID 必需为字符串',
+            'workRoomIds.min' => '客户群ID 字符串长度不可小于1',
             'workRoomGroupId.required' => '客户群分组ID 必填',
-            'workRoomGroupId.integer'  => '客户群分组ID 必需为整数',
+            'workRoomGroupId.integer' => '客户群分组ID 必需为整数',
         ];
     }
 }

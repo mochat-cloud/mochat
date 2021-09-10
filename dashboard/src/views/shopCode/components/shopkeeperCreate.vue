@@ -166,6 +166,12 @@ export default {
     },
     hide () {
       this.modalShow = false
+      this.addAskData = {}
+      this.addAskData.type = 1
+      this.showMember = {}
+      this.salesroomState = true
+      this.searchAddress = ''
+      this.searchAddressChange()
     },
     // 确定按钮
     determine () {
@@ -176,15 +182,16 @@ export default {
       this.addAskData.address = this.mapCurrent.address
       this.addAskData.lat = this.mapCurrent.location.lat
       this.addAskData.lng = this.mapCurrent.location.lng
-      if (this.addAskData.type == 1 && this.addAskData.employee == '') {
+      if (this.addAskData.type == 1 && (this.addAskData.employee == '' || this.addAskData.employee == undefined)) {
         this.$message.error('请选择门店店主')
         return false
       }
-      if (this.addAskData.type != 1 && this.addAskData.qwCode == '') {
+      console.log(this.addAskData.qwCode)
+      if (this.addAskData.type != 1 && (this.addAskData.qwCode == '' || this.addAskData.qwCode == undefined)) {
         this.$message.error('请选择拉群活码')
         return false
       }
-      if (this.addAskData.name == '') {
+      if (this.addAskData.name == '' || this.addAskData.name == undefined) {
         this.$message.error('门店名称不能为空')
         return false
       }
@@ -193,15 +200,9 @@ export default {
       } else {
         this.addAskData.status = 0
       }
-      this.modalShow = false
       this.$emit('change', this.addAskData)
       // 重置
-      this.addAskData = {}
-      this.addAskData.type = 1
-      this.showMember = {}
-      this.salesroomState = true
-      this.searchAddress = ''
-      this.searchAddressChange()
+      this.hide()
     },
     addNumberData (type) {
       // 获取员工数据

@@ -11,10 +11,10 @@ declare(strict_types=1);
 namespace MoChat\App\Medium\Action\Dashboard;
 
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Medium\Action\Dashboard\Traits\RequestTrait;
 use MoChat\App\Medium\Contract\MediumContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
@@ -52,10 +52,10 @@ class Update extends AbstractAction
 
         ## 数据整理
         $userInfo = user();
-        $params   = array_merge($params, [
-            'user_id'   => $userInfo['id'],
+        $params = array_merge($params, [
+            'user_id' => $userInfo['id'],
             'user_name' => $userInfo['name'],
-            'content'   => json_encode($params['content'], JSON_UNESCAPED_UNICODE),
+            'content' => json_encode($params['content'], JSON_UNESCAPED_UNICODE),
         ]);
 
         ## 修改

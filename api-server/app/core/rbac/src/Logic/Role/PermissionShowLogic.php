@@ -40,7 +40,7 @@ class PermissionShowLogic
     public function roleMenus(int $roleId): array
     {
         ## 角色与菜单的关联
-        $roleMenus      = $this->roleMenuService->getRbacRoleMenusByRoleId([$roleId], ['id', 'menu_id']);
+        $roleMenus = $this->roleMenuService->getRbacRoleMenusByRoleId([$roleId], ['id', 'menu_id']);
         $checkedMenuIds = array_flip(array_column($roleMenus, 'menuId'));
 
         ## 所有菜单

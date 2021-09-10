@@ -12,15 +12,15 @@ namespace MoChat\App\WorkContact\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\WorkContact\Contract\WorkContactTagPivotContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 批量打标签.
@@ -48,7 +48,7 @@ class BatchLabeling extends AbstractAction
     {
         //接收参数
         $params['contactId'] = $this->request->input('contactId');
-        $params['tagId']     = $this->request->input('tagId');
+        $params['tagId'] = $this->request->input('tagId');
 
         //校验参数
         $this->validated($params);
@@ -73,8 +73,8 @@ class BatchLabeling extends AbstractAction
         foreach ($contactIds as $val) {
             foreach ($tagIds as $v) {
                 $data[] = [
-                    'contact_id'     => $val,
-                    'employee_id'    => user()['workEmployeeId'],
+                    'contact_id' => $val,
+                    'employee_id' => user()['workEmployeeId'],
                     'contact_tag_id' => $v,
                 ];
             }
@@ -103,7 +103,7 @@ class BatchLabeling extends AbstractAction
     {
         return [
             'contactId' => 'required',
-            'tagId'     => 'required',
+            'tagId' => 'required',
         ];
     }
 
@@ -114,7 +114,7 @@ class BatchLabeling extends AbstractAction
     {
         return [
             'contactId.required' => '客户id必传',
-            'tagId.required'     => '标签id必传',
+            'tagId.required' => '标签id必传',
         ];
     }
 }

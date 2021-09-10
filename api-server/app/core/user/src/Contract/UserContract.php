@@ -127,4 +127,11 @@ interface UserContract
      * @return array 响应数组
      */
     public function getUsersByTenantId(int $tenantId, array $columns = ['*']): array;
+
+    /**
+     * 修改账户状态 - 根据手机号.
+     * @param int $status 账户状态
+     * @return int 修改条数
+     */
+    public function updateUserStatusByPhone(string $phone, int $status): int;
 }

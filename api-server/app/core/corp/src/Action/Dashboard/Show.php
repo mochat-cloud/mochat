@@ -12,16 +12,16 @@ namespace MoChat\App\Corp\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 企业微信授权- 详情.
@@ -59,7 +59,7 @@ class Show extends AbstractAction
             throw new CommonException(ErrorCode::INVALID_PARAMS, '当前企业信息不存在');
         }
 
-        $data['corpId']   = $data['id'];
+        $data['corpId'] = $data['id'];
         $data['wxCorpId'] = $data['wxCorpid'];
         $data['corpName'] = $data['name'];
         $data['eventCallback'] .= '?cid=' . $data['id'];
@@ -88,8 +88,8 @@ class Show extends AbstractAction
     {
         return [
             'corpId.required' => '企业授信ID 必填',
-            'corpId.integer'  => '企业授信ID 必需为整数',
-            'corpId.min  '    => '企业授信ID 不可小于1',
+            'corpId.integer' => '企业授信ID 必需为整数',
+            'corpId.min  ' => '企业授信ID 不可小于1',
         ];
     }
 }

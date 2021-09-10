@@ -113,12 +113,12 @@ class Rbac
         $roleIds = array_column($roleIds, 'roleId');
 
         ## 用户租户
-        $user     = $this->userService->getUserById($userId, ['id', 'tenant_id']);
+        $user = $this->userService->getUserById($userId, ['id', 'tenant_id']);
         $tenantId = (int) $user['tenantId'];
 
         ## 所有角色
         in_array('tenant_id', $roleColumns, true) || $roleColumns[] = 'tenant_id';
-        $roles                                                      = $this->roleService->getRbacRolesById($roleIds, $roleColumns);
+        $roles = $this->roleService->getRbacRolesById($roleIds, $roleColumns);
 
         ## 过滤角色
         return array_reduce($roles, function ($carry, $item) use ($tenantId) {
@@ -156,7 +156,7 @@ class Rbac
             if ($menu['dataPermission'] !== 2) {
                 $permissionTypeArr = json_decode($roles[$roleMenus[$menu['id']]]['dataPermission'], true);
                 if (isset($permissionTypeArr[0])) {
-                    $permissionTypeData                                            = array_column($permissionTypeArr, 'permissionType', 'corpId');
+                    $permissionTypeData = array_column($permissionTypeArr, 'permissionType', 'corpId');
                     isset($permissionTypeData[$corpId]) && $menu['dataPermission'] = $permissionTypeData[$corpId];
                 }
             } else {

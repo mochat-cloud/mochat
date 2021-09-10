@@ -171,8 +171,8 @@ class RoomFissionRoomService extends AbstractService implements RoomFissionRoomC
     public function getRoomFissionRoomBySearch($params): array
     {
         $room_name = empty($params['room_name']) ? '' : $params['room_name'];
-        $owner_id  = empty($params['owner_id']) ? '' : (int) $params['owner_id'];
-        $data      = $this->model::from($this->model::query()->getModel()->getTable() . ' as room_fission_room')
+        $owner_id = empty($params['owner_id']) ? '' : (int) $params['owner_id'];
+        $data = $this->model::from($this->model::query()->getModel()->getTable() . ' as room_fission_room')
             ->join(WorkRoom::query()->getModel()->getTable() . ' as wr', 'room_fission_room.room->id', 'wr.id')
             ->where('room_fission_room.fission_id', (int) $params['id'])
             ->when(! empty($params['room_name']), function (Builder $query) use ($room_name) {

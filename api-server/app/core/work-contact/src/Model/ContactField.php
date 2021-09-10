@@ -49,11 +49,11 @@ class ContactField extends AbstractModel
      * @var array
      */
     protected $casts = [
-        'id'         => 'integer',
-        'options'    => 'array',
-        'type'       => 'integer',
-        'order'      => 'integer',
-        'status'     => 'integer',
+        'id' => 'integer',
+        'options' => 'array',
+        'type' => 'integer',
+        'order' => 'integer',
+        'status' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];

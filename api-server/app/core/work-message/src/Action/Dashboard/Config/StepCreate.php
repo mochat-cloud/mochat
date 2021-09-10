@@ -13,10 +13,10 @@ namespace MoChat\App\WorkMessage\Action\Dashboard\Config;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\Tenant\Contract\TenantContract;
@@ -55,17 +55,17 @@ class StepCreate extends AbstractAction
 
         ## 企业基本信息
         $corpService = $this->container->get(CorpContract::class);
-        $corpData    = $corpService->getCorpById($corpId, ['id', 'name', 'wx_corpid']);
-        $data        = [
-            'id'              => 0,
+        $corpData = $corpService->getCorpById($corpId, ['id', 'name', 'wx_corpid']);
+        $data = [
+            'id' => 0,
             'chatApplyStatus' => 0,
-            'corpName'        => $corpData['name'],
-            'wxCorpId'        => $corpData['wxCorpid'],
+            'corpName' => $corpData['name'],
+            'wxCorpId' => $corpData['wxCorpid'],
         ];
 
         ## 配置信息
         $messageConfigService = $this->container->get(WorkMessageConfigContract::class);
-        $corpConfigData       = $messageConfigService->getWorkMessageConfigByCorpId($corpId, [
+        $corpConfigData = $messageConfigService->getWorkMessageConfigByCorpId($corpId, [
             'id', 'chat_apply_status', 'chat_rsa_key',
         ]);
 

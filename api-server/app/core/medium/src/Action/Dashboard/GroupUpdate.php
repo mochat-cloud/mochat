@@ -11,10 +11,10 @@ declare(strict_types=1);
 namespace MoChat\App\Medium\Action\Dashboard;
 
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Medium\Action\Dashboard\Traits\RequestTrait;
 use MoChat\App\Medium\Contract\MediumContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
@@ -41,13 +41,13 @@ class GroupUpdate extends AbstractAction
      */
     public function handle(): array
     {
-        $id      = $this->request->input('id');
+        $id = $this->request->input('id');
         $groupId = $this->request->input('mediumGroupId');
 
         $this->validated(['id' => $id, 'mediumGroupId' => $groupId], 'groupUpdate');
 
         $client = $this->container->get(MediumContract::class);
-        $res    = $client->updateMediumById($id, ['mediumGroupId' => $groupId]);
+        $res = $client->updateMediumById($id, ['mediumGroupId' => $groupId]);
         if (! $res) {
             throw new CommonException(ErrorCode::SERVER_ERROR, '移动失败');
         }

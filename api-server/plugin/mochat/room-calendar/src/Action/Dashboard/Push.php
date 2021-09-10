@@ -102,9 +102,9 @@ class Push extends AbstractAction
     protected function rules(): array
     {
         return [
-            'id'    => 'required | integer | min:0 | bail',
+            'id' => 'required | integer | min:0 | bail',
             'owner' => 'required',
-            'day'   => 'required',
+            'day' => 'required',
         ];
     }
 
@@ -115,11 +115,11 @@ class Push extends AbstractAction
     protected function messages(): array
     {
         return [
-            'id.required'    => '活动ID 必填',
-            'id.integer'     => '活动ID 必需为整数',
-            'id.min  '       => '活动ID 不可小于1',
+            'id.required' => '活动ID 必填',
+            'id.integer' => '活动ID 必需为整数',
+            'id.min  ' => '活动ID 不可小于1',
             'owner.required' => 'owner 必填',
-            'day.required'   => 'day 必填',
+            'day.required' => 'day 必填',
         ];
     }
 
@@ -131,7 +131,7 @@ class Push extends AbstractAction
     {
         ## 数据
         $calendar = $this->roomCalendarService->getRoomCalendarById((int) $params['id'], ['id', 'name', 'rooms', 'corp_id', 'create_user_id']);
-        $push     = $this->roomCalendarPushService->getRoomCalendarPushByRoomCalendarIdDay((int) $params['id'], $params['day'], ['day', 'push_content']);
+        $push = $this->roomCalendarPushService->getRoomCalendarPushByRoomCalendarIdDay((int) $params['id'], $params['day'], ['day', 'push_content']);
 
         $roomArr = json_decode($calendar['rooms'], true, 512, JSON_THROW_ON_ERROR);
         foreach ($roomArr as $key => $val) {
@@ -139,7 +139,7 @@ class Push extends AbstractAction
                 unset($roomArr[$key]);
                 continue;
             }
-            $room                        = $this->workRoomService->getWorkRoomById((int) $val['id'], ['create_time']);
+            $room = $this->workRoomService->getWorkRoomById((int) $val['id'], ['create_time']);
             $roomArr[$key]['created_at'] = $room['createTime'];
             unset($roomArr[$key]['id'], $roomArr[$key]['ownerId'], $roomArr[$key]['roomMax'], $roomArr[$key]['contact_num']);
         }
@@ -151,7 +151,7 @@ class Push extends AbstractAction
             foreach ($pushContent as $k => $v) {
                 if ($v['type'] === 'image') {
                     $new_file = dirname(__DIR__, 3) . '/storage/upload/static/' . $v['pic'];
-                    $res      = $upload->uploadImg(dirname(__DIR__, 3) . '/storage/upload/static/' . $new_file);
+                    $res = $upload->uploadImg(dirname(__DIR__, 3) . '/storage/upload/static/' . $new_file);
                     if ((int) $res['errcode'] === 0) {
                         $pushContent[$k]['pic_url'] = $res['url'];
                     } else {
@@ -165,8 +165,8 @@ class Push extends AbstractAction
 
         return [
             'employee' => $employee['name'],
-            'rooms'    => array_merge($roomArr),
-            'push'     => $push,
+            'rooms' => array_merge($roomArr),
+            'push' => $push,
         ];
     }
 }

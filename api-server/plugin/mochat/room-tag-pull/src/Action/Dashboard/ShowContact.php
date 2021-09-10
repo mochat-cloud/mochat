@@ -12,11 +12,11 @@ namespace MoChat\Plugin\RoomTagPull\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
@@ -100,7 +100,7 @@ class ShowContact
      */
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -122,14 +122,14 @@ class ShowContact
         $this->validated($params);
         $roomTagPull = $this->roomTagPullService->getRoomTagPullById((int) $params['id'], ['contact_num', 'wx_tid']);
         if ((int) $params['type'] === 1) {
-            $contactData         = $this->handleParamsContact($user, $params);
-            $data                = $this->getRoomTagPullContact($contactData);
+            $contactData = $this->handleParamsContact($user, $params);
+            $data = $this->getRoomTagPullContact($contactData);
             $data['contact_num'] = $roomTagPull['contactNum'];
             return $data;
         }
 
         if ((int) $params['type'] === 2) {
-            $data                = $this->getRoomTagPullEmployee($user, json_decode($roomTagPull['wxTid'], true, 512, JSON_THROW_ON_ERROR), $params);
+            $data = $this->getRoomTagPullEmployee($user, json_decode($roomTagPull['wxTid'], true, 512, JSON_THROW_ON_ERROR), $params);
             $data['contact_num'] = $roomTagPull['contactNum'];
             return $data;
         }
@@ -144,7 +144,7 @@ class ShowContact
     protected function rules(): array
     {
         return [
-            'id'   => 'required | integer | bail',
+            'id' => 'required | integer | bail',
             'type' => 'required | integer | bail',
         ];
     }
@@ -156,10 +156,10 @@ class ShowContact
     protected function messages(): array
     {
         return [
-            'id.required'   => '活动id 必填',
-            'id.integer'    => '活动id 必须为整型',
+            'id.required' => '活动id 必填',
+            'id.integer' => '活动id 必须为整型',
             'type.required' => 'type 必填',
-            'type.integer'  => 'type 必须为整型',
+            'type.integer' => 'type 必须为整型',
         ];
     }
 
@@ -188,8 +188,8 @@ class ShowContact
             $where['room_id'] = $params['room_id'];
         }
         $options = [
-            'perPage'    => $params['perPage'],
-            'page'       => $params['page'],
+            'perPage' => $params['perPage'],
+            'page' => $params['page'],
             'orderByRaw' => 'id desc',
         ];
 
@@ -204,14 +204,14 @@ class ShowContact
      */
     private function getRoomTagPullContact(array $params): array
     {
-        $columns                = ['id', 'contact_id', 'contact_name', 'employee_id', 'send_status', 'is_join_room', 'room_id', 'created_at'];
+        $columns = ['id', 'contact_id', 'contact_name', 'employee_id', 'send_status', 'is_join_room', 'room_id', 'created_at'];
         $roomTagPullContactList = $this->roomTagPullContactService->getRoomTagPullContactList($params['where'], $columns, $params['options']);
 
         $list = [];
         $data = [
             'page' => [
-                'perPage'   => $this->perPage,
-                'total'     => '0',
+                'perPage' => $this->perPage,
+                'total' => '0',
                 'totalPage' => '0',
             ],
             'list' => $list,
@@ -229,14 +229,14 @@ class ShowContact
     private function getRoomTagPullEmployee(array $user, array $data, array $params): array
     {
         $wxUserId = array_column($data, 'wxUserId');
-        $userArr  = array_count_values($wxUserId);
+        $userArr = array_count_values($wxUserId);
         foreach ($data as $k => $v) {
-            $employee                = $this->workEmployeeService->getWorkEmployeeByCorpIdWxUserId((string) $user['corpIds'][0], $v['wxUserId'], ['name', 'avatar']);
-            $data[$k]['task_num']    = $userArr[$v['wxUserId']];
-            $data[$k]['name']        = $employee[0]['name'];
-            $data[$k]['avatar']      = file_full_url($employee[0]['avatar']);
+            $employee = $this->workEmployeeService->getWorkEmployeeByCorpIdWxUserId((string) $user['corpIds'][0], $v['wxUserId'], ['name', 'avatar']);
+            $data[$k]['task_num'] = $userArr[$v['wxUserId']];
+            $data[$k]['name'] = $employee[0]['name'];
+            $data[$k]['avatar'] = file_full_url($employee[0]['avatar']);
             $data[$k]['contact_num'] = $this->roomTagPullContactService->countRoomTagPullContactByRoomTagPullIdUserid((int) $params['id'], $v['wxUserId']);
-            $data[$k]['invite_num']  = $this->roomTagPullContactService->countRoomTagPullContactByRoomTagPullIdUseridSendStatus((int) $params['id'], $v['wxUserId'], [1]);
+            $data[$k]['invite_num'] = $this->roomTagPullContactService->countRoomTagPullContactByRoomTagPullIdUseridSendStatus((int) $params['id'], $v['wxUserId'], [1]);
             if (isset($params['wx_user_id']) && ! empty($params['wx_user_id']) && $v['wxUserId'] !== $params['wx_user_id']) {
                 unset($data[$k]);
             }
@@ -265,22 +265,22 @@ class ShowContact
     {
         $list = [];
         foreach ($roomTagPullContactList['data'] as $key => $val) {
-            $contact    = $this->workContactService->getWorkContactById($val['contactId'], ['avatar']);
-            $employees  = $this->workEmployeeService->getWorkEmployeeById($val['employeeId'], ['name']);
-            $room       = $this->workRoomService->getWorkRoomById($val['roomId'], ['name']);
+            $contact = $this->workContactService->getWorkContactById($val['contactId'], ['avatar']);
+            $employees = $this->workEmployeeService->getWorkEmployeeById($val['employeeId'], ['name']);
+            $room = $this->workRoomService->getWorkRoomById($val['roomId'], ['name']);
             $list[$key] = [
-                'avatar'        => file_full_url($contact['avatar']),
-                'contact_name'  => $val['contactName'],
+                'avatar' => file_full_url($contact['avatar']),
+                'contact_name' => $val['contactName'],
                 'employee_name' => $employees['name'],
-                'send_status'   => $val['sendStatus'],
-                'room_name'     => $room['name'],
-                'is_join_room'  => $val['isJoinRoom'],
+                'send_status' => $val['sendStatus'],
+                'room_name' => $room['name'],
+                'is_join_room' => $val['isJoinRoom'],
             ];
         }
 
-        $data['page']['total']     = $roomTagPullContactList['total'];
+        $data['page']['total'] = $roomTagPullContactList['total'];
         $data['page']['totalPage'] = $roomTagPullContactList['last_page'];
-        $data['list']              = $list;
+        $data['list'] = $list;
         return $data;
     }
 }

@@ -13,11 +13,11 @@ namespace MoChat\Plugin\ShopCode\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
@@ -52,7 +52,7 @@ class Location extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -79,8 +79,8 @@ class Location extends AbstractAction
         $params = $this->request->all();
         $this->validated($params);
         $location = $params['lat'] . ',' . $params['lng'];
-        $url      = 'https://apis.map.qq.com/ws/geocoder/v1/?key=CXQBZ-UQC65-J6EIP-QMZUO-Y27Y3-LXFSG&location=' . $location;
-        $data     = file_get_contents($url);
+        $url = 'https://apis.map.qq.com/ws/geocoder/v1/?key=CXQBZ-UQC65-J6EIP-QMZUO-Y27Y3-LXFSG&location=' . $location;
+        $data = file_get_contents($url);
         return json_decode($data, true, 512, JSON_THROW_ON_ERROR);
     }
 

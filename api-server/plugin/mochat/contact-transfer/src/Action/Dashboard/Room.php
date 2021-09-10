@@ -12,11 +12,11 @@ namespace MoChat\Plugin\ContactTransfer\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Plugin\ContactTransfer\Logic\RoomLogic;
@@ -41,7 +41,7 @@ class Room extends AbstractAction
     public function __construct(RoomLogic $roomLogic, RequestInterface $request)
     {
         $this->roomLogic = $roomLogic;
-        $this->request   = $request;
+        $this->request = $request;
     }
 
     /**
@@ -50,13 +50,13 @@ class Room extends AbstractAction
      *     @Middleware(DashboardAuthMiddleware::class),
      *     @Middleware(PermissionMiddleware::class)
      * })
-     * @RequestMapping(path="/dashboard/transfer/room", methods="GET")
+     * @RequestMapping(path="/dashboard/contactTransfer/room", methods="GET")
      */
     public function handle(): array
     {
         $params['roomName'] = $this->request->input('roomName');    //群名称
 
-        $user             = user();
+        $user = user();
         $params['corpId'] = $user['corpIds'][0];
 
         return $this->roomLogic->getRoomList($params);

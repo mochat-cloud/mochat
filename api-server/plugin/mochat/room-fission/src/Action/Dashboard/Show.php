@@ -13,11 +13,11 @@ namespace MoChat\Plugin\RoomFission\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\Framework\Action\AbstractAction;
@@ -105,7 +105,7 @@ class Show extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -148,10 +148,10 @@ class Show extends AbstractAction
         $statistics['today_insert_person_num'] = $statistics['today_join_room_num'] - $statistics['today_loss_person_num'];
 
         ## 群聊
-        $rooms     = $this->roomFissionRoomService->getRoomFissionRoomByFissionId($id, ['room']);
+        $rooms = $this->roomFissionRoomService->getRoomFissionRoomByFissionId($id, ['room']);
         $roomOwner = [];
         foreach ($rooms as $k => $v) {
-            $room        = json_decode($v['room'], true, 512, JSON_THROW_ON_ERROR);
+            $room = json_decode($v['room'], true, 512, JSON_THROW_ON_ERROR);
             $roomOwner[] = $this->workEmployeeService->getWorkEmployeeById((int) $room['ownerId'], ['id', 'name']);
         }
 

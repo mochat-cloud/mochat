@@ -12,10 +12,10 @@ namespace MoChat\Plugin\ContactBatchAdd\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\Framework\Action\AbstractAction;
@@ -56,7 +56,7 @@ class SettingEdit extends AbstractAction
      */
     public function handle(): array
     {
-        return (new RecycleContactLogic())->handle(ContactBatchAddConfig::find(2)->toArray());
+//        return (new RecycleContactLogic())->handle(ContactBatchAddConfig::find(2)->toArray());
         $corpId = user()['corpIds'][0];
 
         $result = $this->contactBatchAddConfigService->getContactBatchAddConfigByCorpId($corpId, [
@@ -64,16 +64,16 @@ class SettingEdit extends AbstractAction
             'undone_time_out', 'undone_reminder_time', 'recycle_status', 'recycle_time_out',
         ]);
         $result = $result ?: [
-            'pendingStatus'       => 0,
-            'pendingTimeOut'      => 0,
+            'pendingStatus' => 0,
+            'pendingTimeOut' => 0,
             'pendingReminderTime' => '00:00:00',
-            'pendingLeaderId'     => 0,
-            'pendingLeader'       => [],
-            'undoneStatus'        => 0,
-            'undoneTimeOut'       => 0,
-            'undoneReminderTime'  => '00:00:00',
-            'recycleStatus'       => 0,
-            'recycleTimeOut'      => 0,
+            'pendingLeaderId' => 0,
+            'pendingLeader' => [],
+            'undoneStatus' => 0,
+            'undoneTimeOut' => 0,
+            'undoneReminderTime' => '00:00:00',
+            'recycleStatus' => 0,
+            'recycleTimeOut' => 0,
         ];
         $result['pendingLeader'] = $result['pendingLeaderId'] ? $this->workEmployeeService->getWorkEmployeeById($result['pendingLeaderId'], ['id', 'name']) : [];
         return $result;

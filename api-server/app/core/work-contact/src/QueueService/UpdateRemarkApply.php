@@ -30,7 +30,7 @@ class UpdateRemarkApply
     public function handle($data, $corpId): void
     {
         ## 获取企业微信授信信息
-        $corp     = make(CorpContract::class)->getCorpById($corpId, ['id', 'wx_corpid']);
+        $corp = make(CorpContract::class)->getCorpById($corpId, ['id', 'wx_corpid']);
         $ecClient = $this->wxApp($corp['wxCorpid'], 'contact')->external_contact;
 
         //修改客户备注信息

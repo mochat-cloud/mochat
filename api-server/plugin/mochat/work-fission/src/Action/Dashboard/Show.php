@@ -13,11 +13,10 @@ namespace MoChat\Plugin\WorkFission\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
-use Laminas\Stdlib\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\Utils\Url;
 use MoChat\Framework\Action\AbstractAction;
@@ -27,7 +26,6 @@ use MoChat\Plugin\WorkFission\Contract\WorkFissionInviteContract;
 use MoChat\Plugin\WorkFission\Contract\WorkFissionPosterContract;
 use MoChat\Plugin\WorkFission\Contract\WorkFissionPushContract;
 use MoChat\Plugin\WorkFission\Contract\WorkFissionWelcomeContract;
-use MoChat\Plugin\WorkFission\Service\WorkFissionInviteService;
 
 /**
  * 企业微信授权- 详情.
@@ -46,31 +44,31 @@ class Show extends AbstractAction
     protected $workFissionService;
 
     /**
-     * @Inject()
+     * @Inject
      * @var WorkFissionPosterContract
      */
     protected $workFissionPosterService;
 
     /**
-     * @Inject()
+     * @Inject
      * @var WorkFissionWelcomeContract
      */
     protected $workFissionWelcomeService;
 
     /**
-     * @Inject()
+     * @Inject
      * @var WorkFissionPushContract
      */
     protected $workFissionPushService;
 
     /**
-     * @Inject()
+     * @Inject
      * @var WorkFissionInviteContract
      */
     protected $workFissionInviteService;
 
     /**
-     * @Inject()
+     * @Inject
      * @var StdoutLoggerInterface
      */
     private $logger;
@@ -113,28 +111,28 @@ class Show extends AbstractAction
     {
         return [
             'id.required' => '任务宝ID 必填',
-            'id.integer'  => '任务宝ID 必需为整数',
-            'id.min  '    => '任务宝ID 不可小于1',
+            'id.integer' => '任务宝ID 必需为整数',
+            'id.min  ' => '任务宝ID 不可小于1',
         ];
     }
 
     private function handleData($id): array
     {
-        $fission     = $this->workFissionService->getWorkFissionById((int) $id);
-        $posterInfo  = $this->workFissionPosterService->getWorkFissionPosterByFissionId((int) $id);
+        $fission = $this->workFissionService->getWorkFissionById((int) $id);
+        $posterInfo = $this->workFissionPosterService->getWorkFissionPosterByFissionId((int) $id);
         $welcomeInfo = $this->workFissionWelcomeService->getWorkFissionWelcomeByFissionId((int) $id);
         return [
-            'id'                => $fission['id'],
-            'active_name'       => $fission['activeName'],
-            'qrcode_url'        => $posterInfo['qrcodeUrl'],
-            'link'              => Url::getAuthRedirectUrl(7, (int)$id),
-            'active_time'       => $fission['createdAt'] . '-' . $fission['endTime'],
+            'id' => $fission['id'],
+            'active_name' => $fission['activeName'],
+            'qrcode_url' => $posterInfo['qrcodeUrl'],
+            'link' => Url::getAuthRedirectUrl(7, (int) $id),
+            'active_time' => $fission['createdAt'] . '-' . $fission['endTime'],
             'service_employees' => $fission['serviceEmployees'],
-            'contact_tags'      => $fission['contactTags'],
-            'welcome_text'      => $welcomeInfo['msgText'],
-            'welcome_title'     => $welcomeInfo['linkTitle'],
-            'welcome_desc'      => $welcomeInfo['linkDesc'],
-            'welcome_url'       => $welcomeInfo['linkCoverUrl'],
+            'contact_tags' => $fission['contactTags'],
+            'welcome_text' => $welcomeInfo['msgText'],
+            'welcome_title' => $welcomeInfo['linkTitle'],
+            'welcome_desc' => $welcomeInfo['linkDesc'],
+            'welcome_url' => $welcomeInfo['linkCoverUrl'],
         ];
     }
 }

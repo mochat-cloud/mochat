@@ -13,11 +13,11 @@ namespace MoChat\Plugin\RoomQuality\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\User\Contract\UserContract;
 use MoChat\Framework\Action\AbstractAction;
@@ -71,7 +71,7 @@ class Index extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -95,8 +95,8 @@ class Index extends AbstractAction
         $this->validated($this->request->all());
         ## 接收参数
         $params = [
-            'name'    => $this->request->input('name'),
-            'page'    => $this->request->input('page', 1),
+            'name' => $this->request->input('name'),
+            'page' => $this->request->input('page', 1),
             'perPage' => $this->request->input('perPage', 10000),
         ];
 
@@ -142,8 +142,8 @@ class Index extends AbstractAction
             $where[] = ['name', 'LIKE', '%' . $params['name'] . '%'];
         }
         $options = [
-            'perPage'    => $params['perPage'],
-            'page'       => $params['page'],
+            'perPage' => $params['perPage'],
+            'page' => $params['page'],
             'orderByRaw' => 'id desc',
         ];
 
@@ -158,14 +158,14 @@ class Index extends AbstractAction
      */
     private function getRoomQuality(array $user, array $params): array
     {
-        $columns         = ['id', 'name', 'rooms', 'status', 'create_user_id', 'created_at'];
+        $columns = ['id', 'name', 'rooms', 'status', 'create_user_id', 'created_at'];
         $roomQualityList = $this->roomQualityService->getRoomQualityList($params['where'], $columns, $params['options']);
 
         $list = [];
         $data = [
             'page' => [
-                'perPage'   => $this->perPage,
-                'total'     => '0',
+                'perPage' => $this->perPage,
+                'total' => '0',
                 'totalPage' => '0',
             ],
             'list' => $list,
@@ -185,19 +185,19 @@ class Index extends AbstractAction
         $list = [];
         foreach ($roomTagPullList['data'] as $key => $val) {
             //处理创建者信息
-            $username   = $this->userService->getUserById($val['createUserId']);
+            $username = $this->userService->getUserById($val['createUserId']);
             $list[$key] = [
-                'id'          => $val['id'],
-                'name'        => $val['name'],
-                'rooms'       => json_decode($val['rooms'], true, 512, JSON_THROW_ON_ERROR),
-                'status'      => $val['status'],
+                'id' => $val['id'],
+                'name' => $val['name'],
+                'rooms' => json_decode($val['rooms'], true, 512, JSON_THROW_ON_ERROR),
+                'status' => $val['status'],
                 'create_user' => $username['name'] ?? '',
-                'created_at'  => $val['createdAt'],
+                'created_at' => $val['createdAt'],
             ];
         }
-        $data['page']['total']     = $roomTagPullList['total'];
+        $data['page']['total'] = $roomTagPullList['total'];
         $data['page']['totalPage'] = $roomTagPullList['last_page'];
-        $data['list']              = $list;
+        $data['list'] = $list;
         return $data;
     }
 }

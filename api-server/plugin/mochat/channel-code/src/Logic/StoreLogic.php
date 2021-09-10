@@ -100,15 +100,15 @@ class StoreLogic
     {
         //添加参数
         $data = [
-            'corp_id'           => user()['corpIds'][0],
-            'group_id'          => $this->params['baseInfo']['groupId'],
-            'name'              => $this->params['baseInfo']['name'],
-            'auto_add_friend'   => $this->params['baseInfo']['autoAddFriend'],
-            'tags'              => json_encode($this->params['baseInfo']['tags']),
-            'type'              => $this->params['drainageEmployee']['type'],
+            'corp_id' => user()['corpIds'][0],
+            'group_id' => $this->params['baseInfo']['groupId'],
+            'name' => $this->params['baseInfo']['name'],
+            'auto_add_friend' => $this->params['baseInfo']['autoAddFriend'],
+            'tags' => json_encode($this->params['baseInfo']['tags']),
+            'type' => $this->params['drainageEmployee']['type'],
             'drainage_employee' => json_encode($this->params['drainageEmployee']),
-            'welcome_message'   => json_encode($this->params['welcomeMessage']),
-            'updated_at'        => date('Y-m-d H:i:s'),
+            'welcome_message' => json_encode($this->params['welcomeMessage']),
+            'updated_at' => date('Y-m-d H:i:s'),
         ];
         //插入渠道码表
         $res = $this->channelCode->createChannelCode($data);
@@ -126,17 +126,17 @@ class StoreLogic
     private function recordLog($channelCodeId)
     {
         $params = [
-            'baseInfo'         => $this->params['baseInfo'],
+            'baseInfo' => $this->params['baseInfo'],
             'drainageEmployee' => $this->params['drainageEmployee'],
-            'welcomeMessage'   => $this->params['welcomeMessage'],
+            'welcomeMessage' => $this->params['welcomeMessage'],
         ];
         //记录日志表
         $data = [
-            'business_id'  => $channelCodeId,
-            'params'       => json_encode($params),
-            'event'        => Event::CHANNEL_CODE_CREATE,
+            'business_id' => $channelCodeId,
+            'params' => json_encode($params),
+            'event' => Event::CHANNEL_CODE_CREATE,
             'operation_id' => user()['workEmployeeId'],
-            'updated_at'   => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
         ];
 
         $logRes = $this->businessLog->createBusinessLog($data);

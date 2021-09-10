@@ -15,8 +15,11 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\Utils\ApplicationContext;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Action\Dashboard\Traits\RequestTrait;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
@@ -28,9 +31,6 @@ use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 企业微信授权- 创建提交.
@@ -86,10 +86,10 @@ class Store extends AbstractAction
     {
         ## 接收参数
         $params = [
-            'name'            => trim($this->request->input('corpName')),
-            'wx_corpid'       => trim($this->request->input('wxCorpId')),
+            'name' => trim($this->request->input('corpName')),
+            'wx_corpid' => trim($this->request->input('wxCorpId')),
             'employee_secret' => trim($this->request->input('employeeSecret')),
-            'contact_secret'  => trim($this->request->input('contactSecret')),
+            'contact_secret' => trim($this->request->input('contactSecret')),
         ];
         ## 参数验证
         $this->validated($this->request->all(), 'store');
@@ -97,13 +97,13 @@ class Store extends AbstractAction
         $params['event_callback'] = Url::getApiBaseUrl() . '/' . ltrim(config('framework.wework.callback_path'), '/');
 
         ## 回调token
-        $tokenKey        = random_bytes(random_int(1, 24));
+        $tokenKey = random_bytes(random_int(1, 24));
         $params['token'] = str_replace(['/', '+', '='], '', base64_encode($tokenKey));
         ## 回调消息加密串
         $params['encoding_aes_key'] = $this->getAesKeyStr();
 
         $params['created_at'] = date('Y-m-d H:i:s');
-        $params['tenant_id']  = user('tenantId');
+        $params['tenant_id'] = user('tenantId');
 
         ## 数据操作
         Db::beginTransaction();
@@ -114,7 +114,7 @@ class Store extends AbstractAction
             $this->workMessageConfigService->createWorkMessageConfig(['corp_id' => $corpId, 'chat_apply_status' => 3, 'created_at' => date('Y-m-d H:i:s')]);
             ## 绑定用户与企业的关系
             $container = ApplicationContext::getContainer();
-            $redis     = $container->get(\Hyperf\Redis\Redis::class);
+            $redis = $container->get(\Hyperf\Redis\Redis::class);
             $redis->set('mc:user.' . user()['id'], $corpId . '-0');
 
             Db::commit();
@@ -139,7 +139,7 @@ class Store extends AbstractAction
         $baseChars = [
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
             'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
         ];
         shuffle($baseChars);
 

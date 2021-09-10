@@ -23,7 +23,7 @@ trait ContentTrait
     protected function contentFormat(array $content, int $msgType): array
     {
         $newContent = [
-            'content'     => '',
+            'content' => '',
             'fullPath' => '',
         ];
         ## 文字
@@ -80,7 +80,7 @@ trait ContentTrait
     protected function contentItemFormat(array $item): array
     {
         $newItem = [
-            'content'     => '',
+            'content' => '',
             'fullPath' => '',
         ];
 

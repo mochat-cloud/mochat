@@ -73,16 +73,16 @@ class StoreLogic
     {
         ## 获取企业微信详情
         $agentDetail = $this->getWxAgentDetail($agentId, $wxAgentId);
-        $data        = [
-            'name'                 => $agentDetail['name'],
-            'square_logo_url'      => $agentDetail['square_logo_url'],
-            'description'          => $agentDetail['description'],
-            'close'                => $agentDetail['close'],
-            'redirect_domain'      => $agentDetail['redirect_domain'],
+        $data = [
+            'name' => $agentDetail['name'],
+            'square_logo_url' => $agentDetail['square_logo_url'],
+            'description' => $agentDetail['description'],
+            'close' => $agentDetail['close'],
+            'redirect_domain' => $agentDetail['redirect_domain'],
             'report_location_flag' => $agentDetail['report_location_flag'],
-            'is_reportenter'       => $agentDetail['isreportenter'],
-            'home_url'             => $agentDetail['home_url'],
-            'updated_at'           => date('Y-m-d H:i:s'),
+            'is_reportenter' => $agentDetail['isreportenter'],
+            'home_url' => $agentDetail['home_url'],
+            'updated_at' => date('Y-m-d H:i:s'),
         ];
 
         $res = $this->workAgentService->updateWorkAgentById($agentId, $data);
@@ -128,10 +128,10 @@ class StoreLogic
         ## 添加应用
         $data = [
             'wx_agent_id' => $params['wxAgentId'],
-            'wx_secret'   => $params['wxSecret'],
-            'corp_id'     => $corpId,
-            'type'        => $params['type'],
-            'created_at'  => date('Y-m-d H:i:s'),
+            'wx_secret' => $params['wxSecret'],
+            'corp_id' => $corpId,
+            'type' => $params['type'],
+            'created_at' => date('Y-m-d H:i:s'),
         ];
         $agentId = $this->workAgentService->createWorkAgent($data);
         if (! $agentId) {

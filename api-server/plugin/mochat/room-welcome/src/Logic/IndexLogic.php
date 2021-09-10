@@ -62,16 +62,16 @@ class IndexLogic
      */
     private function handleParams(array $params): array
     {
-        $where                             = [];
+        $where = [];
         empty($params['text']) || $where[] = ['msg_text', 'LIKE', '%' . $params['text'] . '%'];
-        $user                              = user();
-        $where['corp_id']                  = $user['corpIds'][0];
+        $user = user();
+        $where['corp_id'] = $user['corpIds'][0];
         if ($user['isSuperAdmin'] === 0) {
             $where['create_user_id'] = $user['id'];
         }
         $options = [
-            'perPage'    => $params['perPage'],
-            'page'       => $params['page'],
+            'perPage' => $params['perPage'],
+            'page' => $params['page'],
             'orderByRaw' => 'id desc',
         ];
 
@@ -85,13 +85,13 @@ class IndexLogic
      */
     private function getroomWelcomesList(array $params): array
     {
-        $columns         = ['id', 'complex_type', 'msg_text', 'msg_complex', 'create_user_id', 'created_at'];
+        $columns = ['id', 'complex_type', 'msg_text', 'msg_complex', 'create_user_id', 'created_at'];
         $roomWelcomeList = $this->roomWelcomeService->getRoomWelcomeList($params['where'], $columns, $params['options']);
-        $list            = [];
-        $data            = [
+        $list = [];
+        $data = [
             'page' => [
-                'perPage'   => $this->perPage,
-                'total'     => '0',
+                'perPage' => $this->perPage,
+                'total' => '0',
                 'totalPage' => '0',
             ],
             'list' => $list,
@@ -110,23 +110,23 @@ class IndexLogic
         $list = [];
         foreach ($roomWelcomeList['data'] as $key => $val) {
             //处理创建者信息
-            $username   = $this->userService->getUserById($val['createUserId']);
+            $username = $this->userService->getUserById($val['createUserId']);
             $msgComplex = json_decode($val['msgComplex'], true, 512, JSON_THROW_ON_ERROR);
             if (! empty($msgComplex['pic'])) {
                 $msgComplex['pic'] = file_full_url($msgComplex['pic']);
             }
             $list[$key] = [
-                'id'           => $val['id'],
-                'msg_text'     => $val['msgText'],
+                'id' => $val['id'],
+                'msg_text' => $val['msgText'],
                 'complex_type' => $val['complexType'],
-                'msg_complex'  => json_encode($msgComplex, JSON_THROW_ON_ERROR),
-                'create_user'  => isset($username['name']) ? $username['name'] : '',
-                'create_time'  => $val['createdAt'],
+                'msg_complex' => json_encode($msgComplex, JSON_THROW_ON_ERROR),
+                'create_user' => isset($username['name']) ? $username['name'] : '',
+                'create_time' => $val['createdAt'],
             ];
         }
-        $data['page']['total']     = $roomWelcomeList['total'];
+        $data['page']['total'] = $roomWelcomeList['total'];
         $data['page']['totalPage'] = $roomWelcomeList['last_page'];
-        $data['list']              = $list;
+        $data['list'] = $list;
         return $data;
     }
 }

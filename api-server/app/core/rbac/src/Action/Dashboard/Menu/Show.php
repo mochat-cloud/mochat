@@ -12,10 +12,10 @@ namespace MoChat\App\Rbac\Action\Dashboard\Menu;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Constants\Menu\Level;
 use MoChat\App\Rbac\Contract\RbacMenuContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
@@ -53,7 +53,7 @@ class Show extends AbstractAction
 
         ## 菜单详情
         $menuId = (int) $params['menuId'];
-        $menu   = $this->menuService->getRbacMenuById($menuId);
+        $menu = $this->menuService->getRbacMenuById($menuId);
         if (empty($menu)) {
             throw new CommonException(ErrorCode::URI_NOT_FOUND, '菜单不存在');
         }
@@ -82,7 +82,7 @@ class Show extends AbstractAction
     {
         return [
             'menuId.required' => '菜单id 必填',
-            'menuId.integer'  => '菜单id 必须为整型',
+            'menuId.integer' => '菜单id 必须为整型',
         ];
     }
 
@@ -93,20 +93,20 @@ class Show extends AbstractAction
     private function handleData(array $menu): array
     {
         $data = [
-            'menuId'         => $menu['id'],
-            'name'           => $menu['name'],
-            'level'          => $menu['level'],
-            'levelName'      => ! empty($menu['level']) ? Level::getMessage($menu['level']) : '',
-            'status'         => $menu['status'],
-            'icon'           => ! empty($menu['icon']) ? $menu['icon'] : '',
-            'linkUrl'        => ! empty($menu['linkUrl']) ? $menu['linkUrl'] : '',
-            'isPageMenu'     => $menu['isPageMenu'],
-            'linkType'       => ! empty($menu['linkType']) ? $menu['linkType'] : '',
+            'menuId' => $menu['id'],
+            'name' => $menu['name'],
+            'level' => $menu['level'],
+            'levelName' => ! empty($menu['level']) ? Level::getMessage($menu['level']) : '',
+            'status' => $menu['status'],
+            'icon' => ! empty($menu['icon']) ? $menu['icon'] : '',
+            'linkUrl' => ! empty($menu['linkUrl']) ? $menu['linkUrl'] : '',
+            'isPageMenu' => $menu['isPageMenu'],
+            'linkType' => ! empty($menu['linkType']) ? $menu['linkType'] : '',
             'dataPermission' => ! empty($menu['dataPermission']) ? $menu['dataPermission'] : '',
-            'firstMenuId'    => '',
-            'secondMenuId'   => '',
-            'thirdMenuId'    => '',
-            'fourthMenuId'   => '',
+            'firstMenuId' => '',
+            'secondMenuId' => '',
+            'thirdMenuId' => '',
+            'fourthMenuId' => '',
         ];
 
         if (! empty($menu['path'])) {
@@ -114,10 +114,10 @@ class Show extends AbstractAction
             if (! strpos($menu['path'], '-')) {
                 $data['firstMenuId'] = $menu['path'];
             } else {
-                $pathArr              = explode('-', $menu['path']);
-                $data['firstMenuId']  = ! empty($pathArr[0]) ? (int) $pathArr[0] : '';
+                $pathArr = explode('-', $menu['path']);
+                $data['firstMenuId'] = ! empty($pathArr[0]) ? (int) $pathArr[0] : '';
                 $data['secondMenuId'] = ! empty($pathArr[1]) ? (int) $pathArr[1] : '';
-                $data['thirdMenuId']  = ! empty($pathArr[2]) ? (int) $pathArr[2] : '';
+                $data['thirdMenuId'] = ! empty($pathArr[2]) ? (int) $pathArr[2] : '';
                 $data['fourthMenuId'] = ! empty($pathArr[3]) ? (int) $pathArr[3] : '';
             }
         }

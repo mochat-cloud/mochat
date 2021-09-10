@@ -79,15 +79,15 @@ class AuthEventCallback extends AbstractAction
                 $type = $message['InfoType'] === 'authorized' ? 1 : 2;
                 if ($message['InfoType'] === 'authorized' || $message['InfoType'] === 'updateauthorized') {
                     $data = [
-                        'appid'              => $message['AppId'],
-                        'authorized_status'  => $type,
-                        'create_time'        => $message['CreateTime'],
-                        'authorizer_appid'   => $message['AuthorizerAppid'],
+                        'appid' => $message['AppId'],
+                        'authorized_status' => $type,
+                        'create_time' => $message['CreateTime'],
+                        'authorizer_appid' => $message['AuthorizerAppid'],
                         'authorization_code' => $message['AuthorizationCode'],
-                        'pre_auth_code'      => $message['PreAuthCode'],
-                        'encoding_aes_key'   => $this->config['aes_key'],
-                        'token'              => $this->config['token'],
-                        'secret'             => $this->config['secret'],
+                        'pre_auth_code' => $message['PreAuthCode'],
+                        'encoding_aes_key' => $this->config['aes_key'],
+                        'token' => $this->config['token'],
+                        'secret' => $this->config['secret'],
                     ];
                 }
             }
@@ -100,10 +100,10 @@ class AuthEventCallback extends AbstractAction
             $this->logger->debug(sprintf('微信回调Message::[%s]', json_encode($message, JSON_THROW_ON_ERROR)));
             if (isset($message['InfoType']) && $message['InfoType'] === 'unauthorized') {
                 $data = [
-                    'appid'             => $message['AppId'],
-                    'authorizer_appid'  => $message['AuthorizerAppid'],
+                    'appid' => $message['AppId'],
+                    'authorizer_appid' => $message['AuthorizerAppid'],
                     'authorized_status' => 3,
-                    'create_time'       => $message['CreateTime'],
+                    'create_time' => $message['CreateTime'],
                 ];
             }
             if (! empty($data)) {

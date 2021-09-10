@@ -41,15 +41,15 @@ class TopListLogic
      */
     public function getTopList(int $num): array
     {
-        $user  = user();
-        $list  = $this->workContactEmployeeService->countEmployeesWorkContactByCorpId($user['corpIds'][0]);
+        $user = user();
+        $list = $this->workContactEmployeeService->countEmployeesWorkContactByCorpId($user['corpIds'][0]);
         $total = $this->workContactEmployeeService->countWorkContactEmployeesByCorpId($user['corpIds'][0], [1]);
 
         usort($list, [$this, 'sortHandle']);
 
         return [
             'total' => $total,
-            'list'  => array_slice($list, 0, $num),
+            'list' => array_slice($list, 0, $num),
         ];
     }
 }

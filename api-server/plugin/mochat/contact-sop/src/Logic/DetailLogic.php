@@ -94,18 +94,18 @@ class DetailLogic
         foreach ($employees as $item) {
             $employeeArr[] = [
                 'employeeId' => $item['id'],
-                'name'       => $item['name'],
-                'wxUserId'   => $item['wxUserId'],
+                'name' => $item['name'],
+                'wxUserId' => $item['wxUserId'],
             ];
         }
 
         return [
-            'id'          => $res['id'],
-            'name'        => $res['name'],
+            'id' => $res['id'],
+            'name' => $res['name'],
             'creatorName' => $this->workEmployeeService->getWorkEmployeeById($res['creatorId'])['name'],
-            'employees'   => $employeeArr,
-            'setting'     => json_decode($res['setting']),
-            'createTime'  => $res['createdAt'],
+            'employees' => $employeeArr,
+            'setting' => json_decode($res['setting']),
+            'createTime' => $res['createdAt'],
         ];
     }
 }

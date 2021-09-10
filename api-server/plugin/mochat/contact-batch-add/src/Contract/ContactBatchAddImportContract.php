@@ -108,4 +108,41 @@ interface ContactBatchAddImportContract
      * @param array $where 搜索条件
      */
     public function getContactBatchAddImportOptionWhereCount(array $where): int;
+
+    /**
+     * 查询多条
+     */
+    public function getContactBatchAddImportByRecordId(int $recordId, int $status, array $columns = ['*']): array;
+
+    /**
+     * 查询单条 - 根据phone.
+     * @param string $phone Phone
+     * @param array|string[] $columns 查询字段
+     * @return array 数组
+     */
+    public function getContactBatchAddImportByPhone(int $corpId, string $phone, array $columns = ['*']): array;
+
+    /**
+     * 查询数量 - 根据status.
+     * @param array|string[] $columns 查询字段
+     * @return int 数组
+     */
+    public function countContactBatchAddImportByStatus(int $corpId, int $status, array $columns = ['*']): int;
+
+    /**
+     * 查询多条
+     * @param array|string[] $columns
+     */
+    public function countContactBatchAddImportByRecordId(int $recordId, array $columns = ['*']): array;
+
+    /**
+     * 查询数量.
+     */
+    public function countContactBatchAddImportByRecordIdEmployee(int $recordId, int $employee): int;
+
+    /**
+     * 查询多条
+     * @param array|string[] $columns
+     */
+    public function getContactBatchAddImportByRecordIdEmployeeId(int $recordId, int $employeeId, int $status, array $columns = ['*']): array;
 }

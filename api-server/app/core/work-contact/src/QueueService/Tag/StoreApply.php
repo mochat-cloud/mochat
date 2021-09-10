@@ -50,11 +50,11 @@ class StoreApply
      */
     public function handle($addParams, $groupId, $corpId): void
     {
-        $this->contactTagService      = make(WorkContactTagContract::class);
+        $this->contactTagService = make(WorkContactTagContract::class);
         $this->contactTagGroupService = make(WorkContactTagGroupContract::class);
 
         ## 获取企业微信授信信息
-        $corp     = make(CorpContract::class)->getCorpById($corpId, ['id', 'wx_corpid']);
+        $corp = make(CorpContract::class)->getCorpById($corpId, ['id', 'wx_corpid']);
         $ecClient = $this->wxApp($corp['wxCorpid'], 'contact')->external_contact;
 
         //添加标签
@@ -76,7 +76,7 @@ class StoreApply
         if (isset($addParams['group_name'])) {
             //更新标签分组wx_group_id
             $group['wx_group_id'] = $res['tag_group']['group_id'];
-            $updateGroup          = $this->contactTagGroupService
+            $updateGroup = $this->contactTagGroupService
                 ->updateWorkContactTagGroupById((int) $groupId, $group);
             if (! is_int($updateGroup)) {
                 throw new CommonException(ErrorCode::SERVER_ERROR, '微信标签分组id修改失败');

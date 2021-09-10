@@ -13,16 +13,16 @@ namespace MoChat\Plugin\RoomQuality\Action\Sidebar;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\SidebarAuthMiddleware;
 use MoChat\App\WorkRoom\Contract\WorkRoomContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
 use MoChat\Plugin\RoomQuality\Contract\RoomQualityContract;
 use Psr\Container\ContainerInterface;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\SidebarAuthMiddleware;
 
 /**
  * 企业微信-侧边栏-群聊质检设置群聊.
@@ -62,7 +62,7 @@ class SetRoom extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -77,11 +77,11 @@ class SetRoom extends AbstractAction
     {
         $params['corpId'] = (int) $this->request->input('corpId');  //企业 id
         $params['roomId'] = $this->request->input('roomId');       //群聊 id
-        $params['id']     = (int) $this->request->input('id');          //活动 id
+        $params['id'] = (int) $this->request->input('id');          //活动 id
         ## 参数验证
         $this->validated($params);
         ## 群日历详情
-        $info  = $this->roomQualityService->getRoomQualityById($params['id'], ['id', 'rooms']);
+        $info = $this->roomQualityService->getRoomQualityById($params['id'], ['id', 'rooms']);
         $rooms = empty($info['rooms']) ? [] : json_decode($info['rooms'], true, 512, JSON_THROW_ON_ERROR);
         if (! empty($rooms)) {
             $roomIds = array_column($rooms, 'wxChatId');
@@ -90,7 +90,7 @@ class SetRoom extends AbstractAction
             }
         }
         ## 群聊信息
-        $room                 = $this->workRoomService->getWorkRoomsByCorpIdWxChatId($params['corpId'], $params['roomId'], ['id', 'wx_chat_id', 'name', 'owner_id', 'room_max']);
+        $room = $this->workRoomService->getWorkRoomByCorpIdWxChatId($params['corpId'], $params['roomId'], ['id', 'wx_chat_id', 'name', 'owner_id', 'room_max']);
         $rooms[count($rooms)] = $room;
         ## 设置群聊
         $this->roomQualityService->updateRoomQualityById($params['id'], ['rooms' => json_encode($rooms, JSON_THROW_ON_ERROR)]);
@@ -107,7 +107,7 @@ class SetRoom extends AbstractAction
         return [
             'corpId' => 'required',
             'roomId' => 'required',
-            'id'     => 'required',
+            'id' => 'required',
         ];
     }
 
@@ -120,7 +120,7 @@ class SetRoom extends AbstractAction
         return [
             'corpId.required' => 'corpId 必传',
             'roomId.required' => 'roomId 必传',
-            'id.required'     => 'id 必传',
+            'id.required' => 'id 必传',
         ];
     }
 }

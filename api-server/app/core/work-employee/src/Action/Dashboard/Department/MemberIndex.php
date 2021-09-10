@@ -12,16 +12,16 @@ namespace MoChat\App\WorkEmployee\Action\Dashboard\Department;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\WorkDepartment\Contract\WorkDepartmentContract;
 use MoChat\App\WorkEmployee\Constants\Status;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeDepartmentContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 部门下的成员列表.
@@ -108,7 +108,7 @@ class MemberIndex extends AbstractAction
         if (empty($employeeInfo)) {
             return [];
         }
-        $employeeInfo      = array_column($employeeInfo, null, 'id');
+        $employeeInfo = array_column($employeeInfo, null, 'id');
         $activeEmployeeIds = array_column($employeeInfo, 'id');
 
         $departmentIds = explode(',', $departmentIds);
@@ -128,7 +128,7 @@ class MemberIndex extends AbstractAction
 
         foreach ($employeeDepartment as &$val) {
             $val['departmentName'] = '';
-            $val['employeeName']   = '';
+            $val['employeeName'] = '';
             if (isset($departmentInfo[$val['departmentId']])) {
                 $val['departmentName'] = $departmentInfo[$val['departmentId']]['name'];
             }

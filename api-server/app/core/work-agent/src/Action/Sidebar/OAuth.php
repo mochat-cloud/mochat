@@ -95,16 +95,16 @@ class OAuth extends AbstractAction
         ## wework实例 - 调用
         if (! $this->request->query('code', false)) {
             $this->app = $this->weWorkClient->app([
-                'corp_id'  => $corp['wxCorpid'],
-                'secret'   => $agent['wxSecret'],
+                'corp_id' => $corp['wxCorpid'],
+                'secret' => $agent['wxSecret'],
                 'agent_id' => $agent['wxAgentId'],
             ]);
             return $this->buildAuthUrl($agentId);
         }
-        $isJsRedirect   = $this->request->query('isJsRedirect', 0);
+        $isJsRedirect = $this->request->query('isJsRedirect', 0);
         $sidebarBaseUrl = Url::getSidebarBaseUrl();
-        $redirectUrl    = $sidebarBaseUrl . '/codeAuth?callValues=';
-        $queryParam     = function (array $data, int $code = 200, string $msg = '') use ($corp): string {
+        $redirectUrl = $sidebarBaseUrl . '/codeAuth?callValues=';
+        $queryParam = function (array $data, int $code = 200, string $msg = '') use ($corp): string {
             return base64_encode(json_encode(responseDataFormat($code, $msg, array_merge(
                 $data,
                 ['corpId' => $corp['id']],
@@ -113,11 +113,11 @@ class OAuth extends AbstractAction
         };
         try {
             $this->app = $this->weWorkClient->app([
-                'corp_id'  => $corp['wxCorpid'],
-                'secret'   => $agent['wxSecret'],
+                'corp_id' => $corp['wxCorpid'],
+                'secret' => $agent['wxSecret'],
                 'agent_id' => $agent['wxAgentId'],
             ]);
-            $tokenData = $this->getToken((int)$corp['id']);
+            $tokenData = $this->getToken((int) $corp['id']);
             if ($isJsRedirect) {
                 $redirectUrl .= $queryParam($tokenData);
                 return $this->response->redirect($redirectUrl);
@@ -142,8 +142,8 @@ class OAuth extends AbstractAction
     protected function buildAuthUrl(int $agentId): array
     {
         $isJsRedirect = $this->request->query('isJsRedirect', 0);
-        $act          = $this->request->query('act', '');
-        $callbackUrl  = Url::getApiBaseUrl() . '/sidebar/agent/oauth';
+        $act = $this->request->query('act', '');
+        $callbackUrl = Url::getApiBaseUrl() . '/sidebar/agent/oauth';
         $callbackUrl .= '?' . http_build_query(['act' => $act, 'agentId' => $agentId, 'isJsRedirect' => $isJsRedirect]);
         // 返回一个 redirect 实例
         $redirect = $this->app->oauth->redirect($callbackUrl);
@@ -155,7 +155,6 @@ class OAuth extends AbstractAction
 
     /**
      * 获取TOKEN.
-     * @param int $corpId
      * @return array ...
      */
     protected function getToken(int $corpId): array
@@ -196,7 +195,7 @@ class OAuth extends AbstractAction
         $jwt = $guard->getJwtManager();
 
         return [
-            'token'  => $guard->login($user),
+            'token' => $guard->login($user),
             'expire' => $jwt->getTtl(),
         ];
     }

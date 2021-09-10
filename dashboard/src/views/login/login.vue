@@ -18,10 +18,10 @@
               class="input"
               size="large"
               type="text"
-              placeholder="帐号"
+              placeholder="手机号"
               v-decorator="[
                 'phone',
-                {rules: [{ required: true, pattern: /^1[34578]\d{9}$/, message: '请输入帐号' }], validateTrigger: 'change'}
+                {rules: [{ required: true, pattern: /^1[345789]\d{9}$/, message: '请输入正确的手机号' }], validateTrigger: 'change'}
               ]"
             >
               <img slot="prefix" :src="require('@/assets/user.png')" alt="">
@@ -45,7 +45,7 @@
         </div>
         <div v-if="customActiveKey == 'tab2'">
           <a-form-item>
-            <a-input class="input" size="large" type="text" placeholder="手机号" v-decorator="['mobile', {rules: [{ required: true, pattern: /^1[34578]\d{9}$/, message: '请输入正确的手机号' }], validateTrigger: 'change'}]">
+            <a-input class="input" size="large" type="text" placeholder="手机号" v-decorator="['mobile', {rules: [{ required: true, pattern: /^1[345789]\d{9}$/, message: '请输入正确的手机号' }], validateTrigger: 'change'}]">
               <a-icon slot="prefix" type="mobile" :style="{ color: 'rgba(0,0,0,.25)' }" />
             </a-input>
           </a-form-item>
@@ -137,8 +137,7 @@ export default {
         loginBtn: false,
         loginType: 0,
         smsSendBtn: false
-      },
-      background: require('../../assets/background.png')
+      }
     }
   },
   created () {

@@ -123,89 +123,89 @@ class WxSyncLogic
                 unset($roomList['roomList'][$wxRoom['chat_id']]);
                 ## 群
                 $roomUpdateData[] = [
-                    'id'          => $currentRoom['id'],
-                    'status'      => $wxRoom['status'],
-                    'name'        => ! empty($wxRoom['name']) ? $wxRoom['name'] : '群聊',
-                    'owner_id'    => isset($roomList['employeeList'][$wxRoom['owner']]) ? $roomList['employeeList'][$wxRoom['owner']] : 0,
-                    'notice'      => isset($wxRoom['notice']) ? $wxRoom['notice'] : '',
+                    'id' => $currentRoom['id'],
+                    'status' => $wxRoom['status'],
+                    'name' => ! empty($wxRoom['name']) ? $wxRoom['name'] : '群聊',
+                    'owner_id' => isset($roomList['employeeList'][$wxRoom['owner']]) ? $roomList['employeeList'][$wxRoom['owner']] : 0,
+                    'notice' => isset($wxRoom['notice']) ? $wxRoom['notice'] : '',
                     'create_time' => date('Y-m-d H:i:s', $wxRoom['create_time']),
-                    'updated_at'  => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
                 ];
                 ## 群成员
                 foreach ($wxRoom['member_list'] as $item) {
                     if ($item['type'] == WorkContactRoomType::EMPLOYEE) {
-                        $contactId  = 0;
+                        $contactId = 0;
                         $employeeId = isset($roomList['employeeList'][$item['userid']]) ? $roomList['employeeList'][$item['userid']] : 0;
                     } else {
-                        $contactId  = isset($roomList['contactList'][$item['userid']]) ? $roomList['contactList'][$item['userid']] : 0;
+                        $contactId = isset($roomList['contactList'][$item['userid']]) ? $roomList['contactList'][$item['userid']] : 0;
                         $employeeId = 0;
                     }
                     if (isset($currentRoom['list'][$item['userid']])) {
                         $contactRoomUpdateData[] = [
-                            'id'          => $currentRoom['list'][$item['userid']]['id'],
-                            'contact_id'  => $contactId,
+                            'id' => $currentRoom['list'][$item['userid']]['id'],
+                            'contact_id' => $contactId,
                             'employee_id' => $employeeId,
-                            'unionid'     => isset($item['unionid']) ? $item['unionid'] : '',
-                            'join_scene'  => $item['join_scene'],
-                            'type'        => $item['type'],
-                            'status'      => WorkContactRoomStatus::NORMAL,
-                            'join_time'   => date('Y-m-d H:i:s', $item['join_time']),
-                            'out_time'    => '',
-                            'updated_at'  => date('Y-m-d H:i:s'),
+                            'unionid' => isset($item['unionid']) ? $item['unionid'] : '',
+                            'join_scene' => $item['join_scene'],
+                            'type' => $item['type'],
+                            'status' => WorkContactRoomStatus::NORMAL,
+                            'join_time' => date('Y-m-d H:i:s', $item['join_time']),
+                            'out_time' => '',
+                            'updated_at' => date('Y-m-d H:i:s'),
                         ];
                         unset($currentRoom['list'][$item['userid']]);
                     } else {
                         $contactRoomCreateData[] = [
-                            'wx_user_id'  => $item['userid'],
-                            'contact_id'  => $contactId,
+                            'wx_user_id' => $item['userid'],
+                            'contact_id' => $contactId,
                             'employee_id' => $employeeId,
-                            'unionid'     => isset($item['unionid']) ? $item['unionid'] : '',
-                            'room_id'     => $currentRoom['id'],
-                            'join_scene'  => $item['join_scene'],
-                            'type'        => $item['type'],
-                            'status'      => WorkContactRoomStatus::NORMAL,
-                            'join_time'   => date('Y-m-d H:i:s', $item['join_time']),
-                            'out_time'    => '',
-                            'created_at'  => date('Y-m-d H:i:s'),
-                            'updated_at'  => date('Y-m-d H:i:s'),
+                            'unionid' => isset($item['unionid']) ? $item['unionid'] : '',
+                            'room_id' => $currentRoom['id'],
+                            'join_scene' => $item['join_scene'],
+                            'type' => $item['type'],
+                            'status' => WorkContactRoomStatus::NORMAL,
+                            'join_time' => date('Y-m-d H:i:s', $item['join_time']),
+                            'out_time' => '',
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'updated_at' => date('Y-m-d H:i:s'),
                         ];
                     }
                 }
                 $deleteContactRoomIdArr = array_merge($deleteContactRoomIdArr, array_column($currentRoom['list'], 'id'));
             } else {
                 $roomCreateData[] = [
-                    'corp_id'     => $corpId,
-                    'wx_chat_id'  => $wxRoom['chat_id'],
-                    'name'        => ! empty($wxRoom['name']) ? $wxRoom['name'] : '群聊',
-                    'owner_id'    => isset($roomList['employeeList'][$wxRoom['owner']]) ? $roomList['employeeList'][$wxRoom['owner']] : 0,
-                    'notice'      => isset($wxRoom['notice']) ? $wxRoom['notice'] : '',
-                    'status'      => $wxRoom['status'],
+                    'corp_id' => $corpId,
+                    'wx_chat_id' => $wxRoom['chat_id'],
+                    'name' => ! empty($wxRoom['name']) ? $wxRoom['name'] : '群聊',
+                    'owner_id' => isset($roomList['employeeList'][$wxRoom['owner']]) ? $roomList['employeeList'][$wxRoom['owner']] : 0,
+                    'notice' => isset($wxRoom['notice']) ? $wxRoom['notice'] : '',
+                    'status' => $wxRoom['status'],
                     'create_time' => date('Y-m-d H:i:s', $wxRoom['create_time']),
-                    'room_max'    => 200,
-                    'created_at'  => date('Y-m-d H:i:s'),
-                    'updated_at'  => date('Y-m-d H:i:s'),
+                    'room_max' => 200,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
                 ];
                 foreach ($wxRoom['member_list'] as $value) {
                     if ($value['type'] == WorkContactRoomType::EMPLOYEE) {
-                        $contactId  = 0;
+                        $contactId = 0;
                         $employeeId = isset($roomList['employeeList'][$value['userid']]) ? $roomList['employeeList'][$value['userid']] : 0;
                     } else {
-                        $contactId  = isset($roomList['contactList'][$value['userid']]) ? $roomList['contactList'][$value['userid']] : 0;
+                        $contactId = isset($roomList['contactList'][$value['userid']]) ? $roomList['contactList'][$value['userid']] : 0;
                         $employeeId = 0;
                     }
                     $contactRoomCreateData[] = [
-                        'wx_user_id'  => $value['userid'],
-                        'contact_id'  => $contactId,
+                        'wx_user_id' => $value['userid'],
+                        'contact_id' => $contactId,
                         'employee_id' => $employeeId,
-                        'unionid'     => isset($value['unionid']) ? $value['unionid'] : '',
-                        'room_id'     => $wxRoom['chat_id'],
-                        'join_scene'  => $value['join_scene'],
-                        'type'        => $value['type'],
-                        'status'      => WorkContactRoomStatus::NORMAL,
-                        'join_time'   => date('Y-m-d H:i:s', $value['join_time']),
-                        'out_time'    => '',
-                        'created_at'  => date('Y-m-d H:i:s'),
-                        'updated_at'  => date('Y-m-d H:i:s'),
+                        'unionid' => isset($value['unionid']) ? $value['unionid'] : '',
+                        'room_id' => $wxRoom['chat_id'],
+                        'join_scene' => $value['join_scene'],
+                        'type' => $value['type'],
+                        'status' => WorkContactRoomStatus::NORMAL,
+                        'join_time' => date('Y-m-d H:i:s', $value['join_time']),
+                        'out_time' => '',
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'updated_at' => date('Y-m-d H:i:s'),
                     ];
                 }
             }
@@ -239,16 +239,16 @@ class WxSyncLogic
                     continue;
                 }
                 isset($roomList[$contactRoom['roomId']]['list']) || $roomList[$contactRoom['roomId']]['list'] = [];
-                $roomList[$contactRoom['roomId']]['list'][$contactRoom['wxUserId']]                           = $contactRoom;
+                $roomList[$contactRoom['roomId']]['list'][$contactRoom['wxUserId']] = $contactRoom;
             }
         }
         empty($roomList) || $roomList = array_column(array_values($roomList), null, 'wxChatId');
         unset($contactRoomList);
         ## 企业通讯录列表
-        $employeeList                         = make(WorkEmployeeContract::class)->getWorkEmployeesByCorpId($corpId, ['id', 'wx_user_id']);
+        $employeeList = make(WorkEmployeeContract::class)->getWorkEmployeesByCorpId($corpId, ['id', 'wx_user_id']);
         empty($employeeList) || $employeeList = array_column($employeeList, 'id', 'wxUserId');
         ## 企业客户列表
-        $contactList                        = make(WorkContactContract::class)->getWorkContactsByCorpId($corpId, ['id', 'wx_external_userid']);
+        $contactList = make(WorkContactContract::class)->getWorkContactsByCorpId($corpId, ['id', 'wx_external_userid']);
         empty($contactList) || $contactList = array_column($contactList, 'id', 'wxExternalUserid');
 
         return compact('roomList', 'employeeList', 'contactList');
@@ -281,7 +281,7 @@ class WxSyncLogic
             empty($roomCreateData) || $newRoomList = array_map(function ($newRoom) {
                 return [
                     'wxChatId' => $newRoom['wx_chat_id'],
-                    'roomId'   => $this->workRoomService->createWorkRoom($newRoom),
+                    'roomId' => $this->workRoomService->createWorkRoom($newRoom),
                 ];
             }, $roomCreateData);
             empty($newRoomList) || $newRoomList = array_column($newRoomList, 'roomId', 'wxChatId');
@@ -304,7 +304,7 @@ class WxSyncLogic
             empty($contactRoomUpdateData) || $this->workContactRoomService->batchUpdateByIds($contactRoomUpdateData);
             ## 客户成员-删除数据
             empty($deleteContactRoomIdArr) || $this->workContactRoomService->updateWorkContactRoomByIds($deleteContactRoomIdArr, [
-                'status'   => WorkContactRoomStatus::QUIT,
+                'status' => WorkContactRoomStatus::QUIT,
                 'out_time' => date('Y-m-d H:i:s'),
             ]);
             ## 群裂变数据处理
@@ -334,7 +334,7 @@ class WxSyncLogic
                         ## 有师傅 并且（无用户限制活新用户有效）
                         if (! empty($contact_record['parentUnionId']) && ($fission['newFriend'] === 0 || ($fission['newFriend'] === 1 && $contact_record['isNew'] === 1))) {
                             $parent = $this->roomFissionContactService->getRoomFissionContactByRoomIdUnionIdFissionID((int) $item['room_id'], $contact_record['parentUnionId'], $contact_record['fissionId'], ['id', 'invite_count']);
-                            $num    = $parent['inviteCount'] + 1;
+                            $num = $parent['inviteCount'] + 1;
                             $status = $fission['targetCount'] > $num ? 0 : 1;
                             $this->roomFissionContactService->updateRoomFissionContactById($parent['id'], ['invite_count' => $num, 'status' => $status]);
                         }
@@ -365,7 +365,7 @@ class WxSyncLogic
                             ## 有师傅并且流失无效
                             if (! empty($contact_record['parentUnionId']) && $fission['deleteInvalid'] === 1) {
                                 $parent = $this->roomFissionContactService->getRoomFissionContactByRoomIdUnionIdFissionID($contact_room['roomId'], $contact_record['parentUnionId'], $contact_record['fissionId'], ['id', 'invite_count', 'status', 'receive_status']);
-                                $num    = $parent['inviteCount'] - 1;
+                                $num = $parent['inviteCount'] - 1;
                                 $status = $parent['status'];
                                 ## 已完成未领取
                                 if ($parent['status'] === 1 && $parent['receiveStatus'] === 0) {
@@ -407,7 +407,7 @@ class WxSyncLogic
                 }
                 foreach (json_decode($auto['tagRule'], true, 512, JSON_THROW_ON_ERROR) as $key => $tagRule) {
                     $room_ids = array_column($tagRule['rooms'], 'id');
-                    $tags     = $tagRule['tags'];
+                    $tags = $tagRule['tags'];
                     // 空标签跳出循环
                     if (empty($tags)) {
                         continue;
@@ -417,30 +417,30 @@ class WxSyncLogic
                         ## 客户id
                         $data['contactId'] = $contact_id;
                         ## 员工id
-                        $contact_employee   = $this->workContactEmployeeService->getWorkContactEmployeeByCorpIdContactId($contact_id, $auto['corpId'], ['employee_id']);
+                        $contact_employee = $this->workContactEmployeeService->getWorkContactEmployeeByCorpIdContactId($contact_id, $auto['corpId'], ['employee_id']);
                         $data['employeeId'] = $contact_employee['employeeId'];
                         ## 客户
-                        $contact                         = $this->workContactService->getWorkContactById($contact_id, ['wx_external_userid']);
+                        $contact = $this->workContactService->getWorkContactById($contact_id, ['wx_external_userid']);
                         $data['contactWxExternalUserid'] = $contact['wxExternalUserid'];
                         ## 员工
-                        $employee                 = $this->workEmployeeService->getWorkEmployeeById($contact_employee['employeeId'], ['wx_user_id']);
+                        $employee = $this->workEmployeeService->getWorkEmployeeById($contact_employee['employeeId'], ['wx_user_id']);
                         $data['employeeWxUserId'] = $employee['wxUserId'];
-                        $data['corpId']           = $auto['corpId'];
+                        $data['corpId'] = $auto['corpId'];
                         $this->autoTag($data);
                         ## 数据库操作
-                        $record         = $this->autoTagRecordService->getAutoTagRecordByCorpIdWxExternalUseridAutoTagId($auto['corpId'], $data['contactWxExternalUserid'], $auto['id'], $key + 1, ['id', 'trigger_count']);
-                        $trigger_count  = empty($record) ? 1 : $record['triggerCount'] + 1;
+                        $record = $this->autoTagRecordService->getAutoTagRecordByCorpIdWxExternalUseridAutoTagId($auto['corpId'], $data['contactWxExternalUserid'], $auto['id'], $key + 1, ['id', 'trigger_count']);
+                        $trigger_count = empty($record) ? 1 : $record['triggerCount'] + 1;
                         $createMonitors = [
-                            'auto_tag_id'        => $auto['id'],
-                            'contact_id'         => $contact_id,
-                            'tag_rule_id'        => $key + 1,
+                            'auto_tag_id' => $auto['id'],
+                            'contact_id' => $contact_id,
+                            'tag_rule_id' => $key + 1,
                             'wx_external_userid' => $data['contactWxExternalUserid'],
-                            'employee_id'        => $data['employeeId'],
-                            'tags'               => json_encode(array_column($tags, 'tagname'), JSON_THROW_ON_ERROR),
-                            'corp_id'            => $auto['corpId'],
-                            'trigger_count'      => $trigger_count,
-                            'status'             => 1,
-                            'created_at'         => date('Y-m-d H:i:s'),
+                            'employee_id' => $data['employeeId'],
+                            'tags' => json_encode(array_column($tags, 'tagname'), JSON_THROW_ON_ERROR),
+                            'corp_id' => $auto['corpId'],
+                            'trigger_count' => $trigger_count,
+                            'status' => 1,
+                            'created_at' => date('Y-m-d H:i:s'),
                         ];
                         if (empty($record)) {
                             $this->autoTagRecordService->createAutoTagRecord($createMonitors);

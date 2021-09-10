@@ -1,49 +1,107 @@
 <template>
   <div class="white-bg-module">
-    <a-table class="table" rowKey="id" :data-source="tableData">
-      <a-table-column title="名称" data-index="phone" />
-      <a-table-column title="上传时间" data-index="name" />
-
-      <a-table-column title="分配客户" data-index="date">
-        <template slot-scope="date">
-          <div class="user"><a-icon type="user" />{{ date }}</div>
-        </template>
-      </a-table-column>
-      <a-table-column title="客户标签" data-index="tag" />
-      <a-table-column title="导入客户数" data-index="status" />
-
-      <a-table-column title="已添加客户数" data-index="date1" />
-      <a-table-column title="添加完成率" data-index="status1" />
-      <a-table-column title="操作">
-        <template slot-scope="record">
-          <span :id="record.id">
-            <a> 提醒</a>
-            <a-divider type="vertical" />
-            <a>删除</a> <a-divider type="vertical" />
-            <a>详情</a>
-          </span>
-        </template>
-      </a-table-column>
+    <a-table :columns="drawTable.columns" :data-source="drawTable.data">
+      <div slot="allotEmployee" slot-scope="text">
+        <a-tag v-for="(item,index) in text" :key="index">{{ item.name }}</a-tag>
+      </div>
+      <div slot="tags" slot-scope="text">
+        <a-tag v-for="(item,index) in text" :key="index">{{ item.name }}</a-tag>
+      </div>
+      <!--      -->
+      <div slot="operation" slot-scope="text,record">
+        <a @click="remindBtn">提醒</a>
+        <a-divider type="vertical" />
+        <a @click="delWriteRow(record)">删除</a>
+        <a-divider type="vertical" />
+        <a @click="$router.push({ path: '/contactBatchAdd/importShow?recordId='+record.id })">详情</a>
+      </div>
     </a-table>
   </div>
 </template>
 <script>
+// eslint-disable-next-line no-unused-vars
+import { importData, importDestroyApi } from '@/api/contactBatchAdd'
 export default {
   data () {
     return {
-      tableData: [
-        {
-          id: 1,
-          phone: '1564556',
-          name: 'jsdh1',
-          date: '2015- 10-12 12:00',
-          date1: '2015- 10-12 12:00',
-          tag: 'hha',
-          status: 2,
-          status1: 12,
-          status2: 23
+      //  导入弹窗
+      drawTable: {
+        columns: [
+          {
+            title: '标题',
+            dataIndex: 'title'
+          },
+          {
+            title: '上传时间',
+            dataIndex: 'uploadAt'
+          },
+          {
+            title: '分配员工',
+            dataIndex: 'allotEmployee',
+            scopedSlots: { customRender: 'allotEmployee' }
+          },
+          {
+            title: '标签',
+            dataIndex: 'tags',
+            scopedSlots: { customRender: 'tags' }
+          },
+          {
+            title: '导入数量',
+            dataIndex: 'importNum',
+            width: 100
+          },
+          {
+            title: '成功添加数量',
+            dataIndex: 'addNum',
+            width: 120
+          },
+          {
+            title: '文件名',
+            dataIndex: 'fileName',
+            width: 200
+          },
+          {
+            title: '操作',
+            dataIndex: 'operation',
+            scopedSlots: { customRender: 'operation' }
+          }
+        ],
+        data: []
+      }
+    }
+  },
+  created () {
+    this.importDataClick()
+  },
+  methods: {
+    // 提醒
+    remindBtn (record) {
+
+    },
+    // 获取数据
+    importDataClick () {
+      importData().then(res => {
+        this.drawTable.data = res.data.data
+      })
+    },
+    //  删除
+    delWriteRow (record) {
+      const that = this
+      this.$confirm({
+        title: '提示',
+        content: '是否删除',
+        okText: '删除',
+        okType: 'danger',
+        cancelText: '取消',
+        onOk () {
+          importDestroyApi({
+            id: record.id
+          }).then((res) => {
+            that.importDataClick()
+            that.$message.success('删除成功')
+          })
         }
-      ]
+      })
     }
   }
 }

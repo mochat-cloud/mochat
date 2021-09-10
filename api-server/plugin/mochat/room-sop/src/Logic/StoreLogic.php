@@ -124,12 +124,12 @@ class StoreLogic
         $params['setting'] = json_encode($params['setting']);
 
         $data = [
-            'corp_id'    => $params['corpId'],
+            'corp_id' => $params['corpId'],
             'creator_id' => $params['userId'],
-            'name'       => $params['name'],
-            'setting'    => $params['setting'],
-            'room_ids'   => '[]',
-            'state'      => 0,
+            'name' => $params['name'],
+            'setting' => $params['setting'],
+            'room_ids' => '[]',
+            'state' => 0,
         ];
 
         return $this->roomSopService->createRoomSop($data) ? true : false;

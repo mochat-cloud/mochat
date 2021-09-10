@@ -47,8 +47,7 @@ class DynamicCrontabManager
         StdoutLoggerInterface $logger,
         ConfigInterface $config,
         CacheInterface $cache
-)
-    {
+    ) {
         $this->crontabManager = $crontabManager;
         $this->logger = $logger;
         $this->config = $config;
@@ -73,13 +72,13 @@ class DynamicCrontabManager
         [$addParams, $deleteParams] = $this->diffParams($callbackParams, $lastCallbackParams);
 
         $crontabs = [];
-        if (!empty($addParams)) {
+        if (! empty($addParams)) {
             foreach ($addParams as $addParam) {
                 $crontabs[] = $this->buildCrontabByAnnotation($annotation, $addParam);
             }
         }
 
-        if (!empty($deleteParams)) {
+        if (! empty($deleteParams)) {
             foreach ($deleteParams as $deleteParam) {
                 $crontabs[] = $this->buildCrontabByAnnotation($annotation, $deleteParam, true);
             }
@@ -135,7 +134,7 @@ class DynamicCrontabManager
 
     private function getCacheKey(string $name)
     {
-        return sprintf("mochat:dynamicCrontab:%s", $name);
+        return sprintf('mochat:dynamicCrontab:%s', $name);
     }
 
     private function parseCrontabs(): array
@@ -184,7 +183,7 @@ class DynamicCrontabManager
         if (isset($annotation->name)) {
             $name = $annotation->name;
             if (is_string($callbackParam) || is_numeric($callbackParam) || is_int($callbackParam)) {
-                $name = $name . '-' . (string)$callbackParam;
+                $name = $name . '-' . (string) $callbackParam;
             } else {
                 $name = $name . '-' . sha1(serialize($callbackParam));
             }
@@ -208,7 +207,7 @@ class DynamicCrontabManager
     {
         $crontab = $this->buildBaseCrontab($annotation);
 
-        isset($annotation->name) && $crontab->setName($annotation->name.'-schedule');
+        isset($annotation->name) && $crontab->setName($annotation->name . '-schedule');
         $crontab->setCallback([$this, 'schedule', $annotation]);
 
         return $crontab;

@@ -162,7 +162,11 @@ export default {
       infoApi({ id }).then((res) => {
         this.formAskData.name = res.data.name
         this.formAskData.rooms = res.data.rooms
-        this.formAskData.keyword = res.data.keyword
+        if (res.data.keyword) {
+          this.formAskData.keyword = res.data.keyword
+        } else {
+          this.formAskData.keyword = []
+        }
         this.showActionTips(res.data)
       })
     },

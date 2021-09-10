@@ -12,11 +12,11 @@ namespace MoChat\Plugin\RoomQuality\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
@@ -100,7 +100,7 @@ class ShowContact
      */
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -121,7 +121,7 @@ class ShowContact
         $params = $this->request->all();
         $this->validated($params);
         $roomQuality = $this->roomQualityService->getRoomQualityById((int) $params['id'], ['rooms']);
-        $rooms       = json_decode($roomQuality['rooms'], true, 512, JSON_THROW_ON_ERROR);
+        $rooms = json_decode($roomQuality['rooms'], true, 512, JSON_THROW_ON_ERROR);
         ## 总触发规则次数
         $data['quality_total_num'] = $this->roomQualityRecordService->countRoomQualityRecordByQualityId((int) $params['id']);
         ## 今日总触发规则次数
@@ -130,22 +130,22 @@ class ShowContact
         $data['quality_week_num'] = $this->roomQualityRecordService->countRoomQualityRecordByQualityId((int) $params['id'], 0, date('Y-m-d', (time() - ((date('w') == 0 ? 7 : date('w')) - 1) * 24 * 3600)));
         ## 本月总触发规则次数
         $data['quality_month_num'] = $this->roomQualityRecordService->countRoomQualityRecordByQualityId((int) $params['id'], 0, date('Y-m-d', strtotime(date('Y-m', time()) . '-01 00:00:00')));
-        $list                      = [];
+        $list = [];
         foreach ($rooms as $k => $v) {
             ## 群信息
-            $list[$k]['room_id']           = $v['id'];
-            $list[$k]['room_name']         = $v['name'];
-            $room                          = $this->workRoomService->getWorkRoomById((int) $v['id'], ['owner_id', 'status']);
-            $employee                      = $this->workEmployeeService->getWorkEmployeeById($room['ownerId'], ['name']);
-            $list[$k]['owner_name']        = $employee['name'];
-            $list[$k]['status']            = $room['status'];
-            $list[$k]['room_total_num']    = $this->workContactRoomService->countWorkContactRoomByRoomId((int) $v['id']);
+            $list[$k]['room_id'] = $v['id'];
+            $list[$k]['room_name'] = $v['name'];
+            $room = $this->workRoomService->getWorkRoomById((int) $v['id'], ['owner_id', 'status']);
+            $employee = $this->workEmployeeService->getWorkEmployeeById($room['ownerId'], ['name']);
+            $list[$k]['owner_name'] = $employee['name'];
+            $list[$k]['status'] = $room['status'];
+            $list[$k]['room_total_num'] = $this->workContactRoomService->countWorkContactRoomByRoomId((int) $v['id']);
             $list[$k]['room_employee_num'] = $this->workContactRoomService->countWorkContactRoomByRoomId((int) $v['id'], 1);
             ## 统计记录数据
             $list[$k]['quality_total_num'] = $this->roomQualityRecordService->countRoomQualityRecordByQualityId((int) $params['id'], (int) $v['id']);
             $list[$k]['quality_today_num'] = $this->roomQualityRecordService->countRoomQualityRecordByQualityId((int) $params['id'], (int) $v['id'], date('Y-m-d'));
-            $last_quality                  = $this->roomQualityRecordService->getRoomQualityRecordLastByQualityId((int) $v['id'], ['created_at']);
-            $list[$k]['last_time']         = empty($last_quality) ? '-' : $last_quality['createdAt'];
+            $last_quality = $this->roomQualityRecordService->getRoomQualityRecordLastByQualityId((int) $v['id'], ['created_at']);
+            $list[$k]['last_time'] = empty($last_quality) ? '-' : $last_quality['createdAt'];
         }
         return ['data' => $data, 'list' => $list];
     }
@@ -170,7 +170,7 @@ class ShowContact
     {
         return [
             'id.required' => '质检id 必填',
-            'id.integer'  => '质检id 必须为整型',
+            'id.integer' => '质检id 必须为整型',
         ];
     }
 }

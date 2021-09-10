@@ -12,14 +12,13 @@ namespace MoChat\Plugin\RoomSop\Action\Sidebar;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
-use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\SidebarAuthMiddleware;
 use MoChat\App\WorkRoom\Contract\WorkRoomContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Plugin\RoomSop\Logic\TipSopDelRoomLogic;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\SidebarAuthMiddleware;
 
 /**
  * h5侧边栏接口.
@@ -28,6 +27,7 @@ use MoChat\App\Common\Middleware\SidebarAuthMiddleware;
 class TipSopDelRoom extends AbstractAction
 {
     /**
+     * @Inject
      * @var TipSopDelRoomLogic
      */
     protected $tipSopDelRoom;
@@ -39,18 +39,6 @@ class TipSopDelRoom extends AbstractAction
     protected $workRoomService;
 
     /**
-     * @Inject
-     * @var RequestInterface
-     */
-    protected $request;
-
-    public function __construct(TipSopDelRoomLogic $tipSopDelRoom, RequestInterface $request)
-    {
-        $this->tipSopDelRoom = $tipSopDelRoom;
-        $this->request       = $request;
-    }
-
-    /**
      * @Middlewares({
      *     @Middleware(SidebarAuthMiddleware::class)
      * })
@@ -58,10 +46,11 @@ class TipSopDelRoom extends AbstractAction
      */
     public function handle(): array
     {
-        $params['corpId'] = (int) $this->request->input('corpId');  //企业 id
-        $params['id']     = (int) $this->request->input('id');               //sop id
-        $roomId           = $this->request->input('roomId');                      //群聊id
-        $params['roomId'] = $this->workRoomService->getWorkRoomsByCorpIdWxChatId($params['corpId'], $roomId, ['id'])['id'];       //群聊id
+        $user = user();
+        $params['corpId'] = (int) $user['corpId'];
+        $params['id'] = (int) $this->request->input('id');               //sop id
+        $roomId = $this->request->input('roomId');                      //群聊id
+        $params['roomId'] = $this->workRoomService->getWorkRoomByCorpIdWxChatId($params['corpId'], $roomId, ['id'])['id'];       //群聊id
 
         return $this->tipSopDelRoom->handle($params);
     }

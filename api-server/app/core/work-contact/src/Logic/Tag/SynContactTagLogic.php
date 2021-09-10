@@ -80,17 +80,17 @@ class SynContactTagLogic
     private function synTag($params, $allGroup, $allTag)
     {
         $updateTagGroup = [];
-        $createTag      = [];
-        $updateTag      = [];
+        $createTag = [];
+        $updateTag = [];
 
         foreach ($params['tag_group'] as &$val) {
             //若表中有值 需更新
             if (isset($allGroup[$val['group_id']])) {
                 $updateTagGroup[] = [
-                    'id'          => $allGroup[$val['group_id']]['id'],
+                    'id' => $allGroup[$val['group_id']]['id'],
                     'wx_group_id' => $val['group_id'],
-                    'group_name'  => $val['group_name'],
-                    'order'       => $val['order'],
+                    'group_name' => $val['group_name'],
+                    'order' => $val['order'],
                 ];
 
                 $contactGroupId = $allGroup[$val['group_id']]['id'];
@@ -100,9 +100,9 @@ class SynContactTagLogic
             } else { //若表中没值 需新增
                 $params = [
                     'wx_group_id' => $val['group_id'],
-                    'corp_id'     => user()['corpIds'][0],
-                    'group_name'  => $val['group_name'],
-                    'order'       => $val['order'],
+                    'corp_id' => user()['corpIds'][0],
+                    'group_name' => $val['group_name'],
+                    'order' => $val['order'],
                 ];
                 $contactGroupId = $this->contactTagGroupService->createWorkContactTagGroup($params);
                 if (! is_int($contactGroupId)) {
@@ -114,19 +114,19 @@ class SynContactTagLogic
                 //若表中有值 需更新
                 if (isset($allTag[$v['id']])) {
                     $updateTag[] = [
-                        'id'                => $allTag[$v['id']]['id'],
+                        'id' => $allTag[$v['id']]['id'],
                         'wx_contact_tag_id' => $v['id'],
-                        'name'              => $v['name'],
-                        'order'             => $v['order'],
+                        'name' => $v['name'],
+                        'order' => $v['order'],
                     ];
                     //最后没有被unset掉的 则是企业微信没有的 即需要删除的标签
                     unset($allTag[$v['id']]);
                 } else { //若表中没值 需新增分组
                     $createTag[] = [
-                        'wx_contact_tag_id'    => $v['id'],
-                        'corp_id'              => user()['corpIds'][0],
-                        'name'                 => $v['name'],
-                        'order'                => $v['order'],
+                        'wx_contact_tag_id' => $v['id'],
+                        'corp_id' => user()['corpIds'][0],
+                        'name' => $v['name'],
+                        'order' => $v['order'],
                         'contact_tag_group_id' => $contactGroupId,
                     ];
                 }
@@ -188,16 +188,16 @@ class SynContactTagLogic
         //如果查到 就更新
         if (! empty($workUpdateTime)) {
             $data['last_update_time'] = date('Y-m-d H:i:s');
-            $id                       = end($workUpdateTime)['id'];
-            $updateRes                = $this->workUpdateTime->updateWorkUpdateTimeById((int) $id, $data);
+            $id = end($workUpdateTime)['id'];
+            $updateRes = $this->workUpdateTime->updateWorkUpdateTimeById((int) $id, $data);
             if (! is_int($updateRes)) {
                 throw new CommonException(ErrorCode::SERVER_ERROR, '更新标签同步时间失败');
             }
         } else {
             //如果没有新增
             $params = [
-                'corp_id'          => user()['corpIds'][0],
-                'type'             => Type::TAG,
+                'corp_id' => user()['corpIds'][0],
+                'type' => Type::TAG,
                 'last_update_time' => date('Y-m-d H:i:s'),
             ];
 

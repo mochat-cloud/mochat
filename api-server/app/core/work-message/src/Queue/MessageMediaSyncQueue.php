@@ -11,17 +11,14 @@ declare(strict_types=1);
 namespace MoChat\App\WorkMessage\Queue;
 
 use Hyperf\AsyncQueue\Annotation\AsyncQueueMessage;
-use MoChat\App\WorkMessage\Utils\MessageArchiveFactory;
 use League\Flysystem\Filesystem;
+use MoChat\App\WorkMessage\Utils\MessageArchiveFactory;
 
 class MessageMediaSyncQueue
 {
     /**
      * @AsyncQueueMessage(pool="message_media")
      * @param int $corpId 企业ID
-     * @param string $msgId
-     * @param string $sdkFileId
-     * @param string $path
      * @param $extension
      */
     public function handle(int $corpId, string $msgId, string $sdkFileId, string $path, string $extension)
@@ -39,7 +36,6 @@ class MessageMediaSyncQueue
 
             $this->updateMediaSyncStatus($corpId, $msgId);
         } catch (\Throwable $e) {
-
         } finally {
             isset($file) && file_exists($file->getRealPath()) && unlink($file->getRealPath());
         }
@@ -55,9 +51,9 @@ class MessageMediaSyncQueue
         try {
             ## 转mp3
             $ffmpeg = \FFMpeg\FFMpeg::create();
-            $audio  = $ffmpeg->open($file->getRealPath());
+            $audio = $ffmpeg->open($file->getRealPath());
 
-            $format  = new \FFMpeg\Format\Audio\Mp3();
+            $format = new \FFMpeg\Format\Audio\Mp3();
             $mp3Path = $file->getPath() . '/' . strval(microtime(true) * 10000) . uniqid() . '.mp3';
             $audio->save($format, $mp3Path);
             return new \SplFileInfo($mp3Path);

@@ -13,11 +13,11 @@ namespace MoChat\Plugin\RoomFission\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
@@ -53,7 +53,7 @@ class Store extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -89,10 +89,10 @@ class Store extends AbstractAction
     {
         return [
             'fission' => 'required',
-            'poster'  => 'required',
+            'poster' => 'required',
             'welcome' => 'required',
-            'rooms'   => 'required',
-            'invite'  => 'required',
+            'rooms' => 'required',
+            'invite' => 'required',
         ];
     }
 
@@ -104,10 +104,10 @@ class Store extends AbstractAction
     {
         return [
             'fission.required' => '活动基本信息 必传',
-            'poster.required'  => '活动海报 必传',
+            'poster.required' => '活动海报 必传',
             'welcome.required' => '欢迎语 必传',
-            'rooms.required'   => '群聊 必传',
-            'invite.required'  => '邀请客户参与 必传',
+            'rooms.required' => '群聊 必传',
+            'invite.required' => '邀请客户参与 必传',
         ];
     }
 }

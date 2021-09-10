@@ -12,11 +12,11 @@ namespace MoChat\Plugin\Statistic\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Plugin\Statistic\Logic\TopListLogic;
@@ -41,7 +41,7 @@ class TopList extends AbstractAction
     public function __construct(TopListLogic $topListLogic, RequestInterface $request)
     {
         $this->topListLogic = $topListLogic;
-        $this->request      = $request;
+        $this->request = $request;
     }
 
     /**
@@ -50,7 +50,7 @@ class TopList extends AbstractAction
      *     @Middleware(DashboardAuthMiddleware::class),
      *     @Middleware(PermissionMiddleware::class)
      * })
-     * @RequestMapping(path="/dashboard/count/topList", methods="GET")
+     * @RequestMapping(path="/dashboard/statistic/topList", methods="GET")
      */
     public function handle(): array
     {

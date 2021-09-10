@@ -17,14 +17,9 @@ class MessageClient extends \EasyWeChat\Work\ExternalContact\MessageClient
      *
      * @see https://open.work.weixin.qq.com/api/doc/90000/90135/93338
      *
-     * @param string $msgId
-     * @param int $limit
-     * @param string $cursor
-     *
-     * @return array|\EasyWeChat\Kernel\Support\Collection|object|\Psr\Http\Message\ResponseInterface|string
-     *
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @return array|\EasyWeChat\Kernel\Support\Collection|object|\Psr\Http\Message\ResponseInterface|string
      */
     public function getGroupTask(string $msgId, int $limit = 500, string $cursor = '')
     {
@@ -40,15 +35,9 @@ class MessageClient extends \EasyWeChat\Work\ExternalContact\MessageClient
      *
      * @see https://open.work.weixin.qq.com/api/doc/90000/90135/93338
      *
-     * @param string $msgId
-     * @param int $limit
-     * @param string $userId
-     * @param string $cursor
-     *
-     * @return array|\EasyWeChat\Kernel\Support\Collection|object|\Psr\Http\Message\ResponseInterface|string
-     *
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @return array|\EasyWeChat\Kernel\Support\Collection|object|\Psr\Http\Message\ResponseInterface|string
      */
     public function getGroupSendResult(string $msgId, string $userId, int $limit = 500, string $cursor = '')
     {

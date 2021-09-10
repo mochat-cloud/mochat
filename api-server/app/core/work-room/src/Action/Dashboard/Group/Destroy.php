@@ -14,16 +14,16 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\WorkRoom\Contract\WorkRoomContract;
 use MoChat\App\WorkRoom\Contract\WorkRoomGroupContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 客户群分组管理- 删除.
@@ -114,8 +114,8 @@ class Destroy extends AbstractAction
     {
         return [
             'workRoomGroupId.required' => '客户群分组ID 必填',
-            'workRoomGroupId.integer'  => '客户群分组ID 必需为整数',
-            'workRoomGroupId.min'      => '企业授信ID 不可小于1',
+            'workRoomGroupId.integer' => '客户群分组ID 必需为整数',
+            'workRoomGroupId.min' => '企业授信ID 不可小于1',
         ];
     }
 }

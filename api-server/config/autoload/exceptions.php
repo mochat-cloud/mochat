@@ -12,6 +12,7 @@ return [
     'handler' => [
         'http' => [
             Hyperf\HttpServer\Exception\Handler\HttpExceptionHandler::class,
+            MoChat\App\Common\Exception\Handler\CommonExceptionHandler::class,
             MoChat\Framework\Exception\Handler\ErrorExceptionHandler::class,
         ],
     ],

@@ -12,10 +12,10 @@ namespace MoChat\Plugin\SensitiveWord\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
@@ -55,7 +55,7 @@ class Destroy extends AbstractAction
 
         ## 删除数据
         $client = $this->container->get(SensitiveWordContract::class);
-        $res    = $client->deleteSensitiveWord($id);
+        $res = $client->deleteSensitiveWord($id);
         if (! $res) {
             throw new CommonException(ErrorCode::SERVER_ERROR, '删除失败');
         }
@@ -83,7 +83,7 @@ class Destroy extends AbstractAction
     {
         return [
             'sensitiveWordId.required' => '敏感词id 必填',
-            'sensitiveWordId.numeric'  => '敏感词id 必须为数字类型',
+            'sensitiveWordId.numeric' => '敏感词id 必须为数字类型',
         ];
     }
 }

@@ -12,15 +12,15 @@ namespace MoChat\Plugin\ChannelCode\Action\Dashboard\Group;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
 use MoChat\Plugin\ChannelCode\Contract\ChannelCodeGroupContract;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 修改渠道码分组.
@@ -47,8 +47,8 @@ class Update extends AbstractAction
     public function handle()
     {
         //接收参数
-        $params['groupId']  = $this->request->input('groupId');
-        $params['name']     = $this->request->input('name');
+        $params['groupId'] = $this->request->input('groupId');
+        $params['name'] = $this->request->input('name');
         $params['isUpdate'] = $this->request->input('isUpdate');
 
         //验证参数
@@ -75,7 +75,7 @@ class Update extends AbstractAction
     {
         return [
             'groupId' => 'required|int',
-            'name'    => 'required',
+            'name' => 'required',
         ];
     }
 
@@ -86,7 +86,7 @@ class Update extends AbstractAction
     {
         return [
             'groupId.required' => '分组id必传',
-            'name.required'    => '分组名称必传',
+            'name.required' => '分组名称必传',
         ];
     }
 }

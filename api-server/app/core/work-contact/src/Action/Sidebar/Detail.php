@@ -11,14 +11,14 @@ declare(strict_types=1);
 namespace MoChat\App\WorkContact\Action\Sidebar;
 
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\SidebarAuthMiddleware;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\SidebarAuthMiddleware;
 
 /**
  * 客户详情.

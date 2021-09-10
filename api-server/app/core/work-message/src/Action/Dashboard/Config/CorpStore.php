@@ -12,7 +12,10 @@ namespace MoChat\App\WorkMessage\Action\Dashboard\Config;
 
 use Hyperf\DbConnection\Db;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\App\WorkMessage\Action\Dashboard\Config\Traits\RequestTrait;
@@ -21,9 +24,6 @@ use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 添加 - 动作.
@@ -55,8 +55,8 @@ class CorpStore extends AbstractAction
         ## 业务验证
         if ($params['corpId']) {
             $employeeService = $this->container->get(WorkEmployeeContract::class);
-            $employeeData    = $employeeService->getWorkEmployeeByLogUserId((int) user('id'), ['id', 'corp_id']);
-            $corpIds         = array_column($employeeData, 'id', 'corpId');
+            $employeeData = $employeeService->getWorkEmployeeByLogUserId((int) user('id'), ['id', 'corp_id']);
+            $corpIds = array_column($employeeData, 'id', 'corpId');
             if (! isset($corpIds[$params['corpId']])) {
                 throw new CommonException(ErrorCode::INVALID_PARAMS, '当前管理员不属于此企业，无权限操作');
             }
@@ -68,8 +68,8 @@ class CorpStore extends AbstractAction
             $params['corpId'] = user('corpIds')[0];
         }
         $configClient = $this->container->get(WorkMessageConfigContract::class);
-        $corpService  = $this->container->get(CorpContract::class);
-        $existData    = $configClient->getWorkMessageConfigByCorpId($params['corpId'], ['id']);
+        $corpService = $this->container->get(CorpContract::class);
+        $existData = $configClient->getWorkMessageConfigByCorpId($params['corpId'], ['id']);
         if ($existData) {
             throw new CommonException(ErrorCode::INVALID_PARAMS, '该企业已经完成会话内容基本配置');
         }

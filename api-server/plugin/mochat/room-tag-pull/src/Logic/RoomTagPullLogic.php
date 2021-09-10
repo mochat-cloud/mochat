@@ -58,8 +58,8 @@ class RoomTagPullLogic
             $corps = $this->corpService->getCorps(['id']);
             foreach ($corps as $item) {
                 $corp = $this->corpService->getCorpById($item['id']);
-                 $this->groupMsgTask($corp);
-                 $this->groupMsgSendResult($corp);
+                $this->groupMsgTask($corp);
+                $this->groupMsgSendResult($corp);
             }
             $this->logger->info('标签建群获取企业群发成员执行结果完成' . date('Y-m-d H:i:s', time()));
         } catch (\Exception $e) {
@@ -84,7 +84,7 @@ class RoomTagPullLogic
                 continue;
             }
             foreach (json_decode($wxTid['wxTid'], true, 512, JSON_THROW_ON_ERROR) as $tid) {
-                $res    = $app->getGroupSendResult($tid['tid'], $tid['wxUserId']);
+                $res = $app->getGroupSendResult($tid['tid'], $tid['wxUserId']);
                 $result = $res['data'];
                 if ($result['errcode'] !== 0 || empty($result['send_list'])) {
                     continue;
@@ -114,7 +114,7 @@ class RoomTagPullLogic
                 if ($tid['status'] === 1) {
                     continue;
                 }
-                $res    = $app->getGroupTask($tid['tid']);
+                $res = $app->getGroupTask($tid['tid']);
                 $result = $res['data'];
                 if ($result['errcode'] !== 0 || empty($result['task_list'])) {
                     continue;

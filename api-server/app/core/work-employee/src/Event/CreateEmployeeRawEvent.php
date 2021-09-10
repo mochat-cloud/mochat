@@ -8,11 +8,10 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
-
 namespace MoChat\App\WorkEmployee\Event;
 
 /**
- * 新增成员事件
+ * 新增成员事件.
  */
 class CreateEmployeeRawEvent
 {

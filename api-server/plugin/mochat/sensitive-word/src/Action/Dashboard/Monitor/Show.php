@@ -12,13 +12,13 @@ namespace MoChat\Plugin\SensitiveWord\Action\Dashboard\Monitor;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
 use MoChat\Plugin\SensitiveWord\Logic\Monitor\ShowLogic;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 敏感词监控 - 详情.
@@ -75,8 +75,8 @@ class Show extends AbstractAction
     {
         return [
             'sensitiveWordsMonitorId.required' => '敏感词监控ID 必填',
-            'sensitiveWordsMonitorId.integer'  => '敏感词监控ID 必需为整数',
-            'sensitiveWordsMonitorId.min'      => '敏感词监控ID 不可小于1',
+            'sensitiveWordsMonitorId.integer' => '敏感词监控ID 必需为整数',
+            'sensitiveWordsMonitorId.min' => '敏感词监控ID 不可小于1',
         ];
     }
 }

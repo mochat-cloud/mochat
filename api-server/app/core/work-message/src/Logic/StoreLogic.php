@@ -19,12 +19,10 @@ use MoChat\App\Utils\File;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\App\WorkMessage\Constants\MsgType;
-use MoChat\App\WorkMessage\Contract\WorkMessageConfigContract;
 use MoChat\App\WorkMessage\Contract\WorkMessageContract;
 use MoChat\App\WorkMessage\Contract\WorkMessageIndexContract;
 use MoChat\App\WorkMessage\Queue\MessageMediaSyncQueue;
 use MoChat\App\WorkRoom\Contract\WorkRoomContract;
-use MoChat\WeWorkFinanceSDK\WxFinanceSDK;
 
 class StoreLogic
 {
@@ -70,7 +68,7 @@ class StoreLogic
     protected $contactService;
 
     /**
-     * @Inject()
+     * @Inject
      * @var MessageMediaSyncQueue
      */
     protected $messageMediaSyncQueue;
@@ -132,32 +130,32 @@ class StoreLogic
     protected function handleData(array $data, int $corpId): array
     {
         $msgIndexData = [];
-        $msgData      = [];
-        $allMsgType   = array_merge(MsgType::$otherType, MsgType::$fixedType);
+        $msgData = [];
+        $allMsgType = array_merge(MsgType::$otherType, MsgType::$fixedType);
 
         foreach ($data as $item) {
             $item['roomid'] = isset($item['roomid']) ? $item['roomid'] : '';
             ## 切换企业日志
             if ($item['action'] === 'switch') {
-                $msgData[]                        = $this->switchData($corpId, $item);
+                $msgData[] = $this->switchData($corpId, $item);
                 [$toListType, $tolistId, $roomId] = [0, [], 0];
             } else {
                 [$toListType, $tolistId, $roomId] = $this->userIdFormat($corpId, $item['roomid'], $item['tolist'][0]);
                 ## 消息表
                 $msgData[] = [
-                    'corp_id'     => $corpId,
-                    'seq'         => $item['seq'],
-                    'msg_id'      => $item['msgid'],
-                    'action'      => $this->actionIntval($item['action']),
-                    'from'        => $item['from'],
-                    'tolist'      => json_encode($item['tolist']),
-                    'tolist_id'   => json_encode($tolistId),
+                    'corp_id' => $corpId,
+                    'seq' => $item['seq'],
+                    'msg_id' => $item['msgid'],
+                    'action' => $this->actionIntval($item['action']),
+                    'from' => $item['from'],
+                    'tolist' => json_encode($item['tolist']),
+                    'tolist_id' => json_encode($tolistId),
                     'tolist_type' => $toListType,
-                    'msg_type'    => $allMsgType[$item['msgtype']],
-                    'content'     => json_encode($this->contentFormat($corpId, $item), JSON_UNESCAPED_UNICODE),
-                    'msg_time'    => (string) $item['msgtime'],
-                    'wx_room_id'  => $item['roomid'],
-                    'room_id'     => $roomId,
+                    'msg_type' => $allMsgType[$item['msgtype']],
+                    'content' => json_encode($this->contentFormat($corpId, $item), JSON_UNESCAPED_UNICODE),
+                    'msg_time' => (string) $item['msgtime'],
+                    'wx_room_id' => $item['roomid'],
+                    'room_id' => $roomId,
                 ];
             }
 
@@ -179,11 +177,11 @@ class StoreLogic
      */
     protected function msgIndexParams(int $corpId, int $fromId, array $tolistId, int $toType): array
     {
-        $resData    = [];
+        $resData = [];
         $handleFunc = static function ($toId, $fromId) use ($corpId, $toType) {
             $msgIndexItem = [
                 'corp_id' => $corpId,
-                'to_id'   => $toId,
+                'to_id' => $toId,
                 'to_type' => $toType,
                 'from_id' => $fromId,
             ];
@@ -193,12 +191,12 @@ class StoreLogic
         $toId = $tolistId[0] ?? 0;
 
         ## 原数据
-        $fromData                   = $handleFunc($toId, $fromId);
+        $fromData = $handleFunc($toId, $fromId);
         $resData[$fromData['flag']] = $fromData;
 
         ## 添加索引数据
         if ($toType === 0) {
-            $toData                   = $handleFunc($fromId, $toId);
+            $toData = $handleFunc($fromId, $toId);
             $resData[$toData['flag']] = $toData;
         }
 
@@ -215,19 +213,19 @@ class StoreLogic
     {
         $fromId = $this->getEmployeeId($corpId, $data['user']);
         return [
-            'corp_id'     => $corpId,
-            'seq'         => $data['seq'],
-            'msg_id'      => $data['msgid'],
-            'action'      => $this->actionIntval($data['action']),
-            'from'        => $data['user'],
-            'tolist'      => json_encode([]),
-            'tolist_id'   => json_encode([$fromId]),
+            'corp_id' => $corpId,
+            'seq' => $data['seq'],
+            'msg_id' => $data['msgid'],
+            'action' => $this->actionIntval($data['action']),
+            'from' => $data['user'],
+            'tolist' => json_encode([]),
+            'tolist_id' => json_encode([$fromId]),
             'tolist_type' => 0,
-            'msg_type'    => 0,
-            'content'     => json_encode(['time' => $data['time']]),
-            'msg_time'    => $data['time'],
-            'wx_room_id'  => '',
-            'room_id'     => 0,
+            'msg_type' => 0,
+            'content' => json_encode(['time' => $data['time']]),
+            'msg_time' => $data['time'],
+            'wx_room_id' => '',
+            'room_id' => 0,
         ];
     }
 
@@ -239,7 +237,7 @@ class StoreLogic
     protected function actionIntval(string $action): int
     {
         return [
-            'send'   => 0,
+            'send' => 0,
             'recall' => 1,
             'switch' => 2,
         ][$action];
@@ -248,7 +246,6 @@ class StoreLogic
     /**
      * 用户ID处理.
      *
-     * @param int $corpId
      * @param string $wxRoomId ...
      * @param string $toUserId ...
      * @return array ...
@@ -262,7 +259,7 @@ class StoreLogic
         if ($wxRoomId) {
             $roomData = $this->roomClient->getWorkRoomsByWxChatId([$wxRoomId], ['id']);
             if (! empty($roomData)) {
-                $resData[2]    = $roomData[0]['id'];
+                $resData[2] = $roomData[0]['id'];
                 $resData[1][0] = $roomData[0]['id'];
             }
             return $resData;
@@ -270,16 +267,16 @@ class StoreLogic
 
         ## 员工
         if (! in_array(substr($toUserId, 0, 2), ['wo', 'wm'])) {
-            $resData[0]                            = 0;
-            $employeeData                          = $this->employeeService->getWorkEmployeeByWxUserIdCorpId($toUserId, $corpId, ['id']);
-            empty($employeeData) || $resData[1][0] = (string)$employeeData['id'];
+            $resData[0] = 0;
+            $employeeData = $this->employeeService->getWorkEmployeeByWxUserIdCorpId($toUserId, $corpId, ['id']);
+            empty($employeeData) || $resData[1][0] = (string) $employeeData['id'];
             return $resData;
         }
 
         ## 客户
-        $resData[0]                           = 1;
-        $contactData                          = $this->contactService->getWorkContactByWxExternalUserId($toUserId, ['id']);
-        empty($contactData) || $resData[1][0] = (string)$contactData['id'];
+        $resData[0] = 1;
+        $contactData = $this->contactService->getWorkContactByWxExternalUserId($toUserId, ['id']);
+        empty($contactData) || $resData[1][0] = (string) $contactData['id'];
         return $resData;
     }
 
@@ -293,9 +290,9 @@ class StoreLogic
         $msgType = $data['msgtype'];
         if ($msgType === 'docmsg') {
             $content = $data['doc'];
-        } else if ($msgType === 'external_redpacket') {
+        } elseif ($msgType === 'external_redpacket') {
             $content = $data['redpacket'];
-        } else if ($msgType === 'meeting_voice_call') {
+        } elseif ($msgType === 'meeting_voice_call') {
             $content = $data[$msgType];
             $content['voiceid'] = $data['voiceid'];
         } else {
@@ -315,12 +312,6 @@ class StoreLogic
 
     /**
      * 文件地址处理.
-     *
-     * @param int $corpId
-     * @param string $msgId
-     * @param string $msgType
-     * @param array $content
-     * @return array
      */
     protected function asyncDownloadSdkFile(int $corpId, string $msgId, string $msgType, array $content): array
     {
@@ -365,8 +356,8 @@ class StoreLogic
      */
     protected function getEmployeeId(int $corpId, string $wxUserId): int
     {
-        $id                         = 0;
-        $employeeData               = $this->employeeService->getWorkEmployeeByWxUserIdCorpId($wxUserId, $corpId, ['id']);
+        $id = 0;
+        $employeeData = $this->employeeService->getWorkEmployeeByWxUserIdCorpId($wxUserId, $corpId, ['id']);
         empty($employeeData) || $id = $employeeData['id'];
         return $id;
     }

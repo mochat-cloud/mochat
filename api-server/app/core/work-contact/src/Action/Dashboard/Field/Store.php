@@ -11,10 +11,10 @@ declare(strict_types=1);
 namespace MoChat\App\WorkContact\Action\Dashboard\Field;
 
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Action\Dashboard\Field\Traits\RequestTrait;
 use MoChat\App\WorkContact\Contract\ContactFieldContract;
@@ -52,13 +52,13 @@ class Store extends AbstractAction
         $this->validated($params, 'store');
 
         ## 数据处理
-        $pinyin            = new Pinyin();
-        $params['name']    = $pinyin->permalink($params['label'], '', PINYIN_ASCII_TONE);
+        $pinyin = new Pinyin();
+        $params['name'] = $pinyin->permalink($params['label'], '', PINYIN_ASCII_TONE);
         $params['options'] = json_encode($params['options'], JSON_UNESCAPED_UNICODE);
 
         ## 入库
         $client = $this->container->get(ContactFieldContract::class);
-        $res    = $client->createContactField($params);
+        $res = $client->createContactField($params);
         if (! $res) {
             throw new CommonException(ErrorCode::SERVER_ERROR, '添加失败');
         }

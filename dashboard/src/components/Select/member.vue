@@ -76,9 +76,7 @@ export default {
   },
   methods: {
     setSelect (data, currentData = {}) {
-      // console.log(data)
       this.selectedMembers = []
-      // this.selectedMembers = data
       data.forEach((item, index) => {
         this.selectedMembers[index] = item
       })
@@ -93,11 +91,9 @@ export default {
           })
         })
       })
-
       this.reset()
       this.modalShow = true
     },
-
     search (e) {
       this.getData(e)
     },
@@ -113,8 +109,16 @@ export default {
         this.selectedMembers.splice(index, 1)
         return false
       }
-
       this.selectedMembers.push(e)
+    },
+    reset () {
+      for (const member of this.members) {
+        member.select = false
+      }
+    },
+    go () {
+      this.hide()
+      this.$emit('change', this.selectedMembers)
     },
     getData (key = '', fn = null) {
       department({
@@ -124,26 +128,12 @@ export default {
         if (fn) fn()
       })
     },
-
-    reset () {
-      for (const member of this.members) {
-        member.select = false
-      }
-    },
-
-    go () {
-      this.hide()
-      this.$emit('change', this.selectedMembers, this.currentData)
-    },
-
     show () {
       this.getData()
       this.reset()
-
       this.selectedMembers = []
       this.modalShow = true
     },
-
     hide () {
       this.modalShow = false
     }

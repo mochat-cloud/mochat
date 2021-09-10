@@ -12,10 +12,10 @@ namespace MoChat\App\Rbac\Action\Dashboard\Menu;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Logic\Menu\UpdateLogic;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
@@ -75,7 +75,7 @@ class Update extends AbstractAction
     {
         return [
             'menuId.required' => '菜单id 必填',
-            'menuId.integer'  => '菜单id 必须为整型',
+            'menuId.integer' => '菜单id 必须为整型',
         ];
     }
 }

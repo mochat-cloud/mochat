@@ -16,7 +16,7 @@
       <a-card>
         <a-tabs type="card" v-model="showpanel" @change="cutPageType">
           <!--          门店列表-->
-          <a-tab-pane key="1" tab="门店列表">
+          <a-tab-pane :key="1" tab="门店列表">
             <!--          搜索-->
             <div class="search">
               <!--            门店名称-->
@@ -186,7 +186,7 @@
             </div>
           </a-tab-pane>
           <!--          数据分析-->
-          <a-tab-pane key="2" tab="数据分析">
+          <a-tab-pane :key="2" tab="数据分析">
             <!--            标题-->
             <div class="overview">
               <span class="overview-title mr10">数据总览</span>
@@ -442,6 +442,8 @@
     </a-spin>
 
     <input type="text" class="copy-input" ref="copyInput">
+    <!--    授权提示-->
+    <warrantTip ref="warrantTip" />
   </div>
 </template>
 
@@ -458,9 +460,10 @@ import shopkeeperCreate from '@/views/shopCode/components/shopkeeperCreate'
 import shopkeeperSetup from '@/views/shopCode/components/shopkeeperSetup'
 import addCityPop from '@/views/shopCode/components/addCityPop'
 import addlableIndex from '@/components/addlabel/index'
+import warrantTip from '@/components/warrantTip/warrantTip'
 export default {
   components: {
-    shopkeeperUpdate, shopkeeperCreate, shopkeeperSetup, addCityPop, addlableIndex
+    shopkeeperUpdate, shopkeeperCreate, shopkeeperSetup, addCityPop, addlableIndex, warrantTip
   },
   data () {
     return {
@@ -486,7 +489,7 @@ export default {
       clockInLink: '',
       // 门店数据
       // 显示的面板
-      showpanel: '1',
+      showpanel: 1,
       // 显示加载层
       loadShow: false,
       // 所有员工数据
@@ -859,6 +862,9 @@ export default {
     getPublicList () {
       publicIndexApi().then((res) => {
         this.publiclist = res.data
+        if (this.publiclist.length == 0) {
+          this.$refs.warrantTip.show()
+        }
       })
     },
     // 接收组件传值
@@ -901,6 +907,7 @@ export default {
     // 选择页面类型
     selectPageType () {
       this.selectedRowKeys = []
+      this.showpanel = 1
       if (this.showpanel == 1) {
         this.askStoreData = {}
         this.optCityData = {}
@@ -968,11 +975,13 @@ export default {
         updateApi(e).then((res) => {
           this.$message.success('修改成功')
           this.getStoreTable(this.askStoreData)
+          this.getcityData()
         })
       } else {
         storeApi(e).then((res) => {
           this.$message.success('创建成功')
           this.getStoreTable(this.askStoreData)
+          this.getcityData()
         })
       }
     },
@@ -1053,6 +1062,7 @@ export default {
           destroyApi({ id: record.id }).then((res) => {
             that.$message.success('删除成功')
             that.getStoreTable(that.askStoreData)
+            that.getcityData()
           })
         }
       })
@@ -1423,7 +1433,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 1100px;
+  max-width: 1100px;
   margin-top: 15px;
 
   .data {

@@ -12,10 +12,10 @@ namespace MoChat\Plugin\RoomWelcome\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
@@ -58,9 +58,9 @@ class Store extends AbstractAction
         }
         ## 接收参数
         $params = [
-            'msg_text'    => $this->request->input('msg_text'),
+            'msg_text' => $this->request->input('msg_text'),
             'msg_complex' => $this->request->input('msg_complex'),
-            'notice'      => $this->request->input('notice'),
+            'notice' => $this->request->input('notice'),
         ];
         ## 参数验证
         $this->validated($this->request->all(), 'store');
@@ -77,7 +77,7 @@ class Store extends AbstractAction
     {
         return [
             'msg_text' => 'string | bail',
-            'notice'   => 'required',
+            'notice' => 'required',
         ];
     }
 

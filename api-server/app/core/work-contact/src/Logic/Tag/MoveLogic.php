@@ -87,13 +87,13 @@ class MoveLogic
      */
     private function synTag($params, $tagInfo)
     {
-        $this->service      = make(UpdateApply::class);
-        $wxContactTagId     = array_column($tagInfo, 'wxContactTagId');
+        $this->service = make(UpdateApply::class);
+        $wxContactTagId = array_column($tagInfo, 'wxContactTagId');
         $contactTagGroupIds = array_unique(array_column($tagInfo, 'contactTagGroupId'));
         if (! empty($wxContactTagId)) {
             //删除微信标签
             $deleteParams = [
-                'tag_id'   => $wxContactTagId,
+                'tag_id' => $wxContactTagId,
                 'group_id' => [],
             ];
 
@@ -115,12 +115,12 @@ class MoveLogic
             if (! empty($groupInfo['wxGroupId'])) {
                 $addParams = [
                     'group_id' => $groupInfo['wxGroupId'],
-                    'tag'      => $tag,
+                    'tag' => $tag,
                 ];
             } else {  //如果没有 新建分组并将标签新增到该分组下
                 $addParams = [
                     'group_name' => $groupInfo['groupName'],
-                    'tag'        => $tag,
+                    'tag' => $tag,
                 ];
             }
 

@@ -13,10 +13,10 @@ namespace MoChat\Plugin\Radar\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
@@ -99,12 +99,12 @@ class ShowChannel extends AbstractAction
 
         ## 接收参数
         $params = [
-            'type'       => $this->request->input('type'),
-            'id'         => $this->request->input('radar_id'),
+            'type' => $this->request->input('type'),
+            'id' => $this->request->input('radar_id'),
             'start_time' => $this->request->input('start_time'),
-            'end_time'   => $this->request->input('end_time'),
-            'page'       => $this->request->input('page', 1),
-            'perPage'    => $this->request->input('perPage', 10000),
+            'end_time' => $this->request->input('end_time'),
+            'page' => $this->request->input('page', 1),
+            'perPage' => $this->request->input('perPage', 10000),
         ];
 
         return $this->shop($user, $params);
@@ -130,7 +130,7 @@ class ShowChannel extends AbstractAction
     {
         return [
             'type.required' => '类型 必填',
-            'type.integer'  => '类型 必须为整型',
+            'type.integer' => '类型 必须为整型',
         ];
     }
 
@@ -141,14 +141,14 @@ class ShowChannel extends AbstractAction
     private function shop(array $user, array $params): array
     {
         $channelList = $this->radarRecordService->getRadarRecordByCorpIdRadarIdGroupByChannelId($user['corpIds'][0], $params);
-        $list        = [];
+        $list = [];
         foreach ($channelList as $key => $val) {
-            $channel    = $this->radarChannelService->getRadarChannelById($val['channelId'], ['name']);
+            $channel = $this->radarChannelService->getRadarChannelById($val['channelId'], ['name']);
             $list[$key] = [
-                'channelId'   => $val['channelId'],
+                'channelId' => $val['channelId'],
                 'channelName' => $channel['name'],
-                'click_num'   => $val['total'],
-                'person_num'  => $this->radarRecordService->countRadarRecordByCorpIdRadarIdChannelId($user['corpIds'][0], $val['channelId'], $params),
+                'click_num' => $val['total'],
+                'person_num' => $this->radarRecordService->countRadarRecordByCorpIdRadarIdChannelId($user['corpIds'][0], $val['channelId'], $params),
             ];
         }
         return ['list' => $list];

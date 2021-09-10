@@ -10,8 +10,8 @@ declare(strict_types=1);
  */
 namespace MoChat\App\Corp\Utils;
 
-use MoChat\App\Corp\Contract\CorpContract;
 use EasyWeChat\Work\Application;
+use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\WorkAgent\Contract\WorkAgentContract;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
@@ -35,11 +35,9 @@ class WeWorkFactory
     protected $agentApps = [];
 
     /**
-     * 获取通讯录应用实例
+     * 获取通讯录应用实例.
      *
-     * @param string|int $corpId 企业id
-     *
-     * @return Application
+     * @param int|string $corpId 企业id
      */
     public function getUserApp($corpId): Application
     {
@@ -51,11 +49,9 @@ class WeWorkFactory
     }
 
     /**
-     * 获取客户联系应用实例
+     * 获取客户联系应用实例.
      *
-     * @param string|int $corpId 企业id
-     *
-     * @return Application
+     * @param int|string $corpId 企业id
      */
     public function getContactApp($corpId): Application
     {
@@ -67,11 +63,9 @@ class WeWorkFactory
     }
 
     /**
-     * 获取三方应用或自建应用实例
+     * 获取三方应用或自建应用实例.
      *
-     * @param string|int $agentId 应用id
-     *
-     * @return Application
+     * @param int|string $agentId 应用id
      */
     public function getAgentApp($agentId): Application
     {
@@ -83,9 +77,9 @@ class WeWorkFactory
     }
 
     /**
-     * 解绑通讯录和客户联系应用实例(当企业信息发生变化的时候)
+     * 解绑通讯录和客户联系应用实例(当企业信息发生变化的时候).
      *
-     * @param string|int $corpId
+     * @param int|string $corpId
      */
     public function unbindApp($corpId)
     {
@@ -99,9 +93,9 @@ class WeWorkFactory
     }
 
     /**
-     * 解绑三方应用实例(当应用信息发生变化的时候)
+     * 解绑三方应用实例(当应用信息发生变化的时候).
      *
-     * @param string|int $agentId
+     * @param int|string $agentId
      */
     public function unbindAgentApp($agentId)
     {
@@ -109,7 +103,7 @@ class WeWorkFactory
             unset($this->agentApps[$agentId]);
         }
     }
-    
+
     protected function makeApp($corpId, string $type)
     {
         if (is_int($corpId)) {
@@ -118,7 +112,7 @@ class WeWorkFactory
             $corMethod = 'getCorpsByWxCorpId';
         }
         $corp = make(CorpContract::class)->{$corMethod}($corpId, [
-            'id', 'employee_secret', 'contact_secret', 'wx_corpid'
+            'id', 'employee_secret', 'contact_secret', 'wx_corpid',
         ]);
         if (empty($corp)) {
             throw new CommonException(ErrorCode::SERVER_ERROR, sprintf('无该企业:[%s]', $corpId));
@@ -142,13 +136,11 @@ class WeWorkFactory
     /**
      * 根据企业微信应用id获取信息.
      * @param int|string $agentId
-     *
-     * @return Application
      */
     protected function makeAgentApp($agentId): Application
     {
         $agentFunc = is_int($agentId) ? 'getWorkAgentById' : 'getWorkAgentByWxAgentId';
-        $agent     = make(WorkAgentContract::class)->{$agentFunc}($agentId, [
+        $agent = make(WorkAgentContract::class)->{$agentFunc}($agentId, [
             'id', 'wx_secret', 'corp_id',
         ]);
         if (empty($agent)) {
@@ -161,7 +153,7 @@ class WeWorkFactory
 
         $config = [
             'corp_id' => $corp['wxCorpid'],
-            'secret'  => $agent['wxSecret'],
+            'secret' => $agent['wxSecret'],
         ];
 
         return make(WeWork::class)->app($config);

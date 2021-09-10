@@ -157,17 +157,13 @@ interface WorkMessageContract
 
     /**
      * 获取最近一条seq.
-     * @param int $corpId
      *
      * @return int ...
      */
     public function getWorkMessageLastSeqByCorpId(int $corpId): int;
 
     /**
-     * 设置最后一次更新的seq
-     *
-     * @param int $corpId
-     * @param int $seq
+     * 设置最后一次更新的seq.
      *
      * @return mixed
      */

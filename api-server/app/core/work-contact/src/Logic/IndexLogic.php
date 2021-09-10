@@ -123,11 +123,11 @@ class IndexLogic
         if (isset($where['flag'])) {
             return [
                 'page' => [
-                    'perPage'   => 20,
-                    'total'     => 0,
+                    'perPage' => 20,
+                    'total' => 0,
                     'totalPage' => 0,
                 ],
-                'list'            => [],
+                'list' => [],
                 'syncContactTime' => '',
             ];
         }
@@ -189,7 +189,7 @@ class IndexLogic
 
         //关键词搜索
         if (! empty($params['keyWords'])) {
-            $name    = $params['keyWords'];
+            $name = $params['keyWords'];
             $contact = $this->contact->getWorkContactsByCorpIdName(user()['corpIds'][0], $name, ['id']);
             if (! empty($contact)) {
                 $contactIds = array_column($contact, 'id');
@@ -362,13 +362,13 @@ class IndexLogic
             $raw['addWayText'] = AddWay::$Enum[$raw['addWay']];
             $raw['genderText'] = '';
             $raw['businessNo'] = '';
-            $raw['name']       = '';
-            $raw['avatar']     = '';
+            $raw['name'] = '';
+            $raw['avatar'] = '';
             if (isset($contact[$raw['contactId']])) {
                 $raw['businessNo'] = $contact[$raw['contactId']]['businessNo'];
-                $raw['name']       = $contact[$raw['contactId']]['name'];
-                $raw['avatar']     = $contact[$raw['contactId']]['avatar'] ? file_full_url($contact[$raw['contactId']]['avatar']) : $contact[$raw['contactId']]['avatar'];
-                $raw['gender']     = $contact[$raw['contactId']]['gender'];
+                $raw['name'] = $contact[$raw['contactId']]['name'];
+                $raw['avatar'] = $contact[$raw['contactId']]['avatar'] ? file_full_url($contact[$raw['contactId']]['avatar']) : $contact[$raw['contactId']]['avatar'];
+                $raw['gender'] = $contact[$raw['contactId']]['gender'];
                 $raw['genderText'] = Gender::getMessage($contact[$raw['contactId']]['gender']);
             }
 
@@ -397,11 +397,11 @@ class IndexLogic
         //返回数据
         $data = [
             'page' => [
-                'perPage'   => isset($info['per_page']) ? $info['per_page'] : 20,
-                'total'     => isset($info['total']) ? $info['total'] : 0,
+                'perPage' => isset($info['per_page']) ? $info['per_page'] : 20,
+                'total' => isset($info['total']) ? $info['total'] : 0,
                 'totalPage' => isset($info['last_page']) ? $info['last_page'] : 0,
             ],
-            'list'            => empty($info['data']) ? [] : $info['data'],
+            'list' => empty($info['data']) ? [] : $info['data'],
             'syncContactTime' => $this->getTime(),
         ];
 
@@ -527,7 +527,7 @@ class IndexLogic
             if (isset($contactData[$raw['contactId']])) {
                 $contactData[$raw['contactId']]['roomName'][] = $raw['roomName'];
             } else {
-                $tmp               = [];
+                $tmp = [];
                 $tmp['roomName'][] = $raw['roomName'];
 
                 $contactData[$raw['contactId']] = $tmp;

@@ -61,7 +61,7 @@
             </div>
             <div class="applets" v-if="data.complex_type === 'miniprogram'">
               <div class="title">
-                {{data.msg_complex.title}}
+                {{ data.msg_complex.title }}
               </div>
               <div class="image">
                 <img :src="data.msg_complex.pic">

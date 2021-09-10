@@ -12,12 +12,12 @@ namespace MoChat\App\WorkContact\Action\Dashboard\TagGroup;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\WorkContact\Contract\WorkContactTagGroupContract;
 use MoChat\Framework\Action\AbstractAction;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 客户标签分组列表.
@@ -55,7 +55,7 @@ class Index extends AbstractAction
         });
 
         $data = [
-            'groupId'   => 0,
+            'groupId' => 0,
             'groupName' => '未分组',
         ];
 

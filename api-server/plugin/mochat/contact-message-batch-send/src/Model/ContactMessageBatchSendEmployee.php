@@ -27,7 +27,7 @@ use MoChat\Framework\Model\AbstractModel;
  * @property int $status 状态（0-未发送，1-已发送）
  * @property \Carbon\Carbon $createdAt
  * @property \Carbon\Carbon $updatedAt
- * @property  $content
+ * @property $content
  */
 class ContactMessageBatchSendEmployee extends AbstractModel
 {
@@ -45,14 +45,14 @@ class ContactMessageBatchSendEmployee extends AbstractModel
      *
      * @var array
      */
-    protected $fillable = ['id', 'batch_id', 'employee_id', 'wx_user_id', 'send_contact_total', 'content', 'err_code', 'err_msg', 'msg_id', 'send_time', 'last_sync_time', 'status', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'batch_id', 'employee_id', 'wx_user_id', 'send_contact_total', 'content', 'err_code', 'err_msg', 'msg_id', 'send_time', 'last_sync_time', 'status', 'receive_status', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = ['id' => 'integer', 'batch_id' => 'integer', 'employee_id' => 'integer', 'send_contact_total' => 'integer', 'status' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'integer', 'batch_id' => 'integer', 'employee_id' => 'integer', 'send_contact_total' => 'integer', 'status' => 'integer', 'receive_status' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 
     public function getContentAttribute($value)
     {

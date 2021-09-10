@@ -12,15 +12,15 @@ namespace MoChat\App\WorkContact\Action\Dashboard\Tag;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Constants\WorkUpdateTime\Type;
 use MoChat\App\Corp\Contract\WorkUpdateTimeContract;
 use MoChat\App\WorkContact\Contract\WorkContactTagContract;
 use MoChat\App\WorkContact\Contract\WorkContactTagPivotContract;
 use MoChat\Framework\Action\AbstractAction;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 客户标签列表（带分页）.
@@ -57,7 +57,7 @@ class Index extends AbstractAction
     public function handle(): array
     {
         //接收参数
-        $params['page']    = $this->request->input('page');
+        $params['page'] = $this->request->input('page');
         $params['perPage'] = $this->request->input('perPage');
         $params['groupId'] = $this->request->input('groupId');
 
@@ -76,7 +76,7 @@ class Index extends AbstractAction
         ];
         $options = [
             'orderByRaw' => 'updated_at desc',
-            'perPage'    => empty($params['perPage']) ? 20 : $params['perPage'],
+            'perPage' => empty($params['perPage']) ? 20 : $params['perPage'],
         ];
         //获取标签列表
         $tagInfo = $this->contactTagService->getWorkContactTagList($where, $columns, $options);
@@ -84,11 +84,11 @@ class Index extends AbstractAction
         if (empty($tagInfo['data'])) {
             return [
                 'page' => [
-                    'perPage'   => 20,
-                    'total'     => 0,
+                    'perPage' => 20,
+                    'total' => 0,
                     'totalPage' => 0,
                 ],
-                'list'        => [],
+                'list' => [],
                 'syncTagTime' => $syncTagTime,
             ];
         }
@@ -114,11 +114,11 @@ class Index extends AbstractAction
 
         return [
             'page' => [
-                'perPage'   => isset($tagInfo['per_page']) ? $tagInfo['per_page'] : 20,
-                'total'     => isset($tagInfo['total']) ? $tagInfo['total'] : 0,
+                'perPage' => isset($tagInfo['per_page']) ? $tagInfo['per_page'] : 20,
+                'total' => isset($tagInfo['total']) ? $tagInfo['total'] : 0,
                 'totalPage' => isset($tagInfo['last_page']) ? $tagInfo['last_page'] : 0,
             ],
-            'list'        => $tagInfo['data'],
+            'list' => $tagInfo['data'],
             'syncTagTime' => $syncTagTime,
         ];
     }

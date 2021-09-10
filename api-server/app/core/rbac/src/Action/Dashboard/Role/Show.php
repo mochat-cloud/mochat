@@ -12,10 +12,10 @@ namespace MoChat\App\Rbac\Action\Dashboard\Role;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Contract\RbacRoleContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
@@ -55,8 +55,8 @@ class Show extends AbstractAction
     public function handle(): array
     {
         ## 获取当前登录用户
-        $user         = user();
-        $tenantId     = $user['tenantId'];
+        $user = user();
+        $tenantId = $user['tenantId'];
         $this->corpId = $user['corpIds'][0];
 
         ## 验证参数 接受参数
@@ -72,9 +72,9 @@ class Show extends AbstractAction
         ## 组织响应数据
         $dataPermission = empty($role['dataPermission']) ? '' : $this->handleDataPermission(json_decode($role['dataPermission'], true));
         return [
-            'roleId'         => $role['id'],
-            'name'           => $role['name'],
-            'remarks'        => $role['remarks'],
+            'roleId' => $role['id'],
+            'name' => $role['name'],
+            'remarks' => $role['remarks'],
             'dataPermission' => (int) $dataPermission,
         ];
     }
@@ -99,7 +99,7 @@ class Show extends AbstractAction
     {
         return [
             'roleId.required' => '角色ID 必填',
-            'roleId.integer'  => '角色ID 必需为整数',
+            'roleId.integer' => '角色ID 必需为整数',
         ];
     }
 

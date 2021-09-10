@@ -12,13 +12,13 @@ namespace MoChat\App\WorkContact\Action\Dashboard\Tag;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\WorkContact\Logic\Tag\UpdateLogic;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 修改客户标签.
@@ -45,9 +45,9 @@ class Update extends AbstractAction
     public function handle()
     {
         //接收参数
-        $params['tagId']    = $this->request->input('tagId');
-        $params['groupId']  = $this->request->input('groupId');
-        $params['tagName']  = $this->request->input('tagName');
+        $params['tagId'] = $this->request->input('tagId');
+        $params['groupId'] = $this->request->input('groupId');
+        $params['tagName'] = $this->request->input('tagName');
         $params['isUpdate'] = $this->request->input('isUpdate');
 
         //验证参数
@@ -62,9 +62,9 @@ class Update extends AbstractAction
     public function rules(): array
     {
         return [
-            'tagId'    => 'required',
-            'groupId'  => 'required',
-            'tagName'  => 'required',
+            'tagId' => 'required',
+            'groupId' => 'required',
+            'tagName' => 'required',
             'isUpdate' => 'required',
         ];
     }
@@ -75,9 +75,9 @@ class Update extends AbstractAction
     public function messages(): array
     {
         return [
-            'tagId.required'    => '标签id必传',
-            'groupId.required'  => '分组id必传',
-            'tagName.required'  => '标签名称必传',
+            'tagId.required' => '标签id必传',
+            'groupId.required' => '分组id必传',
+            'tagName.required' => '标签名称必传',
             'isUpdate.required' => '是否修改信息必传',
         ];
     }

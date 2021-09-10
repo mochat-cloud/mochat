@@ -13,16 +13,16 @@ namespace MoChat\App\User\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\User\Constants\Status;
 use MoChat\App\User\Contract\UserContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 子账户管理- 禁用|启动.
@@ -63,7 +63,7 @@ class StatusUpdate extends AbstractAction
 
         ## 验证userId的有效性
         $userIds = explode(',', $userId);
-        $users   = $this->userService->getUsersById($userIds, ['id', 'name', 'status']);
+        $users = $this->userService->getUsersById($userIds, ['id', 'name', 'status']);
         if (count($userIds) != count($users)) {
             $diffUserIds = array_diff($userIds, array_column($users, 'id'));
             throw new CommonException(ErrorCode::INVALID_PARAMS, sprintf('部分账户信息不存在，账户ID：%s', implode('、', $diffUserIds)));
@@ -110,11 +110,11 @@ class StatusUpdate extends AbstractAction
     {
         return [
             'userId.required' => '用户ID 必填',
-            'userId.string'   => '用户ID 必需为字符串',
-            'userId.min'      => '用户ID 字符串长度不可小于1',
+            'userId.string' => '用户ID 必需为字符串',
+            'userId.min' => '用户ID 字符串长度不可小于1',
             'status.required' => '状态 必填',
-            'status.integer'  => '状态 必需为整数',
-            'status.in'       => '状态 值必须在列表内：[1,2]',
+            'status.integer' => '状态 必需为整数',
+            'status.in' => '状态 值必须在列表内：[1,2]',
         ];
     }
 }

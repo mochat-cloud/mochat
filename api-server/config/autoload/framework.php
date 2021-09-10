@@ -32,26 +32,27 @@ return [
         '/dashboard/officialAccount/authEventCallback',
         '/dashboard/{appId}/officialAccount/messageEventCallback',
         '/operation/officialAccount/authRedirect',
+        '/sidebar/agent/auth',
     ],
 
     // 会话内容存档
     'work_message_config' => [
         // 客服联系人方式（图片）
         'serviceContactUrl' => '',
-        'chatWhitelistIp'   => [
+        'chatWhitelistIp' => [
             '127.0.0.1',
         ],
     ],
 
     'wework' => [
         'callback_path' => '/dashboard/corp/weWorkCallback',
-        'config'        => [
+        'config' => [
             // 指定 API 调用返回结果的类型：array(default)/collection/object/raw/自定义类名
             'response_type' => 'array',
 
             'log' => [
                 'level' => 'debug',
-                'file'  => BASE_PATH . '/runtime/logs/wechat.log',
+                'file' => BASE_PATH . '/runtime/logs/wechat.log',
             ],
         ],
         'default' => [
@@ -59,19 +60,19 @@ return [
         ],
         'providers' => [
             'app' => [
-                'name'    => \MoChat\Framework\Provider\WeWork\AppProvider::class,
+                'name' => \MoChat\Framework\Provider\WeWork\AppProvider::class,
                 'service' => MoChat\App\Corp\Service\CorpProvidersService::class, //  需要实现 MoChat\Framework\Contract\WeWork\AppConfigurable 接口
             ],
             'user' => [
-                'name'    => \MoChat\Framework\Provider\WeWork\UserProvider::class,
+                'name' => \MoChat\Framework\Provider\WeWork\UserProvider::class,
                 'service' => MoChat\App\Corp\Service\CorpProvidersService::class, //  需要实现 MoChat\Framework\Contract\WeWork\UserConfigurable 接口
             ],
             'externalContact' => [
-                'name'    => \MoChat\Framework\Provider\WeWork\ExternalContactProvider::class,
+                'name' => \MoChat\Framework\Provider\WeWork\ExternalContactProvider::class,
                 'service' => MoChat\App\Corp\Service\CorpProvidersService::class, //  需要实现 MoChat\Framework\Contract\WeWork\ExternalContactConfigurable 接口
             ],
             'agent' => [
-                'name'    => \MoChat\Framework\Provider\WeWork\AgentProvider::class,
+                'name' => \MoChat\Framework\Provider\WeWork\AgentProvider::class,
                 'service' => MoChat\App\Corp\Service\CorpProvidersService::class, //  需要实现 MoChat\Framework\Contract\WeWork\AgentConfigurable 接口
             ],
         ],

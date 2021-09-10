@@ -111,7 +111,7 @@ class CorpDataLogic
     private function handleDayData($corpId)
     {
         $startTime = date('Y-m-d') . ' 00:00:00';
-        $endTime   = date('Y-m-d') . ' 23:59:59';
+        $endTime = date('Y-m-d') . ' 23:59:59';
 
         //当日新增客户数
         $contact = $this->contactEmployee->countWorkContactEmployeesByCorpIdTime((int) $corpId, $startTime, $endTime);
@@ -131,13 +131,13 @@ class CorpDataLogic
         $lossContact = $this->contactEmployee->countLossWorkContactEmployeesByCorpIdTime((int) $corpId, $startTime, $endTime);
 
         $data = [
-            'corp_id'           => $corpId,
-            'add_contact_num'   => $contact,
-            'add_room_num'      => $room,
+            'corp_id' => $corpId,
+            'add_contact_num' => $contact,
+            'add_room_num' => $room,
             'add_into_room_num' => empty($intoRoom) ? 0 : $intoRoom,
-            'loss_contact_num'  => $lossContact,
-            'quit_room_num'     => empty($outRoom) ? 0 : $outRoom,
-            'date'              => date('Y-m-d'),
+            'loss_contact_num' => $lossContact,
+            'quit_room_num' => empty($outRoom) ? 0 : $outRoom,
+            'date' => date('Y-m-d'),
         ];
 
         //查询日数据表中是否已有今日数据
@@ -168,16 +168,16 @@ class CorpDataLogic
         //如果查到 就更新
         if (! empty($workUpdateTime)) {
             $data['last_update_time'] = date('Y-m-d H:i:s');
-            $id                       = end($workUpdateTime)['id'];
-            $updateRes                = $this->workUpdateTime->updateWorkUpdateTimeById((int) $id, $data);
+            $id = end($workUpdateTime)['id'];
+            $updateRes = $this->workUpdateTime->updateWorkUpdateTimeById((int) $id, $data);
             if (! is_int($updateRes)) {
                 throw new CommonException(ErrorCode::SERVER_ERROR, '更新企业日数据时间失败');
             }
         } else {
             //如果没有新增
             $params = [
-                'corp_id'          => $corpId,
-                'type'             => Type::CORP_DATA,
+                'corp_id' => $corpId,
+                'type' => Type::CORP_DATA,
                 'last_update_time' => date('Y-m-d H:i:s'),
             ];
 

@@ -97,7 +97,7 @@ class Receive extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -112,10 +112,10 @@ class Receive extends AbstractAction
         $this->validated($params);
 
         ## 群裂变信息-客服
-        $fission     = $this->roomFissionService->getRoomFissionById((int) $params['fission_id'], ['receive_employees']);
+        $fission = $this->roomFissionService->getRoomFissionById((int) $params['fission_id'], ['receive_employees']);
         $employeeArr = json_decode($fission['receiveEmployees'], true, 512, JSON_THROW_ON_ERROR);
-        $employeeId  = array_rand($employeeArr, 1);
-        $employee    = $this->workEmployeeService->getWorkEmployeeById($employeeArr[$employeeId], ['qr_code']);
+        $employeeId = array_rand($employeeArr, 1);
+        $employee = $this->workEmployeeService->getWorkEmployeeById($employeeArr[$employeeId], ['qr_code']);
         ## 客户信息
         $contactRecord = $this->roomFissionContactService->getRoomFissionContactByUnionIdFissionID($params['union_id'], (int) $params['fission_id'], ['id', 'status', 'receive_status']);
         if ($contactRecord['status'] === 0) {
@@ -137,7 +137,7 @@ class Receive extends AbstractAction
     {
         return [
             'fission_id' => 'required',
-            'union_id'   => 'required',
+            'union_id' => 'required',
         ];
     }
 
@@ -149,7 +149,7 @@ class Receive extends AbstractAction
     {
         return [
             'fission_id.required' => 'fission_id 必传',
-            'union_id.required'   => 'union_id 必传',
+            'union_id.required' => 'union_id 必传',
         ];
     }
 }

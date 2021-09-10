@@ -10,10 +10,14 @@ declare(strict_types=1);
  */
 namespace MoChat\App\WorkContact\Service;
 
+use Hyperf\Database\Model\Builder;
 use Hyperf\DbConnection\Db;
 use MoChat\App\WorkContact\Constants\Employee\Status;
 use MoChat\App\WorkContact\Contract\WorkContactEmployeeContract;
+use MoChat\App\WorkContact\Model\WorkContact;
 use MoChat\App\WorkContact\Model\WorkContactEmployee;
+use MoChat\App\WorkContact\Model\WorkContactRoom;
+use MoChat\App\WorkContact\Model\WorkContactTagPivot;
 use MoChat\Framework\Service\AbstractService;
 
 class WorkContactEmployeeService extends AbstractService implements WorkContactEmployeeContract
@@ -478,7 +482,7 @@ class WorkContactEmployeeService extends AbstractService implements WorkContactE
             }
         }
 
-        $res         = $model->paginate($perPage, $columns, 'page', $page);
+        $res = $model->paginate($perPage, $columns, 'page', $page);
         $res || $res = collect([]);
 
         if (empty($res)) {
@@ -529,12 +533,12 @@ class WorkContactEmployeeService extends AbstractService implements WorkContactE
             $employeeTemp = $this->countWorkContactEmployeesByEmployee([$employee->id]);
             if (! count($employeeTemp)) {
                 $result[] = [
-                    'name'  => $employee->name,
+                    'name' => $employee->name,
                     'total' => 0,
                 ];
             } else {
                 $result[] = [
-                    'name'  => $employee->name,
+                    'name' => $employee->name,
                     'total' => $this->countWorkContactEmployeesByEmployee([$employee->id])[0]->total,
                 ];
             }
@@ -766,6 +770,50 @@ class WorkContactEmployeeService extends AbstractService implements WorkContactE
             ->where('corp_id', $corpId)
             ->first($columns);
 
+        $res || $res = collect([]);
+        return $res->toArray();
+    }
+
+    /**
+     * 查询多条
+     */
+    public function getWorkContactsByEmployeeIdFilterParams(int $employeeId, array $filterParams): array
+    {
+        $gender = $filterParams['gender'] ?? null;
+        $rooms = $filterParams['rooms'] ?? [];
+        $addTimeStart = $filterParams['addTimeStart'] ?? null;
+        $addTimeEnd = $filterParams['addTimeEnd'] ?? null;
+        $tags = $filterParams['tags'] ?? [];
+        $excludeContacts = $filterParams['excludeContacts'] ?? [];
+        $query = $this->model::from($this->model::query()->getModel()->getTable() . ' as work_contact_employee')
+            ->join(WorkContact::query()->getModel()->getTable() . ' as work_contact', 'work_contact_employee.contact_id', 'work_contact.id');
+
+        if (! empty($tags) || ! empty($excludeContacts)) {
+            $query = $query->join(WorkContactTagPivot::query()->getModel()->getTable() . ' as work_contact_tag_pivot', 'work_contact_employee.contact_id', 'work_contact_tag_pivot.contact_id');
+        }
+
+        $res = $query->where('work_contact_employee.employee_id', $employeeId)
+            ->when(is_numeric($gender) && $gender < 3, function (Builder $query) use ($gender) {
+                return $query->where('work_contact.gender', '=', $gender);
+            })
+            ->when(! empty($addTimeStart), function (Builder $query) use ($addTimeStart, $addTimeEnd) {
+                return $query->whereBetween('work_contact.created_at', [$addTimeStart . ' 00:00:00', $addTimeEnd . ' 23:59:59']);
+            })
+            ->when(! empty($rooms), function (Builder $query) use ($rooms) {
+                $query->join(WorkContactRoom::query()->getModel()->getTable() . ' as work_contact_room', 'work_contact_employee.contact_id', 'work_contact_room.contact_id');
+                return $query->whereIn('work_contact_room.room_id', $rooms);
+            })
+            ->when(! empty($tags), function (Builder $query) use ($tags) {
+                return $query->whereIn('work_contact_tag_pivot.contact_tag_id', $tags);
+            })
+            ->when(! empty($excludeContacts), function (Builder $query) use ($excludeContacts) {
+                return $query->whereNotIn('work_contact_tag_pivot.contact_tag_id', $excludeContacts);
+            })
+            ->distinct()
+            ->get([
+                'work_contact.id',
+                'work_contact.wx_external_userid',
+            ]);
         $res || $res = collect([]);
         return $res->toArray();
     }

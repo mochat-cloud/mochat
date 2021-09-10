@@ -137,7 +137,7 @@ class WorkAgentService extends AbstractService implements WorkAgentContract
     }
 
     /**
-     * 获取单条 - 根据企业id获取提醒专用应用(暂时获取第一个可用的)
+     * 获取单条 - 根据企业id获取提醒专用应用(暂时获取第一个可用的).
      * @param int $corpId 微信应用ID
      * @param array $columns ...
      * @return array ...

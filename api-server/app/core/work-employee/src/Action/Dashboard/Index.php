@@ -11,10 +11,10 @@ declare(strict_types=1);
 namespace MoChat\App\WorkEmployee\Action\Dashboard;
 
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkEmployee\Logic\IndexLogic;
 use MoChat\Framework\Action\AbstractAction;
@@ -62,9 +62,9 @@ class Index extends AbstractAction
     protected function rules(): array
     {
         return [
-            'corpId'  => 'required',
-            'status'  => 'integer',
-            'page'    => 'integer',
+            'corpId' => 'required',
+            'status' => 'integer',
+            'page' => 'integer',
             'perPage' => 'integer',
         ];
     }
@@ -77,8 +77,8 @@ class Index extends AbstractAction
     {
         return [
             'corpId.required' => '企业微信不能为空',
-            'status.integer'  => '成员状态必须为整数',
-            'page.integer'    => '页码必须为整数',
+            'status.integer' => '成员状态必须为整数',
+            'page.integer' => '页码必须为整数',
             'perPage.integer' => '页码必须为整数',
         ];
     }

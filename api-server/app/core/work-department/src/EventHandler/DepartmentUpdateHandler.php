@@ -47,10 +47,10 @@ class DepartmentUpdateHandler extends AbstractEventHandler
         }
         //获取公司corpId
         $this->corpService = make(CorpContract::class);
-        $corpIds           = $this->getCorpId();
+        $corpIds = $this->getCorpId();
         //部门
         $this->workDepartmentService = make(WorkDepartmentContract::class);
-        $departments                 = $this->getDepartmentData($corpIds);
+        $departments = $this->getDepartmentData($corpIds);
         if (empty($departments)) {
             $this->logger->error('DepartmentUpdateHandler->process同步修改部门corpIds不能为空');
             return 'success';
@@ -66,13 +66,13 @@ class DepartmentUpdateHandler extends AbstractEventHandler
             $parentId = ! empty($departments[$this->message['ParentId']]) ? $departments[$this->message['ParentId']]['id'] : 0;
         }
         $updateDepartment = [
-            'id'               => $departments[$this->message['Id']]['id'],
+            'id' => $departments[$this->message['Id']]['id'],
             'wx_department_id' => $this->message['Id'],
-            'corp_id'          => current($corpIds),
-            'parent_id'        => $parentId,
-            'wx_parentid'      => ! empty($this->message['ParentId']) ? $this->message['ParentId'] : $departments[$this->message['Id']]['parentId'],
-            'order'            => ! empty($this->message['Order']) ? $this->message['Order'] : $departments[$this->message['Id']]['order'],
-            'updated_at'       => date('Y-m-d H:i:s'),
+            'corp_id' => current($corpIds),
+            'parent_id' => $parentId,
+            'wx_parentid' => ! empty($this->message['ParentId']) ? $this->message['ParentId'] : $departments[$this->message['Id']]['parentId'],
+            'order' => ! empty($this->message['Order']) ? $this->message['Order'] : $departments[$this->message['Id']]['order'],
+            'updated_at' => date('Y-m-d H:i:s'),
         ];
         // 在部门名字不为空的时候才更新 否则会把已有的name 更新为空 参考企业微信 通讯录回调通知 部门变更通知
         if (! empty($this->message['Name'])) {
@@ -103,7 +103,7 @@ class DepartmentUpdateHandler extends AbstractEventHandler
      */
     private function getDepartmentData($corpIds): array
     {
-        $department     = [];
+        $department = [];
         $departmentData = $this->workDepartmentService->getWorkDepartmentsByCorpIds($corpIds);
         if (empty($departmentData)) {
             return [];

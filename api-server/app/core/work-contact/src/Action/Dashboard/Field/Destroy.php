@@ -11,10 +11,10 @@ declare(strict_types=1);
 namespace MoChat\App\WorkContact\Action\Dashboard\Field;
 
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Action\Dashboard\Field\Traits\RequestTrait;
 use MoChat\App\WorkContact\Contract\ContactFieldContract;
@@ -49,7 +49,7 @@ class Destroy extends AbstractAction
 
         ## 业务验证
         $client = $this->container->get(ContactFieldContract::class);
-        $data   = $client->getContactFieldById($id, ['id', 'is_sys']);
+        $data = $client->getContactFieldById($id, ['id', 'is_sys']);
         if (empty($data)) {
             throw new CommonException(ErrorCode::INVALID_PARAMS, '数据不存在');
         }

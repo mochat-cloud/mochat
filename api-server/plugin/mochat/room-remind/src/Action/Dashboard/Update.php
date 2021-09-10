@@ -14,11 +14,11 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
@@ -59,7 +59,7 @@ class Update extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -96,13 +96,13 @@ class Update extends AbstractAction
     protected function rules(): array
     {
         return [
-            'id'             => 'required',
-            'rooms'          => 'required',
-            'is_qrcode'      => 'required',
-            'is_link'        => 'required',
+            'id' => 'required',
+            'rooms' => 'required',
+            'is_qrcode' => 'required',
+            'is_link' => 'required',
             'is_miniprogram' => 'required',
-            'is_card'        => 'required',
-            'is_keyword'     => 'required',
+            'is_card' => 'required',
+            'is_keyword' => 'required',
         ];
     }
 
@@ -113,13 +113,13 @@ class Update extends AbstractAction
     protected function messages(): array
     {
         return [
-            'id.required'             => 'id 必传',
-            'rooms.required'          => '群聊 必传',
-            'is_qrcode.required'      => '发送带二维码图片 必传',
-            'is_link.required'        => '发送链接分享 必传',
+            'id.required' => 'id 必传',
+            'rooms.required' => '群聊 必传',
+            'is_qrcode.required' => '发送带二维码图片 必传',
+            'is_link.required' => '发送链接分享 必传',
             'is_miniprogram.required' => '发送小程序 必传',
-            'is_card.required'        => '发送名片 必传',
-            'is_keyword.required'     => '发送关键词 必传',
+            'is_card.required' => '发送名片 必传',
+            'is_keyword.required' => '发送关键词 必传',
         ];
     }
 
@@ -134,13 +134,13 @@ class Update extends AbstractAction
     {
         ## 基本信息
         return [
-            'rooms'          => json_encode($params['rooms'], JSON_THROW_ON_ERROR),
-            'is_qrcode'      => (int) $params['is_qrcode'],
-            'is_link'        => (int) $params['is_link'],
+            'rooms' => json_encode($params['rooms'], JSON_THROW_ON_ERROR),
+            'is_qrcode' => (int) $params['is_qrcode'],
+            'is_link' => (int) $params['is_link'],
             'is_miniprogram' => (int) $params['is_miniprogram'],
-            'is_card'        => (int) $params['is_card'],
-            'is_keyword'     => $params['is_keyword'],
-            'keyword'        => (isset($params['keyword']) && ! empty($params['keyword'])) ? implode(',', $params['keyword']) : '',
+            'is_card' => (int) $params['is_card'],
+            'is_keyword' => $params['is_keyword'],
+            'keyword' => (isset($params['keyword']) && ! empty($params['keyword'])) ? implode(',', $params['keyword']) : '',
         ];
     }
 

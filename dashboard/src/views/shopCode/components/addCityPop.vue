@@ -4,7 +4,14 @@
       <div class="add_city_tips">配置过程较为复杂，可<a href="">联系客服</a>提供人工配置服务</div>
       <div class="add_city_row">
         <div class="title_name">城市：</div>
-        <VDistpicker hide-area @province="selectProvince" :province="province" :city="city" @city="selectCity"/>
+        <!--        -->
+        <VDistpicker
+          ref="VDistpicker"
+          hide-area
+          @province="selectProvince"
+          :province="province"
+          :city="city"
+          @city="selectCity"/>
       </div>
       <div class="add_city_row">
         <div class="title_name">拉群活码：</div>
@@ -46,7 +53,7 @@
 <script>
 // eslint-disable-next-line no-unused-vars
 import { workRoomIndexApi } from '@/api/shopCode'
-import VDistpicker from 'v-distpicker'
+import VDistpicker from '@/components/VDistpicker'
 export default {
   components: { VDistpicker },
   data () {
@@ -70,7 +77,7 @@ export default {
 
     }
   },
-  created () {
+  watch: {
   },
   methods: {
     show (record) {
@@ -84,6 +91,9 @@ export default {
       }).then((res) => {
         this.workRoomsArray = res.data.list
         if (record) {
+          // this.$nextTick(() => {
+          this.$refs.VDistpicker.setCityData(record.province, record.city)
+          // })
           this.province = record.province
           this.city = record.city
           this.askCityData.qwCode = record.qwCode
@@ -99,13 +109,12 @@ export default {
     },
     // 确定
     submitBtn () {
-      // 省
-      if (this.askCityData.province == '' || this.askCityData.province == '省') {
+      if (this.askCityData.province == '' || this.askCityData.province == '省' || this.askCityData.province == undefined) {
         this.$message.warning('请选择省份')
         return false
       }
       // 市
-      if (this.askCityData.city == '' || this.askCityData.city == '市') {
+      if (this.askCityData.city == '' || this.askCityData.city == '市' || this.askCityData.city == undefined) {
         this.$message.warning('请选择城市')
         return false
       }
@@ -120,17 +129,19 @@ export default {
         this.askCityData.status = 0
       }
       console.log(this.askCityData)
-      this.$emit('change', this.askCityData)
-      this.addToCityPopup = false
       // 清空弹窗数据
-      this.province = '省'
-      this.city = '市'
-      this.cityStatus = true
-      this.showRooms = {}
+      this.closeBtn()
+      // this.$refs.VDistpicker.resetCityData()
+      this.$emit('change', this.askCityData)
     },
     // 取消
     closeBtn () {
       this.addToCityPopup = false
+      this.$refs.VDistpicker.resetCityData()
+      // this.province = '省'
+      // this.city = '市'
+      this.cityStatus = true
+      this.showRooms = {}
     },
     // 选择省
     selectProvince (e) {

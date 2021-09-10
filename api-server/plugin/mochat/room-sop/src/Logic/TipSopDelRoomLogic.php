@@ -107,7 +107,7 @@ class TipSopDelRoomLogic
      */
     public function handle($params)
     {
-        $sop   = $this->roomSopService->getRoomSopById($params['id']);
+        $sop = $this->roomSopService->getRoomSopById($params['id']);
         $rooms = json_decode($sop['roomIds'], true, 512, JSON_THROW_ON_ERROR);
         $index = array_search($params['roomId'], $rooms);
         if ($index !== false) {

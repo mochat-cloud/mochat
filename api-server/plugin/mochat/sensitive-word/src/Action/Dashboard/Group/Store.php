@@ -12,10 +12,10 @@ namespace MoChat\Plugin\SensitiveWord\Action\Dashboard\Group;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
@@ -70,7 +70,7 @@ class Store extends AbstractAction
 
         ## 参数验证
         $this->corpId = (int) $user['corpIds'][0];
-        $params       = $this->request->all();
+        $params = $this->request->all();
         $this->validated($params, 'store');
 
         ## 创建
@@ -103,8 +103,8 @@ class Store extends AbstractAction
     {
         return [
             'name.required' => '敏感词分组名称 必填',
-            'name.string'   => '敏感词分组名称 必须为字符串',
-            'name.min'      => '敏感词分组名称 字符串长度不可小于1',
+            'name.string' => '敏感词分组名称 必须为字符串',
+            'name.min' => '敏感词分组名称 字符串长度不可小于1',
         ];
     }
 
@@ -125,9 +125,9 @@ class Store extends AbstractAction
         $data = [];
         if (! is_array($name)) {
             $data = [
-                'name'        => $name,
-                'corp_id'     => $this->corpId,
-                'user_id'     => $user['id'],
+                'name' => $name,
+                'corp_id' => $this->corpId,
+                'user_id' => $user['id'],
                 'employee_id' => $user['workEmployeeId'],
             ];
             $this->nameIsUnique($data['name']);
@@ -137,9 +137,9 @@ class Store extends AbstractAction
         foreach ($name as $key => $val) {
             $this->nameIsUnique($val);
             $data[$key] = [
-                'name'        => $val,
-                'corp_id'     => $this->corpId,
-                'user_id'     => $user['id'],
+                'name' => $val,
+                'corp_id' => $this->corpId,
+                'user_id' => $user['id'],
                 'employee_id' => $user['workEmployeeId'],
             ];
         }
@@ -154,7 +154,7 @@ class Store extends AbstractAction
      */
     private function nameIsUnique(string $name)
     {
-        $client    = $this->container->get(SensitiveWordGroupContract::class);
+        $client = $this->container->get(SensitiveWordGroupContract::class);
         $existData = $client->getSensitiveWordGroupByNameCorpId($name, $this->corpId);
         if (! empty($existData)) {
             throw new CommonException(ErrorCode::INVALID_PARAMS, $name . '-该分组名称已存在');

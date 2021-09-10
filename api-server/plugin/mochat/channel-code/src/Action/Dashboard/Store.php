@@ -12,10 +12,10 @@ namespace MoChat\Plugin\ChannelCode\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
@@ -54,9 +54,9 @@ class Store extends AbstractAction
         }
 
         //接收参数
-        $params['baseInfo']         = $this->request->input('baseInfo');
+        $params['baseInfo'] = $this->request->input('baseInfo');
         $params['drainageEmployee'] = $this->request->input('drainageEmployee');
-        $params['welcomeMessage']   = $this->request->input('welcomeMessage');
+        $params['welcomeMessage'] = $this->request->input('welcomeMessage');
 
         return $this->storeLogic->handle($params);
     }

@@ -72,13 +72,13 @@ class IndexLogic
         $where['corp_id'] = $user['corpIds'][0];
         ## 分页信息
         $options = [
-            'page'       => $params['page'],
-            'perPage'    => $params['perPage'],
+            'page' => $params['page'],
+            'perPage' => $params['perPage'],
             'orderByRaw' => 'updated_at desc',
         ];
 
         return $data = [
-            'where'   => $where,
+            'where' => $where,
             'options' => $options,
         ];
     }
@@ -94,13 +94,13 @@ class IndexLogic
         ## 组织响应数据
         $data = [
             'page' => [
-                'perPage'   => $params['options']['perPage'],
-                'total'     => 0,
+                'perPage' => $params['options']['perPage'],
+                'total' => 0,
                 'totalPage' => 0,
             ],
-            'hadGeneral'   => 0,
+            'hadGeneral' => 0,
             'hadEmployees' => [],
-            'list'         => [],
+            'list' => [],
         ];
 
         return empty($greetings['data']) ? $data : $this->handleData($data, $greetings, (int) $params['where']['corp_id']);
@@ -115,7 +115,7 @@ class IndexLogic
     private function handleData(array $data, array $greetings, int $corpId): array
     {
         ## 分页数据
-        $data['page']['total']     = $greetings['total'];
+        $data['page']['total'] = $greetings['total'];
         $data['page']['totalPage'] = $greetings['last_page'];
         ## 处理已存在数据
         $hadGreetings = $this->hadGreetings($corpId);
@@ -125,7 +125,7 @@ class IndexLogic
         $data['hadEmployees'] = $hadGreetings['hadEmployees'];
         ## 欢迎语素材
         $mediumIdArr = array_unique(array_filter(array_column($greetings['data'], 'mediumId')));
-        $mediumList  = empty($mediumIdArr) ? [] : $this->getMediumList($mediumIdArr);
+        $mediumList = empty($mediumIdArr) ? [] : $this->getMediumList($mediumIdArr);
 
         $data['list'] = array_map(function ($greeting) use ($mediumList) {
             $medium = isset($mediumList[$greeting['mediumId']]) ? $mediumList[$greeting['mediumId']] : [];
@@ -135,15 +135,15 @@ class IndexLogic
                 return MediumType::getMessage((int) $type);
             }, array_filter(explode('-', $greeting['type'])));
             return [
-                'greetingId'    => $greeting['id'],
-                'typeText'      => implode('+', $typeTextArr),
-                'rangeType'     => $greeting['rangeType'],
+                'greetingId' => $greeting['id'],
+                'typeText' => implode('+', $typeTextArr),
+                'rangeType' => $greeting['rangeType'],
                 'rangeTypeText' => RangeType::getMessage((int) $greeting['rangeType']),
-                'employees'     => $this->getEmployees((int) $greeting['rangeType'], json_decode($greeting['employees'], true)),
-                'words'         => $greeting['words'],
-                'mediumId'      => $greeting['mediumId'],
+                'employees' => $this->getEmployees((int) $greeting['rangeType'], json_decode($greeting['employees'], true)),
+                'words' => $greeting['words'],
+                'mediumId' => $greeting['mediumId'],
                 'mediumContent' => $mediumContent,
-                'createdAt'     => $greeting['createdAt'],
+                'createdAt' => $greeting['createdAt'],
             ];
         }, $greetings['data']);
 
@@ -156,7 +156,7 @@ class IndexLogic
     private function hadGreetings(int $corpId): array
     {
         $data = [
-            'hadGeneral'   => 0,
+            'hadGeneral' => 0,
             'hadEmployees' => [],
         ];
         $greetings = $this->greetingService->getGreetingsByCorpId($corpId, ['id', 'range_type', 'employees']);
@@ -166,7 +166,7 @@ class IndexLogic
         in_array(RangeType::ALL, array_column($greetings, 'rangeType')) && $data['hadGeneral'] = 1;
 
         foreach ($greetings as $greet) {
-            $employees                                 = json_decode($greet['employees']);
+            $employees = json_decode($greet['employees']);
             empty($employees) || $data['hadEmployees'] = array_merge($data['hadEmployees'], $employees);
         }
         $data['hadEmployees'] = array_values(array_unique($data['hadEmployees']));
@@ -193,7 +193,7 @@ class IndexLogic
         if ($rangeType == RangeType::ALL) {
             $data = [RangeType::getMessage((int) $rangeType)];
         } else {
-            $data                 = empty($employeeIds) ? [] : $this->workEmployeeService->getWorkEmployeesById($employeeIds, ['name']);
+            $data = empty($employeeIds) ? [] : $this->workEmployeeService->getWorkEmployeesById($employeeIds, ['name']);
             empty($data) || $data = array_column($data, 'name');
         }
         return $data;

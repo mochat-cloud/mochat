@@ -22,10 +22,10 @@ use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\App\WorkMessage\Contract\WorkMessageContract;
 use MoChat\App\WorkRoom\Contract\WorkRoomContract;
 use MoChat\Plugin\ContactSop\Contract\ContactSopContract;
-use MoChat\Plugin\RoomSop\QueueService\RoomSopPush;
 use MoChat\Plugin\ContactTransfer\Contract\WorkUnassignedContract;
 use MoChat\Plugin\RoomSop\Contract\RoomSopContract;
 use MoChat\Plugin\RoomSop\Contract\RoomSopLogContract;
+use MoChat\Plugin\RoomSop\QueueService\RoomSopPush;
 
 /**
  * Class SetRoomLogic.
@@ -127,12 +127,12 @@ class SetRoomLogic
      */
     public function handle($params)
     {
-        $roomSop            = $this->roomSopService->getRoomSopById((int) $params['id']);
-        $userInfo           = $this->userService->getUserById($roomSop['creatorId']);
+        $roomSop = $this->roomSopService->getRoomSopById((int) $params['id']);
+        $userInfo = $this->userService->getUserById($roomSop['creatorId']);
         $params['userName'] = $userInfo['name'];
 
         $before = json_decode($roomSop['roomIds']);
-        $after  = json_decode($params['employees']);
+        $after = json_decode($params['employees']);
 
         if (count($before) < count($after)) {
             //增加了
@@ -141,7 +141,7 @@ class SetRoomLogic
             $this->logger->error('群SOP增加群聊');
 
             foreach ($differ as $item) {
-                $room     = $this->workRoomService->getWorkRoomById($item);
+                $room = $this->workRoomService->getWorkRoomById($item);
                 $employee = $this->workEmployeeService->getWorkEmployeeById($room['ownerId']);
 
                 $taskList = json_decode($roomSop['setting']);
@@ -162,18 +162,18 @@ class SetRoomLogic
 
                     //添加触发记录
                     $sopLogId = $this->roomSopLogService->createRoomSopLog([
-                        'corp_id'     => $params['corpId'],
+                        'corp_id' => $params['corpId'],
                         'room_sop_id' => $roomSop['id'],
-                        'room_id'     => $room['id'],
-                        'employee'    => $employee['wxUserId'],
-                        'task'        => json_encode($task),
-                        'created_at'  => date('Y-m-d H:i:s', time()),
+                        'room_id' => $room['id'],
+                        'employee' => $employee['wxUserId'],
+                        'task' => json_encode($task),
+                        'created_at' => date('Y-m-d H:i:s', time()),
                     ]);
 
                     $flag = $this->roomSopPush->push([
-                        'corpId'         => $params['corpId'],
-                        'employeeWxId'   => $employee['wxUserId'],
-                        'roomSopLogId'   => $sopLogId,
+                        'corpId' => $params['corpId'],
+                        'employeeWxId' => $employee['wxUserId'],
+                        'roomSopLogId' => $sopLogId,
                         'sopCreatorName' => $params['userName'],
                     ], $delay);
                 }

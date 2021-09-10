@@ -46,7 +46,7 @@ class RoomOwnerSendIndexLogic
     public function handle(array $params, int $userId): array
     {
         $batchId = (int) $params['batchId'];
-        $batch   = $this->roomMessageBatchSend->getRoomMessageBatchSendById($batchId);
+        $batch = $this->roomMessageBatchSend->getRoomMessageBatchSendById($batchId);
         if (! $batch) {
             throw new CommonException(ErrorCode::INVALID_PARAMS, '未找到记录');
         }
@@ -58,8 +58,8 @@ class RoomOwnerSendIndexLogic
         ## 组织响应数据
         $data = [
             'page' => [
-                'perPage'   => $params['perPage'],
-                'total'     => 0,
+                'perPage' => $params['perPage'],
+                'total' => 0,
                 'totalPage' => 0,
             ],
             'list' => [],
@@ -68,9 +68,9 @@ class RoomOwnerSendIndexLogic
             return $data;
         }
         ## 处理分页数据
-        $data['page']['total']     = $res['total'];
+        $data['page']['total'] = $res['total'];
         $data['page']['totalPage'] = $res['last_page'];
-        $data['list']              = [];
+        $data['list'] = [];
         foreach ($res['data'] as $item) {
             $item['sendSuccessTotal'] = $this->roomMessageBatchSendResult->getRoomMessageBatchSendResultCount([
                 ['batch_id', '=', $batch['id']],

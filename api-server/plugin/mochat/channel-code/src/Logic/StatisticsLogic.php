@@ -69,11 +69,11 @@ class StatisticsLogic
             $etime = strtotime($params['endTime']);
             while ($stime <= $etime) {
                 $data[] = [
-                    'time'             => date('Y-m-d', $stime),
-                    'addNumRange'      => 0,
+                    'time' => date('Y-m-d', $stime),
+                    'addNumRange' => 0,
                     'defriendNumRange' => 0,
-                    'deleteNumRange'   => 0,
-                    'netNumRange'      => 0,
+                    'deleteNumRange' => 0,
+                    'netNumRange' => 0,
                 ];
                 $stime = $stime + 86400;
             }
@@ -81,22 +81,22 @@ class StatisticsLogic
             $beforeWeekDay = date('Y-m-d', strtotime('-1 week'));
             for ($i = 1; $i <= 7; ++$i) {
                 $data[] = [
-                    'time'             => date('Y-m-d', strtotime('+' . $i . ' days', strtotime($beforeWeekDay))),
-                    'addNumRange'      => 0,
+                    'time' => date('Y-m-d', strtotime('+' . $i . ' days', strtotime($beforeWeekDay))),
+                    'addNumRange' => 0,
                     'defriendNumRange' => 0,
-                    'deleteNumRange'   => 0,
-                    'netNumRange'      => 0,
+                    'deleteNumRange' => 0,
+                    'netNumRange' => 0,
                 ];
             }
         } else { ## 按自然年统计
             $beforeYearMonth = date('Y-m', strtotime('-1 year'));
             for ($i = 1; $i <= 12; ++$i) {
                 $data[] = [
-                    'time'             => date('Y-m', strtotime('+' . $i . ' months', strtotime($beforeYearMonth))),
-                    'addNumRange'      => 0,
+                    'time' => date('Y-m', strtotime('+' . $i . ' months', strtotime($beforeYearMonth))),
+                    'addNumRange' => 0,
                     'defriendNumRange' => 0,
-                    'deleteNumRange'   => 0,
-                    'netNumRange'      => 0,
+                    'deleteNumRange' => 0,
+                    'netNumRange' => 0,
                 ];
             }
         }
@@ -114,15 +114,15 @@ class StatisticsLogic
     {
         ## 组织响应格式
         $data = [
-            'addNum'          => 0,
-            'defriendNum'     => 0,
-            'deleteNum'       => 0,
-            'netNum'          => 0,
-            'addNumLong'      => 0,
+            'addNum' => 0,
+            'defriendNum' => 0,
+            'deleteNum' => 0,
+            'netNum' => 0,
+            'addNumLong' => 0,
             'defriendNumLong' => 0,
-            'deleteNumLong'   => 0,
-            'netNumLong'      => 0,
-            'list'            => array_values($formData),
+            'deleteNumLong' => 0,
+            'netNumLong' => 0,
+            'list' => array_values($formData),
         ];
         if (empty($contactList)) {
             return $data;
@@ -131,10 +131,10 @@ class StatisticsLogic
         $currentDay = date('Y-m-d');
         foreach ($contactList as $v) {
             if (in_array($params['type'], [1, 2])) { ## 按天统计||按自然周统计
-                $inKey  = date('Y-m-d', strtotime($v['createTime']));
+                $inKey = date('Y-m-d', strtotime($v['createTime']));
                 $outKey = empty($v['deletedAt']) ? 'outTime' : date('Y-m-d', strtotime($v['deletedAt']));
             } else { ## 按自然年统计
-                $inKey  = date('Y-m', strtotime($v['createTime']));
+                $inKey = date('Y-m', strtotime($v['createTime']));
                 $outKey = empty($v['deletedAt']) ? 'outTime' : date('Y-m', strtotime($v['deletedAt']));
             }
             date('Y-m-d', strtotime($v['createTime'])) == $currentDay && ++$data['addNum'];
@@ -157,7 +157,7 @@ class StatisticsLogic
                 }
             }
             ## 净增客户处理
-            $data['netNum']     = $data['addNum'] - $data['defriendNum'];
+            $data['netNum'] = $data['addNum'] - $data['defriendNum'];
             $data['netNumLong'] = $data['addNumLong'] - $data['defriendNumLong'];
             foreach ($formData as &$form) {
                 $form['netNumRange'] = $form['addNumRange'] - $form['defriendNumRange'];

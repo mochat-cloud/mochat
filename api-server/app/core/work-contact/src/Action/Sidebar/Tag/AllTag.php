@@ -12,12 +12,12 @@ namespace MoChat\App\WorkContact\Action\Sidebar\Tag;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\SidebarAuthMiddleware;
 use MoChat\App\WorkContact\Contract\WorkContactTagContract;
 use MoChat\Framework\Action\AbstractAction;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\SidebarAuthMiddleware;
 
 /**
  * 所有标签.
@@ -51,7 +51,7 @@ class AllTag extends AbstractAction
         //获取所选分组下的标签列表
         if (is_numeric($params['groupId'])) {
             $tagInfo = $this->contactTagService
-                ->getWorkContactTagsByCorpIdGroupIds(user()['corpIds'], [$params['groupId']], $columns);
+                ->getWorkContactTagsByCorpIdGroupIds([user()['corpId']], [$params['groupId']], $columns);
 
             if (empty($tagInfo)) {
                 return [];
@@ -59,7 +59,7 @@ class AllTag extends AbstractAction
         } else {
             //获取所有标签
             $tagInfo = $this->contactTagService
-                ->getWorkContactTagsByCorpId(user()['corpIds'], $columns);
+                ->getWorkContactTagsByCorpId([user()['corpId']], $columns);
             if (empty($tagInfo)) {
                 return [];
             }

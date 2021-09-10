@@ -76,9 +76,9 @@ class StoreCallBackLogic
             if (! isset($allGroup[$val['group_id']])) {
                 $data = [
                     'wx_group_id' => $val['group_id'],
-                    'corp_id'     => $this->corpId,
-                    'group_name'  => $val['group_name'],
-                    'order'       => $val['order'],
+                    'corp_id' => $this->corpId,
+                    'group_name' => $val['group_name'],
+                    'order' => $val['order'],
                 ];
                 $contactGroupId = $this->contactTagGroupService->createWorkContactTagGroup($data);
                 if (! is_int($contactGroupId)) {
@@ -89,10 +89,10 @@ class StoreCallBackLogic
                 //标签
                 foreach ($val['tag'] as &$v) {
                     $createTag[] = [
-                        'wx_contact_tag_id'    => $v['id'],
-                        'corp_id'              => $this->corpId,
-                        'name'                 => $v['name'],
-                        'order'                => $v['order'],
+                        'wx_contact_tag_id' => $v['id'],
+                        'corp_id' => $this->corpId,
+                        'name' => $v['name'],
+                        'order' => $v['order'],
                         'contact_tag_group_id' => $contactGroupId,
                     ];
                 }

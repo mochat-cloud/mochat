@@ -1,3 +1,7 @@
+import { Toast } from 'vant'
+import store from '@/store'
+import { agentConfig } from '@/utils/wxCodeAuth'
+
 // 设置 cookie
 export function setCookie (name, value, time = 7200) {
   //  设置过期时间为
@@ -175,4 +179,80 @@ function decodeTransform (input) {
     }
   }
   return output
+}
+
+/**
+ * 检查登录状态
+ *
+ * @param to
+ * @param from
+ * @param next
+ * @returns {boolean}
+ */
+export function checkLogin (to, from, next) {
+  // 原有待跳转
+  if (to.path === '/' && !to.query.pageFlag) {
+    return
+  }
+
+  if (to.fullPath === '/' || to.path === '/codeAuth' || to.path === '/auth' || to.path === '/login') {
+    return
+  }
+
+  let agentId = to.query.agentId
+
+  if (!agentId) {
+    agentId = getCookie('agentId')
+  }
+
+  if (!agentId) {
+    Toast({ position: 'top', message: '应用id不能为空' })
+    return
+  }
+
+  const token = getCookie('token')
+  if (!token) {
+    return false
+  }
+
+  return true
+}
+
+export function navShow (to) {
+  let show
+  if (to.path === '/medium' || to.path === '/contact') {
+    show = true
+  } else {
+    show = false
+  }
+  store.commit('SET_NAV_SHOW', show)
+}
+
+export async function initConfig (to, from, next) {
+  if (store.getters.initAgentConfig) {
+    return
+  }
+
+  if (to.path === '/') {
+    return
+  }
+
+  let agentId = from.query.agentId
+
+  if (!agentId) {
+    agentId = getCookie('agentId')
+  }
+
+  if (!agentId) {
+    return
+  }
+
+  let fullPath = from.fullPath
+  if (from.fullPath === '/') {
+    fullPath = to.fullPath
+  }
+  // 从企业微信3.0.24及以后版本（可通过企业微信UA判断版本号），无须先调用wx.config，可直接wx.agentConfig.
+  // await wxConfig(fullPath)
+  await agentConfig(fullPath, agentId)
+  store.commit('SET_INIT_AGENT_CONFIG', true)
 }

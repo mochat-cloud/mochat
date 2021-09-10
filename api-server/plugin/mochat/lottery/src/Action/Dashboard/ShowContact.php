@@ -13,11 +13,11 @@ namespace MoChat\Plugin\Lottery\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
@@ -101,7 +101,7 @@ class ShowContact extends AbstractAction
      */
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -120,11 +120,11 @@ class ShowContact extends AbstractAction
         $this->validated($this->request->all());
         ## 接收参数
         $params = [
-            'id'       => $this->request->input('id'),
-            'status'   => $this->request->input('status'),
+            'id' => $this->request->input('id'),
+            'status' => $this->request->input('status'),
             'nickname' => $this->request->input('nickname', null),
-            'page'     => $this->request->input('page', 1),
-            'perPage'  => $this->request->input('perPage', 10000),
+            'page' => $this->request->input('page', 1),
+            'perPage' => $this->request->input('perPage', 10000),
         ];
         ## 处理请求参数
         $params = $this->handleParams($params);
@@ -140,7 +140,7 @@ class ShowContact extends AbstractAction
     protected function rules(): array
     {
         return [
-            'id'     => 'required | integer | min:0 | bail',
+            'id' => 'required | integer | min:0 | bail',
             'status' => 'required',
         ];
     }
@@ -153,8 +153,8 @@ class ShowContact extends AbstractAction
     {
         return [
             'id.required' => '活动ID 必填',
-            'id.min  '    => '活动ID 不可小于1',
-            'status'      => 'status 必填',
+            'id.min  ' => '活动ID 不可小于1',
+            'status' => 'status 必填',
         ];
     }
 
@@ -175,14 +175,14 @@ class ShowContact extends AbstractAction
         }
         if ((int) $params['status'] === 2) {
             $where['win_num'] = 0;
-            $where[]          = ['draw_num', '>', 0];
+            $where[] = ['draw_num', '>', 0];
         }
         if ((int) $params['status'] === 3) {
             $where['draw_num'] = 0;
         }
         $options = [
-            'perPage'    => $params['perPage'],
-            'page'       => $params['page'],
+            'perPage' => $params['perPage'],
+            'page' => $params['page'],
             'orderByRaw' => 'id desc',
         ];
 
@@ -197,14 +197,14 @@ class ShowContact extends AbstractAction
      */
     private function getContactList(array $params): array
     {
-        $columns     = ['id', 'lottery_id', 'contact_id', 'nickname', 'avatar', 'employee_ids', 'city', 'source', 'grade', 'contact_tags', 'draw_num', 'win_num', 'write_off'];
+        $columns = ['id', 'lottery_id', 'contact_id', 'nickname', 'avatar', 'employee_ids', 'city', 'source', 'grade', 'contact_tags', 'draw_num', 'win_num', 'write_off'];
         $contactList = $this->lotteryContactService->getLotteryContactList($params['where'], $columns, $params['options']);
 
         $list = [];
         $data = [
             'page' => [
-                'perPage'   => $this->perPage,
-                'total'     => '0',
+                'perPage' => $this->perPage,
+                'total' => '0',
                 'totalPage' => '0',
             ],
             'list' => $list,
@@ -223,25 +223,25 @@ class ShowContact extends AbstractAction
         $list = [];
         foreach ($contactList['data'] as $key => $val) {
             $list[$key] = [
-                'id'           => $val['id'],
-                'contact_id'   => $val['contactId'],
-                'nickname'     => $val['nickname'],
-                'avatar'       => file_full_url($val['avatar']),
-                'type'         => $val['contactId'] > 0 ? '企业客户' : '微信客户',
-                'source'       => $val['source'] === 'from_qr' ? '分享弹窗' : $val['source'],
-                'city'         => $val['city'],
-                'employee'     => $this->employees($val['employeeIds']),
-                'grade'        => $val['grade'],
+                'id' => $val['id'],
+                'contact_id' => $val['contactId'],
+                'nickname' => $val['nickname'],
+                'avatar' => file_full_url($val['avatar']),
+                'type' => $val['contactId'] > 0 ? '企业客户' : '微信客户',
+                'source' => $val['source'] === 'from_qr' ? '分享弹窗' : $val['source'],
+                'city' => $val['city'],
+                'employee' => $this->employees($val['employeeIds']),
+                'grade' => $val['grade'],
                 'contact_tags' => empty($val['contactTags']) ? '' : json_decode($val['contactTags'], true, 512, JSON_THROW_ON_ERROR),
-                'draw_num'     => $val['drawNum'],
-                'status'       => $this->status($val['drawNum'], $val['winNum']),
-                'win_record'   => $this->lotteryContactRecordService->getLotteryContactRecordByLotteryIdContactId((int) $val['lotteryId'], (int) $val['id'], ['prize_name']),
-                'write_off'    => $val['writeOff'],
+                'draw_num' => $val['drawNum'],
+                'status' => $this->status($val['drawNum'], $val['winNum']),
+                'win_record' => $this->lotteryContactRecordService->getLotteryContactRecordByLotteryIdContactId((int) $val['lotteryId'], (int) $val['id'], ['prize_name']),
+                'write_off' => $val['writeOff'],
             ];
         }
-        $data['page']['total']     = $contactList['total'];
+        $data['page']['total'] = $contactList['total'];
         $data['page']['totalPage'] = $contactList['last_page'];
-        $data['list']              = $list;
+        $data['list'] = $list;
 
         return $data;
     }

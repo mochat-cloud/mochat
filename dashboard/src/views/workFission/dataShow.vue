@@ -278,10 +278,6 @@
           :columns="table.clientData.col"
           :data-source="table.clientData.data"
           @change="switchClientDataPage"
-          :pagination="{
-            total: table.clientData.total,
-            current: table.clientData.page
-          }"
         >
           <div class="btn-group" slot="operating" slot-scope="row">
             <span style="color: gray;" v-if="row.contact_id==0||row.employee_id==0">客户详情</span>

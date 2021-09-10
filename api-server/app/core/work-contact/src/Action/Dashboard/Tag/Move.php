@@ -12,13 +12,13 @@ namespace MoChat\App\WorkContact\Action\Dashboard\Tag;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\WorkContact\Logic\Tag\MoveLogic;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 批量移动客户标签.
@@ -45,7 +45,7 @@ class Move extends AbstractAction
     public function handle()
     {
         //接收参数
-        $params['tagId']   = $this->request->input('tagId');
+        $params['tagId'] = $this->request->input('tagId');
         $params['groupId'] = $this->request->input('groupId');
 
         //校验参数
@@ -60,7 +60,7 @@ class Move extends AbstractAction
     public function rules(): array
     {
         return [
-            'tagId'   => 'required',
+            'tagId' => 'required',
             'groupId' => 'required',
         ];
     }
@@ -71,7 +71,7 @@ class Move extends AbstractAction
     public function messages(): array
     {
         return [
-            'tagId.required'   => '标签id必传',
+            'tagId.required' => '标签id必传',
             'groupId.required' => '分组id必传',
         ];
     }

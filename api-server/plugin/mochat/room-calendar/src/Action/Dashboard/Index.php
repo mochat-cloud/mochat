@@ -12,10 +12,10 @@ namespace MoChat\Plugin\RoomCalendar\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\User\Contract\UserContract;
 use MoChat\Framework\Action\AbstractAction;
@@ -66,8 +66,8 @@ class Index extends AbstractAction
         $this->validated($this->request->all());
         ## 接收参数
         $params = [
-            'name'    => $this->request->input('name'),
-            'page'    => $this->request->input('page', 1),
+            'name' => $this->request->input('name'),
+            'page' => $this->request->input('page', 1),
             'perPage' => $this->request->input('perPage', 10000),
         ];
 
@@ -114,8 +114,8 @@ class Index extends AbstractAction
         }
 
         $options = [
-            'perPage'    => $params['perPage'],
-            'page'       => $params['page'],
+            'perPage' => $params['perPage'],
+            'page' => $params['page'],
             'orderByRaw' => 'id desc',
         ];
 
@@ -130,14 +130,14 @@ class Index extends AbstractAction
      */
     private function getRoomCalendarList(array $params): array
     {
-        $columns          = ['id', 'name', 'rooms', 'on_off', 'create_user_id', 'created_at'];
+        $columns = ['id', 'name', 'rooms', 'on_off', 'create_user_id', 'created_at'];
         $roomCalendarList = $this->roomCalendarService->getRoomCalendarList($params['where'], $columns, $params['options']);
 
         $list = [];
         $data = [
             'page' => [
-                'perPage'   => $this->perPage,
-                'total'     => '0',
+                'perPage' => $this->perPage,
+                'total' => '0',
                 'totalPage' => '0',
             ],
             'list' => $list,
@@ -157,19 +157,19 @@ class Index extends AbstractAction
         $list = [];
         foreach ($roomCalendarList['data'] as $key => $val) {
             //处理创建者信息
-            $username   = $this->userService->getUserById($val['createUserId']);
+            $username = $this->userService->getUserById($val['createUserId']);
             $list[$key] = [
-                'id'         => $val['id'],
-                'name'       => $val['name'],
-                'room_ids'   => empty($val['rooms']) ? '' : json_decode($val['rooms'], true, 512, JSON_THROW_ON_ERROR),
-                'on_off'     => $val['onOff'],
-                'nickname'   => isset($username['name']) ? $username['name'] : '',
+                'id' => $val['id'],
+                'name' => $val['name'],
+                'room_ids' => empty($val['rooms']) ? '' : json_decode($val['rooms'], true, 512, JSON_THROW_ON_ERROR),
+                'on_off' => $val['onOff'],
+                'nickname' => isset($username['name']) ? $username['name'] : '',
                 'created_at' => $val['createdAt'],
             ];
         }
-        $data['page']['total']     = $roomCalendarList['total'];
+        $data['page']['total'] = $roomCalendarList['total'];
         $data['page']['totalPage'] = $roomCalendarList['last_page'];
-        $data['list']              = $list;
+        $data['list'] = $list;
         return $data;
     }
 }

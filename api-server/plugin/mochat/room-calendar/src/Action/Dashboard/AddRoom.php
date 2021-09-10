@@ -14,10 +14,10 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
@@ -90,8 +90,8 @@ class AddRoom extends AbstractAction
     {
         return [
             'id.required' => '群日历ID 必填',
-            'id.integer'  => '群日历ID 必需为整数',
-            'id.min  '    => '群日历ID 不可小于1',
+            'id.integer' => '群日历ID 必需为整数',
+            'id.min  ' => '群日历ID 不可小于1',
         ];
     }
 
@@ -101,7 +101,7 @@ class AddRoom extends AbstractAction
         Db::beginTransaction();
         try {
             ## 群日历详情
-            $info      = $this->roomCalendarService->getRoomCalendarById((int) $params['id'], ['id', 'rooms']);
+            $info = $this->roomCalendarService->getRoomCalendarById((int) $params['id'], ['id', 'rooms']);
             $infoRooms = empty($info['rooms']) ? [] : json_decode($info['rooms'], true, 512, JSON_THROW_ON_ERROR);
 
             foreach ($params['rooms'] as $room) {

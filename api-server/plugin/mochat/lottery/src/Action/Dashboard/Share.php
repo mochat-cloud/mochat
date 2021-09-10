@@ -13,11 +13,11 @@ namespace MoChat\Plugin\Lottery\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\Utils\Url;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
@@ -96,7 +96,7 @@ class Share extends AbstractAction
         ## 查询数据
         $info = $this->lotteryService->getLotteryById((int) $id, ['name', 'description', 'create_user_id']);
         unset($info['createUserId']);
-        return ['info' => $info, 'link' => Url::getAuthRedirectUrl(2, (int)$id, ['source' => 'from_pc'])];
+        return ['info' => $info, 'link' => Url::getAuthRedirectUrl(2, (int) $id, ['source' => 'from_pc'])];
     }
 
     /**
@@ -119,8 +119,8 @@ class Share extends AbstractAction
     {
         return [
             'id.required' => '活动ID 必填',
-            'id.integer'  => '活动ID 必需为整数',
-            'id.min  '    => '活动ID 不可小于1',
+            'id.integer' => '活动ID 必需为整数',
+            'id.min  ' => '活动ID 不可小于1',
         ];
     }
 }

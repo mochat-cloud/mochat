@@ -13,11 +13,11 @@ namespace MoChat\Plugin\RoomInfinitePull\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\User\Contract\UserContract;
 use MoChat\App\Utils\Url;
@@ -72,7 +72,7 @@ class Index extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -96,8 +96,8 @@ class Index extends AbstractAction
         $this->validated($this->request->all());
         ## 接收参数
         $params = [
-            'name'    => $this->request->input('name'),
-            'page'    => $this->request->input('page', 1),
+            'name' => $this->request->input('name'),
+            'page' => $this->request->input('page', 1),
             'perPage' => $this->request->input('perPage', 10000),
         ];
 
@@ -143,8 +143,8 @@ class Index extends AbstractAction
             $where[] = ['name', 'LIKE', '%' . $params['name'] . '%'];
         }
         $options = [
-            'perPage'    => $params['perPage'],
-            'page'       => $params['page'],
+            'perPage' => $params['perPage'],
+            'page' => $params['page'],
             'orderByRaw' => 'id desc',
         ];
 
@@ -159,13 +159,13 @@ class Index extends AbstractAction
      */
     private function getRoomQuality(array $params): array
     {
-        $columns          = ['id', 'name', 'avatar', 'qw_code', 'total_num', 'created_at'];
+        $columns = ['id', 'name', 'avatar', 'qw_code', 'total_num', 'created_at'];
         $roomInfiniteList = $this->roomInfiniteService->getRoomInfiniteList($params['where'], $columns, $params['options']);
-        $list             = [];
-        $data             = [
+        $list = [];
+        $data = [
             'page' => [
-                'perPage'   => $this->perPage,
-                'total'     => '0',
+                'perPage' => $this->perPage,
+                'total' => '0',
                 'totalPage' => '0',
             ],
             'list' => $list,
@@ -189,18 +189,18 @@ class Index extends AbstractAction
                 $qwCode[$k]['qrcode'] = file_full_url($v['qrcode']);
             }
             $list[$key] = [
-                'id'         => $val['id'],
-                'name'       => $val['name'],
-                'avatar'     => file_full_url($val['avatar']),
-                'qwCode'     => $qwCode,
-                'link'       => Url::getOperationBaseUrl() . '/roomInfinitePull?id=' . $val['id'],
-                'total_num'  => $val['totalNum'],
+                'id' => $val['id'],
+                'name' => $val['name'],
+                'avatar' => file_full_url($val['avatar']),
+                'qwCode' => $qwCode,
+                'link' => Url::getOperationBaseUrl() . '/roomInfinitePull?id=' . $val['id'],
+                'total_num' => $val['totalNum'],
                 'created_at' => $val['createdAt'],
             ];
         }
-        $data['page']['total']     = $roomInfiniteList['total'];
+        $data['page']['total'] = $roomInfiniteList['total'];
         $data['page']['totalPage'] = $roomInfiniteList['last_page'];
-        $data['list']              = $list;
+        $data['list'] = $list;
         return $data;
     }
 }

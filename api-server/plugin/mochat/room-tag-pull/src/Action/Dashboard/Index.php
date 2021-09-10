@@ -12,11 +12,11 @@ namespace MoChat\Plugin\RoomTagPull\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\Framework\Request\ValidateSceneTrait;
@@ -69,7 +69,7 @@ class Index
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -90,8 +90,8 @@ class Index
         $this->validated($this->request->all());
         ## 接收参数
         $params = [
-            'name'    => $this->request->input('name'),
-            'page'    => $this->request->input('page', 1),
+            'name' => $this->request->input('name'),
+            'page' => $this->request->input('page', 1),
             'perPage' => $this->request->input('perPage', 10000),
         ];
 
@@ -137,8 +137,8 @@ class Index
             $where[] = ['name', 'LIKE', '%' . $params['name'] . '%'];
         }
         $options = [
-            'perPage'    => $params['perPage'],
-            'page'       => $params['page'],
+            'perPage' => $params['perPage'],
+            'page' => $params['page'],
             'orderByRaw' => 'id desc',
         ];
 
@@ -153,14 +153,14 @@ class Index
      */
     private function getRoomTagPullList(array $user, array $params): array
     {
-        $columns         = ['id', 'name', 'rooms', 'employees', 'wx_tid', 'created_at'];
+        $columns = ['id', 'name', 'rooms', 'employees', 'wx_tid', 'created_at'];
         $roomTagPullList = $this->roomTagPullService->getRoomTagPullList($params['where'], $columns, $params['options']);
 
         $list = [];
         $data = [
             'page' => [
-                'perPage'   => $this->perPage,
-                'total'     => '0',
+                'perPage' => $this->perPage,
+                'total' => '0',
                 'totalPage' => '0',
             ],
             'list' => $list,
@@ -180,28 +180,28 @@ class Index
         $list = [];
         foreach ($roomTagPullList['data'] as $key => $val) {
             $employees = $this->workEmployeeService->getWorkEmployeesById(explode(',', $val['employees']), ['name']);
-            $rooms     = json_decode($val['rooms'], true, 512, JSON_THROW_ON_ERROR);
-            $num       = 0;
+            $rooms = json_decode($val['rooms'], true, 512, JSON_THROW_ON_ERROR);
+            $num = 0;
             foreach (json_decode($val['wxTid'], true, 512, JSON_THROW_ON_ERROR) as $tid) {
                 if ($tid['status'] === 0) {
                     ++$num;
                 }
             }
             $list[$key] = [
-                'id'            => $val['id'],
-                'name'          => $val['name'],
-                'employees'     => array_column($employees, 'name'),
-                'rooms'         => array_column($rooms, 'name'),
-                'invite_num'    => $this->roomTagPullContactService->countRoomTagPullContactByRoomTagPullIdSendStatus($val['id'], [1]),
+                'id' => $val['id'],
+                'name' => $val['name'],
+                'employees' => array_column($employees, 'name'),
+                'rooms' => array_column($rooms, 'name'),
+                'invite_num' => $this->roomTagPullContactService->countRoomTagPullContactByRoomTagPullIdSendStatus($val['id'], [1]),
                 'join_room_num' => $this->roomTagPullContactService->countRoomTagPullContactByRoomTagPullIdJoinRoom($val['id'], 1),
-                'no_send_num'   => $num,
+                'no_send_num' => $num,
                 'no_invite_num' => $this->roomTagPullContactService->countRoomTagPullContactByRoomTagPullIdSendStatus($val['id'], [0]),
-                'created_at'    => $val['createdAt'],
+                'created_at' => $val['createdAt'],
             ];
         }
-        $data['page']['total']     = $roomTagPullList['total'];
+        $data['page']['total'] = $roomTagPullList['total'];
         $data['page']['totalPage'] = $roomTagPullList['last_page'];
-        $data['list']              = $list;
+        $data['list'] = $list;
         return $data;
     }
 }

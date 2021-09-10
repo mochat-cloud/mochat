@@ -127,7 +127,7 @@ class ContactLottery extends AbstractAction
     protected function rules(): array
     {
         return [
-            'id'       => 'required | integer | min:0 | bail',
+            'id' => 'required | integer | min:0 | bail',
             'union_id' => 'required',
             'nickname' => 'required',
         ];
@@ -140,9 +140,9 @@ class ContactLottery extends AbstractAction
     protected function messages(): array
     {
         return [
-            'id.required'       => '活动ID 必填',
-            'id.integer'        => '活动ID 必需为整数',
-            'id.min  '          => '活动ID 不可小于1',
+            'id.required' => '活动ID 必填',
+            'id.integer' => '活动ID 必需为整数',
+            'id.min  ' => '活动ID 不可小于1',
             'union_id.required' => 'union_id必填',
             'nickname.required' => 'nickname必填',
         ];
@@ -155,9 +155,9 @@ class ContactLottery extends AbstractAction
     private function handleDate($params): array
     {
         ## 抽奖限制 中奖限制
-        $lottery      = $this->lotteryService->getLotteryById((int) $params['id'], ['name', 'time_type', 'start_time', 'end_time', 'corp_id', 'contact_tags']);
-        $prize        = $this->lotteryPrizeService->getLotteryPrizeByLotteryId((int) $params['id'], ['prize_set', 'is_show', 'draw_set', 'exchange_set', 'win_set']);
-        $contact      = $this->lotteryContactService->getLotteryContactByLotteryIdUnionId((int) $params['id'], $params['union_id'], ['id', 'contact_id', 'grade', 'contact_tags', 'draw_num', 'win_num', 'employee_ids']);
+        $lottery = $this->lotteryService->getLotteryById((int) $params['id'], ['name', 'time_type', 'start_time', 'end_time', 'corp_id', 'contact_tags']);
+        $prize = $this->lotteryPrizeService->getLotteryPrizeByLotteryId((int) $params['id'], ['prize_set', 'is_show', 'draw_set', 'exchange_set', 'win_set']);
+        $contact = $this->lotteryContactService->getLotteryContactByLotteryIdUnionId((int) $params['id'], $params['union_id'], ['id', 'contact_id', 'grade', 'contact_tags', 'draw_num', 'win_num', 'employee_ids']);
         $contactCount = $this->lotteryContactRecordService->countLotteryContactRecordByLotteryIdContactId((int) $params['id'], (int) $contact['id']);
 
         ## 时间限制
@@ -201,21 +201,21 @@ class ContactLottery extends AbstractAction
     {
         ## 抽奖信息
         $data = [
-            'lottery_id'   => $params['id'],
-            'contact_id'   => $contact['id'],
-            'prize_id'     => 1,
-            'prize_name'   => $win_name,
-            'receive_qr'   => '',
+            'lottery_id' => $params['id'],
+            'contact_id' => $contact['id'],
+            'prize_id' => 1,
+            'prize_name' => $win_name,
+            'receive_qr' => '',
             'receive_type' => 0,
             'receive_code' => '',
-            'created_at'   => date('Y-m-d H:i:s'),
+            'created_at' => date('Y-m-d H:i:s'),
         ];
 
         ## 客户信息
         $contactData = [
-            'draw_num'     => $contact['drawNum'] + 1,
+            'draw_num' => $contact['drawNum'] + 1,
             'contact_tags' => empty($contact['contactTags']) ? [] : json_decode($contact['contactTags'], true, 512, JSON_THROW_ON_ERROR),
-            'grade'        => $contact['grade'],
+            'grade' => $contact['grade'],
         ];
         ## 标签
         $tags = json_decode($lottery['contactTags'], true, 512, JSON_THROW_ON_ERROR);
@@ -235,16 +235,16 @@ class ContactLottery extends AbstractAction
             $prizeNum = 0;
             foreach (json_decode($prize['prizeSet'], true, 512, JSON_THROW_ON_ERROR) as $key => $val) {
                 if ($val['name'] === $win_name) {
-                    $prizeNum         = $val['num'];
+                    $prizeNum = $val['num'];
                     $data['prize_id'] = $val['id'];
                     break;
                 }
             }
             $totalNum = $this->lotteryContactRecordService->countLotteryContactRecordByLotteryIdPrizeName((int) $params['id'], $win_name);
             if ($totalNum >= $prizeNum) {
-                $data['prize_id']   = 1;
+                $data['prize_id'] = 1;
                 $data['prize_name'] = '谢谢参与';
-                $win_name           = '谢谢参与';
+                $win_name = '谢谢参与';
                 $this->createLotteryContactRecord($data, $contact['id'], $contactData);
                 throw new CommonException(ErrorCode::INVALID_PARAMS, '很抱歉，您所抽中的奖项已经中完！');
             }
@@ -252,11 +252,11 @@ class ContactLottery extends AbstractAction
             foreach (json_decode($prize['exchangeSet'], true, 512, JSON_THROW_ON_ERROR) as $key => $val) {
                 if ($val['name'] === $win_name) {
                     $data['receive_type'] = $val['type'];
-                    $data['receive_qr']   = $val['employee_qr'];
+                    $data['receive_qr'] = $val['employee_qr'];
                     if ($val['type'] === 2) {
-                        $winCode              = $this->lotteryContactRecordService->countLotteryContactRecordReceiveCodeByLotteryIdPrizeName((int) $params['id'], $win_name, ['receive_code']);
-                        $winCode              = array_column($winCode, 'receive_code');
-                        $result               = array_merge(array_diff($val['exchange_code'], $winCode));
+                        $winCode = $this->lotteryContactRecordService->countLotteryContactRecordReceiveCodeByLotteryIdPrizeName((int) $params['id'], $win_name, ['receive_code']);
+                        $winCode = array_column($winCode, 'receive_code');
+                        $result = array_merge(array_diff($val['exchange_code'], $winCode));
                         $data['receive_code'] = $result[0];
                     }
                     break;
@@ -350,7 +350,7 @@ class ContactLottery extends AbstractAction
      */
     private function tag(int $lottery_id, int $id, int $type): void
     {
-        $lottery   = $this->lotteryService->getLotteryById($lottery_id, ['contact_tags', 'corp_id']);
+        $lottery = $this->lotteryService->getLotteryById($lottery_id, ['contact_tags', 'corp_id']);
         $contactId = $this->lotteryContactService->getLotteryContactById($id, ['contact_id', 'contact_tags']);
 
         if ($contactId['contactId'] > 0 && ! empty($lottery['contactTags'])) {
@@ -365,15 +365,15 @@ class ContactLottery extends AbstractAction
                     ## 客户id
                     $data['contactId'] = $contactId['contactId'];
                     ## 员工id
-                    $contactEmployee    = $this->workContactEmployeeService->getWorkContactEmployeeByCorpIdContactId($contactId['contactId'], (int) $lottery['corpId'], ['employee_id']);
+                    $contactEmployee = $this->workContactEmployeeService->getWorkContactEmployeeByCorpIdContactId($contactId['contactId'], (int) $lottery['corpId'], ['employee_id']);
                     $data['employeeId'] = $contactEmployee['employeeId'];
                     ## 客户
-                    $contact                         = $this->workContactService->getWorkContactById($contactId['contactId'], ['wx_external_userid']);
+                    $contact = $this->workContactService->getWorkContactById($contactId['contactId'], ['wx_external_userid']);
                     $data['contactWxExternalUserid'] = $contact['wxExternalUserid'];
                     ## 员工
-                    $employee                 = $this->workEmployeeService->getWorkEmployeeById($contactEmployee['employeeId'], ['wx_user_id']);
+                    $employee = $this->workEmployeeService->getWorkEmployeeById($contactEmployee['employeeId'], ['wx_user_id']);
                     $data['employeeWxUserId'] = $employee['wxUserId'];
-                    $data['corpId']           = $lottery['corpId'];
+                    $data['corpId'] = $lottery['corpId'];
                     $this->autoTag($data);
                     $contactTag = empty($contactId['contactTags']) ? [] : json_decode($contactId['contactTags'], true, 512, JSON_THROW_ON_ERROR);
                     foreach ($item['tags'] as $item_tag) {
@@ -398,12 +398,12 @@ class ContactLottery extends AbstractAction
         $this->logger->error(sprintf('%s [%s] %s', '活动', date('Y-m-d H:i:s'), 'sds'));
         $employee = $this->workEmployeeService->getWorkEmployeesById(explode(',', $contact['employeeIds']), ['wx_user_id']);
         $employee = empty($employee) ? '' : array_column($employee, 'wxUserId');
-        $touser   = empty($employee) ? '' : implode('|', $employee);
+        $touser = empty($employee) ? '' : implode('|', $employee);
         if (empty($touser)) {
             return;
         }
         $content = "【抽奖活动】\n客户昵称：{$params['nickname']}\n活动名称：{$lottery['name']}\n客户行为：客户抽中了奖品:{$win_name}\n<a href='#'>点击查看客户详情 </a>";
         $messageRemind = make(MessageRemind::class);
-        $messageRemind->sendToEmployee((int)$lottery['corpId'], $touser, 'text', $content);
+        $messageRemind->sendToEmployee((int) $lottery['corpId'], $touser, 'text', $content);
     }
 }

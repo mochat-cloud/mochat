@@ -70,9 +70,8 @@
 // eslint-disable-next-line no-unused-vars
 import { getSopInfoApi } from '@/api/contactSop'
 // eslint-disable-next-line no-unused-vars
-import { wxConfig, agentConfig, openUserProfile } from '@/utils/wxCodeAuth'
+import { openUserProfile } from '@/utils/wxCodeAuth'
 import { Toast } from 'vant'
-import { getCookie } from 'utils'
 export default {
   components: {
     Toast
@@ -84,27 +83,13 @@ export default {
   },
   created () {
     this.id = this.$route.query.id
-    this.setConfigData()
     this.getPersonalSop(this.id)
   },
   methods: {
-    setConfigData () {
-      // const uriPath = this.$route.fullPath.substr(1, this.$route.fullPath.length - 1)
-      const corpId = getCookie('corpId')
-      const agentId = getCookie('agentId')
-      const uriPath = this.$route.fullPath
-      // const corpId = 1
-      // const agentId = 2
-      // console.log(456)
-      console.log(uriPath, corpId, agentId)
-      wxConfig(corpId, uriPath)
-      agentConfig(corpId, uriPath, agentId)
-    },
     // 初始化内容
     getPersonalSop (id) {
       console.log(id)
       getSopInfoApi({ id }).then((res) => {
-        console.log(res.data)
         this.contactSopData = res.data
       })
     },
@@ -119,7 +104,6 @@ export default {
       inputElement.value = value
       inputElement.select()
       document.execCommand('Copy')
-      // this.$message.success('复制成功')
     }
   }
 }

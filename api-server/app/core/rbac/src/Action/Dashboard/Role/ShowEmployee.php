@@ -12,10 +12,10 @@ namespace MoChat\App\Rbac\Action\Dashboard\Role;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Logic\Role\ShowEmployeeLogic;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
@@ -58,9 +58,9 @@ class ShowEmployee extends AbstractAction
 
         ## 接受参数并验证
         $params = [
-            'roleId'  => (int) $this->request->input('roleId'),
+            'roleId' => (int) $this->request->input('roleId'),
             'perPage' => (int) $this->request->input('perPage', '10'),
-            'page'    => (int) $this->request->input('page', 1),
+            'page' => (int) $this->request->input('page', 1),
         ];
         $this->validated($params);
 
@@ -87,8 +87,8 @@ class ShowEmployee extends AbstractAction
     {
         return [
             'roleId.required' => '角色ID 必填',
-            'roleId.integer'  => '角色ID 必需为整数',
-            'roleId.min  '    => '角色ID 不可小于1',
+            'roleId.integer' => '角色ID 必需为整数',
+            'roleId.min  ' => '角色ID 不可小于1',
         ];
     }
 }

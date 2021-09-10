@@ -71,11 +71,11 @@ class IndexLogic
         ## 员工信息
         if (! empty($params['employeeId'])) {
             $where['trigger_id'] = array_filter(explode(',', $params['employeeId']));
-            $where['source']     = Source::EMPLOYEE;
+            $where['source'] = Source::EMPLOYEE;
         }
         ## 群聊
         if (! empty($params['workRoomId'])) {
-            $where['receiver_id']   = $params['workRoomId'];
+            $where['receiver_id'] = $params['workRoomId'];
             $where['receiver_type'] = ReceiverType::ROOM;
         }
         ## 触发时间-开始
@@ -85,12 +85,12 @@ class IndexLogic
 
         ## 分页排序
         $options = [
-            'page'       => $params['page'],
-            'perPage'    => $params['perPage'],
+            'page' => $params['page'],
+            'perPage' => $params['perPage'],
             'orderByRaw' => 'id desc',
         ];
         return [
-            'where'   => $where,
+            'where' => $where,
             'options' => $options,
         ];
     }
@@ -116,14 +116,14 @@ class IndexLogic
         ## 组织响应数据
         $data = [
             'page' => [
-                'perPage'   => $params['options']['perPage'],
-                'total'     => 0,
+                'perPage' => $params['options']['perPage'],
+                'total' => 0,
                 'totalPage' => 0,
             ],
             'list' => [],
         ];
         ## 处理分页数据
-        $data['page']['total']     = $monitors['total'];
+        $data['page']['total'] = $monitors['total'];
         $data['page']['totalPage'] = $monitors['last_page'];
         ## 列表数据
         $data['list'] = empty($monitors['data']) ? [] : $this->handleMonitors($monitors['data'], $user);
@@ -140,12 +140,12 @@ class IndexLogic
         return array_map(function ($monitor) {
             return [
                 'sensitiveWordMonitorId' => $monitor['id'],
-                'sensitiveWordName'      => $monitor['sensitiveWordName'],
-                'source'                 => $monitor['source'],
-                'sourceText'             => Source::getMessage((int) $monitor['source']),
-                'triggerName'            => $monitor['triggerName'],
-                'triggerScenario'        => $monitor['receiverName'],
-                'triggerTime'            => $monitor['triggerTime'],
+                'sensitiveWordName' => $monitor['sensitiveWordName'],
+                'source' => $monitor['source'],
+                'sourceText' => Source::getMessage((int) $monitor['source']),
+                'triggerName' => $monitor['triggerName'],
+                'triggerScenario' => $monitor['receiverName'],
+                'triggerTime' => $monitor['triggerTime'],
             ];
         }, $monitors);
     }

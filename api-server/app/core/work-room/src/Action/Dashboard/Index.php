@@ -12,10 +12,10 @@ namespace MoChat\App\WorkRoom\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkRoom\Logic\IndexLogic;
 use MoChat\Framework\Action\AbstractAction;
@@ -53,14 +53,14 @@ class Index extends AbstractAction
         $user = user();
         ## 接收参数
         $params = [
-            'roomGroupId'     => $this->request->input('roomGroupId'),
-            'workRoomName'    => $this->request->input('workRoomName'),
+            'roomGroupId' => $this->request->input('roomGroupId'),
+            'workRoomName' => $this->request->input('workRoomName'),
             'workRoomOwnerId' => $this->request->input('workRoomOwnerId'),
-            'workRoomStatus'  => $this->request->input('workRoomStatus'),
-            'startTime'       => $this->request->input('startTime'),
-            'endTime'         => $this->request->input('endTime'),
-            'page'            => $this->request->input('page', 1),
-            'perPage'         => $this->request->input('perPage', 10),
+            'workRoomStatus' => $this->request->input('workRoomStatus'),
+            'startTime' => $this->request->input('startTime'),
+            'endTime' => $this->request->input('endTime'),
+            'page' => $this->request->input('page', 1),
+            'perPage' => $this->request->input('perPage', 10),
         ];
         return $this->indexLogic->handle($user, $params);
     }

@@ -92,25 +92,25 @@ class IndexLogic
      */
     public function handle($params)
     {
-        $res    = $this->contactSopService->getContactSopByCorpId([$params['corpId']]);
+        $res = $this->contactSopService->getContactSopByCorpId([$params['corpId']]);
         $result = [];
         foreach ($res as $re) {
-            $employees   = $this->workEmployeeService->getWorkEmployeesById(json_decode($re['employeeIds']));
+            $employees = $this->workEmployeeService->getWorkEmployeesById(json_decode($re['employeeIds']));
             $employeeArr = [];
             foreach ($employees as $employee) {
                 $employeeArr[] = [
-                    'id'       => $employee['id'],
+                    'id' => $employee['id'],
                     'wxUserId' => $employee['wxUserId'],
-                    'name'     => $employee['name'],
+                    'name' => $employee['name'],
                 ];
             }
             $result[] = [
-                'id'          => $re['id'],
-                'name'        => $re['name'],
+                'id' => $re['id'],
+                'name' => $re['name'],
                 'creatorName' => $this->userService->getUserById($re['creatorId'])['name'],
-                'employees'   => $employeeArr,
-                'createTime'  => $re['createdAt'],
-                'state'       => $re['state'],
+                'employees' => $employeeArr,
+                'createTime' => $re['createdAt'],
+                'state' => $re['state'],
             ];
         }
         return $result;

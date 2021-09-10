@@ -13,11 +13,11 @@ namespace MoChat\Plugin\RoomInfinitePull\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
@@ -59,7 +59,7 @@ class Info extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -83,10 +83,10 @@ class Info extends AbstractAction
         $params = $this->request->all();
         $this->validated($params);
         ## 详情
-        $info           = $this->roomInfiniteService->getRoomInfiniteById((int) $params['id'], ['name', 'avatar', 'title_status', 'title', 'describe_status', 'describe', 'logo', 'qw_code']);
+        $info = $this->roomInfiniteService->getRoomInfiniteById((int) $params['id'], ['name', 'avatar', 'title_status', 'title', 'describe_status', 'describe', 'logo', 'qw_code']);
         $info['avatar'] = empty($info['avatar']) ? '' : file_full_url($info['avatar']);
-        $info['logo']   = empty($info['logo']) ? '' : file_full_url($info['logo']);
-        $qwCode         = json_decode($info['qwCode'], true, 512, JSON_THROW_ON_ERROR);
+        $info['logo'] = empty($info['logo']) ? '' : file_full_url($info['logo']);
+        $qwCode = json_decode($info['qwCode'], true, 512, JSON_THROW_ON_ERROR);
         foreach ($qwCode as $k => $v) {
             $qwCode[$k]['qrcode'] = file_full_url($v['qrcode']);
         }

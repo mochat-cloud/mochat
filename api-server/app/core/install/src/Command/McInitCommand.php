@@ -84,7 +84,7 @@ class McInitCommand extends HyperfCommand
     {
         ## 创建.env
         if (! file_exists(BASE_PATH . '/.env')) {
-            $content                                             = '';
+            $content = '';
             file_exists(BASE_PATH . '/.env.example') && $content = file_get_contents(BASE_PATH . '/.env.example');
             file_put_contents(BASE_PATH . '/.env', $content);
         }
@@ -118,8 +118,8 @@ class McInitCommand extends HyperfCommand
     protected function setEnv(string $key, ?string $val = '', bool $isNewLine = false, string $path = ''): void
     {
         $path || $path = BASE_PATH . '/.env';
-        $oldVal        = env($key, false);
-        $newKeyVal     = $key . '=' . $val;
+        $oldVal = env($key, false);
+        $newKeyVal = $key . '=' . $val;
         ## 添加
         if ($oldVal === false) {
             $isNewLine && $newKeyVal = "\n" . $newKeyVal;
@@ -140,7 +140,7 @@ class McInitCommand extends HyperfCommand
         $rows = [];
         foreach ($data as $configKey => $item) {
             [$key, $val] = $item;
-            $isNewLine   = $item[2] ?? false;
+            $isNewLine = $item[2] ?? false;
 
             $rows[] = [$key, $val];
             $this->setEnv($key, $val, $isNewLine, $path);
@@ -241,12 +241,12 @@ class McInitCommand extends HyperfCommand
         }
 
         ## 密码
-        $password  = $this->secret('输入管理员密码', false);
+        $password = $this->secret('输入管理员密码', false);
         $encrypted = $this->authManager->guard('jwt')->getJwtManager()->getEncrypter()->signature($password);
         return Db::table('user')->insert([
-            'phone'        => $phone,
-            'password'     => $encrypted,
-            'status'       => 1,
+            'phone' => $phone,
+            'password' => $encrypted,
+            'status' => 1,
             'isSuperAdmin' => 1,
         ]);
     }

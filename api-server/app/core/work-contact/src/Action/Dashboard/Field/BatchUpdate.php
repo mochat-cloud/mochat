@@ -12,10 +12,10 @@ namespace MoChat\App\WorkContact\Action\Dashboard\Field;
 
 use Hyperf\DbConnection\Db;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Action\Dashboard\Field\Traits\RequestTrait;
 use MoChat\App\WorkContact\Action\Dashboard\Field\Traits\UpdateTrait;
@@ -76,7 +76,7 @@ class BatchUpdate extends AbstractAction
     {
         ## 请求参数过滤
         $fields = ['id' => 0, 'label' => 0, 'type' => 0, 'options' => 0, 'order' => 0, 'status' => 0];
-        $param  = array_filter($param, static function ($item) use ($fields) {
+        $param = array_filter($param, static function ($item) use ($fields) {
             return isset($fields[$item]);
         }, ARRAY_FILTER_USE_KEY);
 
@@ -85,7 +85,7 @@ class BatchUpdate extends AbstractAction
 
         ## 业务验证
         $param['order'] === '' && $param['order'] = 0;
-        $data                                     = $this->client->getContactFieldById($param['id'], ['id', 'label', 'type', 'options', 'is_sys', 'name']);
+        $data = $this->client->getContactFieldById($param['id'], ['id', 'label', 'type', 'options', 'is_sys', 'name']);
         return $this->handleUpdateParam($param, $data);
     }
 }

@@ -11,10 +11,10 @@ declare(strict_types=1);
 namespace MoChat\App\Medium\Action\Dashboard;
 
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Medium\Contract\MediumContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\User\Logic\Traits\UserTrait;
@@ -48,7 +48,7 @@ class Show extends AbstractAction
 
         ## 模型查询
         $client = $this->container->get(MediumContract::class);
-        $data   = $client->getMediumById($id, ['id', 'media_id', 'type', 'content', 'corp_id', 'medium_group_id', 'user_id', 'user_name']);
+        $data = $client->getMediumById($id, ['id', 'media_id', 'type', 'content', 'corp_id', 'medium_group_id', 'user_id', 'user_name']);
         if (empty($data)) {
             return [];
         }

@@ -12,11 +12,11 @@ namespace MoChat\Plugin\AutoTag\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\User\Contract\UserContract;
 use MoChat\Framework\Request\ValidateSceneTrait;
@@ -62,7 +62,7 @@ class Index
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -83,10 +83,10 @@ class Index
         $this->validated($this->request->all());
         ## 接收参数
         $params = [
-            'type'    => $this->request->input('type'),
-            'name'    => $this->request->input('name'),
-            'tags'    => $this->request->input('tags'),
-            'page'    => $this->request->input('page', 1),
+            'type' => $this->request->input('type'),
+            'name' => $this->request->input('name'),
+            'tags' => $this->request->input('tags'),
+            'page' => $this->request->input('page', 1),
             'perPage' => $this->request->input('perPage', 10000),
         ];
         $params = $this->handleParams($user, $params);
@@ -136,8 +136,8 @@ class Index
             $where[] = ['tags', 'LIKE', '%' . implode(',', $params['tags']) . '%'];
         }
         $options = [
-            'perPage'    => $params['perPage'],
-            'page'       => $params['page'],
+            'perPage' => $params['perPage'],
+            'page' => $params['page'],
             'orderByRaw' => 'id desc',
         ];
 
@@ -152,13 +152,13 @@ class Index
      */
     private function getAutoTagList(array $params): array
     {
-        $columns     = ['id', 'name', 'mark_tag_count', 'fuzzy_match_keyword', 'exact_match_keyword', 'tag_rule', 'on_off', 'create_user_id', 'created_at'];
+        $columns = ['id', 'name', 'mark_tag_count', 'fuzzy_match_keyword', 'exact_match_keyword', 'tag_rule', 'on_off', 'create_user_id', 'created_at'];
         $autoTagList = $this->autoTagService->getAutoTagList($params['where'], $columns, $params['options']);
-        $list        = [];
-        $data        = [
+        $list = [];
+        $data = [
             'page' => [
-                'perPage'   => $this->perPage,
-                'total'     => '0',
+                'perPage' => $this->perPage,
+                'total' => '0',
                 'totalPage' => '0',
             ],
             'list' => $list,
@@ -178,24 +178,24 @@ class Index
         $list = [];
         foreach ($autoTagList['data'] as $key => $val) {
             //处理创建者信息
-            $username   = $this->userService->getUserById($val['createUserId']);
-            $tagRule    = json_decode($val['tagRule'], true, 512, JSON_THROW_ON_ERROR);
-            $tags       = array_column($tagRule[0]['tags'], 'tagname');
+            $username = $this->userService->getUserById($val['createUserId']);
+            $tagRule = json_decode($val['tagRule'], true, 512, JSON_THROW_ON_ERROR);
+            $tags = array_column($tagRule[0]['tags'], 'tagname');
             $list[$key] = [
-                'id'                  => $val['id'],
-                'name'                => $val['name'],
-                'mark_tag_count'      => $val['markTagCount'],
+                'id' => $val['id'],
+                'name' => $val['name'],
+                'mark_tag_count' => $val['markTagCount'],
                 'fuzzy_match_keyword' => explode(',', $val['fuzzyMatchKeyword']),
                 'exact_match_keyword' => explode(',', $val['exactMatchKeyword']),
-                'tags'                => $tags,
-                'on_off'              => $val['onOff'],
-                'nickname'            => isset($username['name']) ? $username['name'] : '',
-                'created_at'          => $val['createdAt'],
+                'tags' => $tags,
+                'on_off' => $val['onOff'],
+                'nickname' => isset($username['name']) ? $username['name'] : '',
+                'created_at' => $val['createdAt'],
             ];
         }
-        $data['page']['total']     = $autoTagList['total'];
+        $data['page']['total'] = $autoTagList['total'];
         $data['page']['totalPage'] = $autoTagList['last_page'];
-        $data['list']              = $list;
+        $data['list'] = $list;
         return $data;
     }
 }

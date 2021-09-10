@@ -14,10 +14,10 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\Utils\Url;
 use MoChat\Framework\Action\AbstractAction;
@@ -86,8 +86,8 @@ class StoreChannelLink extends AbstractAction
     protected function rules(): array
     {
         return [
-            'type'       => 'required',
-            'radar_id'   => 'required',
+            'type' => 'required',
+            'radar_id' => 'required',
             'channel_id' => 'required',
             'employeeId' => 'required',
         ];
@@ -100,8 +100,8 @@ class StoreChannelLink extends AbstractAction
     protected function messages(): array
     {
         return [
-            'type.required'       => 'type 必传',
-            'radar_id.required'   => '雷达id 必传',
+            'type.required' => 'type 必传',
+            'radar_id.required' => '雷达id 必传',
             'channel_id.required' => '渠道id 必传',
             'employeeId.required' => 'employeeId 必传',
         ];
@@ -118,13 +118,13 @@ class StoreChannelLink extends AbstractAction
     {
         ## 基本信息
         return [
-            'radar_id'       => (int) $params['radar_id'],
-            'channel_id'     => (int) $params['channel_id'],
-            'employeeId'     => (int) $params['employeeId'],
-            'tenant_id'      => isset($params['tenant_id']) ? $params['tenant_id'] : 0,
-            'corp_id'        => $user['corpIds'][0],
+            'radar_id' => (int) $params['radar_id'],
+            'channel_id' => (int) $params['channel_id'],
+            'employeeId' => (int) $params['employeeId'],
+            'tenant_id' => isset($params['tenant_id']) ? $params['tenant_id'] : 0,
+            'corp_id' => $user['corpIds'][0],
             'create_user_id' => $user['id'],
-            'created_at'     => date('Y-m-d H:i:s'),
+            'created_at' => date('Y-m-d H:i:s'),
         ];
     }
 
@@ -137,12 +137,12 @@ class StoreChannelLink extends AbstractAction
         Db::beginTransaction();
         try {
             ## 创建渠道链接
-            $id   = $this->radarChannelLinkService->createRadarChannelLink($params);
+            $id = $this->radarChannelLinkService->createRadarChannelLink($params);
             $link = Url::getAuthRedirectUrl(6, $params['radar_id'], [
                 'type' => $type,
                 'employee_id' => $params['employeeId'],
                 'target_id' => $id,
-                ]);
+            ]);
             $this->radarChannelLinkService->updateRadarChannelLinkById($id, ['link' => $link]);
             Db::commit();
         } catch (\Throwable $e) {

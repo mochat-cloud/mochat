@@ -111,9 +111,9 @@ class UpdateLogic
         $params['setting'] = json_encode($params['setting']);
 
         $data = [
-            'corp_id'      => $params['corpId'],
-            'name'         => $params['name'],
-            'setting'      => $params['setting'],
+            'corp_id' => $params['corpId'],
+            'name' => $params['name'],
+            'setting' => $params['setting'],
             'employee_ids' => $params['employees'],
         ];
 

@@ -59,10 +59,10 @@ class IndexLogic
      */
     public function handle(array $params): array
     {
-        $corpId    = (int) $params['corpId'];
-        $status    = $params['status'] === null ? null : (int) $params['status'];
+        $corpId = (int) $params['corpId'];
+        $status = ($params['status'] === null || $params['status'] === '') ? null : (int) $params['status'];
         $searchKey = $params['searchKey'];
-        $recordId  = (int) $params['recordId'];
+        $recordId = (int) $params['recordId'];
         return $this->handleContact(
             $corpId,
             $status,
@@ -84,21 +84,19 @@ class IndexLogic
         } else {
             $recordIds = $this->getRecordsByCorpId([$corpId], ['id']); ## 导入记录ID
         }
-
         $searchPhone = $searchRemark = $searchEmployee = [];
         if ($searchKey) {
             if (strlen($searchKey) >= 4 && preg_match('/^\\d*$/', $searchKey)) { ## 大于4位且是数字 搜索手机号
                 $searchPhone = $this->searchPhone($searchKey, $recordIds);
             }
-            $searchRemark   = $this->searchRemark($searchKey, $recordIds); ## 搜索备注
+            $searchRemark = $this->searchRemark($searchKey, $recordIds); ## 搜索备注
             $searchEmployee = $this->searchEmployee($searchKey, $corpId); ## 搜索员工
 
             if (count(array_merge($searchPhone, $searchRemark, $searchEmployee)) == 0) { ## 有检索关键字的情况下 任何相关都搜索不到 直接返回空
-                return [];
+                return ['data' => []];
             }
         }
-
-        $where              = [];
+        $where = [];
         $where['record_id'] = $recordIds;
 
         $boolean = 'and'; ## 该变量是用于避免客户手机号/备注 和员工名一致情况下 导致两则条件都存在情况下搜索冲突
@@ -124,15 +122,15 @@ class IndexLogic
         );
 
         $employeeId = [];
-        $tags       = [];
+        $tags = [];
         foreach ($contact['data'] as $item) {
             $employeeId = array_merge($employeeId, [$item['employeeId']] ?: []);
-            $tags       = array_merge($tags, $item['tags'] ?: []);
+            $tags = array_merge($tags, $item['tags'] ?: []);
         }
         $employees = $this->workEmployeeService->getWorkEmployeesById($employeeId, ['id', 'name']);
         $employees = collect($employees)->keyBy('id')->toArray();
-        $tags      = $this->workContactTagService->getWorkContactTagsById($tags, ['id', 'name']);
-        $tags      = collect($tags)->keyBy('id')->toArray();
+        $tags = $this->workContactTagService->getWorkContactTagsById($tags, ['id', 'name']);
+        $tags = collect($tags)->keyBy('id')->toArray();
 
         foreach ($contact['data'] as &$item) {
             if (isset($employees[$item['employeeId']])) {
@@ -156,8 +154,8 @@ class IndexLogic
 
     private function getRecordsByCorpId($corpId): array
     {
-        $record    = $this->contactBatchAddImportRecordService->getContactBatchAddImportRecordsByCorpId([$corpId], ['id']);
-        $co        = collect($record);
+        $record = $this->contactBatchAddImportRecordService->getContactBatchAddImportRecordsByCorpId([$corpId], ['id']);
+        $co = collect($record);
         $recordIds = $co->pluck('id');
         return $recordIds->toArray();
     }
@@ -168,7 +166,7 @@ class IndexLogic
             ['phone', 'like', "%{$searchKey}%"],
             ['record_id', 'in', $recordIds],
         ], [], ['id']);
-        $co     = collect($contact);
+        $co = collect($contact);
         $import = $co->pluck('id');
         return $import->toArray();
     }
@@ -179,7 +177,7 @@ class IndexLogic
             ['remark', 'like', "%{$searchKey}%"],
             ['record_id', 'in', $recordIds],
         ], [], ['id']);
-        $co     = collect($contact);
+        $co = collect($contact);
         $import = $co->pluck('id');
         return $import->toArray();
     }
@@ -187,8 +185,8 @@ class IndexLogic
     private function searchEmployee(string $searchKey, int $corpId): array
     {
         $employees = $this->workEmployeeService->getWorkEmployeesByCorpIdName($corpId, $searchKey, ['id']);
-        $co        = collect($employees);
-        $import    = $co->pluck('id');
+        $co = collect($employees);
+        $import = $co->pluck('id');
         return $import->toArray();
     }
 }

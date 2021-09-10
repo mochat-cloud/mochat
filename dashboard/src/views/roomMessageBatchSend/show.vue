@@ -2,27 +2,47 @@
   <div>
     <a-row class="top" :gutter="0" type="flex" justify="space-between">
       <a-col :span="12">
-        <div class="child_module left">
+        <div class="child_module left" style="padding-bottom: 20px;">
           <div class="child_title">基本详情</div>
           <div class="user_info">
             <div class="item">
               <span>创建者：</span>
               <div class="user"><a-icon class="icon" type="user" />{{ info.creator }}</div>
             </div>
-            <div class="item"><span>创建时间：</span>{{ info.createAt }}</div>
-            <div class="item">
+            <div class="item"><span>创建时间：</span>{{ info.createdAt }}</div>
+            <div class="item" style="flex-wrap: wrap;">
               <span>群发对象：</span>
-              <div class="obj" v-for="item in info.seedRooms" :key="item.id">{{ item.name }}</div>
-              ;等{{ info.seedRooms.length }}个群聊
+              <div class="obj" v-for="(item,index) in info.seedRooms" :key="index">{{ item.name }}</div>
+              ;等{{ info.seedRooms.length !== 'undefined' ? info.seedRooms.length : 0 }}个群聊
             </div>
-            <div class="item">
-              <span>群发消息：</span>
-              <div class="msg_module">
-                <div class="title">{{ contentArray.length }}条数据</div>
-                <div class="msg_data" v-for="(item, index) in contentArray" :key="index">
-                  <div v-if="item.msgType == 'text'" class="item_text">{{ item.content }}</div>
-                  <div v-if="item.msgType == 'image'" class="item_image">
-                    <img :src="item.pic_url" />
+            <div v-for="(item,index) in info.content" :key="index">
+              <div class="item" v-if="item.msgType==='text'"><span>群发消息1：</span>{{ item.content }}</div>
+              <div class="item" v-if="item.msgType==='image' || item.msgType==='link' || item.msgType==='miniprogram'"><span>群发消息2：</span></div>
+              <div style="margin-left: 75px;margin-top: 10px;">
+                <div v-if="item.msgType=='image'">
+                  <img :src="item.pic_url" alt="" style="width: 70px;height: 70px;">
+                </div>
+                <div v-if="item.msgType=='link'">
+                  <div>{{ item.url }}</div>
+                  <div style="display: flex;">
+                    <div>
+                      <div>{{ item.title }}</div>
+                      <div>{{ item.desc }}</div>
+                    </div>
+                    <img :src="item.pic_url" alt="" style="width: 70px;height: 70px;">
+                  </div>
+                </div>
+                <div v-if="item.msgType=='miniprogram'">
+                  <div class="applets">
+                    <div class="title">
+                      {{ item.title }}
+                    </div>
+                    <div class="image">
+                      <img :src="item.pic_url">
+                    </div>
+                    <div class="applets-logo">
+                      小程序
+                    </div>
                   </div>
                 </div>
               </div>
@@ -54,152 +74,388 @@
         </div>
       </a-col>
     </a-row>
-    <a-tabs class="tabs_module" default-active-key="1" @change="callback">
-      <a-tab-pane key="1" tab="客户群接受详情">
-        <div class="text_num">共8个群聊</div>
-        <div class="search_module">
-          <span class="text">搜索群聊：</span>
-          <a-input-search placeholder="请输入群发名称" @search="search" />
-          <span class="text">群主：</span>
-          <a-select placeholder="请选择群主">
-            <a-select-option value="jack"> Jack </a-select-option>
-            <a-select-option value="lucy"> Lucy </a-select-option>
-            <a-select-option value="disabled" disabled> Disabled </a-select-option>
-            <a-select-option value="Yiminghe"> yiminghe </a-select-option>
-          </a-select>
-          <span class="text">送达状态：</span>
-          <a-select placeholder="请选择消息送达状态">
-            <a-select-option value="jack"> Jack </a-select-option>
-            <a-select-option value="lucy"> Lucy </a-select-option>
-            <a-select-option value="disabled" disabled> Disabled </a-select-option>
-            <a-select-option value="Yiminghe"> yiminghe </a-select-option>
+    <!--    表格-->
+    <a-card style="margin-top: 20px;">
+      <a-tabs @change="tabTable" v-model="tableIndex">
+        <a-tab-pane :key="1" tab="客户群接受详情"></a-tab-pane>
+        <a-tab-pane :key="2" tab="群主发送详情"></a-tab-pane>
+      </a-tabs>
+      <div>
+        <div style="font-weight: bold;">
+          共{{ table.data.length }}个<template v-if="tableIndex==1">群聊</template><template v-else>群主</template>
+        </div>
+      </div>
+      <div style="display: flex;margin-top: 20px;">
+        <div class="screen_box" v-if="tableIndex==1">
+          搜索群聊：
+          <a-input
+            placeholder="请输入要搜索的群聊"
+            style="width: 200px;"
+            v-model="tableAskData.keyWords"
+          />
+        </div>
+        <div class="screen_box">
+          群主：
+          <a-select
+            style="width: 200px"
+            placeholder="选择管理员"
+            v-model="tableAskData.employeeIds"
+          >
+            <a-select-option v-for="(item,index) in employeeData" :key="index" :value="item.employeeId">
+              {{ item.name }}
+            </a-select-option>
           </a-select>
         </div>
-        <a-table class="show_table" :columns="columns" :data-source="receiveLst.list" :scroll="{ x: 1200 }">
-          <a-row slot="action">
-            <a-button type="link" disabled>聊天记录</a-button>
-            <a-button type="link">群详情</a-button>
-          </a-row>
+        <div class="screen_box">
+          送达状态：
+          <a-select
+            placeholder="请选择发送状态"
+            style="width: 200px"
+            v-model="tableAskData.sendStatus"
+          >
+            <a-select-option :value="0">未发送</a-select-option>
+            <a-select-option :value="1">已发送</a-select-option>
+            <a-select-option :value="2">发送失败</a-select-option>
+          </a-select>
+        </div>
+        <a-button style="margin-left: 20px;" @click="resetBtn">重置</a-button>
+        <a-button style="margin-left: 20px;" @click="searchTableData" type="primary">搜索</a-button>
+      </div>
+      <div style="margin-top: 30px;">
+        <a-table
+          :columns="tableIndex == 1?table.groupColumns:table.sendColumns"
+          :data-source="table.data"
+        >
+          <div slot="employeeName" slot-scope="text">
+            <a-tag><a-icon type="user" />{{ text }}</a-tag>
+          </div>
+          <div slot="status" slot-scope="text">
+            <a-tag v-if="text==0" color="gray">未发送</a-tag>
+            <a-tag v-if="text==1" color="green">已发送</a-tag>
+            <a-tag v-if="text==2" color="red">因客户不是好友导致发送失败</a-tag>
+            <a-tag v-if="text==3" color="red">因客户已经收到其他群发消息导致发送失败</a-tag>
+          </div>
+          <div slot="operation" slot-scope="text,record">
+            <a @click="detailsRow(record)">群详情</a>
+          </div>
+          <div slot="operate" slot-scope="text,record">
+            <a @click="remindBtn(record)" v-if="record.status===0">提醒发送</a>
+            <a-divider type="vertical" />
+            <a @click="groupSendDetails(record)">群发详情</a>
+          </div>
         </a-table>
-      </a-tab-pane>
-      <a-tab-pane key="2" tab="客户发送详情" force-render>
-        <div class="search_module">
-          <span class="text">搜索群聊：</span>
-          <a-input-search placeholder="请输入群发名称" @search="search" />
-          <span class="text">群主：</span>
-          <a-select placeholder="请选择群主">
-            <a-select-option value="jack"> Jack </a-select-option>
-            <a-select-option value="lucy"> Lucy </a-select-option>
-            <a-select-option value="disabled" disabled> Disabled </a-select-option>
-            <a-select-option value="Yiminghe"> yiminghe </a-select-option>
-          </a-select>
-          <span class="text">送达状态：</span>
-          <a-select placeholder="请选择消息送达状态">
-            <a-select-option value="jack"> Jack </a-select-option>
-            <a-select-option value="lucy"> Lucy </a-select-option>
-            <a-select-option value="disabled" disabled> Disabled </a-select-option>
-            <a-select-option value="Yiminghe"> yiminghe </a-select-option>
-          </a-select>
+      </div>
+    </a-card>
+    <a-modal
+      v-model="detailsPopup"
+      title="群发详情"
+      :footer="null"
+      :maskClosable="false"
+      width="750px">
+      <div style="padding-bottom: 10px;">
+        <div class="details_top_data">
+          <div style="text-align: center;font-size: 15px;">
+            <div style="font-size: 22px;font-weight: bold;">{{ groupTotal }}</div>
+            <div>本次推送群群聊</div>
+          </div>
+          <div style="text-align: center;font-size: 15px;">
+            <div style="font-size: 22px;font-weight: bold;">{{ groupSendNum }}</div>
+            <div>已发送群聊</div>
+          </div>
+          <div style="text-align: center;font-size: 15px;">
+            <div style="font-size: 22px;font-weight: bold;">{{ groupTotal-groupSendNum }}</div>
+            <div>未发送群聊</div>
+          </div>
         </div>
-      </a-tab-pane>
-    </a-tabs>
+        <div style="display: flex;justify-content:space-between;margin-top: 20px;font-size: 15px;">
+          <div class="row_name">全部({{ sendData.length }})</div>
+          <div>
+            送达状态：
+            <a-select
+              placeholder="请选择送达状态"
+              style="width: 200px"
+              v-model="sendStatus"
+              @change="selectStatus"
+            >
+              <a-select-option :value="4">全部</a-select-option>
+              <a-select-option :value="0">群主未发送</a-select-option>
+              <a-select-option :value="1">群主已发送</a-select-option>
+              <a-select-option :value="2">发送失败</a-select-option>
+            </a-select>
+          </div>
+        </div>
+        <div class="group_details_row">
+          <div v-if="sendData.length!=0">
+            <div class="group_details" v-for="(item,index) in sendData" :key="index">
+              <div style="display: flex;justify-content:space-between;">
+                <div>
+                  <img src="../../assets/avatar-room-default.svg" alt="">
+                  {{ item.roomName }}
+                  <a-tag color="green" v-if="item.status==1">群主已发送</a-tag>
+                  <a-tag color="red" v-if="item.status==0">群主未发送</a-tag>
+                  <a-tag color="gray" v-if="item.status==2||item.status==3">发送失败</a-tag>
+                </div>
+                <a style="margin-top: 15px;" @click="$router.push({ path: '/workRoom/detail?workRoomId=' + item.roomId })">群详情</a>
+              </div>
+              <a-divider />
+            </div>
+          </div>
+          <div v-else style="margin-top: 75px;">
+            <Empty />
+          </div>
+        </div>
+      </div>
+    </a-modal>
   </div>
 </template>
 <script>
-import { show, roomOwnerSendIndex, roomReceiveIndex } from '@/api/roomMessageBatchSend'
-const columns = [
-  { title: '群聊名称', width: 100, dataIndex: 'name', key: 'name' },
-  { title: '群主', width: 100, dataIndex: 'age', key: 'age' },
-  { title: '消息送达状态', dataIndex: 'address', key: '1', width: 150 },
-  { title: '消息创建时间', dataIndex: 'address', key: '2', width: 150 },
-  { title: '群聊创建时间', dataIndex: 'address', key: '3', width: 150 },
-  {
-    title: '操作',
-    key: 'operation',
-    fixed: 'right',
-    width: 180,
-    scopedSlots: { customRender: 'action' }
-  }
-]
-
-const data = []
-for (let i = 0; i < 100; i++) {
-  data.push({
-    key: i,
-    name: `Edrward ${i}`,
-    age: 32,
-    address: `London Park no. ${i}`
-  })
-}
-
+import { Empty } from 'ant-design-vue'
+// eslint-disable-next-line no-unused-vars
+import { show, roomOwnerSendIndex, roomReceiveIndex, department, remind } from '@/api/roomMessageBatchSend'
 export default {
+  components: { Empty },
   data () {
     return {
-      data,
-      columns,
-      info: {
-        seedRooms: []
-      },
+      info: {},
       contentArray: [],
       receiveLst: {},
-      sendArray: []
+      sendArray: [],
+      //  最新
+      tableIndex: 1,
+      table: {
+        groupColumns: [
+          {
+            title: '群聊名称',
+            dataIndex: 'roomName'
+          },
+          {
+            title: '群主',
+            dataIndex: 'employeeName',
+            scopedSlots: { customRender: 'employeeName' }
+          },
+          {
+            title: '群聊成员数量',
+            dataIndex: 'roomEmployeeNum'
+          },
+          {
+            title: '消息送达状态',
+            dataIndex: 'status',
+            scopedSlots: { customRender: 'status' }
+          },
+          {
+            title: '群聊创建时间',
+            dataIndex: 'roomCreateTime'
+          },
+          {
+            title: '操作',
+            dataIndex: 'operation',
+            scopedSlots: { customRender: 'operation' }
+          }
+        ],
+        sendColumns: [
+          {
+            title: '群主',
+            dataIndex: 'employeeName',
+            scopedSlots: { customRender: 'employeeName' }
+          },
+          {
+            title: '群发发送状态',
+            dataIndex: 'status',
+            scopedSlots: { customRender: 'status' }
+          },
+          {
+            title: '本次群发群聊总数',
+            dataIndex: 'sendRoomTotal'
+          },
+          {
+            title: '已发送群聊数',
+            dataIndex: 'sendSuccessTotal'
+          },
+          {
+            title: '确认发送时间',
+            dataIndex: 'sendTime'
+          },
+          {
+            title: '操作',
+            dataIndex: 'operate',
+            scopedSlots: { customRender: 'operate' }
+          }
+        ],
+        data: []
+      },
+      batchId: '',
+      //  客户接收筛选数据
+      tableAskData: {
+        batchId: '',
+        keyWords: ''
+      },
+      //  员工数据
+      employeeData: [],
+      detailsPopup: false,
+      groupTotal: 0,
+      groupSendNum: 0,
+      sendData: [],
+      sendStatus: 4,
+      employeeIds: ''
     }
   },
   mounted () {
-    show({
-      batchId: this.$route.query.id
-    }).then(data => {
-      this.info = data.data
-      this.info.content.forEach(element => {
-        if (element.msgType == 'text' || element.msgType == 'image') {
-          this.contentArray.push(element)
-        }
-      })
-    })
-    this.getReceiveList()
+    this.batchId = this.$route.query.batchId
+    this.tableAskData.batchId = this.batchId
+    this.getDetailsData(this.batchId)
+    this.getStaffData()
+    this.clientAccept()
   },
   methods: {
-    callback (key) {
-      console.log(key)
+    // 选择状态
+    selectStatus () {
+      this.groupSendData()
     },
-    search () {},
-    /**
-     * 查询接受详情
-     */
-    getReceiveList () {
-      roomReceiveIndex({
-        batchId: this.$route.query.id,
-        page: 1,
-        perPage: 10
-      }).then(data => {
-        this.receiveLst = data.data
-        console.log(JSON.stringify(data))
+    // 获取群发详情数据
+    groupSendData () {
+      const params = {
+        batchId: this.batchId,
+        employeeIds: this.employeeIds
+      }
+      if (this.sendStatus == 4) {
+        params.sendStatus = ''
+      } else {
+        params.sendStatus = this.sendStatus
+      }
+      roomReceiveIndex(params).then((res) => {
+        this.sendData = res.data.list
       })
     },
-    /**
-     * 查询发送详情
-     */
-    getSendList () {
-      roomOwnerSendIndex({
-        batchId: this.$route.query.id,
-        page: 1,
-        perPage: 10
-      }).then(data => {
-        this.sendArray = data
+    // 群发详情
+    groupSendDetails (record) {
+      this.groupTotal = record.sendRoomTotal
+      this.groupSendNum = record.sendSuccessTotal
+      this.employeeIds = record.employeeId
+      this.groupSendData()
+      this.detailsPopup = true
+    },
+    // 群详情
+    detailsRow (record) {
+      this.$router.push({ path: '/workRoom/detail?workRoomId=' + record.roomId })
+    },
+    // 提醒发送
+    remindBtn (record) {
+      remind({
+        batchId: this.batchId,
+        batchEmployId: record.employeeId
+      }).then((res) => {
+        this.$message.success('提醒成功')
+      })
+    },
+    // 重置按钮
+    resetBtn () {
+      this.tableAskData = {}
+      if (this.tableIndex == 1) {
+        this.clientAccept()
+      } else {
+        this.clientSend()
+      }
+    },
+    // 搜索
+    searchTableData () {
+      if (this.tableIndex == 1) {
+        this.clientAccept()
+      } else {
+        this.clientSend()
+      }
+    },
+    // 获取员工数据
+    getStaffData () {
+      department().then((res) => {
+        this.employeeData = res.data.employee
+      })
+    },
+    // 客户发送详情
+    tabTable () {
+      this.table.data = []
+      this.tableAskData = {}
+      this.tableAskData.batchId = this.batchId
+      if (this.tableIndex == 1) {
+        this.clientAccept()
+      } else {
+        this.clientSend()
+      }
+    },
+    clientSend () {
+      roomOwnerSendIndex(this.tableAskData).then((res) => {
+        console.log(res)
+        this.table.data = res.data.list
+      })
+    },
+    // 客户接受详情
+    clientAccept () {
+      roomReceiveIndex(this.tableAskData).then((res) => {
+        this.table.data = res.data.list
+      })
+    },
+    // 获取详情数据
+    getDetailsData (batchId) {
+      show({
+        batchId
+      }).then((res) => {
+        this.info = res.data
       })
     }
   }
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
+.details_top_data{
+  background: #fbfdff;
+  border: 1px solid #cfe8ff;
+  padding: 20px 50px 20px 50px;
+  display: flex;
+  justify-content:space-between;
+}
+.row_name{
+  border-left: 3px solid #1890FF;
+  padding-left: 8px;
+  height: 25px;
+}
+/deep/ .ant-modal-header{
+  text-align: center;
+}
+.group_details_row{
+  height: 300px;
+  overflow-y: scroll;
+  padding-right: 10px;
+}
+.group_details_row::-webkit-scrollbar {
+  width: 8px;
+}
+.group_details_row::-webkit-scrollbar-track {
+  background-color:#fff;
+  -webkit-border-radius: 2em;
+  -moz-border-radius: 2em;
+  border-radius:2em;
+}
+.group_details_row::-webkit-scrollbar-thumb {
+  background-color:#D9D9D9;
+  -webkit-border-radius: 2em;
+  -moz-border-radius: 2em;
+  border-radius:2em;
+}
+.group_details{
+  margin-top: 15px;
+}
+.screen_box{
+  margin-left: 30px;
+}
+.screen_box:first-child{
+  margin-left: 0px;
+}
 .top {
   width: 100%;
 }
-
 .col_right {
 .child_module{
-  height:440px;
+  height:307px;
 }
 }
 .child_module {

@@ -12,11 +12,11 @@ namespace MoChat\Plugin\ContactTransfer\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Plugin\ContactTransfer\Logic\IndexLogic;
@@ -41,7 +41,7 @@ class Index extends AbstractAction
     public function __construct(IndexLogic $indexLogic, RequestInterface $request)
     {
         $this->indexLogic = $indexLogic;
-        $this->request    = $request;
+        $this->request = $request;
     }
 
     /**
@@ -50,7 +50,7 @@ class Index extends AbstractAction
      *     @Middleware(DashboardAuthMiddleware::class),
      *     @Middleware(PermissionMiddleware::class)
      * })
-     * @RequestMapping(path="/dashboard/transfer/index", methods="POST")
+     * @RequestMapping(path="/dashboard/contactTransfer/index", methods="POST")
      */
     public function handle(): array
     {
@@ -59,10 +59,10 @@ class Index extends AbstractAction
         if (! $params['list']) {
             $params['list'] = '[]';
         }
-        $params['list']           = json_decode($params['list']);
+        $params['list'] = json_decode($params['list']);
         $params['takeoverUserId'] = $this->request->input('takeoverUserId');        //接替成员
-        $user                     = user();
-        $params['corpId']         = $user['corpIds'][0];
+        $user = user();
+        $params['corpId'] = $user['corpIds'][0];
 
         return $this->indexLogic->handle($params);
     }

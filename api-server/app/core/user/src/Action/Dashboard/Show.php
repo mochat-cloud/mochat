@@ -12,10 +12,10 @@ namespace MoChat\App\User\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Contract\RbacRoleContract;
 use MoChat\App\Rbac\Contract\RbacUserRoleContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
@@ -98,10 +98,10 @@ class Show extends AbstractAction
         ## 角色信息
         $roleInfo = $this->findRoleInfo((int) $data['id']);
 
-        $data['userId']     = $data['id'];
-        $data['userName']   = $data['name'];
-        $data['roleId']     = $roleInfo['roleId'];
-        $data['roleName']   = $roleInfo['roleName'];
+        $data['userId'] = $data['id'];
+        $data['userName'] = $data['name'];
+        $data['roleId'] = $roleInfo['roleId'];
+        $data['roleName'] = $roleInfo['roleName'];
         $data['department'] = $this->getDepartmentList((int) $data['id'], (int) user()['corpIds'][0]);
         unset($data['id'], $data['name'], $data['position'], $data['loginTime'], $data['password'], $data['createdAt'], $data['updatedAt'], $data['deletedAt']);
 
@@ -128,8 +128,8 @@ class Show extends AbstractAction
     {
         return [
             'userId.required' => '用户ID 必填',
-            'userId.integer'  => '用户ID 必需为整数',
-            'userId.min'      => '用户ID 不可小于1',
+            'userId.integer' => '用户ID 必需为整数',
+            'userId.min' => '用户ID 不可小于1',
         ];
     }
 
@@ -140,7 +140,7 @@ class Show extends AbstractAction
     private function findRoleInfo(int $userId): array
     {
         $data = [
-            'roleId'   => 0,
+            'roleId' => 0,
             'roleName' => '',
         ];
         $userRole = $this->rbacUserRoleService->getRbacUserRoleByUserId($userId, ['id', 'role_id']);
@@ -149,7 +149,7 @@ class Show extends AbstractAction
         }
         $role = $this->rbacRoleService->getRbacRoleById((int) $userRole['roleId'], ['id', 'name']);
         return empty($role) ? $data : [
-            'roleId'   => $role['id'],
+            'roleId' => $role['id'],
             'roleName' => $role['name'],
         ];
     }
@@ -170,10 +170,10 @@ class Show extends AbstractAction
             return [];
         }
         $departmentIdArr = array_column($employeeDepartments, 'departmentId');
-        $departmentList  = $this->workDepartmentService->getWorkDepartmentsById($departmentIdArr, ['id', 'name']);
+        $departmentList = $this->workDepartmentService->getWorkDepartmentsById($departmentIdArr, ['id', 'name']);
         return empty($departmentList) ? [] : array_map(function ($department) {
             return [
-                'departmentId'   => $department['id'],
+                'departmentId' => $department['id'],
                 'departmentName' => $department['name'],
             ];
         }, $departmentList);

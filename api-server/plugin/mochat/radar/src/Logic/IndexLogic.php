@@ -77,8 +77,8 @@ class IndexLogic
             $where['create_user_id'] = $user['id'];
         }
         $options = [
-            'perPage'    => $params['perPage'],
-            'page'       => $params['page'],
+            'perPage' => $params['perPage'],
+            'page' => $params['page'],
             'orderByRaw' => 'id desc',
         ];
 
@@ -93,14 +93,14 @@ class IndexLogic
      */
     private function getRadarList(array $params): array
     {
-        $columns   = ['id', 'type', 'title', 'link', 'link_title', 'link_description', 'link_cover', 'pdf_name', 'pdf', 'article_type', 'article', 'contact_tags', 'corp_id', 'create_user_id', 'created_at'];
+        $columns = ['id', 'type', 'title', 'link', 'link_title', 'link_description', 'link_cover', 'pdf_name', 'pdf', 'article_type', 'article', 'contact_tags', 'corp_id', 'create_user_id', 'created_at'];
         $radarList = $this->radarService->getRadarList($params['where'], $columns, $params['options']);
 
         $list = [];
         $data = [
             'page' => [
-                'perPage'   => $this->perPage,
-                'total'     => '0',
+                'perPage' => $this->perPage,
+                'total' => '0',
                 'totalPage' => '0',
             ],
             'list' => $list,
@@ -121,39 +121,39 @@ class IndexLogic
         foreach ($radarList['data'] as $key => $val) {
             //处理创建者信息
             $username = $this->userService->getUserById($val['createUserId']);
-            $type     = '链接';
-            $article  = $val['article'];
+            $type = '链接';
+            $article = $val['article'];
             if ($val['type'] === 2) {
                 $type = 'PDF';
             }
             if ($val['type'] === 3) {
-                $type    = '文章';
+                $type = '文章';
                 $article = json_decode($val['article'], true, 512, JSON_THROW_ON_ERROR);
                 if ($val['articleType'] === 2) {
                     $article['cover_url'] = file_full_url($article['cover_url']);
                 }
             }
             $list[$key] = [
-                'id'               => $val['id'],
-                'title'            => $val['title'],
-                'contact_tags'     => empty($val['contactTags']) ? '' : array_column(json_decode($val['contactTags'], true, 512, JSON_THROW_ON_ERROR), 'tagname'),
-                'nickname'         => isset($username['name']) ? $username['name'] : '',
-                'link'             => $val['link'],
-                'link_title'       => $val['linkTitle'],
+                'id' => $val['id'],
+                'title' => $val['title'],
+                'contact_tags' => empty($val['contactTags']) ? '' : array_column(json_decode($val['contactTags'], true, 512, JSON_THROW_ON_ERROR), 'tagname'),
+                'nickname' => isset($username['name']) ? $username['name'] : '',
+                'link' => $val['link'],
+                'link_title' => $val['linkTitle'],
                 'link_description' => $val['linkDescription'],
-                'link_cover'       => empty($val['linkCover']) ? '' : file_full_url($val['linkCover']),
-                'pdf_name'         => $val['pdfName'],
-                'pdf'              => $val['pdf'],
-                'article_type'     => $val['articleType'],
-                'article'          => $article,
-                'click_num'        => $this->radarChannelLinkService->countRadarChannelLinkByCorpIdRadarId($val['corpId'], $val['id'], 'click_person_num'),
-                'created_at'       => $val['createdAt'],
-                'type'             => $type,
+                'link_cover' => empty($val['linkCover']) ? '' : file_full_url($val['linkCover']),
+                'pdf_name' => $val['pdfName'],
+                'pdf' => $val['pdf'],
+                'article_type' => $val['articleType'],
+                'article' => $article,
+                'click_num' => $this->radarChannelLinkService->countRadarChannelLinkByCorpIdRadarId($val['corpId'], $val['id'], 'click_person_num'),
+                'created_at' => $val['createdAt'],
+                'type' => $type,
             ];
         }
-        $data['page']['total']     = $radarList['total'];
+        $data['page']['total'] = $radarList['total'];
         $data['page']['totalPage'] = $radarList['last_page'];
-        $data['list']              = $list;
+        $data['list'] = $list;
         return $data;
     }
 }

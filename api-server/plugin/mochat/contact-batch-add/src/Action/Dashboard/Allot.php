@@ -12,10 +12,10 @@ namespace MoChat\Plugin\ContactBatchAdd\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
@@ -47,8 +47,8 @@ class Allot extends AbstractAction
      */
     public function handle(): array
     {
-        $user                 = user();
-        $params['id']         = $this->request->input('id');
+        $user = user();
+        $params['id'] = $this->request->input('id');
         $params['employeeId'] = $this->request->input('employeeId');
         $this->validated($params);
 
@@ -63,7 +63,7 @@ class Allot extends AbstractAction
     protected function rules(): array
     {
         return [
-            'id'         => 'required|array',
+            'id' => 'required|array',
             'employeeId' => 'required|numeric',
         ];
     }

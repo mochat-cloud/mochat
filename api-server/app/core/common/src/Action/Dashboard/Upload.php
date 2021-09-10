@@ -11,16 +11,16 @@ declare(strict_types=1);
 namespace MoChat\App\Common\Action\Dashboard;
 
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use League\Flysystem\Filesystem;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Utils\File;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 文件上传.
@@ -58,9 +58,9 @@ class Upload extends AbstractAction
         }
 
         return [
-            'name'     => $originalFilename,
-            'type'     => $file->getMimeType(),
-            'path'     => $pathFileName,
+            'name' => $originalFilename,
+            'type' => $file->getMimeType(),
+            'path' => $pathFileName,
             'fullPath' => file_full_url($pathFileName),
         ];
     }

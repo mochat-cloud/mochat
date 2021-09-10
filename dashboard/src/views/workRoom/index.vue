@@ -301,7 +301,7 @@ export default {
       // 分组列表
       group: [],
       // 当前选中分组
-      active: 0,
+      active: 'all',
       // 新增分组
       addGroupShow: false,
       // 新增分组名称
@@ -403,6 +403,9 @@ export default {
       try {
         const { data: { list } } = await workRoomGroupList(params)
         this.group = [{
+          workRoomGroupId: 'all',
+          workRoomGroupName: '全部分组'
+        }, {
           workRoomGroupId: 0,
           workRoomGroupName: '未分组'
         }].concat(list)
@@ -412,7 +415,7 @@ export default {
     },
     groupChange (value) {
       const { workRoomGroupName } = this.group.find(item => {
-        return item.workRoomGroupId == value
+        return item.workRoomGroupId === value
       })
       this.alterName = workRoomGroupName
       this.getTableData()
@@ -420,7 +423,7 @@ export default {
 
     // 编辑分组
     alterGroup () {
-      if (this.active == 0) {
+      if (this.active === 0 || this.active === 'all') {
         this.$message.warn('请选择其他分组')
         return
       }
@@ -518,7 +521,7 @@ export default {
       this.getTableData()
     },
     reset () {
-      this.active = 0
+      this.active = 'all'
       this.workRoomName = ''
       this.workRoomOwnerId = []
       this.employees = []

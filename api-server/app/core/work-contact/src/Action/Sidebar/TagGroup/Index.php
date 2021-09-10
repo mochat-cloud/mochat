@@ -12,12 +12,12 @@ namespace MoChat\App\WorkContact\Action\Sidebar\TagGroup;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\SidebarAuthMiddleware;
 use MoChat\App\WorkContact\Contract\WorkContactTagGroupContract;
 use MoChat\Framework\Action\AbstractAction;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\SidebarAuthMiddleware;
 
 /**
  * 客户标签分组列表.
@@ -42,7 +42,7 @@ class Index extends AbstractAction
     public function handle()
     {
         $res = $this->contactTagGroupService
-            ->getWorkContactTagGroupsByCorpId(user()['corpIds'], ['id', 'group_name']);
+            ->getWorkContactTagGroupsByCorpId([user()['corpId']], ['id', 'group_name']);
 
         if (empty($res)) {
             return [];
@@ -55,7 +55,7 @@ class Index extends AbstractAction
         });
 
         $data = [
-            'groupId'   => 0,
+            'groupId' => 0,
             'groupName' => '未分组',
         ];
 

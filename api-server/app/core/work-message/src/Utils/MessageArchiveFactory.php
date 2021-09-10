@@ -10,10 +10,10 @@ declare(strict_types=1);
  */
 namespace MoChat\App\WorkMessage\Utils;
 
+use Hyperf\Di\Annotation\Inject;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\WorkMessage\Contract\WorkMessageConfigContract;
 use MoChat\WeWorkFinanceSDK\WxFinanceSDK;
-use Hyperf\Di\Annotation\Inject;
 
 class MessageArchiveFactory
 {
@@ -23,13 +23,13 @@ class MessageArchiveFactory
     protected $messageArchives = [];
 
     /**
-     * @Inject()
+     * @Inject
      * @var CorpContract
      */
     protected $corpService;
 
     /**
-     * @Inject()
+     * @Inject
      * @var WorkMessageConfigContract
      */
     protected $messageConfigService;

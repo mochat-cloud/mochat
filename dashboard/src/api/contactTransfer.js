@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 在职转接列表
 export function infoApi (params) {
   return request({
-    url: '/transfer/info',
+    url: '/contactTransfer/info',
     method: 'get',
     params: params
   })
@@ -11,7 +11,7 @@ export function infoApi (params) {
 // 同步离职待分配客户列表
 export function saveUnassignedListApi (params) {
   return request({
-    url: '/transfer/saveUnassignedList',
+    url: '/contactTransfer/saveUnassignedList',
     method: 'get',
     params: params
   })
@@ -19,7 +19,7 @@ export function saveUnassignedListApi (params) {
 // 离职待分配客户列表
 export function unassignedListApi (params) {
   return request({
-    url: '/transfer/unassignedList',
+    url: '/contactTransfer/unassignedList',
     method: 'get',
     params: params
   })
@@ -27,7 +27,7 @@ export function unassignedListApi (params) {
 // 分配 离职/在职客户
 export function indexApi (params) {
   return request({
-    url: '/transfer/index',
+    url: '/contactTransfer/index',
     method: 'post',
     data: params
   })
@@ -35,7 +35,7 @@ export function indexApi (params) {
 // 离职待分配群列表
 export function roomApi (params) {
   return request({
-    url: '/transfer/room',
+    url: '/contactTransfer/room',
     method: 'get',
     params: params
   })
@@ -43,7 +43,7 @@ export function roomApi (params) {
 // 分配离职客服群
 export function postRoomApi (params) {
   return request({
-    url: '/transfer/room',
+    url: '/contactTransfer/room',
     method: 'post',
     data: params
   })
@@ -51,7 +51,7 @@ export function postRoomApi (params) {
 // 分配记录
 export function logApi (params) {
   return request({
-    url: '/transfer/log',
+    url: '/contactTransfer/log',
     method: 'get',
     params: params
   })

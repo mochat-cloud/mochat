@@ -13,10 +13,10 @@ namespace MoChat\Plugin\ShopCode\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\App\WorkContact\Contract\WorkContactTagPivotContract;
@@ -85,17 +85,17 @@ class ShowContact extends AbstractAction
 
         ## 接收参数
         $params = [
-            'type'        => $this->request->input('type'),
+            'type' => $this->request->input('type'),
             'contactName' => $this->request->input('contactName'),
-            'employeeId'  => $this->request->input('employeeId'),
-            'start_time'  => $this->request->input('start_time'),
-            'end_time'    => $this->request->input('end_time'),
-            'shopName'    => $this->request->input('shopName'),
-            'status'      => $this->request->input('status'),
-            'province'    => $this->request->input('province'),
-            'city'        => $this->request->input('city'),
-            'page'        => $this->request->input('page', 1),
-            'perPage'     => $this->request->input('perPage', 10000),
+            'employeeId' => $this->request->input('employeeId'),
+            'start_time' => $this->request->input('start_time'),
+            'end_time' => $this->request->input('end_time'),
+            'shopName' => $this->request->input('shopName'),
+            'status' => $this->request->input('status'),
+            'province' => $this->request->input('province'),
+            'city' => $this->request->input('city'),
+            'page' => $this->request->input('page', 1),
+            'perPage' => $this->request->input('perPage', 10000),
         ];
 
         ## 店主
@@ -134,7 +134,7 @@ class ShowContact extends AbstractAction
     {
         return [
             'type.required' => '类型 必填',
-            'type.integer'  => '类型 必须为整型',
+            'type.integer' => '类型 必须为整型',
         ];
     }
 
@@ -145,16 +145,16 @@ class ShowContact extends AbstractAction
     private function shop(array $user, array $params): array
     {
         $shopList = $this->shopCodeService->getShopCodeByCorpIdType($user['corpIds'][0], (int) $params['type'], '', ['id']);
-        $shop     = [];
+        $shop = [];
         foreach ($shopList as $k => $v) {
             $shop[] = 'shopCode-' . $v['id'];
         }
         $contactList = $this->workContactService->getWorkContactsByStateSearch($user['corpIds'][0], $shop, $params);
-        $list        = [];
-        $data        = [
+        $list = [];
+        $data = [
             'page' => [
-                'perPage'   => $this->perPage,
-                'total'     => '0',
+                'perPage' => $this->perPage,
+                'total' => '0',
                 'totalPage' => '0',
             ],
             'list' => $list,
@@ -170,18 +170,18 @@ class ShowContact extends AbstractAction
     private function shopRoom(array $user, array $params): array
     {
         $shopList = $this->shopCodeService->getShopCodeByCorpIdType($user['corpIds'][0], (int) $params['type'], '', ['id', 'qw_code']);
-        $shop     = [];
+        $shop = [];
         foreach ($shopList as $k => $v) {
-            $qwCode             = json_decode($v['qwCode'], true, 512, JSON_THROW_ON_ERROR);
+            $qwCode = json_decode($v['qwCode'], true, 512, JSON_THROW_ON_ERROR);
             $workRoomAutoPullId = $qwCode['workRoomAutoPullId'];
-            $shop[]             = 'workRoomAutoPullId-' . $workRoomAutoPullId;
+            $shop[] = 'workRoomAutoPullId-' . $workRoomAutoPullId;
         }
         $contactList = $this->workContactService->getWorkContactsByStateSearch($user['corpIds'][0], $shop, $params);
-        $list        = [];
-        $data        = [
+        $list = [];
+        $data = [
             'page' => [
-                'perPage'   => $this->perPage,
-                'total'     => '0',
+                'perPage' => $this->perPage,
+                'total' => '0',
                 'totalPage' => '0',
             ],
             'list' => $list,
@@ -197,18 +197,18 @@ class ShowContact extends AbstractAction
     private function cityRoom(array $user, array $params): array
     {
         $shopList = $this->shopCodeService->getShopCodeByCorpIdType($user['corpIds'][0], (int) $params['type'], '', ['id', 'qw_code']);
-        $shop     = [];
+        $shop = [];
         foreach ($shopList as $k => $v) {
-            $qwCode             = json_decode($v['qwCode'], true, 512, JSON_THROW_ON_ERROR);
+            $qwCode = json_decode($v['qwCode'], true, 512, JSON_THROW_ON_ERROR);
             $workRoomAutoPullId = $qwCode['workRoomAutoPullId'];
-            $shop[]             = 'workRoomAutoPullId-' . $workRoomAutoPullId;
+            $shop[] = 'workRoomAutoPullId-' . $workRoomAutoPullId;
         }
         $contactList = $this->workContactService->getWorkContactsByStateSearch($user['corpIds'][0], $shop, $params);
-        $list        = [];
-        $data        = [
+        $list = [];
+        $data = [
             'page' => [
-                'perPage'   => $this->perPage,
-                'total'     => '0',
+                'perPage' => $this->perPage,
+                'total' => '0',
                 'totalPage' => '0',
             ],
             'list' => $list,
@@ -227,24 +227,24 @@ class ShowContact extends AbstractAction
     {
         $list = [];
         foreach ($contactList['data'] as $key => $val) {
-            $tag        = $this->workContactTagPivotService->getWorkContactTagPivotsNameByContactId($val['contactId']);
+            $tag = $this->workContactTagPivotService->getWorkContactTagPivotsNameByContactId($val['contactId']);
             $list[$key] = [
-                'contactId'   => $val['contactId'],
+                'contactId' => $val['contactId'],
                 'contactName' => $val['contactName'],
-                'avatar'      => file_full_url($val['avatar']),
-                'employee'    => json_decode($val['employee'], true, 512, JSON_THROW_ON_ERROR),
-                'createdAt'   => $val['createdAt'],
-                'shopName'    => $val['shopName'],
-                'tag'         => $tag,
-                'address'     => $val['address'],
-                'province'    => $val['province'],
-                'city'        => $val['city'],
-                'status'      => $val['status'],
+                'avatar' => file_full_url($val['avatar']),
+                'employee' => json_decode($val['employee'], true, 512, JSON_THROW_ON_ERROR),
+                'createdAt' => $val['createdAt'],
+                'shopName' => $val['shopName'],
+                'tag' => $tag,
+                'address' => $val['address'],
+                'province' => $val['province'],
+                'city' => $val['city'],
+                'status' => $val['status'],
             ];
         }
-        $data['page']['total']     = $contactList['total'];
+        $data['page']['total'] = $contactList['total'];
         $data['page']['totalPage'] = $contactList['last_page'];
-        $data['list']              = $list;
+        $data['list'] = $list;
         return $data;
     }
 }

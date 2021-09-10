@@ -134,7 +134,7 @@ class TransferRoomLogic
         }
 
         ##EasyWeChat 离职继承查询客户接替状态
-        $wx        = $this->wxApp($logData['corpId'], 'contact')->external_contact;
+        $wx = $this->wxApp($logData['corpId'], 'contact')->external_contact;
         $stateData = $wx->transferResult($logData['handoverEmployeeId'], $logData['takeoverEmployeeId']);
         if ($stateData['errcode'] === 0) {
             $stateData = $stateData['customer'];

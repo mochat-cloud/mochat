@@ -13,10 +13,10 @@ namespace MoChat\Plugin\Radar\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
@@ -99,15 +99,15 @@ class ShowContact extends AbstractAction
 
         ## 接收参数
         $params = [
-            'type'        => $this->request->input('type'),
-            'radar_id'    => $this->request->input('radar_id'),
+            'type' => $this->request->input('type'),
+            'radar_id' => $this->request->input('radar_id'),
             'contactName' => $this->request->input('contactName'),
-            'channelId'   => $this->request->input('channelId'),
-            'employeeId'  => $this->request->input('employeeId'),
-            'start_time'  => $this->request->input('start_time'),
-            'end_time'    => $this->request->input('end_time'),
-            'page'        => $this->request->input('page', 1),
-            'perPage'     => $this->request->input('perPage', 10000),
+            'channelId' => $this->request->input('channelId'),
+            'employeeId' => $this->request->input('employeeId'),
+            'start_time' => $this->request->input('start_time'),
+            'end_time' => $this->request->input('end_time'),
+            'page' => $this->request->input('page', 1),
+            'perPage' => $this->request->input('perPage', 10000),
         ];
         $data = $this->handleParams($user, $params);
 
@@ -134,7 +134,7 @@ class ShowContact extends AbstractAction
     {
         return [
             'type.required' => '类型 必填',
-            'type.integer'  => '类型 必须为整型',
+            'type.integer' => '类型 必须为整型',
         ];
     }
 
@@ -146,7 +146,7 @@ class ShowContact extends AbstractAction
      */
     private function handleParams(array $user, array $params): array
     {
-        $where['corp_id']  = $user['corpIds'][0];
+        $where['corp_id'] = $user['corpIds'][0];
         $where['radar_id'] = (int) $params['radar_id'];
         if (isset($params['contactName']) && ! empty($params['contactName'])) {
             $where[] = ['nickname', 'LIKE', '%' . $params['contactName'] . '%'];
@@ -162,8 +162,8 @@ class ShowContact extends AbstractAction
             $where[] = ['created_at', '<', $params['end_time']];
         }
         $options = [
-            'perPage'    => $params['perPage'],
-            'page'       => $params['page'],
+            'perPage' => $params['perPage'],
+            'page' => $params['page'],
             'orderByRaw' => 'id desc',
         ];
 
@@ -176,13 +176,13 @@ class ShowContact extends AbstractAction
      */
     private function shop(array $data, array $params): array
     {
-        $columns     = ['channel_id', 'nickname', 'contact_id', 'employee_id', 'created_at', 'corp_id'];
+        $columns = ['channel_id', 'nickname', 'contact_id', 'employee_id', 'created_at', 'corp_id'];
         $contactList = $this->radarRecordService->getRadarRecordList($data['where'], $columns, $data['options']);
-        $list        = [];
-        $data2       = [
+        $list = [];
+        $data2 = [
             'page' => [
-                'perPage'   => $this->perPage,
-                'total'     => '0',
+                'perPage' => $this->perPage,
+                'total' => '0',
                 'totalPage' => '0',
             ],
             'list' => $list,
@@ -199,17 +199,17 @@ class ShowContact extends AbstractAction
      */
     private function handleData(array $contactList, array $params): array
     {
-        $list  = [];
+        $list = [];
         $radar = $this->radarService->getRadarById((int) $params['radar_id'], ['title']);
         // TODO 优化在循环中查表，改为提前统一查好再组装数据
         foreach ($contactList['data'] as $key => $val) {
-            $contact        = $this->workContactService->getWorkContactById($val['contactId'], ['name', 'avatar']);
-            $contactAvatar  = empty($contact) ? '' : file_full_url($contact['avatar']);
+            $contact = $this->workContactService->getWorkContactById($val['contactId'], ['name', 'avatar']);
+            $contactAvatar = empty($contact) ? '' : file_full_url($contact['avatar']);
             $contactName = isset($contact['name']) ? $contact['name'] : $val['nickname'];
-            $employee       = $this->workEmployeeService->getWorkEmployeeById($val['employeeId'], ['name', 'avatar']);
+            $employee = $this->workEmployeeService->getWorkEmployeeById($val['employeeId'], ['name', 'avatar']);
             $employeeAvatar = empty($employee) ? '' : file_full_url($employee['avatar']);
-            $channel        = $this->radarChannelService->getRadarChannelById($val['channelId'], ['name']);
-            $clickInfo      = $this->radarRecordService->getRadarRecordByCorpIdContactIdSearch($val['corpId'], $val['contactId'], $params, ['channel_id', 'content', 'created_at']);
+            $channel = $this->radarChannelService->getRadarChannelById($val['channelId'], ['name']);
+            $clickInfo = $this->radarRecordService->getRadarRecordByCorpIdContactIdSearch($val['corpId'], $val['contactId'], $params, ['channel_id', 'content', 'created_at']);
             foreach ($clickInfo as $k => $v) {
                 $channelInfo = $this->radarChannelService->getRadarChannelById((int) $v['channelId'], ['name']);
                 // TODO 优化掉 HTML 标签
@@ -218,19 +218,19 @@ class ShowContact extends AbstractAction
             }
             $list[$key] = [
                 'contactName' => $contactName,
-                'avatar'      => $contactAvatar,
-                'employee'    => $employee['name'],
-                'createdAt'   => $val['createdAt'],
-                'channel'     => $channel['name'],
-                'click_num'   => $this->radarRecordService->countRadarRecordByCorpIdContactIdSearch($val['corpId'], $val['contactId'], $params),
-                'click_info'  => $clickInfo,
-                'contact_id'  => $val['contactId'],
+                'avatar' => $contactAvatar,
+                'employee' => $employee['name'],
+                'createdAt' => $val['createdAt'],
+                'channel' => $channel['name'],
+                'click_num' => $this->radarRecordService->countRadarRecordByCorpIdContactIdSearch($val['corpId'], $val['contactId'], $params),
+                'click_info' => $clickInfo,
+                'contact_id' => $val['contactId'],
                 'employee_id' => $val['employeeId'],
             ];
         }
-        $data['page']['total']     = $contactList['total'];
+        $data['page']['total'] = $contactList['total'];
         $data['page']['totalPage'] = $contactList['last_page'];
-        $data['list']              = $list;
+        $data['list'] = $list;
         return $data;
     }
 }

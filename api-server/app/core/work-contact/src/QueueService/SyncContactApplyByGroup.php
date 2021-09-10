@@ -86,7 +86,7 @@ class SyncContactApplyByGroup
             if ($res['errcode'] == 0) {
                 return [
                     'external_contact' => $res['external_contact'],
-                    'follow_user'      => $res['follow_user'],
+                    'follow_user' => $res['follow_user'],
                 ];
             }
             $this->logger->error(sprintf('同步客户-获取客户详情信息失败，error: %s [%s]', json_encode($res), date('Y-m-d H:i:s')));

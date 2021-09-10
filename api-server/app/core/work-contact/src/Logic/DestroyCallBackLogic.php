@@ -82,7 +82,7 @@ class DestroyCallBackLogic
         if (! empty($contactEmployee)) {
             //更新status为删除
             $data['status'] = $status;
-            $updateRes      = $this->contactEmployee->updateWorkContactEmployeeById((int) $contactEmployee['id'], $data);
+            $updateRes = $this->contactEmployee->updateWorkContactEmployeeById((int) $contactEmployee['id'], $data);
             if (! $updateRes) {
                 throw new CommonException(ErrorCode::SERVER_ERROR, '更新删除状态失败');
             }
@@ -113,8 +113,8 @@ class DestroyCallBackLogic
      */
     protected function employeeAndContactData(string $wxUserId, string $wxContactUserId): array
     {
-        $contactId   = 0;
-        $employeeId  = 0;
+        $contactId = 0;
+        $employeeId = 0;
         $contactInfo = $this->contact->getWorkContactByWxExternalUserId($wxContactUserId, ['id', 'unionid']);
         if (! empty($contactInfo)) {
             $contactId = $contactInfo['id'];

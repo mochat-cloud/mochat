@@ -15,7 +15,7 @@
             </div>
             <div class="shop_cont">
               <div class="shop_name">武汉分店</div>
-              <div class="aboutUs">{{ setupData.default.describe }}</div>
+              <div class="aboutUs" v-if="outlineOffon">{{ setupData.default.describe }}</div>
             </div>
           </div>
           <div class="shop_guide">{{ setupData.default.guide }}</div>
@@ -237,6 +237,9 @@ export default {
   top: 75px;
   left: 52px;
   text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .page_content{
   position: absolute;

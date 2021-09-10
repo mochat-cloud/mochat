@@ -38,8 +38,8 @@ class IndexLogic
         }
 
         $options = [
-            'page'       => $params['page'],
-            'perPage'    => $params['perPage'],
+            'page' => $params['page'],
+            'perPage' => $params['perPage'],
             'orderByRaw' => 'id desc',
         ];
         ## 查询数据
@@ -62,8 +62,8 @@ class IndexLogic
         ## 组织响应数据
         $data = [
             'page' => [
-                'perPage'   => $params['perPage'],
-                'total'     => 0,
+                'perPage' => $params['perPage'],
+                'total' => 0,
                 'totalPage' => 0,
             ],
             'list' => [],
@@ -80,10 +80,33 @@ class IndexLogic
             }
         }
         ## 处理分页数据
-        $data['page']['total']     = $res['total'];
+        $data['page']['total'] = $res['total'];
         $data['page']['totalPage'] = $res['last_page'];
-        $data['list']              = $res['data'];
+        $data['list'] = $this->handleData($res['data']);
 
+        return $data;
+    }
+
+    protected function handleData($data): array
+    {
+        foreach ($data as $k => $v) {
+            if (! empty($v['content'])) {
+                foreach ($v['content'] as $key => $content) {
+                    if (! isset($content['msgType'])) {
+                        continue;
+                    }
+                    if ($content['msgType'] === 'image') {
+                        $data[$k]['content'][$key]['pic_url'] = file_full_url($content['pic_url']);
+                    }
+                    if ($content['msgType'] === 'link') {
+                        $data[$k]['content'][$key]['pic_url'] = file_full_url($content['pic_url']);
+                    }
+                    if ($content['msgType'] === 'miniprogram') {
+                        $data[$k]['content'][$key]['pic_url'] = file_full_url($content['pic_url']);
+                    }
+                }
+            }
+        }
         return $data;
     }
 }

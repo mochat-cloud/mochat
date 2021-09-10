@@ -59,21 +59,21 @@ class StoreLogic
     private function handleParam(array $user, array $params): array
     {
         $tagRule = array_column($params['tag_rule'], 'tags');
-        $tags    = array_column($tagRule[0], 'tagid');
+        $tags = array_column($tagRule[0], 'tagid');
         ## 基本信息
         return [
-            'type'                => $params['type'],
-            'name'                => $params['name'],
-            'employees'           => isset($params['employees']) ? implode(',', $params['employees']) : '',
+            'type' => $params['type'],
+            'name' => $params['name'],
+            'employees' => isset($params['employees']) ? implode(',', $params['employees']) : '',
             'fuzzy_match_keyword' => isset($params['fuzzy_match_keyword']) ? implode(',', $params['fuzzy_match_keyword']) : '',
             'exact_match_keyword' => isset($params['exact_match_keyword']) ? implode(',', $params['exact_match_keyword']) : '',
-            'tag_rule'            => json_encode($params['tag_rule']),
-            'tags'                => implode(',', $tags),
-            'on_off'              => 1,
-            'tenant_id'           => isset($params['tenant_id']) ? $params['tenant_id'] : 0,
-            'corp_id'             => $user['corpIds'][0],
-            'create_user_id'      => $user['id'],
-            'created_at'          => date('Y-m-d H:i:s'),
+            'tag_rule' => json_encode($params['tag_rule']),
+            'tags' => implode(',', $tags),
+            'on_off' => 1,
+            'tenant_id' => isset($params['tenant_id']) ? $params['tenant_id'] : 0,
+            'corp_id' => $user['corpIds'][0],
+            'create_user_id' => $user['id'],
+            'created_at' => date('Y-m-d H:i:s'),
         ];
     }
 

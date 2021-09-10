@@ -12,11 +12,11 @@ namespace MoChat\Plugin\RoomSop\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Plugin\RoomSop\Logic\InfoLogic;
@@ -41,7 +41,7 @@ class Info extends AbstractAction
     public function __construct(InfoLogic $infoLogic, RequestInterface $request)
     {
         $this->infoLogic = $infoLogic;
-        $this->request   = $request;
+        $this->request = $request;
     }
 
     /**
@@ -56,7 +56,7 @@ class Info extends AbstractAction
     {
         $params['id'] = $this->request->input('id'); //规则id
 
-        $user             = user();
+        $user = user();
         $params['corpId'] = $user['corpIds'][0];
 
         return $this->infoLogic->handle($params);

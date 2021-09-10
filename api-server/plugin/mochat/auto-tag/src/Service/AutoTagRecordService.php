@@ -150,12 +150,12 @@ class AutoTagRecordService extends AbstractService implements AutoTagRecordContr
     {
         $auto_tag_id = $params['auto_tag_id'];
         $contactName = $params['contact_name'];
-        $wxUserId    = $params['employee'] ?? '';
-        $starTime    = $params['start_time'];
-        $endTime     = $params['end_time'];
-        $page        = (int) $params['page'];
-        $perPage     = (int) $params['perPage'];
-        $data        = $this->model::from($this->model::query()->getModel()->getTable() . ' as auto_tag_record')
+        $wxUserId = $params['employee'] ?? '';
+        $starTime = $params['start_time'];
+        $endTime = $params['end_time'];
+        $page = (int) $params['page'];
+        $perPage = (int) $params['perPage'];
+        $data = $this->model::from($this->model::query()->getModel()->getTable() . ' as auto_tag_record')
             ->join(WorkContact::query()->getModel()->getTable() . ' as c', 'auto_tag_record.contact_id', 'c.id')
             ->join(WorkEmployee::query()->getModel()->getTable() . ' as e', 'auto_tag_record.employee_id', 'e.id')
             ->where('auto_tag_record.auto_tag_id', '=', $auto_tag_id)
@@ -230,13 +230,13 @@ class AutoTagRecordService extends AbstractService implements AutoTagRecordContr
     {
         $auto_tag_id = $params['auto_tag_id'];
         $contactName = $params['contact_name'];
-        $wxUserId    = $params['employee'] ?? '';
-        $roomName    = $params['room_name'];
-        $joinScene   = $params['join_scene'];
-        $starTime    = $params['start_time'];
-        $endTime     = $params['end_time'];
-        $page        = (int) $params['page'];
-        $perPage     = (int) $params['perPage'];
+        $wxUserId = $params['employee'] ?? '';
+        $roomName = $params['room_name'];
+        $joinScene = $params['join_scene'];
+        $starTime = $params['start_time'];
+        $endTime = $params['end_time'];
+        $page = (int) $params['page'];
+        $perPage = (int) $params['perPage'];
 
         $data = $this->model::from($this->model::query()->getModel()->getTable() . ' as auto_tag_record')
             ->join(WorkContact::query()->getModel()->getTable() . ' as c', 'auto_tag_record.contact_id', 'c.id')
@@ -286,12 +286,12 @@ class AutoTagRecordService extends AbstractService implements AutoTagRecordContr
     {
         $auto_tag_id = $params['auto_tag_id'];
         $contactName = $params['contact_name'];
-        $wxUserId    = $params['employee'] ?? '';
-        $ruleId      = $params['rule_id'];
-        $starTime    = $params['start_time'];
-        $endTime     = $params['end_time'];
-        $page        = (int) $params['page'];
-        $perPage     = (int) $params['perPage'];
+        $wxUserId = $params['employee'] ?? '';
+        $ruleId = $params['rule_id'];
+        $starTime = $params['start_time'];
+        $endTime = $params['end_time'];
+        $page = (int) $params['page'];
+        $perPage = (int) $params['perPage'];
 
         $data = $this->model::from($this->model::query()->getModel()->getTable() . ' as auto_tag_record')
             ->join(WorkContact::query()->getModel()->getTable() . ' as c', 'auto_tag_record.contact_id', 'c.id')

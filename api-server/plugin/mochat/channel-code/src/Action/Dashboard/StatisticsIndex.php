@@ -12,10 +12,10 @@ namespace MoChat\Plugin\ChannelCode\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
@@ -51,11 +51,11 @@ class StatisticsIndex extends AbstractAction
         ## 接收参数
         $params = [
             'channelCodeId' => $this->request->input('channelCodeId'),
-            'type'          => $this->request->input('type'),
-            'startTime'     => $this->request->input('startTime'),
-            'endTime'       => $this->request->input('endTime'),
-            'page'          => $this->request->input('page', 1),
-            'perPage'       => $this->request->input('perPage', 10),
+            'type' => $this->request->input('type'),
+            'startTime' => $this->request->input('startTime'),
+            'endTime' => $this->request->input('endTime'),
+            'page' => $this->request->input('page', 1),
+            'perPage' => $this->request->input('perPage', 10),
         ];
 
         return $this->statisticsIndexLogic->handle($params);
@@ -70,7 +70,7 @@ class StatisticsIndex extends AbstractAction
     {
         return [
             'channelCodeId' => 'required | integer | min:0, | bail',
-            'type'          => 'required | integer | in:1,2,3, | bail',
+            'type' => 'required | integer | in:1,2,3, | bail',
         ];
     }
 
@@ -82,11 +82,11 @@ class StatisticsIndex extends AbstractAction
     {
         return [
             'channelCodeId.required' => '渠道码ID 必填',
-            'channelCodeId.integer'  => '渠道码ID 必需为整数',
-            'channelCodeId.min'      => '渠道码ID 值不可小于1',
-            'type.required'          => '统计类型 必填',
-            'type.integer'           => '统计类型 必需为整数',
-            'type.in'                => '统计类型 值必须在列表内：[1,2,3]',
+            'channelCodeId.integer' => '渠道码ID 必需为整数',
+            'channelCodeId.min' => '渠道码ID 值不可小于1',
+            'type.required' => '统计类型 必填',
+            'type.integer' => '统计类型 必需为整数',
+            'type.in' => '统计类型 值必须在列表内：[1,2,3]',
         ];
     }
 }

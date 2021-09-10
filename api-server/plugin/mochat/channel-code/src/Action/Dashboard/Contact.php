@@ -12,10 +12,10 @@ namespace MoChat\Plugin\ChannelCode\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
@@ -47,8 +47,8 @@ class Contact extends AbstractAction
     {
         //接收参数
         $params['channelCodeId'] = $this->request->input('channelCodeId');
-        $params['page']          = $this->request->input('page');
-        $params['perPage']       = $this->request->input('perPage');
+        $params['page'] = $this->request->input('page');
+        $params['perPage'] = $this->request->input('perPage');
 
         //验证参数
         $this->validated($params);

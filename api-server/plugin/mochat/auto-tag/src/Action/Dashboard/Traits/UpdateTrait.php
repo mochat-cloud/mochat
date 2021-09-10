@@ -35,7 +35,7 @@ trait UpdateTrait
     {
         $recordList = $this->autoTagRecordService->getAutoTagRecord(['id', 'corp_id', 'wx_external_userid']);
         foreach ($recordList as $item) {
-            $contact   = $this->workContactService->getWorkContactByCorpIdWxExternalUserId((int) $item['corpId'], $item['wxExternalUserid'], ['id']);
+            $contact = $this->workContactService->getWorkContactByCorpIdWxExternalUserId((int) $item['corpId'], $item['wxExternalUserid'], ['id']);
             $contactId = empty($contact) ? 0 : $contact['id'];
             $this->autoTagRecordService->updateAutoTagRecordById($item['id'], ['contact_id' => $contactId]);
         }

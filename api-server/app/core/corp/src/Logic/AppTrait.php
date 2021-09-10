@@ -19,9 +19,6 @@ trait AppTrait
      * 根据微信企业ID获取easyWechat实例.
      *
      * @param int|string $corpId 微信corpid或企业表corpId
-     * @param string $type
-     *
-     * @return Application
      */
     public function wxApp($corpId, string $type = 'user'): Application
     {
@@ -34,11 +31,9 @@ trait AppTrait
     }
 
     /**
-     * 获取三方应用或自建应用实例
+     * 获取三方应用或自建应用实例.
      *
      * @param int|string $agentId
-     *
-     * @return Application
      */
     public function wxAgentApp($agentId): Application
     {

@@ -13,6 +13,7 @@ namespace MoChat\App\WorkEmployee\Model;
 use Hyperf\Database\Model\Concerns\CamelCase;
 use Hyperf\Database\Model\SoftDeletes;
 use MoChat\Framework\Model\AbstractModel;
+use Qbhy\HyperfAuth\Authenticatable;
 
 /**
  * @property int $id
@@ -42,7 +43,7 @@ use MoChat\Framework\Model\AbstractModel;
  * @property \Carbon\Carbon $updatedAt
  * @property string $deletedAt
  */
-class WorkEmployee extends AbstractModel
+class WorkEmployee extends AbstractModel implements Authenticatable
 {
     use CamelCase;
     use SoftDeletes;
@@ -67,4 +68,14 @@ class WorkEmployee extends AbstractModel
      * @var array
      */
     protected $casts = ['id' => 'integer', 'gender' => 'integer', 'status' => 'integer', 'wx_main_department_id' => 'integer', 'main_department_id' => 'integer', 'log_user_id' => 'integer', 'contact_auth' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+
+    public function getId()
+    {
+        return $this->getKey();
+    }
+
+    public static function retrieveById($key): ?Authenticatable
+    {
+        return self::query()->find($key);
+    }
 }

@@ -13,11 +13,11 @@ namespace MoChat\Plugin\RoomQuality\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\User\Contract\UserContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
@@ -73,7 +73,7 @@ class Info extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -97,22 +97,22 @@ class Info extends AbstractAction
         $params = $this->request->all();
         $this->validated($params);
         ## 详情
-        $info              = $this->roomQualityService->getRoomQualityById((int) $params['id'], ['name', 'rooms', 'quality_type', 'work_cycle', 'rule', 'white_list_status', 'keyword', 'status', 'create_user_id', 'created_at']);
-        $info['rooms']     = json_decode($info['rooms'], true, 512, JSON_THROW_ON_ERROR);
+        $info = $this->roomQualityService->getRoomQualityById((int) $params['id'], ['name', 'rooms', 'quality_type', 'work_cycle', 'rule', 'white_list_status', 'keyword', 'status', 'create_user_id', 'created_at']);
+        $info['rooms'] = json_decode($info['rooms'], true, 512, JSON_THROW_ON_ERROR);
         $info['workCycle'] = json_decode($info['workCycle'], true, 512, JSON_THROW_ON_ERROR);
-        $rule              = json_decode($info['rule'], true, 512, JSON_THROW_ON_ERROR);
+        $rule = json_decode($info['rule'], true, 512, JSON_THROW_ON_ERROR);
         foreach ($rule as $k => $v) {
             if ((int) $v['employee_type'] === 1 && ! empty($v['employee'])) {
                 foreach ($v['employee'] as $key => $item) {
-                    $emp                        = $this->workEmployeeService->getWorkEmployeeById($item, ['name', 'avatar']);
+                    $emp = $this->workEmployeeService->getWorkEmployeeById($item, ['name', 'avatar']);
                     $rule[$k]['employee'][$key] = ['id' => $item, 'name' => $emp['name'], 'avatar' => file_full_url($emp['avatar'])];
                 }
             }
         }
-        $info['rule']    = $rule;
+        $info['rule'] = $rule;
         $info['keyword'] = empty($info['keyword']) ? '' : explode(',', $info['keyword']);
         ## 处理创建者信息
-        $username               = $this->userService->getUserById($info['createUserId']);
+        $username = $this->userService->getUserById($info['createUserId']);
         $info['createUserName'] = isset($username['name']) ? $username['name'] : '';
         return $info;
     }

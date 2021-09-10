@@ -13,11 +13,11 @@ namespace MoChat\Plugin\RoomFission\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Contract\WorkContactRoomContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
@@ -112,7 +112,7 @@ class ShowRoom extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -138,9 +138,9 @@ class ShowRoom extends AbstractAction
         $rooms = $this->roomFissionRoomService->getRoomFissionRoomBySearch($params);
 
         foreach ($rooms as $k => $v) {
-            $employee                = $this->workEmployeeService->getWorkEmployeeById($v['ownerId'], ['name']);
+            $employee = $this->workEmployeeService->getWorkEmployeeById($v['ownerId'], ['name']);
             $rooms[$k]['owner_name'] = $employee['name'];
-            $rooms[$k]['status']     = '正常';
+            $rooms[$k]['status'] = '正常';
             ## 群人数
             $rooms[$k]['room_num'] = $this->workContactRoomService->countWorkContactRoomByRoomIds([$v['id']]);
             ## 总进群人数
@@ -161,10 +161,10 @@ class ShowRoom extends AbstractAction
             $statistics['today_loss_person_num'] = $this->roomFissionContactService->countRoomFissionContactByFissionID((int) $params['id'], 2, 2, 1, 0, $day);
             ## 今日总净增人数
             $statistics['today_insert_person_num'] = $statistics['today_join_room_num'] - $statistics['today_loss_person_num'];
-            $rooms[$k]['join_room_num']            = $statistics['today_join_room_num'] . '/' . $statistics['join_room_num'];
-            $rooms[$k]['finish_person_num']        = $statistics['today_finish_person_num'] . '/' . $statistics['finish_person_num'];
-            $rooms[$k]['loss_person_num']          = $statistics['today_loss_person_num'] . '/' . $statistics['loss_person_num'];
-            $rooms[$k]['insert_person_num']        = $statistics['today_insert_person_num'] . '/' . $statistics['insert_person_num'];
+            $rooms[$k]['join_room_num'] = $statistics['today_join_room_num'] . '/' . $statistics['join_room_num'];
+            $rooms[$k]['finish_person_num'] = $statistics['today_finish_person_num'] . '/' . $statistics['finish_person_num'];
+            $rooms[$k]['loss_person_num'] = $statistics['today_loss_person_num'] . '/' . $statistics['loss_person_num'];
+            $rooms[$k]['insert_person_num'] = $statistics['today_insert_person_num'] . '/' . $statistics['insert_person_num'];
         }
         return ['list' => $rooms];
     }

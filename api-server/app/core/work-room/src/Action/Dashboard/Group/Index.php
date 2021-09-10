@@ -12,13 +12,13 @@ namespace MoChat\App\WorkRoom\Action\Dashboard\Group;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\WorkRoom\Contract\WorkRoomGroupContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 客户群分组管理-列表.
@@ -46,17 +46,17 @@ class Index extends AbstractAction
     public function handle(): array
     {
         ## 接收参数
-        $page    = $this->request->input('page', 1);
+        $page = $this->request->input('page', 1);
         $perPage = $this->request->input('perPage', '10');
         ## 当前登陆者
         $user = user();
 
         ## 组织查询条件
-        $where            = [];
-        $corpIds          = isset($user['corpIds']) ? $user['corpIds'] : [];
-        $where['corp_id'] = ['corp_id', 'IN', $corpIds];
-        $options          = [
-            'page'    => $page,
+        $where = [];
+        $corpIds = isset($user['corpIds']) ? $user['corpIds'] : [];
+        $where['corp_id'] = ['corp_id', '=', $corpIds[0]];
+        $options = [
+            'page' => $page,
             'perPage' => $perPage,
         ];
         ## 查询字段
@@ -72,8 +72,8 @@ class Index extends AbstractAction
         ## 组织响应数据
         $data = [
             'page' => [
-                'perPage'   => $perPage,
-                'total'     => 0,
+                'perPage' => $perPage,
+                'total' => 0,
                 'totalPage' => 0,
             ],
             'list' => [],
@@ -83,12 +83,12 @@ class Index extends AbstractAction
             return $data;
         }
         ## 处理分页数据
-        $data['page']['total']     = $res['total'];
+        $data['page']['total'] = $res['total'];
         $data['page']['totalPage'] = $res['last_page'];
 
         ## 处理数据
         foreach ($res['data'] as &$v) {
-            $v['workRoomGroupId']   = $v['id'];
+            $v['workRoomGroupId'] = $v['id'];
             $v['workRoomGroupName'] = $v['name'];
             unset($v['id'], $v['name']);
         }

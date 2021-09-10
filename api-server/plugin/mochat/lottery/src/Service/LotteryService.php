@@ -126,12 +126,12 @@ class LotteryService extends AbstractService implements LotteryContract
      */
     public function getLotteryListBySearch(array $user, array $params): array
     {
-        $corpId         = $user['corpIds'][0];
-        $status         = (int) $params['status'];
-        $name           = ! isset($params['name']) ? $params['name'] : '';
-        $page           = (int) $params['page'];
-        $perPage        = (int) $params['perPage'];
-        $date           = date('Y-m-d H:i:s');
+        $corpId = $user['corpIds'][0];
+        $status = (int) $params['status'];
+        $name = ! isset($params['name']) ? $params['name'] : '';
+        $page = (int) $params['page'];
+        $perPage = (int) $params['perPage'];
+        $date = date('Y-m-d H:i:s');
         $create_user_id = $user['id'];
 
         $data = $this->model::from($this->model::query()->getModel()->getTable())

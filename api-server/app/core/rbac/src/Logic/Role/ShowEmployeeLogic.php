@@ -56,12 +56,12 @@ class ShowEmployeeLogic
     {
         ## 通过角色id获取成员
         $columns = ['id', 'name', 'mobile', 'email', 'log_user_id'];
-        $where   = [
+        $where = [
             'roleId' => $params['roleId'],
             'corpId' => $user['corpIds'][0],
         ];
         $options = [
-            'page'    => $params['page'],
+            'page' => $params['page'],
             'perPage' => $params['perPage'],
         ];
         $employee = $this->workEmployeeService->getWorkEmployeesByRoleId($where, $options, $columns);
@@ -79,8 +79,8 @@ class ShowEmployeeLogic
     {
         $data = [
             'page' => [
-                'perPage'   => 10,
-                'total'     => 0,
+                'perPage' => 10,
+                'total' => 0,
                 'totalPage' => 0,
             ],
             'list' => [],
@@ -93,18 +93,18 @@ class ShowEmployeeLogic
         $list = [];
         foreach ($employee['data'] as $key => $v) {
             $list[$key] = [
-                'employeeId'   => $v['id'],
+                'employeeId' => $v['id'],
                 'employeeName' => $v['name'],
-                'phone'        => $v['mobile'],
-                'email'        => $v['email'],
-                'department'   => $this->getEmployeeDepartmentByEmployeeId($v['id']),
+                'phone' => $v['mobile'],
+                'email' => $v['email'],
+                'department' => $this->getEmployeeDepartmentByEmployeeId($v['id']),
             ];
         }
 
         ## 分页数据
-        $data['page']['total']     = $employee['total'];
+        $data['page']['total'] = $employee['total'];
         $data['page']['totalPage'] = $employee['last_page'];
-        $data['list']              = $list;
+        $data['list'] = $list;
 
         return $data;
     }

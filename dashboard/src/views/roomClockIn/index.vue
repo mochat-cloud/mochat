@@ -78,13 +78,17 @@
       </a-modal>
     </a-card>
     <input type="text" class="copy-input" ref="copyInput">
+    <!--    授权提示-->
+    <warrantTip ref="warrantTip" />
   </div>
 </template>
 
 <script>
 import { getList, delList, publicIndexApi } from '@/api/roomClockIn'
 import QRCode from 'qrcodejs2'
+import warrantTip from '@/components/warrantTip/warrantTip'
 export default {
+  components: { warrantTip },
   data () {
     return {
       // 公众号列表
@@ -155,9 +159,7 @@ export default {
         current: '全部'
       },
       params: {
-        status: 0,
-        page: 1,
-        perPage: 10
+        status: 0
       }
     }
   },
@@ -177,6 +179,9 @@ export default {
     getPublicList () {
       publicIndexApi().then((res) => {
         this.publiclist = res.data
+        if (this.publiclist.length == 0) {
+          this.$refs.warrantTip.show()
+        }
       })
     },
     // 下载二维码

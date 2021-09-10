@@ -14,11 +14,11 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\Utils\File;
 use MoChat\Framework\Action\AbstractAction;
@@ -61,7 +61,7 @@ class Update extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -98,8 +98,8 @@ class Update extends AbstractAction
     protected function rules(): array
     {
         return [
-            'id'      => 'required',
-            'name'    => 'required',
+            'id' => 'required',
+            'name' => 'required',
             'qw_code' => 'required',
         ];
     }
@@ -111,8 +111,8 @@ class Update extends AbstractAction
     protected function messages(): array
     {
         return [
-            'id.required'      => 'id 必传',
-            'name.required'    => '名称 必传',
+            'id.required' => 'id 必传',
+            'name.required' => '名称 必传',
             'qw_code.required' => '企微活码 必传',
         ];
     }
@@ -131,14 +131,14 @@ class Update extends AbstractAction
         }
         ## 基本信息
         return [
-            'name'            => $params['name'],
-            'avatar'          => isset($params['avatar']) ? File::uploadBase64Image($params['avatar'], 'image/roomInfinite/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg') : '',
-            'title_status'    => isset($params['title_status']) ? (int) $params['title_status'] : 0,
-            'title'           => isset($params['title']) ? $params['title'] : '',
+            'name' => $params['name'],
+            'avatar' => isset($params['avatar']) ? File::uploadBase64Image($params['avatar'], 'image/roomInfinite/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg') : '',
+            'title_status' => isset($params['title_status']) ? (int) $params['title_status'] : 0,
+            'title' => isset($params['title']) ? $params['title'] : '',
             'describe_status' => isset($params['describe_status']) ? (int) $params['describe_status'] : 0,
-            'describe'        => isset($params['describe']) ? $params['describe'] : '',
-            'logo'            => isset($params['logo']) ? File::uploadBase64Image($params['logo'], 'image/roomInfinite/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg') : '',
-            'qw_code'         => json_encode($params['qw_code'], JSON_THROW_ON_ERROR),
+            'describe' => isset($params['describe']) ? $params['describe'] : '',
+            'logo' => isset($params['logo']) ? File::uploadBase64Image($params['logo'], 'image/roomInfinite/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg') : '',
+            'qw_code' => json_encode($params['qw_code'], JSON_THROW_ON_ERROR),
         ];
     }
 

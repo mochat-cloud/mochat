@@ -12,11 +12,11 @@ namespace MoChat\Plugin\RoomTagPull\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\App\WorkContact\Contract\WorkContactRoomContract;
@@ -60,7 +60,7 @@ class FilterContact extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -115,7 +115,7 @@ class FilterContact extends AbstractAction
         $count = 0;
         foreach ($params['rooms'] as $room) {
             $roomContact = $this->workContactRoomService->getWorkContactRoomsByRoomIdContact((int) $room['id'], ['contact_id']);
-            $contact     = $this->workContactService->getWorkContactsBySearch($user['corpIds'][0], $params['employees'], $params['choose_contact']);
+            $contact = $this->workContactService->getWorkContactsBySearch($user['corpIds'][0], $params['employees'], $params['choose_contact']);
             foreach ($contact as $k => $v) {
                 if (in_array($v['contactId'], array_column($roomContact, 'contactId'), true)) {
                     unset($contact[$k]);

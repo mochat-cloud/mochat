@@ -95,7 +95,7 @@ class InviteFriends extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -113,8 +113,8 @@ class InviteFriends extends AbstractAction
         $fission = $this->roomFissionService->getRoomFissionById((int) $params['fission_id'], ['target_count', 'new_friend', 'delete_invalid']);
         ## 客户信息
         $contactRecord = $this->roomFissionContactService->getRoomFissionContactByUnionIdFissionID($params['union_id'], (int) $params['fission_id'], ['id', 'nickname', 'avatar', 'invite_count']);
-        $isNew         = $fission['newFriend'] === 1 ? 1 : 2;
-        $loss          = $fission['deleteInvalid'] === 1 ? 0 : 2;
+        $isNew = $fission['newFriend'] === 1 ? 1 : 2;
+        $loss = $fission['deleteInvalid'] === 1 ? 0 : 2;
         $inviteFriends = $this->roomFissionContactService->getRoomFissionContactByParentUnionId($params['union_id'], 1, $isNew, $loss, ['nickname', 'avatar', 'created_at']);
         foreach ($inviteFriends as $k => $v) {
             $inviteFriends[$k]['avatar'] = file_full_url($v['avatar']);
@@ -131,7 +131,7 @@ class InviteFriends extends AbstractAction
     {
         return [
             'fission_id' => 'required',
-            'union_id'   => 'required',
+            'union_id' => 'required',
         ];
     }
 
@@ -143,7 +143,7 @@ class InviteFriends extends AbstractAction
     {
         return [
             'fission_id.required' => 'fission_id 必传',
-            'union_id.required'   => 'union_id 必传',
+            'union_id.required' => 'union_id 必传',
         ];
     }
 }

@@ -45,7 +45,7 @@ trait ContactWayQrCodeTrait
     public function AddQrCode(string $wxCorpId, int $type, int $scene, array $config): array
     {
         $contactWayClient = $this->wxApp($wxCorpId, 'contact')->contact_way;
-        $addWxQrCode      = $contactWayClient->create($type, $scene, $config);
+        $addWxQrCode = $contactWayClient->create($type, $scene, $config);
         if ($addWxQrCode['errcode'] != 0) {
             ## 记录错误日志
             $this->logger->error(sprintf('%s [%s] 请求数据：%s 响应结果：%s', '请求企业微信创建联系我二维码失败', date('Y-m-d H:i:s'), json_encode(['type' => $type, 'scene' => $scene, 'config' => $config]), json_encode($addWxQrCode)));
@@ -67,7 +67,7 @@ trait ContactWayQrCodeTrait
     public function updateQrCode(string $wxCorpId, string $wxConfigId, array $config): array
     {
         $contactWayClient = $this->wxApp($wxCorpId, 'contact')->contact_way;
-        $upWxQrCode       = $contactWayClient->update($wxConfigId, $config);
+        $upWxQrCode = $contactWayClient->update($wxConfigId, $config);
         if ($upWxQrCode['errcode'] != 0) {
             ## 记录错误日志
             $this->logger->error(sprintf('%s [%s] 请求数据：%s 响应结果：%s', '请求企业微信更新联系我二维码失败', date('Y-m-d H:i:s'), json_encode(['wxConfigId' => $wxConfigId, 'config' => $config]), json_encode($upWxQrCode)));
@@ -84,22 +84,30 @@ trait ContactWayQrCodeTrait
      */
     public function uploadQrCode(array $wxQrCode): array
     {
-        $filesystem   = make(Filesystem::class);
-        $pathFileName = 'ContactWayClient/QrCode/' . time() . '.png';
-        $stream       = file_get_contents($wxQrCode['qr_code'], true);
-
-        try {
-            ## 文件上传
-            $filesystem->write($pathFileName, $stream);
-            $this->respondData['data'] = [
-                'qrCodePath' => $pathFileName,
-                'wxConfigId' => $wxQrCode['config_id'],
-            ];
-        } catch (\Exception $e) {
-            $this->logger->error(sprintf('%s [%s] %s', '联系我二维码失败阿里云上传失败', date('Y-m-d H:i:s'), $e->getMessage()));
-            $this->logger->error($e->getTraceAsString());
-            $this->respondData['code'] = 1;
-        }
+        $this->respondData['data'] = [
+            'qrCodePath' => $wxQrCode['qr_code'],
+            'wxConfigId' => $wxQrCode['config_id'],
+        ];
         return $this->respondData;
+        // 直接使用地址，不再上传二维码
+        /*
+         * $filesystem   = make(Filesystem::class);
+         * $pathFileName = 'ContactWayClient/QrCode/' . time() . '.png';
+         * $stream       = file_get_contents($wxQrCode['qr_code'], true);
+         *
+         * try {
+         * ## 文件上传
+         * $filesystem->write($pathFileName, $stream);
+         * $this->respondData['data'] = [
+         * 'qrCodePath' => $pathFileName,
+         * 'wxConfigId' => $wxQrCode['config_id'],
+         * ];
+         * } catch (\Exception $e) {
+         * $this->logger->error(sprintf('%s [%s] %s', '联系我二维码失败阿里云上传失败', date('Y-m-d H:i:s'), $e->getMessage()));
+         * $this->logger->error($e->getTraceAsString());
+         * $this->respondData['code'] = 1;
+         * }
+         * return $this->respondData;
+         */
     }
 }

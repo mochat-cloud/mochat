@@ -89,7 +89,6 @@ class CreateCommand extends HyperfCommand
         }
         $this->createAdminUser($tenantId);
 
-
         $this->line("租户创建成功: \n账号：{$this->phone} \n密码：{$this->password}", 'info');
     }
 
@@ -149,13 +148,13 @@ class CreateCommand extends HyperfCommand
         }
 
         ## 密码
-        $this->password  = trim($this->secret('输入租户管理员密码', false));
+        $this->password = trim($this->secret('输入租户管理员密码', false));
         $encrypted = $this->authManager->guard('jwt')->getJwtManager()->getEncrypter()->signature($this->password);
         return Db::table('user')->insert([
             'tenant_id' => $tenantId,
-            'phone'        => $this->phone,
-            'password'     => $encrypted,
-            'status'       => 1,
+            'phone' => $this->phone,
+            'password' => $encrypted,
+            'status' => 1,
             'isSuperAdmin' => 1,
         ]);
     }

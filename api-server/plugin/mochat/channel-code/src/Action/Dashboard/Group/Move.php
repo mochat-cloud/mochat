@@ -12,15 +12,15 @@ namespace MoChat\Plugin\ChannelCode\Action\Dashboard\Group;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
 use MoChat\Plugin\ChannelCode\Contract\ChannelCodeContract;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 渠道码移动分组.
@@ -48,7 +48,7 @@ class Move extends AbstractAction
     {
         //接收参数
         $params['channelCodeId'] = $this->request->input('channelCodeId');
-        $params['groupId']       = $this->request->input('groupId');
+        $params['groupId'] = $this->request->input('groupId');
         //验证参数
         $this->validated($params);
 
@@ -56,7 +56,7 @@ class Move extends AbstractAction
             ->updateChannelCodeById(
                 (int) $params['channelCodeId'],
                 [
-                    'group_id'   => $params['groupId'],
+                    'group_id' => $params['groupId'],
                     'updated_at' => date('Y-m-d H:i:s'),
                 ]
             );

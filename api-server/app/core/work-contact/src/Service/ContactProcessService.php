@@ -105,4 +105,21 @@ class ContactProcessService extends AbstractService implements ContactProcessCon
     {
         return $this->model->deleteAll($ids);
     }
+
+    /**
+     * 查询多条-根据企业ID.
+     * @param array|string[] $columns
+     * @return mixed
+     */
+    public function getContactProcessesByCorpId(int $corpId, array $columns = ['*']): array
+    {
+        $res = $this->model::query()
+            ->where('corp_id', $corpId)
+            ->get($columns);
+        if (empty($res)) {
+            return [];
+        }
+
+        return $res->toArray();
+    }
 }

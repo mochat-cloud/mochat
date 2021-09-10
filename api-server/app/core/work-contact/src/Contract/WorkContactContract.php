@@ -208,4 +208,14 @@ interface WorkContactContract
      * 检索 - 多条
      */
     public function getWorkContactsByStateSearch(int $corpId, array $state, array $params): array;
+
+    /**
+     * 发送欢迎语.
+     *
+     * @param int|string $corpId 企业id
+     * @param array $contact 客户信息
+     * @param string $welcomeCode 发送欢迎语的凭证
+     * @param array $content 欢迎语内容
+     */
+    public function sendWelcome($corpId, array $contact, string $welcomeCode, array $content): bool;
 }

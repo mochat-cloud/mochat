@@ -13,16 +13,16 @@ namespace MoChat\Plugin\RoomQuality\Action\Sidebar;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\SidebarAuthMiddleware;
 use MoChat\App\WorkRoom\Contract\WorkRoomContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
 use MoChat\Plugin\RoomQuality\Contract\RoomQualityContract;
 use Psr\Container\ContainerInterface;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\SidebarAuthMiddleware;
 
 /**
  * 企业微信-侧边栏-群聊质检移除群聊.
@@ -62,7 +62,7 @@ class DeleteRoom extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -77,11 +77,11 @@ class DeleteRoom extends AbstractAction
     {
         $params['corpId'] = (int) $this->request->input('corpId');  //企业 id
         $params['roomId'] = $this->request->input('roomId');       //群聊 id
-        $params['id']     = (int) $this->request->input('id');          //活动 id
+        $params['id'] = (int) $this->request->input('id');          //活动 id
         ## 参数验证
         $this->validated($params);
         ## 群日历详情
-        $info  = $this->roomQualityService->getRoomQualityById($params['id'], ['id', 'rooms']);
+        $info = $this->roomQualityService->getRoomQualityById($params['id'], ['id', 'rooms']);
         $rooms = empty($info['rooms']) ? [] : json_decode($info['rooms'], true, 512, JSON_THROW_ON_ERROR);
         if (! empty($rooms)) {
             foreach ($rooms as $k => $v) {
@@ -106,7 +106,7 @@ class DeleteRoom extends AbstractAction
         return [
             'corpId' => 'required',
             'roomId' => 'required',
-            'id'     => 'required',
+            'id' => 'required',
         ];
     }
 
@@ -119,7 +119,7 @@ class DeleteRoom extends AbstractAction
         return [
             'corpId.required' => 'corpId 必传',
             'roomId.required' => 'roomId 必传',
-            'id.required'     => 'id 必传',
+            'id.required' => 'id 必传',
         ];
     }
 }

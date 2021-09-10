@@ -61,7 +61,7 @@ class NoticeLeaderLogic
 
         return [
             'pendingLeaderId' => $params['pendingLeaderId'], ## 管理员ID
-            'num'             => $num, ## 未分配客户数
+            'num' => $num, ## 未分配客户数
         ];
     }
 

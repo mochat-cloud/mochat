@@ -12,10 +12,10 @@ namespace MoChat\Plugin\Radar\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
@@ -73,9 +73,9 @@ class RadarArticle extends AbstractAction
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $result = curl_exec($ch);
-        $str_7  = substr($result, strripos($result, 'twitter:title') + 24);
-        $str_8  = substr($str_7, 0, strrpos($str_7, 'twitter:creator') - 23); //公众号文章标题
-        $str_9  = substr($result, strripos($result, 'twitter:image') + 24);
+        $str_7 = substr($result, strripos($result, 'twitter:title') + 24);
+        $str_8 = substr($str_7, 0, strrpos($str_7, 'twitter:creator') - 23); //公众号文章标题
+        $str_9 = substr($result, strripos($result, 'twitter:image') + 24);
         $str_10 = substr($str_9, 0, strrpos($str_9, 'twitter:title') - 23); //公众号文章封面图
         $str_11 = substr($result, strripos($result, 'twitter:description') + 30);
         $str_12 = substr($str_11, 0, strrpos($str_11, 'var testRdmUrl') - 110);
@@ -85,11 +85,11 @@ class RadarArticle extends AbstractAction
 //        $str_16 = substr($result, strripos($result, "div class='rich_media_content'") + 76);
 //        $str_17 = substr($str_16, 0, strrpos($str_16, "first_sceen__time") - 75); //公众号文章正文
         $gzhmsg = [
-            'title'     => mb_convert_encoding($str_8, 'UTF-8', 'UTF-8,GBK,GB2312,BIG5'),
+            'title' => mb_convert_encoding($str_8, 'UTF-8', 'UTF-8,GBK,GB2312,BIG5'),
             'cover_url' => $str_10,
-            'desc'      => mb_convert_encoding($str_13, 'UTF-8', 'UTF-8,GBK,GB2312,BIG5'),
-            'author'    => mb_convert_encoding($str_15, 'UTF-8', 'UTF-8,GBK,GB2312,BIG5'),
-            'content'   => $content,
+            'desc' => mb_convert_encoding($str_13, 'UTF-8', 'UTF-8,GBK,GB2312,BIG5'),
+            'author' => mb_convert_encoding($str_15, 'UTF-8', 'UTF-8,GBK,GB2312,BIG5'),
+            'content' => $content,
         ];
         curl_close($ch);
         return $gzhmsg;

@@ -36,10 +36,10 @@ class FilesystemExt
 
     public function __construct(Filesystem $filesystem)
     {
-        $this->filesystem        = $filesystem;
-        $this->adapterName       = config('file.default', '');
+        $this->filesystem = $filesystem;
+        $this->adapterName = config('file.default', '');
         $this->fileStorageConfig = config('file.storage');
-        $this->config            = $this->fileStorageConfig[$this->adapterName];
+        $this->config = $this->fileStorageConfig[$this->adapterName];
     }
 
     /**
@@ -53,11 +53,11 @@ class FilesystemExt
             return '';
         }
 
-        if (false !== strpos($path,'http')) {
+        if (strpos($path, 'http') !== false) {
             return $path;
         }
 
-        if (!empty($fileDriver)) {
+        if (! empty($fileDriver)) {
             $adapterName = $fileDriver;
         } else {
             $adapterName = $this->adapterName;
@@ -66,9 +66,9 @@ class FilesystemExt
         switch ($adapterName) {
             case 'local':
                 $documentRoot = rtrim(config('server.settings.document_root', ''), '\\/');
-                $uploadRoot   = rtrim(realpath($this->config['root']), '/');
-                $relativeDir  = trim(str_replace($documentRoot, '', $uploadRoot), '/');
-                $fullUrl      = Url::getApiBaseUrl() . '/' . $relativeDir . '/' . $path;
+                $uploadRoot = rtrim(realpath($this->config['root']), '/');
+                $relativeDir = trim(str_replace($documentRoot, '', $uploadRoot), '/');
+                $fullUrl = Url::getApiBaseUrl() . '/' . $relativeDir . '/' . $path;
                 break;
             case 'oss':
                 $fullUrl = $this->getOssUrl($path);

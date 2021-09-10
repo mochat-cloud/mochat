@@ -11,15 +11,15 @@ declare(strict_types=1);
 namespace MoChat\App\WorkEmployee\Action\Dashboard;
 
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Constants\WorkUpdateTime\Type;
 use MoChat\App\Corp\Contract\WorkUpdateTimeContract;
 use MoChat\App\WorkEmployee\Constants\ContactAuth;
 use MoChat\App\WorkEmployee\Constants\Status;
 use MoChat\Framework\Action\AbstractAction;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 查询 - 成员列表搜索条件数据.
@@ -38,13 +38,13 @@ class SearchCondition extends AbstractAction
         // 响应参数处理
         $data['status'] = array_map(function ($item) {
             return [
-                'id'   => $item,
+                'id' => $item,
                 'name' => Status::getMessage($item),
             ];
         }, Status::$optionData);
         $data['contactAuth'] = array_map(function ($item) {
             return [
-                'id'   => $item,
+                'id' => $item,
                 'name' => ContactAuth::getMessage($item),
             ];
         }, ContactAuth::$optionData);

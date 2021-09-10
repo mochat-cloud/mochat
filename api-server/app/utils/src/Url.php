@@ -45,47 +45,42 @@ class Url
     }
 
     /**
-     * 获取授权跳转连接
-     *
-     * @param int $moduleType
-     * @param int $id
-     * @param array $query
-     * @return string
+     * 获取授权跳转连接.
      */
     public static function getAuthRedirectUrl(int $moduleType, int $id, array $query = []): string
     {
         $target = '';
         switch ($moduleType) {
             case 1:
-                $url = '/auth/roomClockIn?id='.$id;
+                $url = '/auth/roomClockIn?id=' . $id;
                 $query = http_build_query(['id' => $id]);
                 $target = "/roomClockIn?{$query}";
                 break;
             case 2:
-                $url = '/auth/lottery?id='.$id;
+                $url = '/auth/lottery?id=' . $id;
                 $query = http_build_query(['id' => $id, 'source' => $query['source']]);
                 $target = "/lottery?{$query}";
                 break;
             case 3:
             case 4:
             case 5:
-                $url = '/auth/shopCode?id='.$id;
+                $url = '/auth/shopCode?id=' . $id;
                 $type = static::getShopCode($moduleType);
                 $query = http_build_query(['id' => $id, 'type' => $type]);
                 $target = "/shopCode?{$query}";
                 break;
             case 6:
-                $url = '/auth/radar?id='.$id;
+                $url = '/auth/radar?id=' . $id;
                 $query = http_build_query(['id' => $id, 'type' => $query['type'], 'employee_id' => $query['employee_id'], 'target_id' => $query['target_id']]);
                 $target = "/radar?{$query}";
                 break;
             case 7:
-                $url = '/auth/workFission?id='.$id;
+                $url = '/auth/workFission?id=' . $id;
                 $query = http_build_query(['id' => $id]);
                 $target = "/workFission?{$query}";
                 break;
             case 8:
-                $url = '/auth/roomFission?id='.$id;
+                $url = '/auth/roomFission?id=' . $id;
                 $query = http_build_query(['id' => $id, 'parent_union_id' => $query['parent_union_id'], 'wx_user_id' => $query['wx_user_id']]);
                 $target = "/roomFission?{$query}";
                 break;
@@ -94,7 +89,7 @@ class Url
         $baseUrl = static::getOperationBaseUrl();
 
         if (empty($target)) {
-            return $baseUrl ;
+            return $baseUrl;
         }
 
         return $baseUrl . $url . '&target=' . urlencode($target);

@@ -18,7 +18,7 @@ use MoChat\App\Utils\Url;
 class AuthLogic
 {
     /**
-     * @Inject()
+     * @Inject
      * @var \Hyperf\Contract\SessionInterface
      */
     private $session;
@@ -27,24 +27,24 @@ class AuthLogic
     {
         $target = $this->getTarget($target);
         // 有code值 是授权回调
-        if (!empty($code)) {
+        if (! empty($code)) {
             return urldecode($this->authCallback($code, $appId, $target, $request));
         }
 
-        $weChatUser = $this->session->get('wechat_user_'.$officialAccountInfo['id']);
+        $weChatUser = $this->session->get('wechat_user_' . $officialAccountInfo['id']);
 
         // 已登录，直接跳转
-        if (!empty($weChatUser)) {
+        if (! empty($weChatUser)) {
             return urldecode($target);
         }
         // 未登录，跳转至授权
-        $redirectUri = $redirectUriPrefix . '?target='. $target;
+        $redirectUri = $redirectUriPrefix . '?target=' . $target;
         return $this->getOAuthRedirectUrl($officialAccountInfo['authorizerAppid'], $officialAccountInfo['appid'], $redirectUri);
     }
 
     protected function getTarget($target): string
     {
-        if (false === strpos($target, 'http')) {
+        if (strpos($target, 'http') === false) {
             $target = Url::getOperationBaseUrl() . $target;
         }
         return urlencode($target);
@@ -57,13 +57,13 @@ class AuthLogic
         $openPlatform = Factory::openPlatform($config);
         $openPlatform = rebind_app($openPlatform, $request);
         $result = $openPlatform->getAuthorizer($appId);
-        if (!empty($result['authorization_info'])) {
+        if (! empty($result['authorization_info'])) {
             $officialAccount = $openPlatform->officialAccount($appId, $result['authorization_info']['authorizer_refresh_token']);
             $officialAccount = rebind_app($officialAccount, $request);
             $user = $officialAccount->oauth->userFromCode($code);
             $user = $user->toArray();
             $this->session->set('wechat_user_' . $appId, $user);
-            return !empty($target) ? $target : Url::getOperationBaseUrl();
+            return ! empty($target) ? $target : Url::getOperationBaseUrl();
         }
         return Url::getOperationBaseUrl();
     }

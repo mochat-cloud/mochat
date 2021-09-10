@@ -12,10 +12,10 @@ namespace MoChat\App\WorkContact\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Logic\ShowLogic;
 use MoChat\Framework\Action\AbstractAction;
@@ -47,7 +47,7 @@ class Show extends AbstractAction
     public function handle()
     {
         //接收参数
-        $params['contactId']  = $this->request->input('contactId');
+        $params['contactId'] = $this->request->input('contactId');
         $params['employeeId'] = $this->request->input('employeeId');
         //校验参数
         $this->validated($params);
@@ -61,7 +61,7 @@ class Show extends AbstractAction
     public function rules(): array
     {
         return [
-            'contactId'  => 'required|integer|min:1|bail',
+            'contactId' => 'required|integer|min:1|bail',
             'employeeId' => 'required|integer|min:1|bail',
         ];
     }
@@ -72,7 +72,7 @@ class Show extends AbstractAction
     public function messages(): array
     {
         return [
-            'contactId.required'  => '客户id必传',
+            'contactId.required' => '客户id必传',
             'employeeId.required' => '员工id必传',
         ];
     }

@@ -12,10 +12,10 @@ namespace MoChat\App\Rbac\Action\Dashboard\Role;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Contract\RbacRoleContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
@@ -71,7 +71,7 @@ class Destroy extends AbstractAction
         }
         ## 删除
         $client = $this->container->get(RbacRoleContract::class);
-        $res    = $client->deleteRbacRole($id);
+        $res = $client->deleteRbacRole($id);
         if (! $res) {
             throw new CommonException(ErrorCode::SERVER_ERROR, '删除失败');
         }
@@ -99,7 +99,7 @@ class Destroy extends AbstractAction
     {
         return [
             'roleId.required' => '角色id 必填',
-            'roleId.integer'  => '角色id 必须为整型',
+            'roleId.integer' => '角色id 必须为整型',
         ];
     }
 
