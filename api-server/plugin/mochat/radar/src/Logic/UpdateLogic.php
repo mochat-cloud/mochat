@@ -79,20 +79,20 @@ class UpdateLogic
         }
         ## 基本信息
         return [
-            'link'             => isset($params['link']) ? $params['link'] : '',
-            'link_title'       => isset($params['link_title']) ? $params['link_title'] : '',
+            'link' => isset($params['link']) ? $params['link'] : '',
+            'link_title' => isset($params['link_title']) ? $params['link_title'] : '',
             'link_description' => isset($params['link_description']) ? $params['link_description'] : '',
-            'link_cover'       => isset($params['link_cover']) ? File::uploadBase64Image($params['link_cover'], 'image/radar/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg') : '',
-            'pdf_name'         => isset($params['pdf_name']) ? $params['pdf_name'] : '',
-            'pdf'              => isset($params['pdf']) ? $params['pdf'] : '',
-            'article_type'     => isset($params['article_type']) ? $params['article_type'] : 0,
-            'article'          => isset($params['article']) ? json_encode($params['article'], JSON_THROW_ON_ERROR) : '{}',
-            'employee_card'    => isset($params['employee_card']) ? $params['employee_card'] : 0,
-            'action_notice'    => isset($params['action_notice']) ? $params['action_notice'] : 0,
-            'dynamic_notice'   => isset($params['dynamic_notice']) ? $params['dynamic_notice'] : 0,
-            'tag_status'       => isset($params['tag_status']) ? $params['tag_status'] : 0,
-            'contact_tags'     => isset($params['contact_tags']) ? json_encode($params['contact_tags'], JSON_THROW_ON_ERROR) : '{}',
-            'contact_grade'    => isset($params['contact_grade']) ? json_encode($params['contact_grade'], JSON_THROW_ON_ERROR) : '{}',
+            'link_cover' => isset($params['link_cover']) ? File::uploadBase64Image($params['link_cover'], 'image/radar/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg') : '',
+            'pdf_name' => isset($params['pdf_name']) ? $params['pdf_name'] : '',
+            'pdf' => isset($params['pdf']) ? $params['pdf'] : '',
+            'article_type' => isset($params['article_type']) ? $params['article_type'] : 0,
+            'article' => isset($params['article']) ? json_encode($params['article'], JSON_THROW_ON_ERROR) : '{}',
+            'employee_card' => isset($params['employee_card']) ? $params['employee_card'] : 0,
+            'action_notice' => isset($params['action_notice']) ? $params['action_notice'] : 0,
+            'dynamic_notice' => isset($params['dynamic_notice']) ? $params['dynamic_notice'] : 0,
+            'tag_status' => isset($params['tag_status']) ? $params['tag_status'] : 0,
+            'contact_tags' => isset($params['contact_tags']) ? json_encode($params['contact_tags'], JSON_THROW_ON_ERROR) : '{}',
+            'contact_grade' => isset($params['contact_grade']) ? json_encode($params['contact_grade'], JSON_THROW_ON_ERROR) : '{}',
         ];
     }
 

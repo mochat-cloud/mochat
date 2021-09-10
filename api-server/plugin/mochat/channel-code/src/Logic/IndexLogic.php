@@ -89,8 +89,8 @@ class IndexLogic
         if (empty($handleParams)) {
             return [
                 'page' => [
-                    'perPage'   => 20,
-                    'total'     => 0,
+                    'perPage' => 20,
+                    'total' => 0,
                     'totalPage' => 0,
                 ],
                 'list' => [],
@@ -103,8 +103,8 @@ class IndexLogic
         if (empty($info['data'])) {
             return [
                 'page' => [
-                    'perPage'   => 20,
-                    'total'     => 0,
+                    'perPage' => 20,
+                    'total' => 0,
                     'totalPage' => 0,
                 ],
                 'list' => [],
@@ -122,13 +122,13 @@ class IndexLogic
         //拼接数据
         foreach ($info['data'] as &$val) {
             $val['channelCodeId'] = $val['id'];
-            $val['groupName']     = '';
+            $val['groupName'] = '';
             if (isset($groupInfo[$val['groupId']])) {
                 $val['groupName'] = $groupInfo[$val['groupId']]['name'];
             }
 
             if (! empty($val['tags'])) {
-                $tagIds      = json_decode($val['tags'], true);
+                $tagIds = json_decode($val['tags'], true);
                 $val['tags'] = $this->getTagInfo($tagIds);
             }
 
@@ -142,15 +142,15 @@ class IndexLogic
             }
 
             $val['qrcodeUrl'] = empty($val['qrcodeUrl']) ? '' : file_full_url($val['qrcodeUrl']);
-            $val['type']      = Type::getMessage($val['type']);
+            $val['type'] = Type::getMessage($val['type']);
 
             $val['user'] = user();
         }
 
         return [
             'page' => [
-                'perPage'   => isset($info['per_page']) ? $info['per_page'] : 20,
-                'total'     => isset($info['total']) ? $info['total'] : 0,
+                'perPage' => isset($info['per_page']) ? $info['per_page'] : 20,
+                'total' => isset($info['total']) ? $info['total'] : 0,
                 'totalPage' => isset($info['last_page']) ? $info['last_page'] : 0,
             ],
             'list' => $info['data'],
@@ -180,7 +180,7 @@ class IndexLogic
             if (isset($contact[$val['state']])) {
                 $contact[$val['state']]['contact'][] = $val['contactId'];
             } else {
-                $tmp              = [];
+                $tmp = [];
                 $tmp['contact'][] = $val['contactId'];
 
                 $contact[$val['state']] = $tmp;
@@ -259,13 +259,13 @@ class IndexLogic
         ];
         $options = [
             'orderByRaw' => 'updated_at desc',
-            'perPage'    => isset($this->params['perPage']) ? (int) $this->params['perPage'] : 20,
-            'page'       => isset($this->params['page']) ? (int) $this->params['page'] : 1,
-            'pageName'   => 'page',
+            'perPage' => isset($this->params['perPage']) ? (int) $this->params['perPage'] : 20,
+            'page' => isset($this->params['page']) ? (int) $this->params['page'] : 1,
+            'pageName' => 'page',
         ];
 
         return [
-            'where'   => $where,
+            'where' => $where,
             'columns' => $columns,
             'options' => $options,
         ];

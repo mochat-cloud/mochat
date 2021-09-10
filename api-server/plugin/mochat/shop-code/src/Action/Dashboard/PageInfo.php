@@ -13,11 +13,11 @@ namespace MoChat\Plugin\ShopCode\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\Framework\Action\AbstractAction;
@@ -73,7 +73,7 @@ class PageInfo extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -99,7 +99,7 @@ class PageInfo extends AbstractAction
         ## 详情
         $info = $this->shopCodePageService->getShopCodePageByCorpIdType($user['corpIds'][0], (int) $params['type'], ['id', 'type', 'title', 'show_type', 'default', 'poster', 'autoPass']);
         if (! empty($info)) {
-            $default         = ! empty($info['default']) ? json_decode($info['default'], true, 512, JSON_THROW_ON_ERROR) : '';
+            $default = ! empty($info['default']) ? json_decode($info['default'], true, 512, JSON_THROW_ON_ERROR) : '';
             $default['logo'] = ! empty($default['logo']) ? file_full_url($default['logo']) : '';
             $info['default'] = $default;
             if (! empty($default['logo'])) {

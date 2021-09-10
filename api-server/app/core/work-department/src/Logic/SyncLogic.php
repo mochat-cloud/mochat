@@ -51,14 +51,13 @@ class SyncLogic
             $this->logger->error('WorkDepartmentSynLogic->handle同步部门corpId不能为空');
             return [];
         }
-        $this->client                = make(WeWork::class);
+        $this->client = make(WeWork::class);
         $this->workDepartmentService = make(WorkDepartmentContract::class);
-        $corpData                    = $this->getCorpData($corpIds);
+        $corpData = $this->getCorpData($corpIds);
         if (empty($corpData)) {
             $this->logger->error('WorkDepartmentSynLogic->handle同步部门corp不能为空');
             return [];
         }
-
         foreach ($corpData as $corpId => $cdv) {
             $wxDepartment = $this->client->provider('user')->app($cdv)->department->list();
             if (empty($wxDepartment['errcode']) && $wxDepartment['department']) {
@@ -68,12 +67,12 @@ class SyncLogic
                     if (empty($department[$value['id']])) {
                         $createData[] = [
                             'wx_department_id' => $value['id'],
-                            'corp_id'          => $corpId,
-                            'name'             => $value['name'],
-                            'wx_parentid'      => $value['parentid'],
-                            'parent_id'        => ! empty($department[$value['parentid']]) ? $department[$value['parentid']]['id'] : 0,
-                            'order'            => $value['order'],
-                            'created_at'       => date('Y-m-d H:i:s'),
+                            'corp_id' => $corpId,
+                            'name' => $value['name'],
+                            'wx_parentid' => $value['parentid'],
+                            'parent_id' => ! empty($department[$value['parentid']]) ? $department[$value['parentid']]['id'] : 0,
+                            'order' => $value['order'],
+                            'created_at' => date('Y-m-d H:i:s'),
                         ];
                     }
                 }
@@ -85,7 +84,7 @@ class SyncLogic
                         if ($result) {
                             //处理父部门
                             $parentDepartment = $this->getDepartmentIds($corpId);
-                            $updateData       = $this->getDepartmentUpdateData($parentDepartment);
+                            $updateData = $this->getDepartmentUpdateData($parentDepartment);
                             if (! empty($updateData)) {
                                 $updateResult = $this->workDepartmentService->updateWorkDepartmentByIds($updateData);
                                 if (empty($updateResult)) {
@@ -110,7 +109,7 @@ class SyncLogic
      */
     private function getDepartmentIds($corpId)
     {
-        $department     = [];
+        $department = [];
         $departmentData = $this->workDepartmentService->getWorkDepartmentsByCorpId($corpId);
         array_map(function ($item) use (&$department) {
             $department[$item['wxDepartmentId']] = $item;
@@ -125,14 +124,14 @@ class SyncLogic
     private function getCorpData(array $corpIds)
     {
         $this->corpService = make(CorpContract::class);
-        $corpData          = $this->corpService->getCorpsById($corpIds, ['wx_corpid', 'employee_secret', 'id']);
+        $corpData = $this->corpService->getCorpsById($corpIds, ['wx_corpid', 'employee_secret', 'id']);
         if (empty($corpData)) {
             return [];
         }
         foreach ($corpData as $cdk => $cdv) {
             $corp[$cdv['id']] = [
                 'corp_id' => $cdv['wxCorpid'],
-                'secret'  => $cdv['employeeSecret'],
+                'secret' => $cdv['employeeSecret'],
             ];
         }
         return $corp;
@@ -150,11 +149,11 @@ class SyncLogic
             //级别
             $relation = $this->getDepartmentRelation($item, $parentDepartment);
             $updateData[] = [
-                'id'         => $item['id'],
+                'id' => $item['id'],
                 'updated_at' => date('Y-m-d H:i:s'),
-                'path'       => $relation['path'],
-                'level'      => $relation['level'],
-                'parent_id'  => ! empty($parentDepartment[$item['wxParentid']]) ? $parentDepartment[$item['wxParentid']]['id'] : 0,
+                'path' => $relation['path'],
+                'level' => $relation['level'],
+                'parent_id' => ! empty($parentDepartment[$item['wxParentid']]) ? $parentDepartment[$item['wxParentid']]['id'] : 0,
             ];
         }, $parentDepartment);
         return $updateData;

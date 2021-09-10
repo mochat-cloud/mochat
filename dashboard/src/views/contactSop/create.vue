@@ -102,7 +102,6 @@ export default {
     addClick () {
       if (!this.name) {
         this.$message.error('名称未填写')
-
         return false
       }
 

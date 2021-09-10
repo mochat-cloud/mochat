@@ -12,10 +12,10 @@ namespace MoChat\Plugin\AutoTag\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
@@ -66,8 +66,8 @@ class Store extends AbstractAction
     protected function rules(): array
     {
         return [
-            'type'     => 'required',
-            'name'     => 'required',
+            'type' => 'required',
+            'name' => 'required',
             'tag_rule' => 'required',
         ];
     }
@@ -79,8 +79,8 @@ class Store extends AbstractAction
     protected function messages(): array
     {
         return [
-            'type.required'     => '打标签方式 必传',
-            'name.required'     => '规则名称 必传',
+            'type.required' => '打标签方式 必传',
+            'name.required' => '规则名称 必传',
             'tag_rule.required' => '自动打标签 必传',
         ];
     }

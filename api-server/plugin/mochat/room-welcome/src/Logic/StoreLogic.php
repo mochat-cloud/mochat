@@ -88,10 +88,10 @@ class StoreLogic
      */
     private function handleParam(array $user, array $params): array
     {
-        $complex          = json_encode($params['msg_complex'], JSON_THROW_ON_ERROR | JSON_FORCE_OBJECT);
-        $complex          = json_decode($complex, true, 512, JSON_THROW_ON_ERROR);
-        $msgComplex       = '';
-        $text             = '';
+        $complex = json_encode($params['msg_complex'], JSON_THROW_ON_ERROR | JSON_FORCE_OBJECT);
+        $complex = json_decode($complex, true, 512, JSON_THROW_ON_ERROR);
+        $msgComplex = '';
+        $text = '';
         $easyWeChatParams = [];
         if (! empty($params['msg_text'])) {
             $text = str_replace('[用户昵称]', '%NICKNAME%', $params['msg_text']);
@@ -103,10 +103,10 @@ class StoreLogic
         switch ($complex['type']) {
             case 'image':
                 if (! empty($complex['image']['pic'])) {
-                    $file                                 = $this->handlePic($user, $complex['image']['pic']);
-                    $complex['image']['pic']              = $file['pic'];
-                    $complex['image']['pic_url']          = $file['pic_url'];
-                    $easyWeChatParams['text']['content']  = $text;
+                    $file = $this->handlePic($user, $complex['image']['pic']);
+                    $complex['image']['pic'] = $file['pic'];
+                    $complex['image']['pic_url'] = $file['pic_url'];
+                    $easyWeChatParams['text']['content'] = $text;
                     $easyWeChatParams['image']['pic_url'] = $file['pic_url'];
                 }
                 $msgComplex = $complex['image'];
@@ -115,13 +115,13 @@ class StoreLogic
                 if (! empty($complex['link']['url'])) {
                     $pic_url = '';
                     if ($complex['link']['pic']) {
-                        $file                       = $this->handlePic($user, $complex['link']['pic']);
-                        $complex['link']['pic']     = $file['pic'];
+                        $file = $this->handlePic($user, $complex['link']['pic']);
+                        $complex['link']['pic'] = $file['pic'];
                         $complex['link']['pic_url'] = $file['pic_url'];
-                        $pic_url                    = $file['pic_url'];
+                        $pic_url = $file['pic_url'];
                     }
                     $easyWeChatParams['text']['content'] = $text;
-                    $easyWeChatParams['link']            = ['title' => $complex['link']['title'], 'picurl' => $pic_url, 'desc' => $complex['link']['desc'], 'url' => $complex['link']['url']];
+                    $easyWeChatParams['link'] = ['title' => $complex['link']['title'], 'picurl' => $pic_url, 'desc' => $complex['link']['desc'], 'url' => $complex['link']['url']];
                 }
                 $msgComplex = $complex['link'];
                 break;
@@ -129,13 +129,13 @@ class StoreLogic
                 if (! empty($complex['miniprogram']['title'])) {
                     $pic_url = '';
                     if ($complex['miniprogram']['pic']) {
-                        $file                                   = $this->handlePic($user, $complex['miniprogram']['pic'], 2);
-                        $complex['miniprogram']['pic']          = $file['pic'];
+                        $file = $this->handlePic($user, $complex['miniprogram']['pic'], 2);
+                        $complex['miniprogram']['pic'] = $file['pic'];
                         $complex['miniprogram']['pic_media_id'] = $file['pic_url'];
-                        $pic_url                                = $file['pic_url'];
+                        $pic_url = $file['pic_url'];
                     }
                     $easyWeChatParams['text']['content'] = $text;
-                    $easyWeChatParams['miniprogram']     = ['title' => $complex['miniprogram']['title'], 'pic_media_id' => $pic_url, 'appId' => $complex['miniprogram']['appid'], 'page' => $complex['miniprogram']['page']];
+                    $easyWeChatParams['miniprogram'] = ['title' => $complex['miniprogram']['title'], 'pic_media_id' => $pic_url, 'appId' => $complex['miniprogram']['appid'], 'page' => $complex['miniprogram']['page']];
                 }
                 $msgComplex = $complex['miniprogram'];
                 break;
@@ -146,13 +146,13 @@ class StoreLogic
             throw new CommonException(ErrorCode::INVALID_PARAMS, '添加入群欢迎语素材失败' . $template['errmsg']);
         }
         return [
-            'corp_id'             => $params['corp_id'],
-            'msg_text'            => $params['msg_text'],
-            'complex_type'        => empty($msgComplex) ? '' : $complex['type'],
-            'msg_complex'         => json_encode($msgComplex, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE),
+            'corp_id' => $params['corp_id'],
+            'msg_text' => $params['msg_text'],
+            'complex_type' => empty($msgComplex) ? '' : $complex['type'],
+            'msg_complex' => json_encode($msgComplex, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE),
             'complex_template_id' => $template['template_id'],
-            'create_user_id'      => $user['id'],
-            'created_at'          => date('Y-m-d H:i:s'),
+            'create_user_id' => $user['id'],
+            'created_at' => date('Y-m-d H:i:s'),
         ];
     }
 
@@ -164,8 +164,8 @@ class StoreLogic
      */
     private function handlePic($user, $file, int $type = 1): array
     {
-        $res        = ['pic' => '', 'pic_url' => ''];
-        $file       = File::uploadBase64Image($file, 'image/roomWelcome/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg'); //将Base64图片转换为本地图片并保存
+        $res = ['pic' => '', 'pic_url' => ''];
+        $file = File::uploadBase64Image($file, 'image/roomWelcome/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg'); //将Base64图片转换为本地图片并保存
         $localFile = File::download(file_full_url($file), $file);
         $res['pic'] = $file;
         if ($type === 1) {

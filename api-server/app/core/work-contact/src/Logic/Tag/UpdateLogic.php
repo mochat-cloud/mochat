@@ -81,7 +81,7 @@ class UpdateLogic
         //编辑标签
         $data = [
             'contact_tag_group_id' => $params['groupId'],
-            'name'                 => $params['tagName'],
+            'name' => $params['tagName'],
         ];
         $res = $this->contactTagService->updateWorkContactTagById((int) $params['tagId'], $data);
         if (! is_int($res)) {
@@ -96,8 +96,8 @@ class UpdateLogic
             if ($params['groupId'] == $tagInfo['contactTagGroupId']) {
                 //编辑企业微信标签名称
                 $params = [
-                    'id'     => $tagInfo['wxContactTagId'],
-                    'name'   => $params['tagName'],
+                    'id' => $tagInfo['wxContactTagId'],
+                    'name' => $params['tagName'],
                     'corpId' => user()['corpIds'][0],
                 ];
                 $this->service->handle($params);
@@ -106,7 +106,7 @@ class UpdateLogic
                 if (! empty($tagInfo['wxContactTagId'])) {
                     //删除企业微信中原分组下的该标签
                     $deleteParams = [
-                        'tag_id'   => [$tagInfo['wxContactTagId']],
+                        'tag_id' => [$tagInfo['wxContactTagId']],
                         'group_id' => [],
                     ];
 
@@ -119,7 +119,7 @@ class UpdateLogic
                 if (! empty($groupInfo['wxGroupId'])) {
                     $addParams = [
                         'group_id' => $groupInfo['wxGroupId'],
-                        'tag'      => [
+                        'tag' => [
                             [
                                 'name' => $params['tagName'],
                             ],
@@ -128,7 +128,7 @@ class UpdateLogic
                 } else {  //如果没有 新建分组并将标签新增到该分组下
                     $addParams = [
                         'group_name' => $groupInfo['groupName'],
-                        'tag'        => [
+                        'tag' => [
                             [
                                 'name' => $params['tagName'],
                             ],
@@ -142,7 +142,7 @@ class UpdateLogic
             }
         } else { //若是改为未分组 删除原分组下的该标签
             $deleteParams = [
-                'tag_id'   => [$tagInfo['wxContactTagId']],
+                'tag_id' => [$tagInfo['wxContactTagId']],
                 'group_id' => [],
             ];
 

@@ -79,7 +79,7 @@ class KeyWordTag
         $corp = $this->corpService->getCorps(['id']);
         foreach ($corp as $item) {
             ## 查询企业全部敏感词【状态:开启】
-            $autoTag      = $this->autoTagService->getAutoTagByCorpIdStatus([$item['id']], 1, 1, ['id', 'corp_id', 'employees', 'fuzzy_match_keyword', 'exact_match_keyword', 'tag_rule', 'mark_tag_count']);
+            $autoTag = $this->autoTagService->getAutoTagByCorpIdStatus([$item['id']], 1, 1, ['id', 'corp_id', 'employees', 'fuzzy_match_keyword', 'exact_match_keyword', 'tag_rule', 'mark_tag_count']);
             $contact_list = $this->workContactService->getWorkContactsByCorpId((int) $item['id'], ['id', 'wx_external_userid']);
 
             $start = 0;
@@ -87,7 +87,7 @@ class KeyWordTag
                 ## 异步处理
                 try {
                     empty(array_slice($contact_list, $start, 1000)) || $this->keyWordTagQueue->handle(array_slice($contact_list, $start, 1000), $autoTag, (int) $item['id']);
-                } catch (InvalidConfigException | GuzzleException $e) {
+                } catch (InvalidConfigException|GuzzleException $e) {
                     $this->logger->error('关键词打标签异步调用失败' . $e->getMessage());
                 }
                 $start += 1000;

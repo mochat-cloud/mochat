@@ -12,10 +12,10 @@ namespace MoChat\App\Rbac\Action\Dashboard\Menu;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Logic\Menu\StoreLogic;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
@@ -65,7 +65,7 @@ class Store extends AbstractAction
     protected function rules(): array
     {
         return [
-            'name'  => 'required | string | min:1 | bail',
+            'name' => 'required | string | min:1 | bail',
             'level' => 'required | integer | bail',
         ];
     }
@@ -77,11 +77,11 @@ class Store extends AbstractAction
     protected function messages(): array
     {
         return [
-            'name.required'  => '菜单名称 必填',
-            'name.string'    => '菜单名称 必须为字符串',
-            'name.min'       => '菜单名称 字符串长度不可小于1',
+            'name.required' => '菜单名称 必填',
+            'name.string' => '菜单名称 必须为字符串',
+            'name.min' => '菜单名称 字符串长度不可小于1',
             'level.required' => '菜单级别 必填',
-            'level.integer'  => '菜单级别 必须为整型',
+            'level.integer' => '菜单级别 必须为整型',
         ];
     }
 }

@@ -13,11 +13,11 @@ namespace MoChat\Plugin\Radar\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\User\Contract\UserContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
@@ -123,8 +123,8 @@ class Show extends AbstractAction
     {
         return [
             'id.required' => '活动ID 必填',
-            'id.integer'  => '活动ID 必需为整数',
-            'id.min  '    => '活动ID 不可小于1',
+            'id.integer' => '活动ID 必需为整数',
+            'id.min  ' => '活动ID 不可小于1',
         ];
     }
 
@@ -142,13 +142,13 @@ class Show extends AbstractAction
             $info['contactTags'] = json_decode($info['contactTags'], true, 512, JSON_THROW_ON_ERROR);
         }
         ## 处理创建者信息
-        $username            = $this->userService->getUserById($info['createUserId']);
+        $username = $this->userService->getUserById($info['createUserId']);
         $info['create_user'] = isset($username['name']) ? $username['name'] : '';
-        $dataStatistics      = $this->dataStatistics($params);
+        $dataStatistics = $this->dataStatistics($params);
         return [
-            'info'              => $info,
-            'statistics'        => $dataStatistics['statistics'],
-            'click_statistics'  => $dataStatistics['click_statistics'],
+            'info' => $info,
+            'statistics' => $dataStatistics['statistics'],
+            'click_statistics' => $dataStatistics['click_statistics'],
             'person_statistics' => $dataStatistics['person_statistics'],
         ];
     }
@@ -160,29 +160,29 @@ class Show extends AbstractAction
     {
         $user = user();
         ## 数据总览
-        $today                          = date('Y-m-d');
+        $today = date('Y-m-d');
         $statistics['total_person_num'] = $this->radarChannelLinkService->countRadarChannelLinkByCorpIdRadarId($user['corpIds'][0], (int) $params['id'], 'click_person_num');
-        $statistics['total_click_num']  = $this->radarChannelLinkService->countRadarChannelLinkByCorpIdRadarId($user['corpIds'][0], (int) $params['id'], 'click_num');
+        $statistics['total_click_num'] = $this->radarChannelLinkService->countRadarChannelLinkByCorpIdRadarId($user['corpIds'][0], (int) $params['id'], 'click_num');
         $statistics['today_person_num'] = $this->radarRecordService->countRadarRecordPersonByCorpIdRadarIdCreatedAt($user['corpIds'][0], (int) $params['id'], $today);
-        $statistics['today_click_num']  = $this->radarRecordService->countRadarRecordByCorpIdRadarIdCreatedAt($user['corpIds'][0], (int) $params['id'], $today);
+        $statistics['today_click_num'] = $this->radarRecordService->countRadarRecordByCorpIdRadarIdCreatedAt($user['corpIds'][0], (int) $params['id'], $today);
         ## 数据详情-点击次数top10
         $clickStatistics = $this->radarRecordService->getRadarRecordByCorpIdRadarIdGroupByChannelId($user['corpIds'][0], $params);
         if (! empty($clickStatistics)) {
             $clickStatistics = $this->arraySort($clickStatistics, 'total', 'desc');
             $clickStatistics = array_slice($clickStatistics, 0, 10);
             foreach ($clickStatistics as $key => $val) {
-                $channelName                          = $this->radarChannelService->getRadarChannelById((int) $val['channelId'], ['name']);
+                $channelName = $this->radarChannelService->getRadarChannelById((int) $val['channelId'], ['name']);
                 $clickStatistics[$key]['channelName'] = empty($channelName) ? '' : $channelName['name'];
                 unset($clickStatistics[$key]['channelId']);
             }
         }
         ## 数据详情-点击人数top10
-        $channel          = $this->radarChannelLinkService->getRadarChannelLinksByRadarId((int) $params['id'], ['channel_id']);
+        $channel = $this->radarChannelLinkService->getRadarChannelLinksByRadarId((int) $params['id'], ['channel_id']);
         $personStatistics = [];
         foreach ($channel as $k => $v) {
-            $channelName                         = $this->radarChannelService->getRadarChannelById((int) $v['channelId'], ['name']);
+            $channelName = $this->radarChannelService->getRadarChannelById((int) $v['channelId'], ['name']);
             $personStatistics[$k]['channelName'] = empty($channelName) ? '' : $channelName['name'];
-            $personStatistics[$k]['total']       = $this->radarRecordService->countRadarRecordByCorpIdRadarIdChannelId($user['corpIds'][0], $v['channelId'], $params);
+            $personStatistics[$k]['total'] = $this->radarRecordService->countRadarRecordByCorpIdRadarIdChannelId($user['corpIds'][0], $v['channelId'], $params);
         }
         if (! empty($personStatistics)) {
             $personStatistics = $this->arraySort($personStatistics, 'total', 'desc');

@@ -12,7 +12,11 @@ namespace MoChat\Plugin\RoomMessageBatchSend\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
 use MoChat\Plugin\RoomMessageBatchSend\Logic\RoomOwnerSendIndexLogic;
@@ -32,6 +36,10 @@ class RoomOwnerSendIndex extends AbstractAction
     private $roomOwnerSendIndexLogic;
 
     /**
+     * @Middlewares({
+     *     @Middleware(DashboardAuthMiddleware::class),
+     *     @Middleware(PermissionMiddleware::class)
+     * })
      * @RequestMapping(path="/dashboard/roomMessageBatchSend/roomOwnerSendIndex", methods="GET")
      */
     public function handle(): array
@@ -40,12 +48,12 @@ class RoomOwnerSendIndex extends AbstractAction
         $this->validated($this->request->all());
         ## 接收参数
         $employeeIds = $this->request->input('employeeIds', '');
-        $params      = [
-            'batchId'     => $this->request->input('batchId'),
+        $params = [
+            'batchId' => $this->request->input('batchId'),
             'employeeIds' => array_filter(explode(',', $employeeIds)),
-            'sendStatus'  => $this->request->input('sendStatus', ''),
-            'page'        => $this->request->input('page', 1),
-            'perPage'     => $this->request->input('perPage', 15),
+            'sendStatus' => $this->request->input('sendStatus', ''),
+            'page' => $this->request->input('page', 1),
+            'perPage' => $this->request->input('perPage', 15),
         ];
         return $this->roomOwnerSendIndexLogic->handle($params, intval(user()['id']));
     }
@@ -58,10 +66,10 @@ class RoomOwnerSendIndex extends AbstractAction
     protected function rules(): array
     {
         return [
-            'batchId'    => 'required|numeric',
+            'batchId' => 'required|numeric',
             'sendStatus' => 'numeric',
-            'page'       => 'numeric|min:1',
-            'perPage'    => 'numeric',
+            'page' => 'numeric|min:1',
+            'perPage' => 'numeric',
         ];
     }
 

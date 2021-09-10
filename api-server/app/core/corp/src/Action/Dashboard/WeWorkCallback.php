@@ -38,7 +38,7 @@ class WeWorkCallback extends AbstractAction
         $this->reloadRequest();
 
         $callBackClient = make(Callback::class);
-        $this->logger   = $this->container->get(LoggerFactory::class)->get('wework-callback-info');
+        $this->logger = $this->container->get(LoggerFactory::class)->get('wework-callback-info');
 
         $this->logger($callBackClient);
         try {
@@ -63,7 +63,7 @@ class WeWorkCallback extends AbstractAction
             return;
         }
 
-        $params    = $this->request->all();
+        $params = $this->request->all();
         $decParams = $callBackClient->getWxServer()->getMessage();
         $this->logger->info(sprintf('微信回调接收成功::加密信息[%s]; 解密信息[%s]', json_encode($params), json_encode($decParams)));
 

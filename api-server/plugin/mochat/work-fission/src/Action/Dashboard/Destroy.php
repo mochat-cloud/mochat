@@ -14,10 +14,10 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
@@ -75,16 +75,16 @@ class Destroy extends AbstractAction
         try {
             $client = $this->container->get(WorkFissionContract::class);
             $client->deleteWorkFission($id);
-            $poster      = $this->container->get(WorkFissionPosterContract::class);
+            $poster = $this->container->get(WorkFissionPosterContract::class);
             $poster_info = $poster->getWorkFissionPosterByFissionId((int) $id);
             $poster->deleteWorkFissionPoster((int) $poster_info['id']);
-            $welcome      = $this->container->get(WorkFissionWelcomeContract::class);
+            $welcome = $this->container->get(WorkFissionWelcomeContract::class);
             $welcome_info = $welcome->getWorkFissionWelcomeByFissionId((int) $id);
             $welcome->deleteWorkFission((int) $welcome_info['id']);
-            $push      = $this->container->get(WorkFissionPushContract::class);
+            $push = $this->container->get(WorkFissionPushContract::class);
             $push_info = $push->getWorkFissionPushByFissionId((int) $id);
             $push->deleteWorkFission((int) $push_info['id']);
-            $invite      = $this->container->get(WorkFissionInviteContract::class);
+            $invite = $this->container->get(WorkFissionInviteContract::class);
             $invite_info = $invite->getWorkFissionInviteByFissionId((int) $id);
             $invite->deleteWorkFission((int) $invite_info['id']);
             Db::commit();
@@ -119,7 +119,7 @@ class Destroy extends AbstractAction
     {
         return [
             'id.required' => '任务宝id 必填',
-            'id.integer'  => '任务宝id 必须为整型',
+            'id.integer' => '任务宝id 必须为整型',
         ];
     }
 }

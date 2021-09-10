@@ -12,26 +12,32 @@ namespace MoChat\App\WorkContact\Listener\Tag;
 
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
-use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Event\Annotation\Listener;
+use Hyperf\Event\Contract\ListenerInterface;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Corp\Logic\AppTrait;
 use MoChat\App\WorkContact\Contract\WorkContactTagContract;
 use MoChat\App\WorkContact\Contract\WorkContactTagGroupContract;
+use MoChat\App\WorkContact\Event\Tag\CreateTagRawEvent;
 use MoChat\App\WorkContact\Logic\Tag\StoreCallBackLogic;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
 use Psr\Container\ContainerInterface;
-use MoChat\App\WorkContact\Event\Tag\CreateTagRawEvent;
 
 /**
- * 添加企业客户事件
+ * 创建标签事件监听器.
  *
- * @Listener(priority=9999)
+ * @Listener
  */
 class CreateTagRawListener implements ListenerInterface
 {
     use AppTrait;
+
+    /**
+     * @Inject
+     * @var ContainerInterface
+     */
+    protected $container;
 
     /**
      * @Inject
@@ -45,16 +51,10 @@ class CreateTagRawListener implements ListenerInterface
      */
     private $corp;
 
-    /**
-     * @Inject()
-     * @var ContainerInterface
-     */
-    protected $container;
-
     public function listen(): array
     {
         return [
-            CreateTagRawEvent::class
+            CreateTagRawEvent::class,
         ];
     }
 
@@ -107,7 +107,7 @@ class CreateTagRawListener implements ListenerInterface
      */
     private function handleTag($message)
     {
-        $tag      = make(WorkContactTagContract::class);
+        $tag = make(WorkContactTagContract::class);
         $tagGroup = make(WorkContactTagGroupContract::class);
 
         $ecClient = $this->wxApp($message['ToUserName'], 'contact')->external_contact;
@@ -118,12 +118,12 @@ class CreateTagRawListener implements ListenerInterface
             $this->logger->error(sprintf('%s [%s] 请求数据：%s 响应结果：%s', '获取标签详情错误', date('Y-m-d H:i:s'), $message['Id'], json_encode($res)));
         }
 
-        $tagDetail    = $res['tag_group'][0];
+        $tagDetail = $res['tag_group'][0];
         $tagGroupData = [
-            'corp_id'     => $this->corp['id'],
+            'corp_id' => $this->corp['id'],
             'wx_group_id' => $tagDetail['group_id'],
-            'group_name'  => $tagDetail['group_name'],
-            'order'       => $tagDetail['order'],
+            'group_name' => $tagDetail['group_name'],
+            'order' => $tagDetail['order'],
         ];
 
         //查询分组id
@@ -146,10 +146,10 @@ class CreateTagRawListener implements ListenerInterface
 
         //新增标签
         $tagData = [
-            'corp_id'              => $this->corp['id'],
-            'wx_contact_tag_id'    => $tagDetail['tag'][0]['id'],
-            'name'                 => $tagDetail['tag'][0]['name'],
-            'order'                => $tagDetail['tag'][0]['order'],
+            'corp_id' => $this->corp['id'],
+            'wx_contact_tag_id' => $tagDetail['tag'][0]['id'],
+            'name' => $tagDetail['tag'][0]['name'],
+            'order' => $tagDetail['tag'][0]['order'],
             'contact_tag_group_id' => $tagGroupId,
         ];
         $tagRes = $tag->createWorkContactTag($tagData);

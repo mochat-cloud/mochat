@@ -8,7 +8,6 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
-
 namespace MoChat\App\OfficialAccount\Action\Operation\Traits;
 
 use Hyperf\Di\Annotation\Inject;
@@ -40,7 +39,7 @@ trait AuthTrait
     protected $officialAccountService;
 
     /**
-     * @Inject()
+     * @Inject
      * @var AuthLogic
      */
     private $authLogic;
@@ -84,7 +83,7 @@ trait AuthTrait
     }
 
     /**
-     * 获取公众号信息
+     * 获取公众号信息.
      *
      * @return array
      */
@@ -98,10 +97,9 @@ trait AuthTrait
 
         $type = $this->getType();
         $set = $this->officialAccountSetService->getOfficialAccountSetByCorpIdType($corpId, $type, ['official_account_id']);
-        if (!empty($set)) {
+        if (! empty($set)) {
             return $this->officialAccountService->getOfficialAccountById($set['officialAccountId'], ['id', 'appid', 'authorizer_appid']);
-        } else {
-            return $this->officialAccountService->getOfficialAccountByCorpId($corpId, ['id', 'appid', 'authorizer_appid']);
         }
+        return $this->officialAccountService->getOfficialAccountByCorpId($corpId, ['id', 'appid', 'authorizer_appid']);
     }
 }

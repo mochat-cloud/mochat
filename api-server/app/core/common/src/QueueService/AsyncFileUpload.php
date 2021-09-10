@@ -35,7 +35,7 @@ class AsyncFileUpload
                     throw new CommonException(ErrorCode::SERVER_ERROR, '异步上传文件参数错误');
                 }
                 [$localPath, $targetPath] = $paths;
-                $isUnlink              = $paths[2] ?? 0;
+                $isUnlink = $paths[2] ?? 0;
                 if (! $localPath) {
                     continue;
                 }

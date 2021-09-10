@@ -12,16 +12,16 @@ namespace MoChat\App\WorkAgent\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\User\Logic\Traits\UserTrait;
 use MoChat\App\WorkAgent\Logic\StoreLogic;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 企业应用 - 创建提交.
@@ -59,8 +59,8 @@ class Store extends AbstractAction
         }
         ## 参数验证
         $params['wxAgentId'] = $this->request->input('wxAgentId');
-        $params['wxSecret']  = $this->request->input('wxSecret');
-        $params['type']      = $this->request->input('type');
+        $params['wxSecret'] = $this->request->input('wxSecret');
+        $params['type'] = $this->request->input('type');
         $this->validated($params);
 
         return $this->storeLogic->handle($params, $user);
@@ -75,8 +75,8 @@ class Store extends AbstractAction
     {
         return [
             'wxAgentId' => 'required | string | bail',
-            'wxSecret'  => 'required | string | bail',
-            'type'      => 'required | integer | bail',
+            'wxSecret' => 'required | string | bail',
+            'type' => 'required | integer | bail',
         ];
     }
 
@@ -88,11 +88,11 @@ class Store extends AbstractAction
     {
         return [
             'wxAgentId.required' => '企业应用ID 必填',
-            'wxAgentId.string'   => '企业应用ID 必须为字符串',
-            'wxSecret.required'  => '企业应用secret 必填',
-            'wxSecret.string'    => '企业应用secret 必须为字符串',
-            'type.required'      => '企业应用类型 必填',
-            'type.integer'       => '企业应用类型 必须为整型',
+            'wxAgentId.string' => '企业应用ID 必须为字符串',
+            'wxSecret.required' => '企业应用secret 必填',
+            'wxSecret.string' => '企业应用secret 必须为字符串',
+            'type.required' => '企业应用类型 必填',
+            'type.integer' => '企业应用类型 必须为整型',
         ];
     }
 }

@@ -53,3 +53,11 @@ export function getInfo (params) {
     params
   })
 }
+// 修改  /roomCalendar/update
+export function updateApi (params) {
+  return request({
+    url: '/roomCalendar/update',
+    method: 'put',
+    data: params
+  })
+}

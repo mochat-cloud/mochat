@@ -118,15 +118,15 @@ class ShowLogic
         $employee = $this->getEmployee();
 
         return [
-            'name'         => isset($contactInfo['name']) ? $contactInfo['name'] : '',
-            'avatar'       => isset($contactInfo['avatar']) ? file_full_url($contactInfo['avatar']) : '',
-            'gender'       => isset($contactInfo['gender']) ? $contactInfo['gender'] : 0,
-            'genderText'   => isset($contactInfo['gender']) ? Gender::getMessage($contactInfo['gender']) : '未知',
-            'businessNo'   => isset($contactInfo['businessNo']) ? $contactInfo['businessNo'] : '',
-            'remark'       => isset($contactEmployee['remark']) ? $contactEmployee['remark'] : '',
-            'description'  => isset($contactEmployee['description']) ? $contactEmployee['description'] : '',
-            'tag'          => $contactTag,
-            'roomName'     => $roomName,
+            'name' => isset($contactInfo['name']) ? $contactInfo['name'] : '',
+            'avatar' => isset($contactInfo['avatar']) ? file_full_url($contactInfo['avatar']) : '',
+            'gender' => isset($contactInfo['gender']) ? $contactInfo['gender'] : 0,
+            'genderText' => isset($contactInfo['gender']) ? Gender::getMessage($contactInfo['gender']) : '未知',
+            'businessNo' => isset($contactInfo['businessNo']) ? $contactInfo['businessNo'] : '',
+            'remark' => isset($contactEmployee['remark']) ? $contactEmployee['remark'] : '',
+            'description' => isset($contactEmployee['description']) ? $contactEmployee['description'] : '',
+            'tag' => $contactTag,
+            'roomName' => $roomName,
             'employeeName' => $employee,
         ];
     }
@@ -206,7 +206,7 @@ class ShowLogic
         foreach ($contactEmployee as &$raw) {
             if (isset($employeeInfo[$raw['employeeId']])) {
                 $raw['employeeName'] = $employeeInfo[$raw['employeeId']]['name'];
-                $raw['corpId']       = $employeeInfo[$raw['employeeId']]['corpId'];
+                $raw['corpId'] = $employeeInfo[$raw['employeeId']]['corpId'];
             }
         }
         unset($raw);

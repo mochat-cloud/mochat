@@ -351,4 +351,16 @@ class WorkContactTagService extends AbstractService implements WorkContactTagCon
 
         return $res->toArray();
     }
+
+    /**
+     * 给客户打标签.
+     *
+     * @param int|string $corpId 企业id
+     * @param array $contact 客户信息
+     * @param array $tags 要打的标签
+     */
+    public function markTags($corpId, array $contact, array $tags): bool
+    {
+        // TODO 完善打标签
+    }
 }

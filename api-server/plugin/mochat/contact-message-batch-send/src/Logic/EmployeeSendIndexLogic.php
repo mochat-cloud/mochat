@@ -49,8 +49,8 @@ class EmployeeSendIndexLogic
         ## 组织响应数据
         $data = [
             'page' => [
-                'perPage'   => $params['perPage'],
-                'total'     => 0,
+                'perPage' => $params['perPage'],
+                'total' => 0,
                 'totalPage' => 0,
             ],
             'list' => [],
@@ -59,9 +59,9 @@ class EmployeeSendIndexLogic
             return $data;
         }
         ## 处理分页数据
-        $data['page']['total']     = $res['total'];
+        $data['page']['total'] = $res['total'];
         $data['page']['totalPage'] = $res['last_page'];
-        $data['list']              = $res['data'];
+        $data['list'] = $res['data'];
 
         return $data;
     }

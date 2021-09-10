@@ -134,7 +134,7 @@ class GetSopInfoLogic
 
         if ($task->time->type == 0) {
             //1时 30分
-            $sec     = ((int) $task->time->data->first * 60 * 60) + ((int) $task->time->data->last * 60);
+            $sec = ((int) $task->time->data->first * 60 * 60) + ((int) $task->time->data->last * 60);
             $tipTime = date('H:i', strtotime($roomSopLog['createdAt']) + $sec);
         } else {
             //1天 11:30
@@ -143,10 +143,10 @@ class GetSopInfoLogic
 
         return [
             'creator' => $user['name'],
-            'time'    => $tipTime,
-            'task'    => $task,
-            'room'    => $room,
-            'state'   => $roomSopLog['state'],
+            'time' => $tipTime,
+            'task' => $task,
+            'room' => $room,
+            'state' => $roomSopLog['state'],
         ];
     }
 }

@@ -13,11 +13,11 @@ namespace MoChat\Plugin\RoomFission\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\Utils\Url;
 use MoChat\Framework\Action\AbstractAction;
@@ -92,7 +92,7 @@ class Info extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -116,20 +116,20 @@ class Info extends AbstractAction
         $this->validated($this->request->all());
         $id = (int) $this->request->input('id');
         ## 详情
-        $fission                     = $this->roomFissionService->getRoomFissionById($id, ['id', 'official_account_id', 'active_name', 'end_time', 'target_count', 'new_friend', 'delete_invalid', 'receive_employees', 'auto_pass', 'created_at']);
+        $fission = $this->roomFissionService->getRoomFissionById($id, ['id', 'official_account_id', 'active_name', 'end_time', 'target_count', 'new_friend', 'delete_invalid', 'receive_employees', 'auto_pass', 'created_at']);
         $fission['receiveEmployees'] = json_decode($fission['receiveEmployees'], true, 512, JSON_THROW_ON_ERROR);
-        $poster                      = $this->roomFissionPosterService->getRoomFissionPosterByFissionId($id, ['id', 'cover_pic', 'avatar_show', 'nickname_show', 'nickname_color', 'qrcode_w', 'qrcode_h', 'qrcode_x', 'qrcode_y']);
-        $poster['coverPic']          = file_full_url($poster['coverPic']);
-        $welcome                     = $this->roomFissionWelcomeService->getRoomFissionWelcomeByFissionId($id, ['id', 'text', 'link_title', 'link_desc', 'link_pic']);
-        $welcome['linkPic']          = file_full_url($welcome['linkPic']);
-        $invite                      = $this->roomFissionInviteService->getRoomFissionInviteByFissionId($id, ['id', 'type', 'employees', 'choose_contact', 'text', 'link_title', 'link_desc', 'link_pic']);
-        $invite['employees']         = json_decode($invite['employees'], true, 512, JSON_THROW_ON_ERROR);
-        $invite['chooseContact']     = json_decode($invite['chooseContact'], true, 512, JSON_THROW_ON_ERROR);
-        $invite['linkPic']           = file_full_url($invite['linkPic']);
-        $rooms                       = $this->roomFissionRoomService->getRoomFissionRoomByFissionId($id, ['id', 'room_qrcode', 'room', 'room_max']);
+        $poster = $this->roomFissionPosterService->getRoomFissionPosterByFissionId($id, ['id', 'cover_pic', 'avatar_show', 'nickname_show', 'nickname_color', 'qrcode_w', 'qrcode_h', 'qrcode_x', 'qrcode_y']);
+        $poster['coverPic'] = file_full_url($poster['coverPic']);
+        $welcome = $this->roomFissionWelcomeService->getRoomFissionWelcomeByFissionId($id, ['id', 'text', 'link_title', 'link_desc', 'link_pic']);
+        $welcome['linkPic'] = file_full_url($welcome['linkPic']);
+        $invite = $this->roomFissionInviteService->getRoomFissionInviteByFissionId($id, ['id', 'type', 'employees', 'choose_contact', 'text', 'link_title', 'link_desc', 'link_pic']);
+        $invite['employees'] = json_decode($invite['employees'], true, 512, JSON_THROW_ON_ERROR);
+        $invite['chooseContact'] = json_decode($invite['chooseContact'], true, 512, JSON_THROW_ON_ERROR);
+        $invite['linkPic'] = file_full_url($invite['linkPic']);
+        $rooms = $this->roomFissionRoomService->getRoomFissionRoomByFissionId($id, ['id', 'room_qrcode', 'room', 'room_max']);
         foreach ($rooms as $k => $v) {
             $rooms[$k]['roomQrcode'] = file_full_url($v['roomQrcode']);
-            $rooms[$k]['room']       = json_decode($v['room'], true, 512, JSON_THROW_ON_ERROR);
+            $rooms[$k]['room'] = json_decode($v['room'], true, 512, JSON_THROW_ON_ERROR);
         }
 
         $link = Url::getAuthRedirectUrl(8, $id, [

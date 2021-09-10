@@ -112,7 +112,7 @@ class UpdateLogic
             }
             //如果有就修改备注
             $data['remark'] = $this->params['remark'];
-            $res            = $this->contactEmployee
+            $res = $this->contactEmployee
                 ->updateWorkContactEmployeeByOtherIds($this->params['employeeId'], $this->params['contactId'], $data);
 
             if (! is_int($res)) {
@@ -133,7 +133,7 @@ class UpdateLogic
 
             //如果有修改描述
             $data['description'] = $this->params['description'];
-            $res                 = $this->contactEmployee
+            $res = $this->contactEmployee
                 ->updateWorkContactEmployeeByOtherIds($this->params['employeeId'], $this->params['contactId'], $data);
 
             if (! is_int($res)) {
@@ -221,8 +221,8 @@ class UpdateLogic
                 $data = [];
                 foreach ($tagDiffTwo as $val) {
                     $data[] = [
-                        'contact_id'     => $this->params['contactId'],
-                        'employee_id'    => $this->params['employeeId'],
+                        'contact_id' => $this->params['contactId'],
+                        'employee_id' => $this->params['employeeId'],
                         'contact_tag_id' => $val,
                     ];
                 }
@@ -252,8 +252,8 @@ class UpdateLogic
             $data = [];
             foreach ($this->params['tag'] as $val) {
                 $data[] = [
-                    'contact_id'     => $this->params['contactId'],
-                    'employee_id'    => $this->params['employeeId'],
+                    'contact_id' => $this->params['contactId'],
+                    'employee_id' => $this->params['employeeId'],
                     'contact_tag_id' => $val,
                 ];
             }
@@ -306,10 +306,10 @@ class UpdateLogic
     {
         $data = [
             'employee_id' => $this->params['employeeId'],
-            'contact_id'  => $this->params['contactId'],
-            'content'     => $content,
-            'corp_id'     => user()['corpIds'][0],
-            'event'       => $event,
+            'contact_id' => $this->params['contactId'],
+            'content' => $content,
+            'corp_id' => user()['corpIds'][0],
+            'event' => $event,
         ];
 
         $res = $this->track->createContactEmployeeTrack($data);
@@ -326,17 +326,17 @@ class UpdateLogic
     private function getWorkContactTag($tagIds)
     {
         $wxTagIds = [];
-        $tagName  = [];
+        $tagName = [];
 
         $tagInfo = $this->contactTag->getWorkContactTagsById($tagIds);
         if (! empty($tagInfo)) {
             $wxTagIds = array_column($tagInfo, 'wxContactTagId');
-            $tagName  = array_column($tagInfo, 'name');
+            $tagName = array_column($tagInfo, 'name');
         }
 
         return [
             'wxTagIds' => $wxTagIds,
-            'tagName'  => $tagName,
+            'tagName' => $tagName,
         ];
     }
 
@@ -356,7 +356,7 @@ class UpdateLogic
             $wxExternalUserId = $this->getContactId();
             if (! empty($wxExternalUserId)) {
                 $params = [
-                    'userid'          => $wxUserId,
+                    'userid' => $wxUserId,
                     'external_userid' => $wxExternalUserId,
                 ];
 
@@ -415,7 +415,7 @@ class UpdateLogic
             $wxExternalUserId = $this->getContactId();
             if (! empty($wxExternalUserId)) {
                 $params = [
-                    'userid'          => $wxUserId,
+                    'userid' => $wxUserId,
                     'external_userid' => $wxExternalUserId,
                 ];
 

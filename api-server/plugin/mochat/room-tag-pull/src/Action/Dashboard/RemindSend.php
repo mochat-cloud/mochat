@@ -13,11 +13,11 @@ namespace MoChat\Plugin\RoomTagPull\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Corp\Logic\AppTrait;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
@@ -90,7 +90,7 @@ class RemindSend extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -153,13 +153,17 @@ class RemindSend extends AbstractAction
             }
             if ($item['status'] === 0) {
                 $employee = $this->workEmployeeService->getWorkEmployeeByCorpIdWxUserId($user['corpIds'][0], $item['wxUserId'], ['wx_user_id']);
-                $contact  = $this->workContactService->getWorkContactsByEmployeeIdSearch($user['corpIds'][0], (int) $item, json_decode($roomTagPUll['chooseContact'], true, 512, JSON_THROW_ON_ERROR));
+                $contact = $this->workContactService->getWorkContactsByEmployeeIdSearch($user['corpIds'][0], (int) $item, json_decode($roomTagPUll['chooseContact'], true, 512, JSON_THROW_ON_ERROR));
                 if (! empty($contact)) {
                     continue;
                 }
                 $content = "管理员提醒你发送群发任务\n任务创建于{$roomTagPUll['createdAt']},将群发给{$contact[0]['name']}等{$roomTagPUll['contactNum']}个客户，可前往【客户联系】中确认发送";
-                $messageRemind->sendToEmployee((int)$user['corpIds'][0], $employee['wxUserId'],'text',
-                    $content);
+                $messageRemind->sendToEmployee(
+                    (int) $user['corpIds'][0],
+                    $employee['wxUserId'],
+                    'text',
+                    $content
+                );
             }
         }
         return [];

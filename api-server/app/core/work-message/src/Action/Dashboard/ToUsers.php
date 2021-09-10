@@ -12,10 +12,10 @@ namespace MoChat\App\WorkMessage\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\User\Logic\Traits\UserTrait;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
@@ -74,18 +74,18 @@ class ToUsers extends AbstractAction
     public function handle(): array
     {
         ## 请求参数.验证
-        $corpId                   = $this->corpId();
+        $corpId = $this->corpId();
         $this->workMessageService = make(WorkMessageContract::class, [$corpId]);
-        $workEmployeeId           = (int) $this->request->query('workEmployeeId', 0);
-        $employeeData             = $this->workEmployeeService->getWorkEmployeeById($workEmployeeId, ['id', 'wx_user_id']);
+        $workEmployeeId = (int) $this->request->query('workEmployeeId', 0);
+        $employeeData = $this->workEmployeeService->getWorkEmployeeById($workEmployeeId, ['id', 'wx_user_id']);
         if (! $employeeData) {
             throw new CommonException(ErrorCode::INVALID_PARAMS, '员工不存在');
         }
-        $name       = $this->request->query('name');
+        $name = $this->request->query('name');
         $toUserType = (int) $this->request->query('toUsertype', 0);
-        $options    = [
-            'page'       => $this->request->query('page', 1),
-            'perPage'    => $this->request->query('perPage', 10),
+        $options = [
+            'page' => $this->request->query('page', 1),
+            'perPage' => $this->request->query('perPage', 10),
             'orderByRaw' => '`id` ASC',
         ];
         $where = [
@@ -100,7 +100,7 @@ class ToUsers extends AbstractAction
             $toData = $this->getToList($corpId, $toUserType, $name);
             ## 检索数据
             $where['to_id'] = array_keys($toData);
-            $pageData       = $this->workMsgIndexService->getWorkMessageIndexList($where, ['id', 'to_id', 'to_type'], $options);
+            $pageData = $this->workMsgIndexService->getWorkMessageIndexList($where, ['id', 'to_id', 'to_type'], $options);
         } else {
             ## 检索数据
             $pageData = $this->workMsgIndexService->getWorkMessageIndexList($where, ['id', 'to_id', 'to_type'], $options);
@@ -109,7 +109,7 @@ class ToUsers extends AbstractAction
         }
         ## 聊天对象 - 最近一条记聊天录
         $toDataIds = array_keys($toData);
-        $msgData   = $this->getLastMsg($employeeData['wxUserId'], $toDataIds, $toUserType);
+        $msgData = $this->getLastMsg($employeeData['wxUserId'], $toDataIds, $toUserType);
 
         ## 格式化数据
         $data = [];
@@ -118,21 +118,21 @@ class ToUsers extends AbstractAction
                 continue;
             }
             $msgIndex = $this->getMsgIndexFlag($item['toType'], (int) $item['toId'], $item['toId']);
-            $data[]   = [
+            $data[] = [
                 'workEmployeeId' => $workEmployeeId,
-                'toUsertype'     => $item['toType'],
-                'toUserId'       => $item['toId'],
-                'name'           => $toData[$item['toId']]['name'] ?? '',
-                'alias'          => $toData[$item['toId']]['alias'] ?? '',
-                'avatar'         => $toData[$item['toId']]['avatar'] ?? '',
-                'content'        => $msgData[$msgIndex]['content'] ?? '',
-                'msgDataTime'    => isset($msgData[$msgIndex]) ? date('Y-m-d H:i:s', (int) ($msgData[$msgIndex]['msgTime'] * 0.001)) : '',
+                'toUsertype' => $item['toType'],
+                'toUserId' => $item['toId'],
+                'name' => $toData[$item['toId']]['name'] ?? '',
+                'alias' => $toData[$item['toId']]['alias'] ?? '',
+                'avatar' => $toData[$item['toId']]['avatar'] ?? '',
+                'content' => $msgData[$msgIndex]['content'] ?? '',
+                'msgDataTime' => isset($msgData[$msgIndex]) ? date('Y-m-d H:i:s', (int) ($msgData[$msgIndex]['msgTime'] * 0.001)) : '',
             ];
         }
         return [
             'page' => [
-                'perPage'   => $pageData['per_page'],
-                'total'     => $pageData['total'],
+                'perPage' => $pageData['per_page'],
+                'total' => $pageData['total'],
                 'totalPage' => $pageData['last_page'],
             ],
             'list' => $data,

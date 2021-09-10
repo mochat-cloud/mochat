@@ -19,7 +19,7 @@ interface WorkRoomContract
      * @param array|string[] $columns 查询字段
      * @return array 数组
      */
-    public function getWorkRoomsByCorpIdWxChatId(int $corpId, string $wxChatIds, array $columns = ['*']): array;
+    public function getWorkRoomByCorpIdWxChatId(int $corpId, string $wxChatIds, array $columns = ['*']): array;
 
     /**
      * 查询单条 - 根据ID.

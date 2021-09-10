@@ -48,8 +48,8 @@ class UpdateLogic
      */
     public function __construct(StdoutLoggerInterface $logger, CorpContract $corpService, ClockInContract $clockInService)
     {
-        $this->logger         = $logger;
-        $this->corpService    = $corpService;
+        $this->logger = $logger;
+        $this->corpService = $corpService;
         $this->clockInService = $clockInService;
     }
 
@@ -83,17 +83,17 @@ class UpdateLogic
         }
 
         return [
-            'name'               => $params['name'],
-            'description'        => $params['description'],
-            'time_type'          => $params['time_type'],
-            'start_time'         => isset($params['start_time']) ? $params['start_time'] : '',
-            'end_time'           => isset($params['end_time']) ? $params['end_time'] : '',
-            'employee_qrcode'    => File::uploadBase64Image($params['employee_qrcode'], 'image/roomInfinite/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg'),
-            'corp_card_status'   => $params['corp_card_status'],
-            'corp_card'          => isset($params['corp_card']) ? json_encode($params['corp_card'], JSON_THROW_ON_ERROR) : '{}',
+            'name' => $params['name'],
+            'description' => $params['description'],
+            'time_type' => $params['time_type'],
+            'start_time' => isset($params['start_time']) ? $params['start_time'] : '',
+            'end_time' => isset($params['end_time']) ? $params['end_time'] : '',
+            'employee_qrcode' => File::uploadBase64Image($params['employee_qrcode'], 'image/roomInfinite/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg'),
+            'corp_card_status' => $params['corp_card_status'],
+            'corp_card' => isset($params['corp_card']) ? json_encode($params['corp_card'], JSON_THROW_ON_ERROR) : '{}',
             'contact_clock_tags' => isset($params['contact_clock_tags']) ? json_encode($params['contact_clock_tags'], JSON_THROW_ON_ERROR) : '{}',
-            'point'              => isset($params['point']) ? $params['point'] : 0,
-            'tenant_id'          => isset($params['tenant_id']) ? $params['tenant_id'] : 0,
+            'point' => isset($params['point']) ? $params['point'] : 0,
+            'tenant_id' => isset($params['tenant_id']) ? $params['tenant_id'] : 0,
         ];
     }
 

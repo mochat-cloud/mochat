@@ -44,7 +44,7 @@ class UpdateLogic
     {
         ## 处理请求参数
         $menuId = (int) $params['menuId'];
-        $data   = $this->handleParams($params);
+        $data = $this->handleParams($params);
 
         ## 查询数据
         return $this->updateMenu($menuId, $data);
@@ -59,10 +59,10 @@ class UpdateLogic
     {
         ## 获取菜单详情
         $menuId = (int) $params['menuId'];
-        $menu   = $this->menuService->getRbacMenuById($menuId);
+        $menu = $this->menuService->getRbacMenuById($menuId);
 
         $data = [
-            'name'         => $params['name'],
+            'name' => $params['name'],
             'is_page_menu' => IsPageMenu::YES,
         ];
         ## 菜单一、二、三级有图标
@@ -71,9 +71,9 @@ class UpdateLogic
         }
         ## 菜单三、四、五有链接
         if (in_array($menu['level'], [Level::THIRD_LEVEL, Level::FOURTH_LEVEL, Level::FIFTH_LEVEL])) {
-            $data['link_type']                                           = $params['linkType'];
-            $data['is_page_menu']                                        = isset($params['isPageMenu']) ? $params['isPageMenu'] : IsPageMenu::YES;
-            $data['link_url']                                            = $params['linkUrl'];
+            $data['link_type'] = $params['linkType'];
+            $data['is_page_menu'] = isset($params['isPageMenu']) ? $params['isPageMenu'] : IsPageMenu::YES;
+            $data['link_url'] = $params['linkUrl'];
             isset($params['dataPermission']) && $data['data_permission'] = $params['dataPermission'];
         }
 

@@ -207,6 +207,10 @@ export default {
     },
     // 创建链接
     establishlink () {
+      if (this.setlinkChannel.channel_id == undefined) {
+        this.$message.error('请选择渠道')
+        return false
+      }
       this.setlinkChannel.radar_id = this.id
       this.setlinkChannel.type = this.type
       storeChannelLinkApi(this.setlinkChannel).then((res) => {

@@ -12,7 +12,11 @@ namespace MoChat\Plugin\RoomMessageBatchSend\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
 use MoChat\Plugin\RoomMessageBatchSend\Logic\ShowLogic;
@@ -32,14 +36,18 @@ class Show extends AbstractAction
     private $showLogic;
 
     /**
+     * @Middlewares({
+     *     @Middleware(DashboardAuthMiddleware::class),
+     *     @Middleware(PermissionMiddleware::class)
+     * })
      * @RequestMapping(path="/dashboard/roomMessageBatchSend/show", methods="GET")
      */
     public function handle(): array
     {
-        ## 参数验证
+        // 参数验证
         $this->validated($this->request->all());
         $batchId = $this->request->input('batchId');
-        ## 接收参数
+        // 接收参数
         $params = [
             'batchId' => $batchId,
         ];

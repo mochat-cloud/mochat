@@ -103,18 +103,18 @@ class ShowLogic
         $workContactTagList = $this->getWorkContactTagList(json_decode($info['tags'], true), user()['corpIds'][0]);
         //基础信息
         $baseInfo = [
-            'groupId'       => $info['groupId'],
-            'groupName'     => ! empty($this->getGroup($info['groupId'])) ? $this->getGroup($info['groupId'])['name'] : '未分组',
-            'name'          => $info['name'],
+            'groupId' => $info['groupId'],
+            'groupName' => ! empty($this->getGroup($info['groupId'])) ? $this->getGroup($info['groupId'])['name'] : '未分组',
+            'name' => $info['name'],
             'autoAddFriend' => $info['autoAddFriend'],
-            'tags'          => isset($workContactTagList['tagGroupAllList']) ? $workContactTagList['tagGroupAllList'] : [],
-            'selectedTags'  => isset($workContactTagList['selectedTags']) ? $workContactTagList['selectedTags'] : [],
+            'tags' => isset($workContactTagList['tagGroupAllList']) ? $workContactTagList['tagGroupAllList'] : [],
+            'selectedTags' => isset($workContactTagList['selectedTags']) ? $workContactTagList['selectedTags'] : [],
         ];
 
         return [
-            'baseInfo'         => $baseInfo,
+            'baseInfo' => $baseInfo,
             'drainageEmployee' => $this->handleDrainage($info),
-            'welcomeMessage'   => $this->handleWelcome($info),
+            'welcomeMessage' => $this->handleWelcome($info),
         ];
     }
 
@@ -135,7 +135,7 @@ class ShowLogic
             //通用欢迎语
             if ($value['type'] == WelcomeType::GENERAL) {
                 //获取素材库信息
-                $data             = $this->medium->getMediumById((int) $value['mediumId'], ['type', 'content']);
+                $data = $this->medium->getMediumById((int) $value['mediumId'], ['type', 'content']);
                 $value['content'] = [];
                 if (! empty($data)) {
                     $value['content'] = $this->medium->addFullPath(json_decode($data['content'], true), $data['type']);
@@ -145,7 +145,7 @@ class ShowLogic
                 foreach ($value['detail'] as &$val) {
                     foreach ($val['timeSlot'] as &$v) {
                         //获取素材库信息
-                        $data         = $this->medium->getMediumById((int) $v['mediumId'], ['type', 'content']);
+                        $data = $this->medium->getMediumById((int) $v['mediumId'], ['type', 'content']);
                         $v['content'] = [];
                         if (! empty($data)) {
                             $v['content'] = $this->medium->addFullPath(json_decode($data['content'], true), $data['type']);
@@ -278,20 +278,20 @@ class ShowLogic
         }
         ## 客户标签分组
         $contactTagGroupIds = array_filter(array_unique(array_column($tagList, 'contactTagGroupId')));
-        $tagGroupList       = $this->workContactTagGroupService->getWorkContactTagGroupsById($contactTagGroupIds, ['id', 'group_name']);
-        $tagGroupAllList    = [
+        $tagGroupList = $this->workContactTagGroupService->getWorkContactTagGroupsById($contactTagGroupIds, ['id', 'group_name']);
+        $tagGroupAllList = [
             '0' => [
-                'groupId'   => 0,
+                'groupId' => 0,
                 'groupName' => '未分组',
-                'list'      => [],
+                'list' => [],
             ],
         ];
         if (! empty($tagGroupList)) {
             foreach ($tagGroupList as $tagGroup) {
                 $tagGroupAllList[$tagGroup['id']] = [
-                    'groupId'   => $tagGroup['id'],
+                    'groupId' => $tagGroup['id'],
                     'groupName' => $tagGroup['groupName'],
-                    'list'      => [],
+                    'list' => [],
                 ];
             }
         }
@@ -302,15 +302,15 @@ class ShowLogic
                 continue;
             }
             in_array($tag['id'], $workContactTagIds) && $selectedTags[] = $tag['id'];
-            $tagGroupAllList[$tag['contactTagGroupId']]['list'][]       = [
-                'tagId'      => $tag['id'],
-                'tagName'    => $tag['name'],
+            $tagGroupAllList[$tag['contactTagGroupId']]['list'][] = [
+                'tagId' => $tag['id'],
+                'tagName' => $tag['name'],
                 'isSelected' => in_array($tag['id'], $workContactTagIds) ? 1 : 2,
             ];
         }
         return [
             'tagGroupAllList' => array_values($tagGroupAllList),
-            'selectedTags'    => $selectedTags,
+            'selectedTags' => $selectedTags,
         ];
     }
 }

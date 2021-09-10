@@ -93,7 +93,7 @@ class SensitiveWordMonitorService extends AbstractService implements SensitiveWo
     public function countBySensitiveWordIdSource(array $sensitiveWordId, int $source): array
     {
         $sensitiveWordIdStr = implode(',', $sensitiveWordId);
-        $res                = $this->model
+        $res = $this->model
             ->where('source', $source)
             ->havingRaw('sensitive_word_id in (' . $sensitiveWordIdStr . ')')
             ->selectRaw('sensitive_word_id')

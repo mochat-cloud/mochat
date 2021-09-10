@@ -11,9 +11,6 @@ declare(strict_types=1);
 namespace MoChat\Plugin\ContactSop\Job;
 
 use Hyperf\AsyncQueue\Job;
-use Hyperf\Contract\StdoutLoggerInterface;
-use Hyperf\Di\Annotation\Inject;
-use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Corp\Logic\AppTrait;
 use MoChat\App\Utils\Url;
 use MoChat\App\WorkAgent\Contract\WorkAgentContract;
@@ -36,12 +33,12 @@ class ContactSopJob extends Job
     public function handle()
     {
         $workAgentService = make(WorkAgentContract::class);
-        $agent = $workAgentService->getWorkAgentRemindByCorpId((int)$this->params['corpId'], ['id']);
+        $agent = $workAgentService->getWorkAgentRemindByCorpId((int) $this->params['corpId'], ['id']);
         $timestamp = time();
-        $nowTime   = date('H:i', $timestamp);
-        $nowDate   = date('Y-m-d', $timestamp);
+        $nowTime = date('H:i', $timestamp);
+        $nowDate = date('Y-m-d', $timestamp);
 
-        $url  = Url::getSidebarBaseUrl() . '/?agentId='.$agent['id'].'&pageFlag=contactSop&id=' . $this->params['contactSopLogId'];
+        $url = Url::getSidebarBaseUrl() . '/contactSop?agentId=' . $agent['id'] . '&id=' . $this->params['contactSopLogId'];
         $text = "【个人SOP】\n" .
             "提醒时间: 今天{$nowTime}({$nowDate})\n" .
             "跟进客户: {$this->params['contactName']}\n" .
@@ -49,9 +46,10 @@ class ContactSopJob extends Job
             "<a href='{$url}'>点击查看详情</a>";
         $messageRemind = make(MessageRemind::class);
         $messageRemind->sendToEmployee(
-            (int)$this->params['corpId'],
+            (int) $this->params['corpId'],
             $this->params['employeeWxId'],
             'text',
-            $text);
+            $text
+        );
     }
 }

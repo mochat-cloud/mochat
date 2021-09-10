@@ -11,10 +11,10 @@ declare(strict_types=1);
 namespace MoChat\App\Medium\Action\Dashboard\Group;
 
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Medium\Contract\MediumGroupContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\User\Logic\Traits\UserTrait;
@@ -46,7 +46,7 @@ class Update extends AbstractAction
         $params = $this->request->inputs(['id', 'name']);
         $this->validated($params);
 
-        $client    = $this->container->get(MediumGroupContract::class);
+        $client = $this->container->get(MediumGroupContract::class);
         $existData = $client->existMediumGroupByName($params['name'], $params['id']);
         if (! empty($existData)) {
             throw new CommonException(ErrorCode::INVALID_PARAMS, '分组名称已存在');
@@ -67,7 +67,7 @@ class Update extends AbstractAction
     public function attributes(): array
     {
         return [
-            'id'    => 'ID',
+            'id' => 'ID',
             'label' => '分组名称',
         ];
     }
@@ -78,7 +78,7 @@ class Update extends AbstractAction
     protected function rules(): array
     {
         return [
-            'id'   => 'required|integer',
+            'id' => 'required|integer',
             'name' => 'required',
         ];
     }

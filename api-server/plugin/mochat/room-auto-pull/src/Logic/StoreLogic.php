@@ -74,11 +74,11 @@ class StoreLogic
             $workRoomAutoPullId = $this->workRoomAutoPullService->createWorkRoomAutoPull($params);
             ## 记录业务日志
             $businessLog = [
-                'business_id'  => $workRoomAutoPullId,
-                'params'       => json_encode($params),
-                'event'        => Event::ROOM_AUTO_PULL_CREATE,
+                'business_id' => $workRoomAutoPullId,
+                'params' => json_encode($params),
+                'event' => Event::ROOM_AUTO_PULL_CREATE,
                 'operation_id' => user()['workEmployeeId'],
-                'created_at'   => date('Y-m-d H:i:s'),
+                'created_at' => date('Y-m-d H:i:s'),
             ];
             $this->businessLogService->createBusinessLog($businessLog);
 

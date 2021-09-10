@@ -52,14 +52,14 @@ class RoomMessageBatchSend extends AbstractModel
      *
      * @var array
      */
-    protected $fillable = ['id', 'corp_id', 'user_id', 'user_name', 'batch_title', 'content', 'send_way', 'definite_time', 'send_time', 'send_contact_total', 'send_room_total', 'send_total', 'not_send_total', 'received_total', 'not_received_total', 'send_status', 'created_at', 'updated_at', 'deleted_at'];
+    protected $fillable = ['id', 'corp_id', 'user_id', 'user_name', 'employee_ids', 'batch_title', 'content', 'send_way', 'definite_time', 'send_time', 'send_employee_total', 'send_room_total', 'send_total', 'not_send_total', 'received_total', 'not_received_total', 'send_status', 'created_at', 'updated_at', 'deleted_at'];
 
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = ['id' => 'integer', 'corp_id' => 'integer', 'user_id' => 'integer', 'send_way' => 'integer', 'send_contact_total' => 'integer', 'send_room_total' => 'integer', 'send_total' => 'integer', 'not_send_total' => 'integer', 'received_total' => 'integer', 'not_received_total' => 'integer', 'send_status' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'integer', 'corp_id' => 'integer', 'user_id' => 'integer', 'send_way' => 'integer', 'send_employee_total' => 'integer', 'send_room_total' => 'integer', 'send_total' => 'integer', 'not_send_total' => 'integer', 'received_total' => 'integer', 'not_received_total' => 'integer', 'send_status' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 
     public function getContentAttribute($value)
     {
@@ -69,5 +69,15 @@ class RoomMessageBatchSend extends AbstractModel
     public function setContentAttribute($value)
     {
         $this->attributes['content'] = is_string($value) ? $value : json_encode($value, JSON_UNESCAPED_UNICODE);
+    }
+
+    public function getEmployeeIdsAttribute($value)
+    {
+        return empty($value) ? [] : json_decode($value, true);
+    }
+
+    public function setEmployeeIdsAttribute($value)
+    {
+        $this->attributes['employee_ids'] = is_string($value) ? $value : json_encode($value, JSON_UNESCAPED_UNICODE);
     }
 }

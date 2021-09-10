@@ -74,7 +74,7 @@ class Config extends AbstractAction
      */
     public function handle(): array
     {
-        $corpId  = (int) $this->request->query('corpId', 0);
+        $corpId = (int) $this->request->query('corpId', 0);
         $agentId = (int) $this->request->query('agentId', 0);
 
         if (! $corpId) {
@@ -93,8 +93,8 @@ class Config extends AbstractAction
 
     protected function setJssdk(): void
     {
-        $uriPath        = $this->request->query('uriPath', '');
-        $this->jssdk    = $this->weWorkClient->app($this->wxConfig)->jssdk;
+        $uriPath = $this->request->query('uriPath', '');
+        $this->jssdk = $this->weWorkClient->app($this->wxConfig)->jssdk;
         $sidebarBaseUrl = Url::getSidebarBaseUrl();
         $this->jssdk->setUrl($sidebarBaseUrl . $uriPath);
         $this->isDebug = in_array(env('APP_ENV'), ['dev', 'test']);

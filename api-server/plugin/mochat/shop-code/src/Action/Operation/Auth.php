@@ -8,17 +8,16 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
-
 namespace MoChat\Plugin\ShopCode\Action\Operation;
 
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use Hyperf\Session\Middleware\SessionMiddleware;
+use MoChat\App\OfficialAccount\Action\Operation\Traits\AuthTrait;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
 use Psr\Http\Message\ResponseInterface as Psr7ResponseInterface;
-use Hyperf\HttpServer\Annotation\Middleware;
-use Hyperf\Session\Middleware\SessionMiddleware;
-use MoChat\App\OfficialAccount\Action\Operation\Traits\AuthTrait;
 
 /**
  * 公众号授权跳转.
@@ -30,7 +29,7 @@ class Auth extends AbstractAction
     use ValidateSceneTrait;
 
     /**
-     * 为了自动兼容nginx转发规则，此处的路由定义与规范不同
+     * 为了自动兼容nginx转发规则，此处的路由定义与规范不同.
      *
      * @Middleware(SessionMiddleware::class)
      * @RequestMapping(path="/operation/auth/shopCode", methods="get,post")
@@ -76,6 +75,6 @@ class Auth extends AbstractAction
 
     protected function getCorpId(): int
     {
-        return (int)$this->request->input('id');
+        return (int) $this->request->input('id');
     }
 }

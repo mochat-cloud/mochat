@@ -14,11 +14,11 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\OfficialAccount\Contract\OfficialAccountSetContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
@@ -60,7 +60,7 @@ class Set extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -80,7 +80,7 @@ class Set extends AbstractAction
         }
         ## 接收参数
         $params = [
-            'type'                => (int) $this->request->input('type'),
+            'type' => (int) $this->request->input('type'),
             'official_account_id' => (int) $this->request->input('official_account_id', null),
         ];
         return $this->getOfficialAccount($user, $params);
@@ -94,7 +94,7 @@ class Set extends AbstractAction
     protected function rules(): array
     {
         return [
-            'type'                => 'required',
+            'type' => 'required',
             'official_account_id' => 'required',
         ];
     }
@@ -106,7 +106,7 @@ class Set extends AbstractAction
     protected function messages(): array
     {
         return [
-            'type.required'                => 'type 必传',
+            'type.required' => 'type 必传',
             'official_account_id.required' => 'official_account_id 必传',
         ];
     }
@@ -123,10 +123,10 @@ class Set extends AbstractAction
             $info = $this->officialAccountSetService->getOfficialAccountSetByCorpIdType($user['corpIds'][0], $params['type'], ['id', 'official_account_id', 'type', 'corp_id']);
             if (empty($info)) {
                 ## 创建活动
-                $params['corp_id']        = $user['corpIds'][0];
-                $params['tenant_id']      = 0;
+                $params['corp_id'] = $user['corpIds'][0];
+                $params['tenant_id'] = 0;
                 $params['create_user_id'] = $user['id'];
-                $params['created_at']     = date('Y-m-d H:i:s');
+                $params['created_at'] = date('Y-m-d H:i:s');
                 $this->officialAccountSetService->createOfficialAccountSet($params);
             } else {
                 $this->officialAccountSetService->updateOfficialAccountSetById($info['id'], $params);

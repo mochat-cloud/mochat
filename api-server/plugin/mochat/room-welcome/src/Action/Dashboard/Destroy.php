@@ -14,10 +14,10 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Logic\AppTrait;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
@@ -67,8 +67,8 @@ class Destroy extends AbstractAction
         $id = (int) $this->request->input('id');
 
         ## 删除入群欢迎语素材
-        $client   = $this->container->get(RoomWelcomeContract::class);
-        $info     = $client->getRoomWelcomeById($id);
+        $client = $this->container->get(RoomWelcomeContract::class);
+        $info = $client->getRoomWelcomeById($id);
         $template = $this->wxApp($user['corpIds'][0], 'contact')->external_contact_message_template->delete($info['complexTemplateId']);
         if ($template['errcode'] !== 0) {
             throw new CommonException(ErrorCode::INVALID_PARAMS, '删除入群欢迎语素材失败' . $template['errmsg']);
@@ -108,7 +108,7 @@ class Destroy extends AbstractAction
     {
         return [
             'id.required' => '欢迎语id 必填',
-            'id.numeric'  => '欢迎语id 必须为数字类型',
+            'id.numeric' => '欢迎语id 必须为数字类型',
         ];
     }
 }

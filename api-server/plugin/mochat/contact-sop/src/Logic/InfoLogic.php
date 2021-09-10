@@ -102,19 +102,19 @@ class InfoLogic
         foreach ($employees as $item) {
             $employeeArr[] = [
                 'employeeId' => $item['id'],
-                'name'       => $item['name'],
-                'wxUserId'   => $item['wxUserId'],
+                'name' => $item['name'],
+                'wxUserId' => $item['wxUserId'],
             ];
         }
         //处理创建者信息
         $username = $this->userService->getUserById($res['creatorId']);
         return [
-            'id'          => $res['id'],
-            'name'        => $res['name'],
+            'id' => $res['id'],
+            'name' => $res['name'],
             'creatorName' => isset($username['name']) ? $username['name'] : '',
-            'employees'   => $employeeArr,
-            'setting'     => json_decode($res['setting'], true, 512, JSON_THROW_ON_ERROR),
-            'createTime'  => $res['createdAt'],
+            'employees' => $employeeArr,
+            'setting' => json_decode($res['setting'], true, 512, JSON_THROW_ON_ERROR),
+            'createTime' => $res['createdAt'],
         ];
     }
 }

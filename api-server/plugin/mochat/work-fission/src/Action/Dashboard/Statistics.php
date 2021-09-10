@@ -12,11 +12,11 @@ namespace MoChat\Plugin\WorkFission\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
@@ -57,9 +57,9 @@ class Statistics extends AbstractAction
      */
     public function __construct(RequestInterface $request, WorkFissionContactContract $workFissionContactService, WorkFissionContract $workFissionService)
     {
-        $this->request                   = $request;
+        $this->request = $request;
         $this->workFissionContactService = $workFissionContactService;
-        $this->workFissionService        = $workFissionService;
+        $this->workFissionService = $workFissionService;
     }
 
     /**
@@ -110,34 +110,34 @@ class Statistics extends AbstractAction
      */
     private function getStatistics(array $user, $params): array
     {
-        $data                         = [];
-        $fissionIds                   = json_decode($params['fission_ids'], true, 512, JSON_THROW_ON_ERROR);
-        $firstUser                    = $this->workFissionContactService->countWorkFissionContactByFissionIds($fissionIds);
-        $data['user']['user_count']   = $this->workFissionContactService->countWorkFissionContactsByFissionId($fissionIds);
-        $data['user']['loss_count']   = $this->workFissionContactService->countWorkFissionContactsLossByFissionId($fissionIds);
+        $data = [];
+        $fissionIds = json_decode($params['fission_ids'], true, 512, JSON_THROW_ON_ERROR);
+        $firstUser = $this->workFissionContactService->countWorkFissionContactByFissionIds($fissionIds);
+        $data['user']['user_count'] = $this->workFissionContactService->countWorkFissionContactsByFissionId($fissionIds);
+        $data['user']['loss_count'] = $this->workFissionContactService->countWorkFissionContactsLossByFissionId($fissionIds);
         $data['user']['insert_count'] = $data['user']['user_count'] - $data['user']['loss_count'];
 
         $data['user']['today_increase_count'] = $this->workFissionContactService->countWorkFissionContactsTodayByFissionId($fissionIds);
-        $data['user']['new_increase_count']   = $this->workFissionContactService->countWorkFissionContactsNewByFissionId($fissionIds);
-        $data['user']['new_loss_count']       = $this->workFissionContactService->countWorkFissionContactsNewLossByFissionId($fissionIds);
-        $data['user']['net_increase']         = $data['user']['new_increase_count'] - $data['user']['new_loss_count'];
-        $data['user']['invite_count']         = $this->workFissionContactService->sumWorkFissionContactsInviteByFissionId($fissionIds);
-        $data['user']['fission_rate']         = $data['user']['user_count'] === 0 ? 0 : number_format(($data['user']['user_count'] - $firstUser) / $data['user']['user_count'] * 100, 2) . '%';
-        $data['user']['insert_rate']          = $data['user']['user_count'] === 0 ? 0 : number_format(($data['user']['user_count'] - $data['user']['loss_count']) / $data['user']['user_count'] * 100, 2) . '%';
-        $data['user']['share_rate']           = $data['user']['user_count'] === 0 ? 0 : number_format($data['user']['invite_count'] / $data['user']['user_count'] * 100, 2) . '%';
-        $data['active']                       = $this->workFissionService->getWorkFissionByCorpId($user['corpIds'][0], ['id', 'active_name']);
-        $data['level']['first_level']         = $this->workFissionContactService->countWorkFissionContactsByLevel($fissionIds, (int) 1);
-        $data['level']['second_level']        = $this->workFissionContactService->countWorkFissionContactsByLevel($fissionIds, (int) 2);
-        $data['level']['third_level']         = $this->workFissionContactService->countWorkFissionContactsByLevel($fissionIds, (int) 3);
-        $data['employee']                     = $this->getEmployee($fissionIds);
+        $data['user']['new_increase_count'] = $this->workFissionContactService->countWorkFissionContactsNewByFissionId($fissionIds);
+        $data['user']['new_loss_count'] = $this->workFissionContactService->countWorkFissionContactsNewLossByFissionId($fissionIds);
+        $data['user']['net_increase'] = $data['user']['new_increase_count'] - $data['user']['new_loss_count'];
+        $data['user']['invite_count'] = $this->workFissionContactService->sumWorkFissionContactsInviteByFissionId($fissionIds);
+        $data['user']['fission_rate'] = $data['user']['user_count'] === 0 ? 0 : number_format(($data['user']['user_count'] - $firstUser) / $data['user']['user_count'] * 100, 2) . '%';
+        $data['user']['insert_rate'] = $data['user']['user_count'] === 0 ? 0 : number_format(($data['user']['user_count'] - $data['user']['loss_count']) / $data['user']['user_count'] * 100, 2) . '%';
+        $data['user']['share_rate'] = $data['user']['user_count'] === 0 ? 0 : number_format($data['user']['invite_count'] / $data['user']['user_count'] * 100, 2) . '%';
+        $data['active'] = $this->workFissionService->getWorkFissionByCorpId($user['corpIds'][0], ['id', 'active_name']);
+        $data['level']['first_level'] = $this->workFissionContactService->countWorkFissionContactsByLevel($fissionIds, (int) 1);
+        $data['level']['second_level'] = $this->workFissionContactService->countWorkFissionContactsByLevel($fissionIds, (int) 2);
+        $data['level']['third_level'] = $this->workFissionContactService->countWorkFissionContactsByLevel($fissionIds, (int) 3);
+        $data['employee'] = $this->getEmployee($fissionIds);
         return $data;
     }
 
     private function getEmployee($fissionIds): array
     {
         $fission = $this->workFissionService->getWorkFissionsById($fissionIds, ['service_employees']);
-        $emp     = [];
-        $k       = 0;
+        $emp = [];
+        $k = 0;
         foreach ($fission as $key => $val) {
             foreach (json_decode($val['serviceEmployees'], true) as $ke => $va) {
                 $emp[$k] = $va;

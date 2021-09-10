@@ -51,12 +51,12 @@ class DeleteApply
      */
     public function handle($params, $contactTagGroupIds, $tagIds, $corpId): void
     {
-        $this->contactTagService      = make(WorkContactTagContract::class);
+        $this->contactTagService = make(WorkContactTagContract::class);
         $this->contactTagGroupService = make(WorkContactTagGroupContract::class);
         $this->contactTagPivotService = make(WorkContactTagPivotContract::class);
 
         ## 获取企业微信授信信息
-        $corp     = make(CorpContract::class)->getCorpById($corpId, ['id', 'wx_corpid']);
+        $corp = make(CorpContract::class)->getCorpById($corpId, ['id', 'wx_corpid']);
         $ecClient = $this->wxApp($corp['wxCorpid'], 'contact')->external_contact;
 
         //删除标签

@@ -50,8 +50,8 @@ class IndexLogic
 
     public function __construct(ClockInContract $clockInService, WorkEmployeeContract $workEmployeeService, ClockInContactContract $clockInContactService)
     {
-        $this->clockInService        = $clockInService;
-        $this->workEmployeeService   = $workEmployeeService;
+        $this->clockInService = $clockInService;
+        $this->workEmployeeService = $workEmployeeService;
         $this->clockInContactService = $clockInContactService;
     }
 
@@ -96,9 +96,9 @@ class IndexLogic
             $where[] = ['end_time', '<',  $date];
         }
         $where['corp_id'] = $user['corpIds'][0];
-        $options          = [
-            'perPage'    => $params['perPage'],
-            'page'       => $params['page'],
+        $options = [
+            'perPage' => $params['perPage'],
+            'page' => $params['page'],
             'orderByRaw' => 'id desc',
         ];
 
@@ -120,8 +120,8 @@ class IndexLogic
         $list = [];
         $data = [
             'page' => [
-                'perPage'   => $this->perPage,
-                'total'     => '0',
+                'perPage' => $this->perPage,
+                'total' => '0',
                 'totalPage' => '0',
             ],
             'list' => $list,
@@ -141,15 +141,15 @@ class IndexLogic
         $list = [];
         foreach ($clockInList['data'] as $key => $val) {
             //处理创建者信息
-            $username  = $this->userService->getUserById($val['createUserId']);
-            $totalDay  = $this->clockInContactService->sumClockInContactTotalDayByClockInId((int) $val['id']);
+            $username = $this->userService->getUserById($val['createUserId']);
+            $totalDay = $this->clockInContactService->sumClockInContactTotalDayByClockInId((int) $val['id']);
             $totalUser = $this->clockInContactService->countClockInContactByClockInId((int) $val['id']);
-            $time      = '永久有效';
+            $time = '永久有效';
             if ($val['timeType'] === 2) {
                 $time = $val['startTime'] . '-' . $val['endTime'];
             }
             $status = '进行中';
-            $date   = date('Y-m-d H:i:s');
+            $date = date('Y-m-d H:i:s');
             if ($val['timeType'] === 2) {
                 if ($val['startTime'] >= $date) {
                     $status = '未开始';
@@ -163,22 +163,22 @@ class IndexLogic
             }
 
             $list[$key] = [
-                'id'                 => $val['id'],
-                'name'               => $val['name'],
+                'id' => $val['id'],
+                'name' => $val['name'],
                 'contact_clock_tags' => empty($val['contactClockTags']) ? '' : array_column(json_decode($val['contactClockTags'], true, 512, JSON_THROW_ON_ERROR), 'tags'),
-                'nickname'           => isset($username['name']) ? $username['name'] : '',
-                'type'               => $val['type'] === 1 ? '连续打卡' : '累计打卡',
-                'average_day'        => $totalDay > 0 ? ceil($totalDay / $totalUser) : 0,
-                'total_user'         => $totalUser,
-                'time'               => $time,
-                'created_at'         => $val['createdAt'],
-                'status'             => $status,
-                'share_link'         => Url::getAuthRedirectUrl(1, $val['id']),
+                'nickname' => isset($username['name']) ? $username['name'] : '',
+                'type' => $val['type'] === 1 ? '连续打卡' : '累计打卡',
+                'average_day' => $totalDay > 0 ? ceil($totalDay / $totalUser) : 0,
+                'total_user' => $totalUser,
+                'time' => $time,
+                'created_at' => $val['createdAt'],
+                'status' => $status,
+                'share_link' => Url::getAuthRedirectUrl(1, $val['id']),
             ];
         }
-        $data['page']['total']     = $clockInList['total'];
+        $data['page']['total'] = $clockInList['total'];
         $data['page']['totalPage'] = $clockInList['last_page'];
-        $data['list']              = $list;
+        $data['list'] = $list;
 
         return $data;
     }

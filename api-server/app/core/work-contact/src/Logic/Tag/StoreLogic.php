@@ -55,12 +55,12 @@ class StoreLogic
         }
 
         $data = [];
-        $tag  = [];
+        $tag = [];
         foreach ($params['tagName'] as $val) {
             $data[] = [
-                'corp_id'              => user()['corpIds'][0],
+                'corp_id' => user()['corpIds'][0],
                 'contact_tag_group_id' => $params['groupId'],
-                'name'                 => $val,
+                'name' => $val,
             ];
 
             $tag[] = [
@@ -88,12 +88,12 @@ class StoreLogic
             if (! empty($groupInfo['wxGroupId'])) {
                 $addParams = [
                     'group_id' => $groupInfo['wxGroupId'],
-                    'tag'      => $tag,
+                    'tag' => $tag,
                 ];
             } else {
                 $addParams = [
                     'group_name' => $groupInfo['groupName'],
-                    'tag'        => $tag,
+                    'tag' => $tag,
                 ];
             }
 

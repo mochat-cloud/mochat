@@ -77,12 +77,12 @@ class StoreLogic
         ## 基本信息
         return [
             'room_calendar' => [
-                'name'           => $params['name'],
-                'status'         => 1,
-                'tenant_id'      => isset($params['tenant_id']) ? $params['tenant_id'] : 0,
-                'corp_id'        => $user['corpIds'][0],
+                'name' => $params['name'],
+                'status' => 1,
+                'tenant_id' => isset($params['tenant_id']) ? $params['tenant_id'] : 0,
+                'corp_id' => $user['corpIds'][0],
                 'create_user_id' => $user['id'],
-                'created_at'     => date('Y-m-d H:i:s'),
+                'created_at' => date('Y-m-d H:i:s'),
             ],
             'push' => $this->push($params['push']),
         ];
@@ -98,7 +98,7 @@ class StoreLogic
             foreach ($val['push_content'] as $k => $v) {
                 if ($v['type'] === 'image') {
                     $push[$key]['push_content'][$k]['created_at'] = date('Y-m-d H:i:s');
-                    $push[$key]['push_content'][$k]['pic']        = File::uploadBase64Image($v['pic'], 'image/roomCalendar/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg');
+                    $push[$key]['push_content'][$k]['pic'] = File::uploadBase64Image($v['pic'], 'image/roomCalendar/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg');
                 }
             }
         }
@@ -119,8 +119,8 @@ class StoreLogic
             $id = $this->roomCalendarService->createRoomCalendar($params['room_calendar']);
             foreach ($params['push'] as $key => $val) {
                 $val['room_calendar_id'] = $id;
-                $val['push_content']     = json_encode($val['push_content']);
-                $val['created_at']       = date('Y-m-d H:i:s');
+                $val['push_content'] = json_encode($val['push_content']);
+                $val['created_at'] = date('Y-m-d H:i:s');
                 $this->roomCalendarPushService->createRoomCalendarPush($val);
             }
 

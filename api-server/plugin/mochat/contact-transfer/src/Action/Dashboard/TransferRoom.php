@@ -12,11 +12,11 @@ namespace MoChat\Plugin\ContactTransfer\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\App\WorkRoom\Contract\WorkRoomContract;
@@ -62,7 +62,7 @@ class TransferRoom extends AbstractAction
     public function __construct(TransferRoomLogic $transferRoomLogic, RequestInterface $request)
     {
         $this->transferRoomLogic = $transferRoomLogic;
-        $this->request           = $request;
+        $this->request = $request;
     }
 
     /**
@@ -71,7 +71,7 @@ class TransferRoom extends AbstractAction
      *     @Middleware(DashboardAuthMiddleware::class),
      *     @Middleware(PermissionMiddleware::class)
      * })
-     * @RequestMapping(path="/dashboard/transfer/room", methods="POST")
+     * @RequestMapping(path="/dashboard/contactTransfer/room", methods="POST")
      */
     public function handle(): array
     {
@@ -79,10 +79,10 @@ class TransferRoom extends AbstractAction
         if (! $params['list']) {
             $params['list'] = '[]';
         }
-        $params['list']           = json_decode($params['list']);
+        $params['list'] = json_decode($params['list']);
         $params['takeoverUserId'] = $this->request->input('takeoverUserId');        //接替成员的WxId
 
-        $user             = user();
+        $user = user();
         $params['corpId'] = $user['corpIds'][0];
 
         $res = $this->transferRoomLogic->transferRoom($params);
@@ -100,11 +100,11 @@ class TransferRoom extends AbstractAction
             //如果不在错误列表中
             if (! $isExist) {
                 $this->workTransferLogService->createWorkTransferLog([
-                    'corp_id'              => $params['corpId'],
-                    'status'               => 1,
-                    'type'                 => 2,
-                    'name'                 => $this->workRoomService->getWorkRoomsByCorpIdWxChatId($params['corpId'], $param)['name'],
-                    'contact_id'           => $param,
+                    'corp_id' => $params['corpId'],
+                    'status' => 1,
+                    'type' => 2,
+                    'name' => $this->workRoomService->getWorkRoomByCorpIdWxChatId($params['corpId'], $param)['name'],
+                    'contact_id' => $param,
                     'takeover_employee_id' => $params['takeoverUserId'],
                 ]);
             }

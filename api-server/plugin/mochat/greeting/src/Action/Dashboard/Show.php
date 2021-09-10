@@ -12,10 +12,10 @@ namespace MoChat\Plugin\Greeting\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Medium\Contract\MediumContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
@@ -76,11 +76,11 @@ class Show extends AbstractAction
         }
         ## 处理数据
         return [
-            'greetingId'    => $greeting['id'],
-            'rangeType'     => $greeting['rangeType'],
-            'employees'     => empty(json_decode($greeting['employees'], true)) ? [] : $this->getEmployees(json_decode($greeting['employees'], true)),
-            'words'         => $greeting['words'],
-            'mediumId'      => $greeting['mediumId'],
+            'greetingId' => $greeting['id'],
+            'rangeType' => $greeting['rangeType'],
+            'employees' => empty(json_decode($greeting['employees'], true)) ? [] : $this->getEmployees(json_decode($greeting['employees'], true)),
+            'words' => $greeting['words'],
+            'mediumId' => $greeting['mediumId'],
             'mediumContent' => empty($greeting['mediumId']) ? [] : $this->getMediumContent((int) $greeting['mediumId']),
         ];
     }
@@ -105,8 +105,8 @@ class Show extends AbstractAction
     {
         return [
             'greetingId.required' => '欢迎语ID 必填',
-            'greetingId.integer'  => '欢迎语ID 必需为整数',
-            'greetingId.min  '    => '欢迎语ID 不可小于1',
+            'greetingId.integer' => '欢迎语ID 必需为整数',
+            'greetingId.min  ' => '欢迎语ID 不可小于1',
         ];
     }
 
@@ -119,7 +119,7 @@ class Show extends AbstractAction
         $employeeList = $this->workEmployeeService->getWorkEmployeesById($employeeIdArr, ['id', 'name']);
         return empty($employeeList) ? [] : array_map(function ($employee) {
             return [
-                'employeeId'   => $employee['id'],
+                'employeeId' => $employee['id'],
                 'employeeName' => $employee['name'],
             ];
         }, $employeeList);

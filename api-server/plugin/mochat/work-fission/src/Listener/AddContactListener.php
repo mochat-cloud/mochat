@@ -8,25 +8,24 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
-
 namespace MoChat\Plugin\WorkFission\Listener;
 
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
-use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Event\Annotation\Listener;
+use Hyperf\Event\Contract\ListenerInterface;
 use MoChat\App\Corp\Logic\AppTrait;
 use MoChat\App\WorkAgent\QueueService\MessageRemind;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
+use MoChat\App\WorkContact\Event\AddContactEvent;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\Plugin\WorkFission\Contract\WorkFissionContactContract;
 use MoChat\Plugin\WorkFission\Contract\WorkFissionContract;
 use MoChat\Plugin\WorkFission\Contract\WorkFissionPushContract;
-use MoChat\App\WorkContact\Event\AddContactEvent;
 
 /**
- * 添加企业客户事件
+ * 添加企业客户事件.
  *
  * @Listener
  */
@@ -35,28 +34,40 @@ class AddContactListener implements ListenerInterface
     use AppTrait;
 
     /**
-     * @Inject()
+     * @Inject
      * @var WorkFissionContract
      */
     protected $workFissionService;
 
     /**
-     * @Inject()
+     * @Inject
      * @var WorkFissionContactContract
      */
     protected $workFissionContactService;
 
     /**
-     * @Inject()
+     * @Inject
      * @var WorkFissionPushContract
      */
     protected $workFissionPushService;
 
     /**
-     * @Inject()
+     * @Inject
      * @var WorkContactContract
      */
     protected $workContactService;
+
+    /**
+     * @Inject
+     * @var WorkEmployeeContract
+     */
+    protected $workEmployeeService;
+
+    /**
+     * @Inject
+     * @var MessageRemind
+     */
+    protected $messageRemind;
 
     /**
      * @Inject
@@ -64,22 +75,10 @@ class AddContactListener implements ListenerInterface
      */
     private $logger;
 
-    /**
-     * @Inject()
-     * @var WorkEmployeeContract
-     */
-    protected $workEmployeeService;
-
-    /**
-     * @Inject()
-     * @var MessageRemind
-     */
-    protected $messageRemind;
-
     public function listen(): array
     {
         return [
-            AddContactEvent::class
+            AddContactEvent::class,
         ];
     }
 
@@ -96,10 +95,11 @@ class AddContactListener implements ListenerInterface
      * 任务宝-裂变用户数据处理.
      * @param $wxData
      * @param $wxContact
+     * @param mixed $contact
      */
     private function handleFission($contact): void
     {
-        if (!isset($contact['state']) || empty($contact['state']) || !str_contains($contact['state'], 'fission')) {
+        if (! isset($contact['state']) || empty($contact['state']) || ! str_contains($contact['state'], 'fission')) {
             return;
         }
         ## 开启事物
@@ -111,7 +111,7 @@ class AddContactListener implements ListenerInterface
             if (empty($stateArr[1])) {
                 return;
             }
-            $parent = $this->workFissionContactService->getWorkFissionContactById((int)$stateArr[1], ['id', 'fission_id', 'level', 'invite_count', 'contact_superior_user_parent']);
+            $parent = $this->workFissionContactService->getWorkFissionContactById((int) $stateArr[1], ['id', 'fission_id', 'level', 'invite_count', 'contact_superior_user_parent']);
             $this->logger->error('parent');
             if (empty($parent)) {
                 return;
@@ -121,12 +121,12 @@ class AddContactListener implements ListenerInterface
             if ($parent['level'] === 0) {//师傅无裂变等级
                 if ($parent['contactSuperiorUserParent'] === 0) {
                     $parentLevel = 1;
-                } else if ($parent['contactSuperiorUserParent'] > 0) {//有师傅，二级裂变
+                } elseif ($parent['contactSuperiorUserParent'] > 0) {//有师傅，二级裂变
                     $parentLevel = 2;
-                    $shizu = $this->workFissionContactService->getWorkFissionContactById((int)$parent['contactSuperiorUserParent'], ['id', 'fission_id', 'level']);
+                    $shizu = $this->workFissionContactService->getWorkFissionContactById((int) $parent['contactSuperiorUserParent'], ['id', 'fission_id', 'level']);
                     if ($shizu['contactSuperiorUserParent'] > 0) {//师傅有师傅，三级裂变
                         $parentLevel = 3;
-                        $shizuPlus = $this->workFissionContactService->getWorkFissionContactById((int)$shizu['id'], ['id', 'fission_id', 'level']);
+                        $shizuPlus = $this->workFissionContactService->getWorkFissionContactById((int) $shizu['id'], ['id', 'fission_id', 'level']);
                         if ($shizuPlus['contactSuperiorUserParent'] > 0) {//师祖有师傅，不记录裂变等级
                             $parentLevel = 0;
                         }
@@ -134,7 +134,7 @@ class AddContactListener implements ListenerInterface
                 }
             }
             $new = $contact['isNew'];
-            $contactInfo = $this->workFissionContactService->getWorkContactByWxExternalUserIdParent((int)$stateArr[1], $contact['wxExternalUserid']);
+            $contactInfo = $this->workFissionContactService->getWorkContactByWxExternalUserIdParent((int) $stateArr[1], $contact['wxExternalUserid']);
             $employee = $this->workEmployeeService->getWorkEmployeeById($contact['employeeId'], ['wx_user_id']);
             if (empty($contactInfo)) {
                 $level = $parentLevel > 2 ? 0 : $parentLevel + 1;
@@ -147,7 +147,7 @@ class AddContactListener implements ListenerInterface
                     'union_id' => isset($contact['unionid']) ? $contact['unionid'] : '',
                     'nickname' => isset($contact['name']) ? $contact['name'] : '',
                     'avatar' => $pathFileName,
-                    'contact_superior_user_parent' => (int)$stateArr[1],
+                    'contact_superior_user_parent' => (int) $stateArr[1],
                     'level' => $level,
                     'employee' => $employee['wxUserId'],
                     'external_user_id' => $contact['wxExternalUserid'],
@@ -158,16 +158,16 @@ class AddContactListener implements ListenerInterface
                 ];
                 $this->workFissionContactService->createWorkFissionContact($fissionContact);
             } else {
-                $this->workContactService->updateWorkContactById((int)$contactInfo['id'], ['loss' => 0]);
+                $this->workContactService->updateWorkContactById((int) $contactInfo['id'], ['loss' => 0]);
             }
 
             ## 任务宝-裂变用户上级信息
             $inviteCount = $parent['inviteCount']++;
-            $fission = $this->workFissionService->getWorkFissionById((int)$parent['fissionId'], ['service_employees', 'tasks', 'end_time', 'new_friend']);
-            if (!($fission['newFriend'] === 1 && $new === 0)) {
+            $fission = $this->workFissionService->getWorkFissionById((int) $parent['fissionId'], ['service_employees', 'tasks', 'end_time', 'new_friend']);
+            if (! ($fission['newFriend'] === 1 && $new === 0)) {
                 $inviteCount = $parent['inviteCount'];
             }//必须新好友才能助力,客户已非新好友
-            $this->workFissionContactService->updateWorkFissionContactById((int)$parent['id'], ['level' => $parentLevel, 'invite_count' => $inviteCount, 'employee' => $employee['wxUserId']]);
+            $this->workFissionContactService->updateWorkFissionContactById((int) $parent['id'], ['level' => $parentLevel, 'invite_count' => $inviteCount, 'employee' => $employee['wxUserId']]);
 
             ## 裂变成功推送消息
             $totalCount = 0;
@@ -175,10 +175,10 @@ class AddContactListener implements ListenerInterface
                 $totalCount += $val['count'];
             }
             if ($totalCount === $inviteCount) {
-                $this->workFissionContactService->updateWorkFissionContactById((int)$parent['id'], ['status' => 1]);
+                $this->workFissionContactService->updateWorkFissionContactById((int) $parent['id'], ['status' => 1]);
             }
             if ($totalCount === $inviteCount && strtotime($fission['endTime']) > time()) {//邀请人数已满，活动有效期内
-                $push = $this->workFissionPushService->getWorkFissionPushByFissionId((int)$parent['fissionId'], ['push_employee', 'push_contact', 'msg_text', 'msg_complex', 'msg_complex_type']);
+                $push = $this->workFissionPushService->getWorkFissionPushByFissionId((int) $parent['fissionId'], ['push_employee', 'push_contact', 'msg_text', 'msg_complex', 'msg_complex_type']);
                 if ($push['pushEmployee'] === 1) {
                     $this->sendEmployeeMsg($contact, array_column(json_decode($fission['serviceEmployees'], true, 512, JSON_THROW_ON_ERROR), 'wxUserId'), $fission);
                 }
@@ -207,14 +207,14 @@ class AddContactListener implements ListenerInterface
     private function sendContactMsg($contact, $push)
     {
         $sendWelcomeData = [];
-        if (!empty($push['msgText'])) {
+        if (! empty($push['msgText'])) {
             $sendWelcomeData['text']['content'] = str_replace('[用户昵称]', '%NICKNAME%', $push['msgText']);
         }
-        if (!empty($push['msgComplexType']) && $push['msgComplexType'] === 'image') {
+        if (! empty($push['msgComplexType']) && $push['msgComplexType'] === 'image') {
             $image = json_decode($push['msgComplex'], true, 512, JSON_THROW_ON_ERROR);
             $sendWelcomeData['image']['pic_url'] = $image['pic_url'];
         }
-        if (!empty($push['msgComplexType']) && $push['msgComplexType'] === 'link') {
+        if (! empty($push['msgComplexType']) && $push['msgComplexType'] === 'link') {
             $link = json_decode($push['msgComplex'], true, 512, JSON_THROW_ON_ERROR);
             $sendWelcomeData['link'] = [
                 'title' => $link['title'],
@@ -223,7 +223,7 @@ class AddContactListener implements ListenerInterface
                 'url' => $link['url'],
             ];
         }
-        if (!empty($push['msgComplexType']) && $push['msgComplexType'] == 'applets') {
+        if (! empty($push['msgComplexType']) && $push['msgComplexType'] == 'applets') {
             $applets = json_decode($push['msgComplex'], true, 512, JSON_THROW_ON_ERROR);
             $sendWelcomeData['miniprogram'] = [
                 'title' => $applets['title'],
@@ -242,7 +242,7 @@ class AddContactListener implements ListenerInterface
     }
 
     /**
-     * 发送员工提醒
+     * 发送员工提醒.
      * @param array $contact
      * @param array $employee
      * @param array $fission
@@ -250,7 +250,7 @@ class AddContactListener implements ListenerInterface
     private function sendEmployeeMsg($contact, $employee, $fission)
     {
         $to = implode('|', $employee);
-        $content = sprintf("客户【%s】已完成裂变任务：%s", $contact['name'], $fission['activeName']);
+        $content = sprintf('客户【%s】已完成裂变任务：%s', $contact['name'], $fission['activeName']);
         $this->messageRemind->sendToEmployee($contact['corpId'], $to, 'text', $content);
     }
 }

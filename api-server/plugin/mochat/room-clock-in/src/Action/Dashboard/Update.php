@@ -12,10 +12,10 @@ namespace MoChat\Plugin\RoomClockIn\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
@@ -71,12 +71,12 @@ class Update extends AbstractAction
     protected function rules(): array
     {
         return [
-            'id'              => 'required',
-            'name'            => 'required',
-            'description'     => 'required',
-            'type'            => 'required',
-            'tasks'           => 'required',
-            'time_type'       => 'required',
+            'id' => 'required',
+            'name' => 'required',
+            'description' => 'required',
+            'type' => 'required',
+            'tasks' => 'required',
+            'time_type' => 'required',
             'employee_qrcode' => 'required',
         ];
     }
@@ -88,12 +88,12 @@ class Update extends AbstractAction
     protected function messages(): array
     {
         return [
-            'id.required'              => 'id必传',
-            'name.required'            => '打卡活动名称必传',
-            'description.required'     => '打卡活动说明必传',
-            'type.required'            => '打卡类型必传',
-            'tasks.required'           => '打卡任务设置',
-            'time_type'                => '截止日期类型必传',
+            'id.required' => 'id必传',
+            'name.required' => '打卡活动名称必传',
+            'description.required' => '打卡活动说明必传',
+            'type.required' => '打卡类型必传',
+            'tasks.required' => '打卡任务设置',
+            'time_type' => '截止日期类型必传',
             'employee_qrcode.required' => '客服二维码必传',
         ];
     }

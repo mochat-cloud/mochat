@@ -122,7 +122,7 @@ class KeyWordTag
 
         foreach ($contact_list as $key => $val) {
             $today_data = make(WorkMessageContract::class, [$corpId])->getWorkMessagesByCorpIdActionFrom($corpId, $val['wxExternalUserid'], date('Y-m-d'));
-            $week_data  = make(WorkMessageContract::class, [$corpId])->getWorkMessagesByCorpIdActionFrom($corpId, $val['wxExternalUserid'], date('Y-m-d', (time() - ((date('w', time()) == 0 ? 7 : date('w', time())) - 1) * 24 * 3600)));
+            $week_data = make(WorkMessageContract::class, [$corpId])->getWorkMessagesByCorpIdActionFrom($corpId, $val['wxExternalUserid'], date('Y-m-d', (time() - ((date('w', time()) == 0 ? 7 : date('w', time())) - 1) * 24 * 3600)));
             $month_data = make(WorkMessageContract::class, [$corpId])->getWorkMessagesByCorpIdActionFrom($corpId, $val['wxExternalUserid'], date('Y-m-01', time()));
             foreach ($autoTag as $tag) {
                 $rule = json_decode($tag['tagRule'], true, 512, JSON_THROW_ON_ERROR);
@@ -140,10 +140,10 @@ class KeyWordTag
                         }
                         if ($updateWords[$val['wxExternalUserid']]['num'] >= $valRule['trigger_count']) {
                             ## 客户
-                            $this->params['contactId']               = $this->getContactId($corpId, $val['wxExternalUserid']);
+                            $this->params['contactId'] = $this->getContactId($corpId, $val['wxExternalUserid']);
                             $this->params['contactWxExternalUserid'] = $val['wxExternalUserid'];
                             ## 员工
-                            $this->params['employeeId']       = $this->getEmployeeId($corpId, $updateWords[$val['wxExternalUserid']]['employee']);
+                            $this->params['employeeId'] = $this->getEmployeeId($corpId, $updateWords[$val['wxExternalUserid']]['employee']);
                             $this->params['employeeWxUserId'] = $updateWords[$val['wxExternalUserid']]['employee'];
                             ## 修改标签并记录轨迹
                             $this->updateTag(array_column($valRule['tags'], 'tagid'), $updateWords[$val['wxExternalUserid']]['num'], $tag['id'], $keyRule + 1, $updateWords[$val['wxExternalUserid']]['keyword'], $corpId);
@@ -162,10 +162,10 @@ class KeyWordTag
                         }
                         if ($updateWords[$val['wxExternalUserid']]['num'] >= $valRule['trigger_count']) {
                             ## 客户
-                            $this->params['contactId']               = $this->getContactId((int) $corpId, $val['wxExternalUserid']);
+                            $this->params['contactId'] = $this->getContactId((int) $corpId, $val['wxExternalUserid']);
                             $this->params['contactWxExternalUserid'] = $val['wxExternalUserid'];
                             ## 员工
-                            $this->params['employeeId']       = $this->getEmployeeId((int) $corpId, $updateWords[$val['wxExternalUserid']]['employee']);
+                            $this->params['employeeId'] = $this->getEmployeeId((int) $corpId, $updateWords[$val['wxExternalUserid']]['employee']);
                             $this->params['employeeWxUserId'] = $updateWords[$val['wxExternalUserid']]['employee'];
                             ## 修改标签并记录轨迹
                             $this->updateTag(array_column($valRule['tags'], 'tagid'), $updateWords[$val['wxExternalUserid']]['num'], $tag['id'], $keyRule + 1, $updateWords[$val['wxExternalUserid']]['keyword'], $corpId);
@@ -181,10 +181,10 @@ class KeyWordTag
                         $updateWords = $this->updateWords($month_data, $tag);
                         if ($updateWords[$val['wxExternalUserid']]['num'] >= $valRule['trigger_count']) {
                             ## 客户
-                            $this->params['contactId']               = $this->getContactId((int) $corpId, $val['wxExternalUserid']);
+                            $this->params['contactId'] = $this->getContactId((int) $corpId, $val['wxExternalUserid']);
                             $this->params['contactWxExternalUserid'] = $val['wxExternalUserid'];
                             ## 员工
-                            $this->params['employeeId']       = $this->getEmployeeId((int) $corpId, $updateWords[$val['wxExternalUserid']]['employee']);
+                            $this->params['employeeId'] = $this->getEmployeeId((int) $corpId, $updateWords[$val['wxExternalUserid']]['employee']);
                             $this->params['employeeWxUserId'] = $updateWords[$val['wxExternalUserid']]['employee'];
                             ## 修改标签并记录轨迹
                             $this->updateTag(array_column($valRule['tags'], 'tagid'), $updateWords[$val['wxExternalUserid']]['num'], $tag['id'], $keyRule + 1, $updateWords[$val['wxExternalUserid']]['keyword'], $corpId);
@@ -215,13 +215,13 @@ class KeyWordTag
             if (! empty($tag['fuzzyMatchKeyword'])) {
                 foreach (explode(',', $tag['fuzzyMatchKeyword']) as $fuzzyMatchKeyword) {
                     isset($updateWords[$message['from']]) || $updateWords[$message['from']] = [
-                        'num'      => 0,
-                        'keyword'  => $fuzzyMatchKeyword,
+                        'num' => 0,
+                        'keyword' => $fuzzyMatchKeyword,
                         'employee' => json_decode($message['tolist'], true)[0],
                     ];
                     if (stripos($messageContent['content'], $fuzzyMatchKeyword) !== false && in_array(json_decode($message['tolist'], true)[0], explode(',', $tag['employees']), true)) {
                         ++$updateWords[$message['from']]['num'];
-                        $updateWords[$message['from']]['keyword']  = $fuzzyMatchKeyword;
+                        $updateWords[$message['from']]['keyword'] = $fuzzyMatchKeyword;
                         $updateWords[$message['from']]['employee'] = json_decode($message['tolist'], true)[0];
                     }
                 }
@@ -230,13 +230,13 @@ class KeyWordTag
             if (! empty($tag['exactMatchKeyword'])) {
                 foreach (explode(',', $tag['exactMatchKeyword']) as $exactMatchKeyword) {
                     isset($updateWords[$message['from']]) || $updateWords[$message['from']] = [
-                        'num'      => 0,
-                        'keyword'  => $exactMatchKeyword,
+                        'num' => 0,
+                        'keyword' => $exactMatchKeyword,
                         'employee' => json_decode($message['tolist'], true)[0],
                     ];
                     if ($messageContent['content'] === $exactMatchKeyword && in_array(json_decode($message['tolist'], true)[0], explode(',', $tag['employees']), true)) {
                         ++$updateWords[$message['from']]['num'];
-                        $updateWords[$message['from']]['keyword']  = $exactMatchKeyword;
+                        $updateWords[$message['from']]['keyword'] = $exactMatchKeyword;
                         $updateWords[$message['from']]['employee'] = json_decode($message['tolist'], true)[0];
                     }
                 }
@@ -281,8 +281,8 @@ class KeyWordTag
                 $data = [];
                 foreach ($tagDiffTwo as $val) {
                     $data[] = [
-                        'contact_id'     => $this->params['contactId'],
-                        'employee_id'    => $this->params['employeeId'],
+                        'contact_id' => $this->params['contactId'],
+                        'employee_id' => $this->params['employeeId'],
                         'contact_tag_id' => $val,
                     ];
                 }
@@ -301,17 +301,17 @@ class KeyWordTag
                 }
                 //添加关键词打标签客户记录
                 $createMonitors = [
-                    'auto_tag_id'        => $tag_id,
-                    'contact_id'         => $this->params['contactId'],
-                    'tag_rule_id'        => $tag_rule_id,
+                    'auto_tag_id' => $tag_id,
+                    'contact_id' => $this->params['contactId'],
+                    'tag_rule_id' => $tag_rule_id,
                     'wx_external_userid' => $this->params['contactWxExternalUserid'],
-                    'employee_id'        => $this->params['employeeId'],
-                    'keyword'            => $keyword,
-                    'tags'               => json_encode($addTagName),
-                    'corp_id'            => $corpId,
-                    'trigger_count'      => $trigger_count,
-                    'status'             => 1,
-                    'created_at'         => date('Y-m-d H:i:s'),
+                    'employee_id' => $this->params['employeeId'],
+                    'keyword' => $keyword,
+                    'tags' => json_encode($addTagName),
+                    'corp_id' => $corpId,
+                    'trigger_count' => $trigger_count,
+                    'status' => 1,
+                    'created_at' => date('Y-m-d H:i:s'),
                 ];
                 $tagRes = $this->autoTagRecordService->createAutoTagRecord($createMonitors);
                 if ($tagRes != true) {
@@ -329,8 +329,8 @@ class KeyWordTag
             $data = [];
             foreach ($tagArr as $val) {
                 $data[] = [
-                    'contact_id'     => $this->params['contactId'],
-                    'employee_id'    => $this->params['employeeId'],
+                    'contact_id' => $this->params['contactId'],
+                    'employee_id' => $this->params['employeeId'],
                     'contact_tag_id' => $val,
                 ];
             }
@@ -342,17 +342,17 @@ class KeyWordTag
             }
             //添加关键词打标签客户记录
             $createMonitors = [
-                'auto_tag_id'        => $tag_id,
-                'contact_id'         => $this->params['contactId'],
-                'tag_rule_id'        => $tag_rule_id,
+                'auto_tag_id' => $tag_id,
+                'contact_id' => $this->params['contactId'],
+                'tag_rule_id' => $tag_rule_id,
                 'wx_external_userid' => $this->params['contactWxExternalUserid'],
-                'employee_id'        => $this->params['employeeId'],
-                'keyword'            => $keyword,
-                'tags'               => json_encode($addTagName),
-                'corp_id'            => $corpId,
-                'trigger_count'      => $trigger_count,
-                'status'             => 1,
-                'created_at'         => date('Y-m-d H:i:s'),
+                'employee_id' => $this->params['employeeId'],
+                'keyword' => $keyword,
+                'tags' => json_encode($addTagName),
+                'corp_id' => $corpId,
+                'trigger_count' => $trigger_count,
+                'status' => 1,
+                'created_at' => date('Y-m-d H:i:s'),
             ];
             $tagRes = $this->autoTagRecordService->createAutoTagRecord($createMonitors);
             if ($tagRes != true) {
@@ -369,9 +369,9 @@ class KeyWordTag
         if (! empty($tagData)) {
             //同步到企业微信
             $this->contactTagService = make(UpdateContactTagApply::class);
-            $params                  = [
-                'add_tag'         => $addWxTag,
-                'userid'          => $this->params['employeeWxUserId'],
+            $params = [
+                'add_tag' => $addWxTag,
+                'userid' => $this->params['employeeWxUserId'],
                 'external_userid' => $this->params['contactWxExternalUserid'],
             ];
             $this->contactTagService->handle($params, user()['corpIds'][0]);
@@ -399,17 +399,17 @@ class KeyWordTag
     private function getWorkContactTag($tagIds): array
     {
         $wxTagIds = [];
-        $tagName  = [];
+        $tagName = [];
 
         $tagInfo = $this->workContactTagService->getWorkContactTagsById($tagIds);
         if (! empty($tagInfo)) {
             $wxTagIds = array_column($tagInfo, 'wxContactTagId');
-            $tagName  = array_column($tagInfo, 'name');
+            $tagName = array_column($tagInfo, 'name');
         }
 
         return [
             'wxTagIds' => $wxTagIds,
-            'tagName'  => $tagName,
+            'tagName' => $tagName,
         ];
     }
 
@@ -422,10 +422,10 @@ class KeyWordTag
     {
         $data = [
             'employee_id' => $this->params['employeeId'],
-            'contact_id'  => $this->params['contactId'],
-            'content'     => $content,
-            'corp_id'     => user()['corpIds'][0],
-            'event'       => $event,
+            'contact_id' => $this->params['contactId'],
+            'content' => $content,
+            'corp_id' => user()['corpIds'][0],
+            'event' => $event,
         ];
 
         $res = $this->track->createContactEmployeeTrack($data);

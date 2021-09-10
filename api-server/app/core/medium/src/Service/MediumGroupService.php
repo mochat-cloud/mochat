@@ -114,7 +114,7 @@ class MediumGroupService extends AbstractService implements MediumGroupContract
      */
     public function getMediumGroupByName(string $name, array $columns = ['*']): array
     {
-        $data          = $this->model::query()->where('name', $name)->first($columns);
+        $data = $this->model::query()->where('name', $name)->first($columns);
         $data || $data = collect([]);
         return $data->toArray();
     }
@@ -127,7 +127,7 @@ class MediumGroupService extends AbstractService implements MediumGroupContract
      */
     public function existMediumGroupByName(string $name, ?int $id = null): bool
     {
-        $data        = $this->model::query()->where('name', $name);
+        $data = $this->model::query()->where('name', $name);
         $id && $data = $data->where('id', '<>', $id);
         return $data->exists();
     }
@@ -140,7 +140,7 @@ class MediumGroupService extends AbstractService implements MediumGroupContract
      */
     public function getMediumGroupsByCorpId(int $corpId, array $columns = ['*']): array
     {
-        $data          = $this->model::query()->where('corp_id', $corpId)->get($columns);
+        $data = $this->model::query()->where('corp_id', $corpId)->get($columns);
         $data || $data = collect([]);
         return $data->toArray();
     }

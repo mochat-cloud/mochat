@@ -121,25 +121,25 @@ class InfoLogic
 
         foreach ($employees as $item) {
             $employeeArr[] = [
-                'roomId'    => $item['id'],
-                'name'      => $item['name'],
-                'num'       => $this->workContactRoomService->countWorkContactRoomsByRoomIdContact($item['id']),
+                'roomId' => $item['id'],
+                'name' => $item['name'],
+                'num' => $this->workContactRoomService->countWorkContactRoomsByRoomIdContact($item['id']),
                 'ownerName' => $this->workEmployeeService->getWorkEmployeeById($item['ownerId'])['name'],
-                'wxChatId'  => $item['wxChatId'],
+                'wxChatId' => $item['wxChatId'],
             ];
         }
         ## 处理创建者信息
         $username = $this->userService->getUserById($res['creatorId']);
         return [
-            'id'            => $res['id'],
-            'name'          => $res['name'],
-            'creatorName'   => isset($username['name']) ? $username['name'] : '',
-            'rooms'         => $employeeArr,
-            'setting'       => json_decode($res['setting']),
+            'id' => $res['id'],
+            'name' => $res['name'],
+            'creatorName' => isset($username['name']) ? $username['name'] : '',
+            'rooms' => $employeeArr,
+            'setting' => json_decode($res['setting']),
             'chatHandleNum' => count(json_decode($res['roomIds'])),
-            'todayTipNum'   => 0,
-            'ownerTipNum'   => 0,
-            'createTime'    => $res['createdAt'],
+            'todayTipNum' => 0,
+            'ownerTipNum' => 0,
+            'createTime' => $res['createdAt'],
         ];
     }
 }

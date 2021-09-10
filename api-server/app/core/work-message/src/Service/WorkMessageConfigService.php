@@ -114,7 +114,7 @@ class WorkMessageConfigService extends AbstractService implements WorkMessageCon
      */
     public function getWorkMessageConfigByCorpId(int $corpId, array $columns = ['*']): array
     {
-        $data          = $this->model::query()->where('corp_id', $corpId)->first($columns);
+        $data = $this->model::query()->where('corp_id', $corpId)->first($columns);
         $data || $data = collect([]);
         return $data->toArray();
     }
@@ -127,7 +127,7 @@ class WorkMessageConfigService extends AbstractService implements WorkMessageCon
      */
     public function getWorkMessageConfigsByCorpId(array $corpIds, array $columns = ['*']): array
     {
-        $data          = $this->model::query()->whereIn('corp_id', $corpIds)->get($columns);
+        $data = $this->model::query()->whereIn('corp_id', $corpIds)->get($columns);
         $data || $data = collect([]);
         return $data->toArray();
     }

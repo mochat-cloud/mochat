@@ -83,16 +83,16 @@ class ShowLogic
         ## 组织响应数据
         return [
             'workRoomAutoPullId' => $roomAutoPull['id'],
-            'qrcodeName'         => $roomAutoPull['qrcodeName'],
-            'qrcodeUrl'          => empty($roomAutoPull['qrcodeUrl']) ? '' : file_full_url($roomAutoPull['qrcodeUrl']),
-            'isVerified'         => $roomAutoPull['isVerified'],
-            'roomNum'            => count($workRoomList),
-            'leadingWords'       => $roomAutoPull['leadingWords'],
-            'createdAt'          => $roomAutoPull['createdAt'],
-            'employees'          => $workEmployeeList,
-            'tags'               => isset($workContactTagList['tagGroupAllList']) ? $workContactTagList['tagGroupAllList'] : [],
-            'selectedTags'       => isset($workContactTagList['selectedTags']) ? $workContactTagList['selectedTags'] : [],
-            'rooms'              => $workRoomList,
+            'qrcodeName' => $roomAutoPull['qrcodeName'],
+            'qrcodeUrl' => empty($roomAutoPull['qrcodeUrl']) ? '' : file_full_url($roomAutoPull['qrcodeUrl']),
+            'isVerified' => $roomAutoPull['isVerified'],
+            'roomNum' => count($workRoomList),
+            'leadingWords' => $roomAutoPull['leadingWords'],
+            'createdAt' => $roomAutoPull['createdAt'],
+            'employees' => $workEmployeeList,
+            'tags' => isset($workContactTagList['tagGroupAllList']) ? $workContactTagList['tagGroupAllList'] : [],
+            'selectedTags' => isset($workContactTagList['selectedTags']) ? $workContactTagList['selectedTags'] : [],
+            'rooms' => $workRoomList,
         ];
     }
 
@@ -122,7 +122,7 @@ class ShowLogic
         if (! empty($employeeList)) {
             foreach ($employeeList as $v) {
                 $data[] = [
-                    'employeeId'   => $v['id'],
+                    'employeeId' => $v['id'],
                     'employeeName' => $v['name'],
                 ];
             }
@@ -144,20 +144,20 @@ class ShowLogic
         }
         ## 客户标签分组
         $contactTagGroupIds = array_filter(array_unique(array_column($tagList, 'contactTagGroupId')));
-        $tagGroupList       = $this->workContactTagGroupService->getWorkContactTagGroupsById($contactTagGroupIds, ['id', 'group_name']);
-        $tagGroupAllList    = [
+        $tagGroupList = $this->workContactTagGroupService->getWorkContactTagGroupsById($contactTagGroupIds, ['id', 'group_name']);
+        $tagGroupAllList = [
             '0' => [
-                'groupId'   => 0,
+                'groupId' => 0,
                 'groupName' => '未分组',
-                'list'      => [],
+                'list' => [],
             ],
         ];
         if (! empty($tagGroupList)) {
             foreach ($tagGroupList as $tagGroup) {
                 $tagGroupAllList[$tagGroup['id']] = [
-                    'groupId'   => $tagGroup['id'],
+                    'groupId' => $tagGroup['id'],
                     'groupName' => $tagGroup['groupName'],
-                    'list'      => [],
+                    'list' => [],
                 ];
             }
         }
@@ -168,15 +168,15 @@ class ShowLogic
                 continue;
             }
             in_array($tag['id'], $workContactTagIds) && $selectedTags[] = $tag['id'];
-            $tagGroupAllList[$tag['contactTagGroupId']]['list'][]       = [
-                'tagId'      => $tag['id'],
-                'tagName'    => $tag['name'],
+            $tagGroupAllList[$tag['contactTagGroupId']]['list'][] = [
+                'tagId' => $tag['id'],
+                'tagName' => $tag['name'],
                 'isSelected' => in_array($tag['id'], $workContactTagIds) ? 1 : 2,
             ];
         }
         return [
             'tagGroupAllList' => array_values($tagGroupAllList),
-            'selectedTags'    => $selectedTags,
+            'selectedTags' => $selectedTags,
         ];
     }
 
@@ -188,12 +188,12 @@ class ShowLogic
     {
         $roomIds = array_column($rooms, 'roomId');
         ## 群聊
-        $roomList                     = $this->workRoomService->getWorkRoomsById($roomIds, ['id', 'name', 'room_max']);
+        $roomList = $this->workRoomService->getWorkRoomsById($roomIds, ['id', 'name', 'room_max']);
         empty($roomList) || $roomList = array_column($roomList, null, 'id');
         ## 群数据统计
         $roomStatistics = $this->handleRoomStatistics($roomIds);
         ## 响应数据
-        $data      = [];
+        $data = [];
         $isDrawing = 0;
         foreach ($rooms as $room) {
             if (! isset($roomList[$room['roomId']])) {
@@ -203,11 +203,11 @@ class ShowLogic
                 continue;
             }
             ## 客户群拉人状态
-            $num   = $roomStatistics[$room['roomId']];
+            $num = $roomStatistics[$room['roomId']];
             $state = DrawState::NO_STARTED;
             if ($num < $roomList[$room['roomId']]['roomMax'] && $num < $room['maxNum']) {
                 if ($isDrawing == 0) {
-                    $state     = DrawState::DRAWING;
+                    $state = DrawState::DRAWING;
                     $isDrawing = 1;
                 }
             } else {
@@ -215,14 +215,14 @@ class ShowLogic
             }
 
             $data[] = [
-                'roomId'            => $room['roomId'],
-                'roomName'          => isset($roomList[$room['roomId']]) ? $roomList[$room['roomId']]['name'] : '',
-                'roomMax'           => isset($roomList[$room['roomId']]) ? $roomList[$room['roomId']]['roomMax'] : 0,
-                'num'               => $roomStatistics[$room['roomId']],
-                'maxNum'            => $room['maxNum'],
-                'roomQrcodeUrl'     => isset($room['roomQrcodeUrl']) ? $room['roomQrcodeUrl'] : '',
+                'roomId' => $room['roomId'],
+                'roomName' => isset($roomList[$room['roomId']]) ? $roomList[$room['roomId']]['name'] : '',
+                'roomMax' => isset($roomList[$room['roomId']]) ? $roomList[$room['roomId']]['roomMax'] : 0,
+                'num' => $roomStatistics[$room['roomId']],
+                'maxNum' => $room['maxNum'],
+                'roomQrcodeUrl' => isset($room['roomQrcodeUrl']) ? $room['roomQrcodeUrl'] : '',
                 'longRoomQrcodeUrl' => isset($room['roomQrcodeUrl']) && ! empty($room['roomQrcodeUrl']) ? file_full_url($room['roomQrcodeUrl']) : '',
-                'state'             => $state,
+                'state' => $state,
             ];
         }
         return $data;

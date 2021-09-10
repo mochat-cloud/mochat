@@ -68,16 +68,16 @@ class ImportIndexLogic
             'orderByRaw' => 'id desc',
         ]);
         $allotEmployee = [];
-        $tags          = [];
+        $tags = [];
         foreach ($record['data'] as $item) {
             $allotEmployee = array_merge($allotEmployee, $item['allotEmployee'] ?: []);
-            $tags          = array_merge($tags, $item['tags'] ?: []);
+            $tags = array_merge($tags, $item['tags'] ?: []);
         }
 
         $employees = $this->workEmployeeService->getWorkEmployeesById($allotEmployee, ['id', 'name']);
         $employees = collect($employees)->keyBy('id')->toArray();
-        $tags      = $this->workContactTagService->getWorkContactTagsById($tags, ['id', 'name']);
-        $tags      = collect($tags)->keyBy('id')->toArray();
+        $tags = $this->workContactTagService->getWorkContactTagsById($tags, ['id', 'name']);
+        $tags = collect($tags)->keyBy('id')->toArray();
 
         foreach ($record['data'] as &$item) {
             $tempEmployee = [];

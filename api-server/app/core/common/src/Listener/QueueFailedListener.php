@@ -45,7 +45,7 @@ class QueueFailedListener implements ListenerInterface
     public function process(object $event): void
     {
         if (env('APP_ENV') === 'dev' && config('debug.queue', false)) {
-            dump($event->getThrowable()->getMessage(),$event->getThrowable()->getTrace());
+            dump($event->getThrowable()->getMessage(), $event->getThrowable()->getTrace());
         }
         $this->logger->error(sprintf('[redis异步队列错误-message:] %s', $event->getThrowable()->getMessage()));
         $this->logger->error(sprintf('[redis异步队列错误-trace:] %s', $event->getThrowable()->getTraceAsString()));

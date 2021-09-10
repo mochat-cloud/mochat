@@ -11,22 +11,22 @@ declare(strict_types=1);
 namespace MoChat\App\OfficialAccount\Action\Dashboard;
 
 use EasyWeChat\Factory;
+use EasyWeChat\Kernel\Exceptions\RuntimeException;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
+use Hyperf\Guzzle\ClientFactory;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
+use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\Utils\Codec\Json;
 use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
-use Hyperf\HttpServer\Annotation\RequestMapping;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\Utils\Url;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use EasyWeChat\Kernel\Exceptions\RuntimeException;
-use Hyperf\Guzzle\ClientFactory;
 
 /**
  * 公众号-构建PC端授权链接
@@ -36,6 +36,8 @@ use Hyperf\Guzzle\ClientFactory;
 class GetPreAuthUrl extends AbstractAction
 {
     use ValidateSceneTrait;
+
+    public const API_START_PUSH_TICKET = 'https://api.weixin.qq.com/cgi-bin/component/api_start_push_ticket';
 
     /**
      * @Inject
@@ -49,13 +51,10 @@ class GetPreAuthUrl extends AbstractAction
     protected $config;
 
     /**
-     * @Inject()
+     * @Inject
      * @var ClientFactory
      */
     private $clientFactory;
-
-    const API_START_PUSH_TICKET = 'https://api.weixin.qq.com/cgi-bin/component/api_start_push_ticket';
-
 
     /**
      * @Middlewares({
@@ -87,9 +86,9 @@ class GetPreAuthUrl extends AbstractAction
             $authUrl = $app->getPreAuthorizationUrl(Url::getDashboardBaseUrl() . "/authRedirect?corp_id={$user['corpIds'][0]}");
             return ['url' => $authUrl];
         } catch (RuntimeException $exception) {
-            if (false !== strpos($exception->getMessage(), 'component_verify_ticket')) {
+            if (strpos($exception->getMessage(), 'component_verify_ticket') !== false) {
                 if ($retry < 3 && $this->startPushTicket()) {
-                    $retry++;
+                    ++$retry;
                     sleep(2);
                     goto getPreAuthorizationUrl;
                 }
@@ -121,7 +120,7 @@ class GetPreAuthUrl extends AbstractAction
     }
 
     /**
-     * 启动推送 ticket
+     * 启动推送 ticket.
      */
     protected function startPushTicket()
     {

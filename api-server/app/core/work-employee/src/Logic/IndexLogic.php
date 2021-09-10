@@ -53,9 +53,9 @@ class IndexLogic
         // 组织响应数据
         $data = [
             'page' => [
-                'page'      => $params['page'],
-                'perPage'   => $params['perPage'],
-                'total'     => 0,
+                'page' => $params['page'],
+                'perPage' => $params['perPage'],
+                'total' => 0,
                 'totalPage' => 0,
             ],
             'list' => [],
@@ -66,9 +66,9 @@ class IndexLogic
             return $data;
         }
         $data['page'] = [
-            'page'      => $params['page'],
-            'perPage'   => $params['perPage'],
-            'total'     => ! empty($employeeData['total']) ? $employeeData['total'] : 0,
+            'page' => $params['page'],
+            'perPage' => $params['perPage'],
+            'total' => ! empty($employeeData['total']) ? $employeeData['total'] : 0,
             'totalPage' => ! empty($employeeData['last_page']) ? $employeeData['last_page'] : 0,
         ];
         foreach ($employeeData['data'] as $key => $value) {
@@ -132,8 +132,8 @@ class IndexLogic
     {
         // 搜索条件
         $options = [
-            'page'       => $params['page'],
-            'perPage'    => $params['perPage'],
+            'page' => $params['page'],
+            'perPage' => $params['perPage'],
             'orderByRaw' => 'updated_at desc',
         ];
         //判断权限是否为全公司

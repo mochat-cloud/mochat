@@ -14,11 +14,11 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
@@ -69,7 +69,7 @@ class Update extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -94,6 +94,14 @@ class Update extends AbstractAction
         $this->validated($params, 'update');
         ## 处理参数
         $data = $this->handleParam($params);
+        ## 处理重复
+        if (! empty($data['address'])) {
+            $info = $this->shopCodeService->getShopCodeByNameAddress($user['corpIds'][0], $data['address'], (int) $params['id'], ['id']);
+            if (! empty($info)) {
+                throw new CommonException(ErrorCode::INVALID_PARAMS, '地址重复，不可操作');
+            }
+        }
+
         ## 创建标签
         return $this->updateShopCode((int) $params['id'], $user, $data);
     }
@@ -106,8 +114,8 @@ class Update extends AbstractAction
     protected function rules(): array
     {
         return [
-            'id'     => 'required',
-            'type'   => 'required',
+            'id' => 'required',
+            'type' => 'required',
             'status' => 'required',
         ];
     }
@@ -119,8 +127,8 @@ class Update extends AbstractAction
     protected function messages(): array
     {
         return [
-            'id.required'     => 'id 必传',
-            'type.required'   => 'type 必传',
+            'id.required' => 'id 必传',
+            'type.required' => 'type 必传',
             'status.required' => '开启状态 必传',
         ];
     }
@@ -135,19 +143,19 @@ class Update extends AbstractAction
     {
         ## 基本信息
         return [
-            'name'           => isset($params['name']) ? $params['name'] : '',
-            'type'           => $params['type'],
-            'employee'       => (isset($params['employee']) && ! empty($params['employee'])) ? json_encode($params['employee'], JSON_THROW_ON_ERROR) : '{}',
-            'qw_code'        => isset($params['qwCode']) ? json_encode($params['qwCode'], JSON_THROW_ON_ERROR) : '{}',
+            'name' => isset($params['name']) ? $params['name'] : '',
+            'type' => $params['type'],
+            'employee' => (isset($params['employee']) && ! empty($params['employee'])) ? json_encode($params['employee'], JSON_THROW_ON_ERROR) : '{}',
+            'qw_code' => isset($params['qwCode']) ? json_encode($params['qwCode'], JSON_THROW_ON_ERROR) : '{}',
             'search_keyword' => isset($params['searchKeyword']) ? $params['searchKeyword'] : '',
-            'address'        => isset($params['address']) ? $params['address'] : '',
-            'country'        => isset($params['country']) ? $params['country'] : '',
-            'province'       => isset($params['province']) ? $params['province'] : '',
-            'city'           => isset($params['city']) ? $params['city'] : '',
-            'district'       => isset($params['district']) ? $params['district'] : '',
-            'lat'            => isset($params['lat']) ? $params['lat'] : '',
-            'lng'            => isset($params['lng']) ? $params['lng'] : '',
-            'status'         => $params['status'],
+            'address' => isset($params['address']) ? $params['address'] : '',
+            'country' => isset($params['country']) ? $params['country'] : '',
+            'province' => isset($params['province']) ? $params['province'] : '',
+            'city' => isset($params['city']) ? $params['city'] : '',
+            'district' => isset($params['district']) ? $params['district'] : '',
+            'lat' => isset($params['lat']) ? $params['lat'] : '',
+            'lng' => isset($params['lng']) ? $params['lng'] : '',
+            'status' => $params['status'],
         ];
     }
 

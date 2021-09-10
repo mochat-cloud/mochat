@@ -23,19 +23,19 @@ trait RequestTrait
     public function attributes(): array
     {
         return [
-            'mediumGroupId'       => '分组ID',
-            'type'                => '素材类型',
-            'content'             => '内容数据',
-            'content.title'       => '标题',
-            'content.content'     => '内容',
-            'content.imagePath'   => '图片',
+            'mediumGroupId' => '分组ID',
+            'type' => '素材类型',
+            'content' => '内容数据',
+            'content.title' => '标题',
+            'content.content' => '内容',
+            'content.imagePath' => '图片',
             'content.description' => '描述',
-            'content.imageLink'   => '跳转链接',
-            'content.voicePath'   => '音频',
-            'content.videoPath'   => '视频',
-            'content.appid'       => '小程序appid',
-            'content.page'        => '小程序路径',
-            'content.filePath'    => '文件',
+            'content.imageLink' => '跳转链接',
+            'content.voicePath' => '音频',
+            'content.videoPath' => '视频',
+            'content.appid' => '小程序appid',
+            'content.page' => '小程序路径',
+            'content.filePath' => '文件',
         ];
     }
 
@@ -55,8 +55,8 @@ trait RequestTrait
                 'mediumGroupId', 'type', 'content', 'content.title', 'content.content', 'content.imagePath', 'content.description',
                 'content.imageLink', 'content.voicePath', 'content.videoPath', 'content.appid', 'content.page', 'content.filePath',
             ],
-            'show'        => ['id'],
-            'destroy'     => ['id'],
+            'show' => ['id'],
+            'destroy' => ['id'],
             'groupUpdate' => ['id', 'mediumGroupId'],
         ];
     }
@@ -81,10 +81,10 @@ trait RequestTrait
     protected function rules(array $inputs): array
     {
         return [
-            'id'            => 'required|integer',
+            'id' => 'required|integer',
             'mediumGroupId' => 'required|integer',
-            'type'          => 'required|in:1,2,3,4,5,6,7',
-            'content'       => 'required|array',
+            'type' => 'required|in:1,2,3,4,5,6,7',
+            'content' => 'required|array',
             ## 文本
             'content.title' => Rule::requiredIf(function () use ($inputs) {
                 return in_array($inputs['type'], [1, 3, 6]);
@@ -105,7 +105,7 @@ trait RequestTrait
             'content.videoPath' => 'required_if:type,5',
             ## 小程序
             'content.appid' => 'required_if:type,6',
-            'content.page'  => 'required_if:type,6',
+            'content.page' => 'required_if:type,6',
             //            'content.title'    => 'required_if:type,6',
             //            'content.imagePath'    => 'required_if:type,6',
             ## 文件

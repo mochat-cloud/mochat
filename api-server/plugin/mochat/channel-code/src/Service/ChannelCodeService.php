@@ -229,7 +229,7 @@ class ChannelCodeService extends AbstractService implements ChannelCodeContract
             }
         }
 
-        $res         = $model->paginate($perPage, $columns, 'page', $page);
+        $res = $model->paginate($perPage, $columns, 'page', $page);
         $res || $res = collect([]);
 
         if (empty($res)) {

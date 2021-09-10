@@ -12,7 +12,11 @@ namespace MoChat\Plugin\RoomMessageBatchSend\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
 use MoChat\Plugin\RoomMessageBatchSend\Logic\RemindLogic;
@@ -32,17 +36,20 @@ class Remind extends AbstractAction
     private $remindLogic;
 
     /**
-     * @RequestMapping(path="/dashboard/roomMessageBatchSend/remind", methods="POST")
+     * @Middlewares({
+     *     @Middleware(DashboardAuthMiddleware::class),
+     *     @Middleware(PermissionMiddleware::class)
+     * })
+     * @RequestMapping(path="/dashboard/roomMessageBatchSend/remind", methods="get")
      */
     public function handle(): array
     {
         ## 参数验证
         $this->validated($this->request->all());
         ## 接收参数
-        $batchEmployIds = $this->request->input('batchEmployIds', '');
-        $params         = [
-            'batchId'        => $this->request->input('batchId'),
-            'batchEmployIds' => array_filter(explode(',', $batchEmployIds)),
+        $params = [
+            'batchId' => $this->request->input('batchId'),
+            'batchEmployId' => $this->request->input('batchEmployId', ''),
         ];
         $this->remindLogic->handle($params, intval(user()['id']));
         return [];

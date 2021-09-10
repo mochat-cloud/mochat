@@ -22,16 +22,16 @@ abstract class AbstractSyncDataTask
     public function execute($id)
     {
         $data = $this->pull($id);
-        if (!empty($data)) {
+        if (! empty($data)) {
             $this->syncData($id, $data);
         }
     }
 
     /**
-     * 拉取客户端数据
+     * 拉取客户端数据.
      *
      * @param array $dataSource
-     * @return array
+     * @param mixed $id
      */
     protected function pull($id): array
     {
@@ -39,9 +39,7 @@ abstract class AbstractSyncDataTask
     }
 
     /**
-     * 获取数据源，返回数组中 key 必须是唯一id
-     *
-     * @return array
+     * 获取数据源，返回数组中 key 必须是唯一id.
      */
     protected function getDataSource(): array
     {
@@ -49,18 +47,16 @@ abstract class AbstractSyncDataTask
     }
 
     /**
-     * 获取数据获取客户端
+     * 获取数据获取客户端.
      *
      * @param int|string $id
-     * @return DataFetcherInterface
      */
     abstract protected function getDataFetcher($id = null): DataFetcherInterface;
 
     /**
-     * 同步数据
+     * 同步数据.
      *
      * @param int|string $id
-     * @param array $data
      *
      * @return mixed
      */

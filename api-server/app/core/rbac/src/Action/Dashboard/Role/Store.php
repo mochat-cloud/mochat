@@ -12,10 +12,10 @@ namespace MoChat\App\Rbac\Action\Dashboard\Role;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Contract\RbacRoleContract;
 use MoChat\App\Rbac\Logic\Role\StoreLogic;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
@@ -90,10 +90,10 @@ class Store extends AbstractAction
     protected function messages(): array
     {
         return [
-            'name.required'           => '角色名称 必填',
-            'name.string'             => '角色名称 必须为字符串',
+            'name.required' => '角色名称 必填',
+            'name.string' => '角色名称 必须为字符串',
             'dataPermission.required' => '数据权限 必填',
-            'dataPermission.integer'  => '数据权限 值必须在列表内：[1,2]',
+            'dataPermission.integer' => '数据权限 值必须在列表内：[1,2]',
         ];
     }
 }

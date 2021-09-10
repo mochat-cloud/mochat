@@ -11,15 +11,15 @@ declare(strict_types=1);
 namespace MoChat\App\WorkMessage\Action\Dashboard\Config;
 
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\WorkMessage\Contract\WorkMessageConfigContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 查询 - 企业信息.
@@ -43,14 +43,14 @@ class CorpShow extends AbstractAction
 
         ## 企业基本信息
         $corpService = $this->container->get(CorpContract::class);
-        $corpData    = $corpService->getCorpById($corpId, ['id', 'name', 'wx_corpid', 'social_code']);
+        $corpData = $corpService->getCorpById($corpId, ['id', 'name', 'wx_corpid', 'social_code']);
         if (empty($corpData)) {
             throw new CommonException(ErrorCode::INVALID_PARAMS, '该企业不存在');
         }
 
         ## 企业配置信息
         $messageConfigService = $this->container->get(WorkMessageConfigContract::class);
-        $configData           = $messageConfigService->getWorkMessageConfigByCorpId($corpId, [
+        $configData = $messageConfigService->getWorkMessageConfigByCorpId($corpId, [
             'id', 'corp_id', 'chat_admin', 'chat_admin_phone', 'chat_admin_idcard', 'chat_apply_status',
         ]);
         if (empty($configData)) {

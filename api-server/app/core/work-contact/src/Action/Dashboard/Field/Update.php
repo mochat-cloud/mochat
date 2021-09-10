@@ -12,10 +12,10 @@ namespace MoChat\App\WorkContact\Action\Dashboard\Field;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Action\Dashboard\Field\Traits\RequestTrait;
 use MoChat\App\WorkContact\Action\Dashboard\Field\Traits\UpdateTrait;
@@ -36,7 +36,7 @@ class Update extends AbstractAction
     use UpdateTrait;
 
     /**
-     * @Inject()
+     * @Inject
      * @var ContactFieldContract
      */
     protected $contactFieldService;

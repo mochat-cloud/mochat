@@ -11,13 +11,16 @@ declare(strict_types=1);
 namespace MoChat\App\Common\Middleware;
 
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Utils\Context;
 use MoChat\Framework\Middleware\Traits\Route;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Qbhy\HyperfAuth\Authenticatable;
 use Qbhy\HyperfAuth\AuthManager;
 use Qbhy\HyperfAuth\AuthMiddleware;
+use Qbhy\HyperfAuth\Exception\UnauthorizedException;
 
 class DashboardAuthMiddleware extends AuthMiddleware
 {
@@ -32,7 +35,7 @@ class DashboardAuthMiddleware extends AuthMiddleware
 
     public function __construct(ContainerInterface $container, ConfigInterface $config)
     {
-        $this->auth            = $container->get(AuthManager::class); // 父auth莫名无法注入成功
+        $this->auth = $container->get(AuthManager::class); // 父auth莫名无法注入成功
         $this->authWhiteRoutes = $config->get('framework.auth_white_routes', []);
     }
 
@@ -41,6 +44,25 @@ class DashboardAuthMiddleware extends AuthMiddleware
         if ($this->whiteListAuth($this->authWhiteRoutes)) {
             return $handler->handle($request);
         }
-        return parent::process($request, $handler);
+
+        foreach ($this->guards as $name) {
+            $guard = $this->auth->guard($name);
+            $user = $guard->user();
+
+            if (! $user instanceof Authenticatable) {
+                throw new UnauthorizedException("Without authorization from {$guard->getName()} guard", $guard);
+            }
+
+            $request = Context::override(ServerRequestInterface::class, function (ServerRequestInterface $request) use ($guard) {
+                $token = $guard->parseToken();
+                $jwt = $guard->getJwtManager()->parse($token);
+                $uid = $jwt->getPayload()['uid'] ?? null;
+                $user = $uid ? $guard->getProvider()->retrieveByCredentials($uid) : null;
+                $userInfo = $user ? $user->toArray() : [];
+                return $request->withAttribute('user', $userInfo);
+            });
+        }
+
+        return $handler->handle($request);
     }
 }

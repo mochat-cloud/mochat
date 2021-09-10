@@ -66,7 +66,7 @@ class Auth extends AbstractAction
         // 逻辑处理
         $guard = $this->auth->guard('jwt');
         /** @var JWTManager $jwt */
-        $jwt      = $guard->getJwtManager();
+        $jwt = $guard->getJwtManager();
         $checkRes = $jwt->getEncrypter()->check($params['password'], $userData->password);
         if (! $checkRes) {
             throw new CommonException(ErrorCode::AUTH_LOGIN_FAILED);
@@ -74,7 +74,7 @@ class Auth extends AbstractAction
 
         // 响应参数
         return [
-            'token'  => $guard->login($userData),
+            'token' => $guard->login($userData),
             'expire' => $jwt->getTtl(),
         ];
     }
@@ -85,7 +85,7 @@ class Auth extends AbstractAction
     protected function rules(): array
     {
         return [
-            'phone'    => 'required|numeric',
+            'phone' => 'required|numeric',
             'password' => 'required',
         ];
     }
@@ -97,7 +97,7 @@ class Auth extends AbstractAction
     protected function attributes(): array
     {
         return [
-            'phone'    => '手机号',
+            'phone' => '手机号',
             'password' => '密码',
         ];
     }

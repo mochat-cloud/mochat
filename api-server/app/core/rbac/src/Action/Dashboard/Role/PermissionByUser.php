@@ -13,7 +13,10 @@ namespace MoChat\App\Rbac\Action\Dashboard\Role;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Action\Dashboard\Traits\RequestTrait;
 use MoChat\App\Rbac\Constants\Menu\IsPageMenu;
 use MoChat\App\Rbac\Contract\RbacMenuContract;
@@ -23,9 +26,6 @@ use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 权限 - 根据登录用户获取菜单权限.
@@ -84,7 +84,7 @@ class PermissionByUser extends AbstractAction
         }
 
         ## 根据角色id获取菜单权限
-        $roleId   = (int) $user['roleId'];
+        $roleId = (int) $user['roleId'];
         $roleMenu = $this->roleMenuService->getRbacRoleMenusByRoleId([$roleId], ['menu_id']);
         if (empty($roleMenu)) {
             throw new CommonException(ErrorCode::INVALID_PARAMS, '该角色未设置菜单权限');
@@ -118,7 +118,7 @@ class PermissionByUser extends AbstractAction
 
             unset($data[$key]);
             $val['children'] = $this->recursion($data, $val['id']);
-            $tree[]          = $val;
+            $tree[] = $val;
         }
 
         return $tree;

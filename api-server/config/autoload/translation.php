@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
 return [
-    'locale'          => 'zh_CN',
+    'locale' => 'zh_CN',
     'fallback_locale' => 'en',
-    'path'            => BASE_PATH . '/storage/languages',
+    'path' => BASE_PATH . '/storage/languages',
 ];

@@ -73,12 +73,12 @@ class UpdateLogic
         RoomFissionRoomContract $roomFissionRoomService,
         RoomFissionInviteContract $roomFissionInviteService
     ) {
-        $this->logger                    = $logger;
-        $this->roomFissionService        = $roomFissionService;
-        $this->roomFissionPosterService  = $roomFissionPosterService;
+        $this->logger = $logger;
+        $this->roomFissionService = $roomFissionService;
+        $this->roomFissionPosterService = $roomFissionPosterService;
         $this->roomFissionWelcomeService = $roomFissionWelcomeService;
-        $this->roomFissionRoomService    = $roomFissionRoomService;
-        $this->roomFissionInviteService  = $roomFissionInviteService;
+        $this->roomFissionRoomService = $roomFissionRoomService;
+        $this->roomFissionInviteService = $roomFissionInviteService;
     }
 
     /**
@@ -107,21 +107,21 @@ class UpdateLogic
     private function handleParam(array $user, array $params): array
     {
         $data['fission'] = [
-            'end_time'          => $params['fission']['end_time'],
+            'end_time' => $params['fission']['end_time'],
             'receive_employees' => json_encode($params['fission']['receive_employees'], JSON_THROW_ON_ERROR),
-            'auto_pass'         => (int) $params['fission']['auto_pass'],
+            'auto_pass' => (int) $params['fission']['auto_pass'],
         ];
 
         ##海报
         $data['poster'] = [
-            'cover_pic'      => File::uploadBase64Image($params['poster']['cover_pic'], 'image/roomFission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg'),
-            'avatar_show'    => (int) $params['poster']['avatar_show'],
-            'nickname_show'  => (int) $params['poster']['nickname_show'],
+            'cover_pic' => File::uploadBase64Image($params['poster']['cover_pic'], 'image/roomFission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg'),
+            'avatar_show' => (int) $params['poster']['avatar_show'],
+            'nickname_show' => (int) $params['poster']['nickname_show'],
             'nickname_color' => $params['poster']['nickname_color'],
-            'qrcode_w'       => $params['poster']['qrcode_w'],
-            'qrcode_h'       => $params['poster']['qrcode_h'],
-            'qrcode_x'       => $params['poster']['qrcode_x'],
-            'qrcode_y'       => $params['poster']['qrcode_y'],
+            'qrcode_w' => $params['poster']['qrcode_w'],
+            'qrcode_h' => $params['poster']['qrcode_h'],
+            'qrcode_x' => $params['poster']['qrcode_x'],
+            'qrcode_y' => $params['poster']['qrcode_y'],
         ];
         ##群聊
         $data['rooms'] = $params['rooms'];
@@ -143,8 +143,8 @@ class UpdateLogic
             $poster = $this->roomFissionPosterService->getRoomFissionPosterByFissionId($id);
             $this->roomFissionPosterService->updateRoomFissionPosterById($poster['id'], $params['poster']);
             foreach ($params['rooms'] as $k => $v) {
-                $room_id          = $v['room']['id'];
-                $v['room']        = json_encode($v['room'], JSON_THROW_ON_ERROR);
+                $room_id = $v['room']['id'];
+                $v['room'] = json_encode($v['room'], JSON_THROW_ON_ERROR);
                 $v['room_qrcode'] = File::uploadBase64Image($v['room_qrcode'], 'image/roomFission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg');
                 $this->roomFissionRoomService->updateRoomFissionRoomByFissionIdRoomId($id, $room_id, $v);
             }

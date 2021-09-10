@@ -13,11 +13,11 @@ namespace MoChat\Plugin\Statistic\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Logic\AppTrait;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
@@ -53,7 +53,7 @@ class Employees extends AbstractAction
     public function __construct(EmployeesLogic $employeesLogic, RequestInterface $request)
     {
         $this->employeesLogic = $employeesLogic;
-        $this->request        = $request;
+        $this->request = $request;
     }
 
     /**
@@ -62,15 +62,15 @@ class Employees extends AbstractAction
      *     @Middleware(DashboardAuthMiddleware::class),
      *     @Middleware(PermissionMiddleware::class)
      * })
-     * @RequestMapping(path="/dashboard/count/employees", methods="GET")
+     * @RequestMapping(path="/dashboard/statistic/employees", methods="GET")
      */
     public function handle(): array
     {
         $params['startTime'] = $this->request->input('startTime');
-        $params['endTime']   = $this->request->input('endTime');
+        $params['endTime'] = $this->request->input('endTime');
 
         $params['startTime'] = strtotime($params['startTime']);
-        $params['endTime']   = strtotime($params['endTime']);
+        $params['endTime'] = strtotime($params['endTime']);
 
         if ($params['endTime'] - $params['startTime'] > 2592000) {
             //大于30天 不行
@@ -96,12 +96,12 @@ class Employees extends AbstractAction
         if ($res['errcode'] !== 0) {
             $this->logger->error(sprintf('获取「联系客户统计」数据 失败::[%s]', json_encode($res, JSON_THROW_ON_ERROR)));
         }
-        $res    = $res['behavior_data'];
+        $res = $res['behavior_data'];
         $result = [
-            'chat_cnt'         => 0,
-            'message_cnt'      => 0,
+            'chat_cnt' => 0,
+            'message_cnt' => 0,
             'reply_percentage' => 0,
-            'avg_reply_time'   => 0,
+            'avg_reply_time' => 0,
         ];
 
         foreach ($res as $re) {
@@ -112,7 +112,7 @@ class Employees extends AbstractAction
         }
 
         $result['reply_percentage'] = round($result['reply_percentage'] / count($res), 2);
-        $result['avg_reply_time']   = round($result['avg_reply_time'] / count($res), 2);
+        $result['avg_reply_time'] = round($result['avg_reply_time'] / count($res), 2);
 
         return $result;
     }

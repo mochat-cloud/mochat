@@ -14,11 +14,11 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\Utils\File;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
@@ -68,7 +68,7 @@ class PageSet extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -107,8 +107,8 @@ class PageSet extends AbstractAction
     protected function rules(): array
     {
         return [
-            'type'      => 'required',
-            'title'     => 'required',
+            'type' => 'required',
+            'title' => 'required',
             'show_type' => 'required',
         ];
     }
@@ -120,8 +120,8 @@ class PageSet extends AbstractAction
     protected function messages(): array
     {
         return [
-            'type.required'      => 'type 必传',
-            'title.required'     => '页面标题 必传',
+            'type.required' => 'type 必传',
+            'title.required' => '页面标题 必传',
             'show_type.required' => '扫码页面展示 必传',
         ];
     }
@@ -142,27 +142,27 @@ class PageSet extends AbstractAction
         if (isset($params['id']) && (int) $params['id'] > 0) {
             ## 修改
             return [
-                'type'      => (int) $params['type'],
-                'title'     => $params['title'],
+                'type' => (int) $params['type'],
+                'title' => $params['title'],
                 'show_type' => (int) $params['show_type'],
-                'default'   => (isset($params['default']) && ! empty($params['default'])) ? json_encode($params['default'], JSON_THROW_ON_ERROR) : '{}',
-                'poster'    => (isset($params['poster']) && ! empty($params['poster'])) ? File::uploadBase64Image($params['poster'], 'image/shopCode/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg') : '',
-                'autoPass'  => (isset($params['autoPass']) && is_numeric($params['autoPass'])) ? $params['autoPass'] : 0,
+                'default' => (isset($params['default']) && ! empty($params['default'])) ? json_encode($params['default'], JSON_THROW_ON_ERROR) : '{}',
+                'poster' => (isset($params['poster']) && ! empty($params['poster'])) ? File::uploadBase64Image($params['poster'], 'image/shopCode/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg') : '',
+                'autoPass' => (isset($params['autoPass']) && is_numeric($params['autoPass'])) ? $params['autoPass'] : 0,
             ];
         }
 
         ## 新增
         return [
-            'type'           => $params['type'],
-            'title'          => $params['title'],
-            'show_type'      => $params['show_type'],
-            'default'        => (isset($params['default']) && ! empty($params['default'])) ? json_encode($params['default'], JSON_THROW_ON_ERROR) : '{}',
-            'poster'         => (isset($params['poster']) && ! empty($params['poster'])) ? $params['poster'] : '',
-            'autoPass'       => (isset($params['autoPass']) && is_numeric($params['autoPass'])) ? $params['autoPass'] : 0,
-            'tenant_id'      => isset($params['tenant_id']) ? $params['tenant_id'] : 0,
-            'corp_id'        => $user['corpIds'][0],
+            'type' => $params['type'],
+            'title' => $params['title'],
+            'show_type' => $params['show_type'],
+            'default' => (isset($params['default']) && ! empty($params['default'])) ? json_encode($params['default'], JSON_THROW_ON_ERROR) : '{}',
+            'poster' => (isset($params['poster']) && ! empty($params['poster'])) ? $params['poster'] : '',
+            'autoPass' => (isset($params['autoPass']) && is_numeric($params['autoPass'])) ? $params['autoPass'] : 0,
+            'tenant_id' => isset($params['tenant_id']) ? $params['tenant_id'] : 0,
+            'corp_id' => $user['corpIds'][0],
             'create_user_id' => $user['id'],
-            'created_at'     => date('Y-m-d H:i:s'),
+            'created_at' => date('Y-m-d H:i:s'),
         ];
     }
 

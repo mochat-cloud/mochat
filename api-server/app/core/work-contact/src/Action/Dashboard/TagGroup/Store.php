@@ -12,15 +12,15 @@ namespace MoChat\App\WorkContact\Action\Dashboard\TagGroup;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\WorkContact\Contract\WorkContactTagGroupContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 创建客户标签分组.
@@ -56,7 +56,7 @@ class Store extends AbstractAction
         }
 
         $data = [
-            'corp_id'    => $corpId[0],
+            'corp_id' => $corpId[0],
             'group_name' => $params['groupName'],
         ];
         //验证参数

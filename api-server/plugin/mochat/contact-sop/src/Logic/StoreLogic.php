@@ -126,13 +126,13 @@ class StoreLogic
         $params['setting'] = json_encode($params['setting']);
 
         $data = [
-            'corp_id'      => $params['corpId'],
-            'creator_id'   => $params['userId'],
-            'name'         => $params['name'],
-            'setting'      => $params['setting'],
+            'corp_id' => $params['corpId'],
+            'creator_id' => $params['userId'],
+            'name' => $params['name'],
+            'setting' => $params['setting'],
             'employee_ids' => $params['employees'],
-            'state'        => 0,
-            'contact_ids'  => '[]',
+            'state' => 0,
+            'contact_ids' => '[]',
         ];
         return $this->contactSopService->createContactSop($data) ? true : false;
     }

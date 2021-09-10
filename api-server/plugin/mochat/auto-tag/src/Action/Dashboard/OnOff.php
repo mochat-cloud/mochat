@@ -14,11 +14,11 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
@@ -58,7 +58,7 @@ class OnOff
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -107,7 +107,7 @@ class OnOff
     protected function rules(): array
     {
         return [
-            'id'     => 'required | integer | bail',
+            'id' => 'required | integer | bail',
             'on_off' => 'required',
         ];
     }
@@ -120,8 +120,8 @@ class OnOff
     {
         return [
             'id.required' => '活动id 必填',
-            'id.integer'  => '活动id 必须为整型',
-            'on_off'      => '开关 必填',
+            'id.integer' => '活动id 必须为整型',
+            'on_off' => '开关 必填',
         ];
     }
 }

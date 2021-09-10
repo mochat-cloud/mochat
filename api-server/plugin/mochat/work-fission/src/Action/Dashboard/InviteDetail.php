@@ -12,11 +12,11 @@ namespace MoChat\Plugin\WorkFission\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\Framework\Action\AbstractAction;
@@ -69,10 +69,10 @@ class InviteDetail extends AbstractAction
      */
     public function __construct(RequestInterface $request, WorkFissionContactContract $workFissionContactService, WorkFissionContract $workFissionService, WorkContactContract $workContactService)
     {
-        $this->request                   = $request;
+        $this->request = $request;
         $this->workFissionContactService = $workFissionContactService;
-        $this->workFissionService        = $workFissionService;
-        $this->workContactService        = $workContactService;
+        $this->workFissionService = $workFissionService;
+        $this->workContactService = $workContactService;
     }
 
     /**
@@ -124,23 +124,23 @@ class InviteDetail extends AbstractAction
     private function getUserList($params): array
     {
         ##邀请客户信息
-        $columns  = ['id', 'nickname', 'union_id', 'loss', 'created_at'];
+        $columns = ['id', 'nickname', 'union_id', 'loss', 'created_at'];
         $userList = $this->workFissionContactService->getWorkFissionContactList(['contact_superior_user_parent' => $params['id']], $columns);
         foreach ($userList['data'] as $key => $val) {
-            $user                             = $this->workContactService->getWorkContactByUnionId($val['unionId'], ['avatar']);
+            $user = $this->workContactService->getWorkContactByUnionId($val['unionId'], ['avatar']);
             $userList['data'][$key]['avatar'] = file_full_url($user['avatar']);
             unset($userList['data'][$key]['unionId']);
         }
         ##邀请客户数量
         $info = $this->workFissionContactService->getWorkFissionContactById((int) $params['id']);
-        $new  = $this->workFissionContactService->countWorkFissionContactNewByParent((int) $params['id']);
+        $new = $this->workFissionContactService->countWorkFissionContactNewByParent((int) $params['id']);
         $loss = $this->workFissionContactService->countWorkFissionContactLossByParent((int) $params['id']);
         return [
             'total_count' => empty($info['inviteCount']) ? 0 : $info['inviteCount'],
-            'new_count'   => $new,
-            'loss'        => $loss,
-            'insert'      => empty($info['inviteCount']) ? 0 : $info['inviteCount'] - $loss,
-            'user_list'   => $userList['data'],
+            'new_count' => $new,
+            'loss' => $loss,
+            'insert' => empty($info['inviteCount']) ? 0 : $info['inviteCount'] - $loss,
+            'user_list' => $userList['data'],
         ];
     }
 }

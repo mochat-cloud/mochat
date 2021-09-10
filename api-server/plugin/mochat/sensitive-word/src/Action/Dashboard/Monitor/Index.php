@@ -12,13 +12,13 @@ namespace MoChat\Plugin\SensitiveWord\Action\Dashboard\Monitor;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
 use MoChat\Plugin\SensitiveWord\Logic\Monitor\IndexLogic;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 敏感词监控-列表.
@@ -51,13 +51,13 @@ class Index extends AbstractAction
         $user = user();
         ## 接收参数
         $params = [
-            'employeeId'         => $this->request->input('employeeId', ''),
-            'workRoomId'         => $this->request->input('workRoomId', 0),
+            'employeeId' => $this->request->input('employeeId', ''),
+            'workRoomId' => $this->request->input('workRoomId', 0),
             'intelligentGroupId' => $this->request->input('intelligentGroupId', 'no'),
-            'triggerStart'       => $this->request->input('triggerStart', ''),
-            'triggerEnd'         => $this->request->input('triggerEnd', ''),
-            'page'               => $this->request->input('page', 1),
-            'perPage'            => $this->request->input('perPage', 10),
+            'triggerStart' => $this->request->input('triggerStart', ''),
+            'triggerEnd' => $this->request->input('triggerEnd', ''),
+            'page' => $this->request->input('page', 1),
+            'perPage' => $this->request->input('perPage', 10),
         ];
         return $this->indexLogic->handle($params, $user);
     }

@@ -2,7 +2,7 @@
   <div class="index_module">
     <a-row class="search" type="flex" justify="space-between">
       <a-button @click="handleAdd" type="primary">新建群发</a-button>
-      <a-input-search placeholder="请输入群发名称" @search="onSearch" />
+      <a-input-search placeholder="请输入群发名称" @search="onSearch" v-model="searchTable" />
     </a-row>
     <a-table
       class="index_table"
@@ -12,45 +12,54 @@
       :data-source="dataList"
       @change="tableChange"
     >
-      <span slot="content" slot-scope="text,record">
-        <div v-for="(v,i) in record.content" :key="i">
-          <div v-if="v.msgType === 'text'">
-            {{ v.content }}
-          </div>
-          <div v-if="v.msgType === 'link'">
-            <span class="type-text">[链接]</span>
-            {{ v.title }}
-          </div>
-          <div v-if="v.msgType === 'image'">
-            <img class="table-pic" :src="v.pic_url">
-          </div>
-          <div v-if="v.msgType === 'miniprogram'">
-            <div class="applets">
-              <div class="title">
-                {{ v.title }}
+      <div slot="content" slot-scope="text,record">
+        <div v-for="(item,index) in record.content" :key="index">
+          <div v-if="item.msgType==='text'">群发消息1：{{ item.content }}</div>
+          <div style="margin-top: 10px;" v-if="item.msgType==='image' || item.msgType==='link' || item.msgType==='miniprogram'">群发消息2：</div>
+          <div style="margin-left: 15px;margin-top: 10px;">
+            <div v-if="item.msgType=='image'">
+              <img :src="item.pic_url" alt="" style="width: 70px;height: 70px;">
+            </div>
+            <div v-if="item.msgType=='link'">
+              <div>{{ item.url }}</div>
+              <div style="display: flex;">
+                <div>
+                  <div>{{ item.title }}</div>
+                  <div>{{ item.desc }}</div>
+                </div>
+                <img :src="item.pic_url" alt="" style="width: 70px;height: 70px;">
               </div>
-              <div class="image">
-                <img :src="v.pic_media_id">
-              </div>
-              <div class="applets-logo">
-                <img src="../../assets/link.jpg">
-                小程序
+            </div>
+            <div v-if="item.msgType=='miniprogram'">
+              <div class="applets">
+                <div class="title">
+                  {{ item.title }}
+                </div>
+                <div class="image">
+                  <img :src="item.pic_url">
+                </div>
+                <div class="applets-logo">
+                  小程序
+                </div>
               </div>
             </div>
           </div>
+          <!--          -->
         </div>
-      </span>
+      </div>
       <span slot="action" slot-scope="text,record">
-        <a @click="handleRemind(record)">提醒发送</a>
-        <a-divider type="vertical" />
+        <a @click="handleRemind(record)" v-if="record.notReceivedTotal!=0">提醒发送</a>
+        <a-divider type="vertical" v-if="record.notReceivedTotal!=0"/>
         <a class="ant-dropdown-link" @click="handleJump(record)">详情 </a>
+        <a-divider type="vertical" />
+        <a @click="delRowTable(record)">删除</a>
       </span>
     </a-table>
   </div>
 </template>
 <script>
 
-import { index, remind } from '@/api/roomMessageBatchSend'
+import { index, remind, destroyApi } from '@/api/roomMessageBatchSend'
 
 const columns = [
   {
@@ -59,7 +68,7 @@ const columns = [
   },
   {
     title: '发送时间',
-    dataIndex: 'createdAt'
+    dataIndex: 'definiteTime'
   },
   {
     title: '群发内容',
@@ -67,17 +76,21 @@ const columns = [
     scopedSlots: { customRender: 'content' }
   },
   {
-    title: '已发送成员',
+    title: '已发送群主',
     dataIndex: 'sendTotal'
   },
   {
-    title: '送达客户',
+    title: '送达群聊',
     dataIndex: 'receivedTotal'
   },
 
   {
-    title: '未发送成员',
+    title: '未发送群主',
     dataIndex: 'notSendTotal'
+  },
+  {
+    title: '未送达群聊',
+    dataIndex: 'notReceivedTotal'
   },
 
   {
@@ -90,6 +103,7 @@ const columns = [
 export default {
   data () {
     return {
+      searchTable: '',
       dataList: [],
       columns,
       pagination: {
@@ -106,8 +120,11 @@ export default {
     })
   },
   methods: {
-    onSearch (value) {
-      this.pagination.current = 1
+    onSearch () {
+      this.selectList({
+        page: 1,
+        perPage: 100
+      })
     },
     tableChange (e) {
       console.log(JSON.stringify(e))
@@ -120,7 +137,8 @@ export default {
     selectList (e) {
       index({
         page: e.page,
-        perPage: e.perPage
+        perPage: e.perPage,
+        batchTitle: this.searchTable
       }).then(data => {
         data = data.data
         data.list.forEach(element => {
@@ -155,19 +173,38 @@ export default {
       })
     },
     handleJump (item) {
-      this.$router.push('/roomMessageBatchSend/show?id=' + item.id)
+      this.$router.push('/roomMessageBatchSend/show?batchId=' + item.id)
+    },
+    // 删除
+    delRowTable (record) {
+      const that = this
+      this.$confirm({
+        title: '提示',
+        content: '是否删除',
+        okText: '删除',
+        okType: 'danger',
+        cancelText: '取消',
+        onOk () {
+          destroyApi({
+            batchId: record.id
+          }).then((res) => {
+            that.$message.success('删除成功')
+            that.selectList({
+              page: that.pagination.current,
+              perPage: that.pagination.pageSize
+            })
+          })
+        }
+      })
     }
-
   }
 }
 </script>
-
 <style lang="less">
 .index_module {
   background-color: #fff;
   padding: 0px 15px;
 }
-
 .search {
   padding: 15px 0px;
 
@@ -175,7 +212,6 @@ export default {
     width: 200px;
   }
 }
-
 .applets {
   max-width: 183px;
   background: #fff;

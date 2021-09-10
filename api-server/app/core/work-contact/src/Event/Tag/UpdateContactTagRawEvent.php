@@ -8,11 +8,10 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
-
 namespace MoChat\App\WorkContact\Event\Tag;
 
 /**
- * 标签成员变更事件
+ * 标签成员变更事件.
  */
 class UpdateContactTagRawEvent
 {

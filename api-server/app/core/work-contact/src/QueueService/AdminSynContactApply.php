@@ -77,8 +77,8 @@ class AdminSynContactApply
         }
         $params = [
             'employee' => $employee,
-            'corpId'   => $corpId,
-            'detail'   => $detail,
+            'corpId' => $corpId,
+            'detail' => $detail,
         ];
 
         //同步客户
@@ -155,7 +155,7 @@ class AdminSynContactApply
                     if (! empty($res['external_contact'])) {
                         $detail[] = [
                             'external_contact' => $res['external_contact'],
-                            'follow_user'      => $res['follow_user'],
+                            'follow_user' => $res['follow_user'],
                         ];
                     }
                 }

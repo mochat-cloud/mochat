@@ -13,10 +13,10 @@ namespace MoChat\App\Rbac\Action\Dashboard\Role;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Contract\RbacRoleContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
@@ -95,10 +95,10 @@ class StatusUpdate extends AbstractAction
     {
         return [
             'roleId.required' => '角色id 必填',
-            'roleId.integer'  => '角色id 必须为整型',
+            'roleId.integer' => '角色id 必须为整型',
             'status.required' => '状态 必填',
-            'status.integer'  => '状态 必需为整数',
-            'status.in'       => '状态 值必须在列表内：[1,2]',
+            'status.integer' => '状态 必需为整数',
+            'status.in' => '状态 值必须在列表内：[1,2]',
         ];
     }
 }

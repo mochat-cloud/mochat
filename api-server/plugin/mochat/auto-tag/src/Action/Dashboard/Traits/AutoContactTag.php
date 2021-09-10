@@ -65,8 +65,8 @@ trait AutoContactTag
     protected function autoTag($params): void
     {
         $this->params = $params;
-        $tagIds       = $this->params['tagArr'];
-        $addWxTag     = [];
+        $tagIds = $this->params['tagArr'];
+        $addWxTag = [];
         ## 查询员工对客户所打标签
         $contactTagPivot = $this->workContactTagPivotService->getWorkContactTagPivotsByOtherId($this->params['contactId'], $this->params['employeeId'], ['contact_tag_id']);
         ## 若客户已有标签
@@ -84,8 +84,8 @@ trait AutoContactTag
             $data = [];
             foreach ($tagIds as $val) {
                 $data[] = [
-                    'contact_id'     => $this->params['contactId'],
-                    'employee_id'    => $this->params['employeeId'],
+                    'contact_id' => $this->params['contactId'],
+                    'employee_id' => $this->params['employeeId'],
                     'contact_tag_id' => $val,
                 ];
             }
@@ -104,9 +104,9 @@ trait AutoContactTag
             }
             ## 同步到企业微信
             $this->contactTagService = make(UpdateContactTagApply::class);
-            $wxParams                = [
-                'add_tag'         => $addWxTag,
-                'userid'          => $this->params['employeeWxUserId'],
+            $wxParams = [
+                'add_tag' => $addWxTag,
+                'userid' => $this->params['employeeWxUserId'],
                 'external_userid' => $this->params['contactWxExternalUserid'],
             ];
             $corpId = isset($params['corpId']) ? $params['corpId'] : user()['corpIds'][0];
@@ -131,17 +131,17 @@ trait AutoContactTag
     private function getWorkContactTag($tagIds): array
     {
         $wxTagIds = [];
-        $tagName  = [];
+        $tagName = [];
 
         $tagInfo = $this->workContactTagService->getWorkContactTagsById($tagIds);
         if (! empty($tagInfo)) {
             $wxTagIds = array_column($tagInfo, 'wxContactTagId');
-            $tagName  = array_column($tagInfo, 'name');
+            $tagName = array_column($tagInfo, 'name');
         }
 
         return [
             'wxTagIds' => $wxTagIds,
-            'tagName'  => $tagName,
+            'tagName' => $tagName,
         ];
     }
 
@@ -155,10 +155,10 @@ trait AutoContactTag
     {
         $data = [
             'employee_id' => $this->params['employeeId'],
-            'contact_id'  => $this->params['contactId'],
-            'content'     => $content,
-            'corp_id'     => $corpId,
-            'event'       => $event,
+            'contact_id' => $this->params['contactId'],
+            'content' => $content,
+            'corp_id' => $corpId,
+            'event' => $event,
         ];
 
         $res = $this->track->createContactEmployeeTrack($data);

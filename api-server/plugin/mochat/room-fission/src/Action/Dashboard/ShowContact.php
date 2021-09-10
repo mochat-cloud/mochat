@@ -13,11 +13,11 @@ namespace MoChat\Plugin\RoomFission\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Contract\WorkContactEmployeeContract;
 use MoChat\App\WorkContact\Contract\WorkContactRoomContract;
@@ -87,7 +87,7 @@ class ShowContact extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -113,13 +113,13 @@ class ShowContact extends AbstractAction
         $this->validated($this->request->all());
         ## 接收参数
         $params = [
-            'id'          => $this->request->input('id'),
-            'name'        => $this->request->input('name'),
-            'start_time'  => $this->request->input('start_time'),
-            'end_time'    => $this->request->input('end_time'),
+            'id' => $this->request->input('id'),
+            'name' => $this->request->input('name'),
+            'start_time' => $this->request->input('start_time'),
+            'end_time' => $this->request->input('end_time'),
             'loss_status' => $this->request->input('loss_status'),
-            'page'        => $this->request->input('page', 1),
-            'perPage'     => $this->request->input('perPage', 10000),
+            'page' => $this->request->input('page', 1),
+            'perPage' => $this->request->input('perPage', 10000),
         ];
 
         $data = $this->handleParams($params);
@@ -169,8 +169,8 @@ class ShowContact extends AbstractAction
             $where['loss'] = $params['loss_status'];
         }
         $options = [
-            'perPage'    => $params['perPage'],
-            'page'       => $params['page'],
+            'perPage' => $params['perPage'],
+            'page' => $params['page'],
             'orderByRaw' => 'id desc',
         ];
 
@@ -185,14 +185,14 @@ class ShowContact extends AbstractAction
      */
     private function getContactList(array $user, array $params): array
     {
-        $columns     = ['id', 'union_id', 'nickname', 'avatar', 'employee', 'invite_count', 'loss', 'status', 'receive_status', 'room_id', 'join_status', 'write_off', 'contact_id'];
+        $columns = ['id', 'union_id', 'nickname', 'avatar', 'employee', 'invite_count', 'loss', 'status', 'receive_status', 'room_id', 'join_status', 'write_off', 'contact_id'];
         $contactList = $this->roomFissionContactService->getRoomFissionContactList($params['where'], $columns, $params['options']);
 
         $list = [];
         $data = [
             'page' => [
-                'perPage'   => $this->perPage,
-                'total'     => '0',
+                'perPage' => $this->perPage,
+                'total' => '0',
                 'totalPage' => '0',
             ],
             'list' => $list,
@@ -212,10 +212,10 @@ class ShowContact extends AbstractAction
         $list = [];
         foreach ($contactList['data'] as $key => $val) {
             $joinTime = '-';
-            $outTime  = '-';
+            $outTime = '-';
             if ($val['joinStatus'] === 1) {
                 $roomContact = $this->workContactRoomService->getWorkContactRoomsByRoomIdUnion($val['roomId'], $val['unionId'], ['join_time', 'out_time']);
-                $joinTime    = $roomContact['joinTime'];
+                $joinTime = $roomContact['joinTime'];
                 if ($val['loss'] === 1) {
                     $outTime = $roomContact['outTime'];
                 }
@@ -223,27 +223,27 @@ class ShowContact extends AbstractAction
             $employeeId = 0;
             if ($val['contactId'] > 0) {
                 $contactEmployee = $this->workContactEmployeeService->getWorkContactEmployeeByCorpIdContactId($user['corpIds'][0], $val['contactId'], ['employee_id']);
-                $employeeId      = empty($contactEmployee) ? 0 : $contactEmployee['employeeId'];
+                $employeeId = empty($contactEmployee) ? 0 : $contactEmployee['employeeId'];
             }
             $list[$key] = [
-                'id'             => $val['id'],
-                'name'           => $val['nickname'],
-                'avatar'         => file_full_url($val['avatar']),
-                'type'           => $employeeId === 0 ? '非企业客户' : '企业客户',
-                'join_time'      => $joinTime,
-                'status'         => $val['status'] === 1 ? '已完成' : '未完成',
-                'loss'           => $val['loss'] === 1 ? '已流失' : '未流失',
-                'out_time'       => $outTime,
-                'invite_count'   => $val['inviteCount'],
+                'id' => $val['id'],
+                'name' => $val['nickname'],
+                'avatar' => file_full_url($val['avatar']),
+                'type' => $employeeId === 0 ? '非企业客户' : '企业客户',
+                'join_time' => $joinTime,
+                'status' => $val['status'] === 1 ? '已完成' : '未完成',
+                'loss' => $val['loss'] === 1 ? '已流失' : '未流失',
+                'out_time' => $outTime,
+                'invite_count' => $val['inviteCount'],
                 'receive_status' => $val['receiveStatus'],
-                'write_off'      => $val['writeOff'],
-                'contact_id'     => $val['contactId'],
-                'employee_id'    => $employeeId,
+                'write_off' => $val['writeOff'],
+                'contact_id' => $val['contactId'],
+                'employee_id' => $employeeId,
             ];
         }
-        $data['page']['total']     = $contactList['total'];
+        $data['page']['total'] = $contactList['total'];
         $data['page']['totalPage'] = $contactList['last_page'];
-        $data['list']              = $list;
+        $data['list'] = $list;
         return $data;
     }
 }

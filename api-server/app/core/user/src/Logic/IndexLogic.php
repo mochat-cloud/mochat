@@ -73,9 +73,9 @@ class IndexLogic
         $userIds = $user['isSuperAdmin'] == 1 ? $this->getUserListByTenantId((int) $user['tenantId']) : $this->getEmployeeList($user);
         ## 统计用户状态
         $notEnabledNum = 0;
-        $normalNum     = 0;
-        $disableNum    = 0;
-        $userList      = $this->userService->getUsersById($userIds, ['id', 'status']);
+        $normalNum = 0;
+        $disableNum = 0;
+        $userList = $this->userService->getUsersById($userIds, ['id', 'status']);
         if (! empty($userList)) {
             foreach ($userList as $value) {
                 $value['status'] == Status::NOT_ENABLED && ++$notEnabledNum;
@@ -85,15 +85,15 @@ class IndexLogic
         }
 
         ## 组织查询条件
-        $where   = [];
+        $where = [];
         $options = [
-            'page'       => $params['page'],
-            'perPage'    => $params['perPage'],
+            'page' => $params['page'],
+            'perPage' => $params['perPage'],
             'orderByRaw' => 'id desc',
         ];
-        empty($params['phone']) || $where[]           = ['phone', 'LIKE', '%' . $params['phone'] . '%'];
+        empty($params['phone']) || $where[] = ['phone', 'LIKE', '%' . $params['phone'] . '%'];
         $params['status'] == 'no' || $where['status'] = $params['status'];
-        $where[]                                      = ['id', 'IN', $userIds];
+        $where[] = ['id', 'IN', $userIds];
 
         ## 查询数据
         $res = $this->userService->getUserList($where, ['*'], $options);
@@ -101,32 +101,32 @@ class IndexLogic
         ## 组织响应数据
         $data = [
             'page' => [
-                'perPage'   => $params['perPage'],
-                'total'     => 0,
+                'perPage' => $params['perPage'],
+                'total' => 0,
                 'totalPage' => 0,
             ],
             'notEnabledNum' => $notEnabledNum,
-            'normalNum'     => $normalNum,
-            'disableNum'    => $disableNum,
-            'list'          => [],
+            'normalNum' => $normalNum,
+            'disableNum' => $disableNum,
+            'list' => [],
         ];
 
         if (empty($res['data'])) {
             return $data;
         }
         ## 处理分页数据
-        $data['page']['total']     = $res['total'];
+        $data['page']['total'] = $res['total'];
         $data['page']['totalPage'] = $res['last_page'];
         ## 获取用户的角色信息
         $userRoleList = $this->getUserRoleList(array_column($res['data'], 'id'));
 
         ## 处理数据
         foreach ($res['data'] as &$v) {
-            $corpId          = empty($user['corpIds']) ? 0 : $user['corpIds'][0];
-            $v['userId']     = $v['id'];
-            $v['userName']   = $v['name'];
+            $corpId = empty($user['corpIds']) ? 0 : $user['corpIds'][0];
+            $v['userId'] = $v['id'];
+            $v['userName'] = $v['name'];
             $v['statusText'] = Status::getMessage($v['status']);
-            $v['roleName']   = isset($userRoleList[$v['id']]) ? $userRoleList[$v['id']] : '';
+            $v['roleName'] = isset($userRoleList[$v['id']]) ? $userRoleList[$v['id']] : '';
             $v['department'] = $this->getDepartmentList((int) $v['id'], (int) $corpId);
             unset($v['id'], $v['name'], $v['password'], $v['position'], $v['updatedAt'], $v['deletedAt']);
         }
@@ -153,7 +153,7 @@ class IndexLogic
     {
         if ($user['dataPermission'] == 0) {
             $corpId = empty($user['corpIds']) ? 0 : $user['corpIds'][0];
-            $data   = $this->workEmployeeService->getWorkEmployeesByCorpId((int) $corpId, ['log_user_id']);
+            $data = $this->workEmployeeService->getWorkEmployeesByCorpId((int) $corpId, ['log_user_id']);
         } else {
             $data = $this->workEmployeeService->getWorkEmployeesById($user['deptEmployeeIds'], ['log_user_id']);
         }
@@ -171,14 +171,14 @@ class IndexLogic
             return [];
         }
         $roleIdArr = array_unique(array_column($userRoleList, 'roleId'));
-        $roleList  = $this->rbacRoleService->getRbacRolesById($roleIdArr, ['id', 'name']);
+        $roleList = $this->rbacRoleService->getRbacRolesById($roleIdArr, ['id', 'name']);
         if (empty($roleList)) {
             return [];
         }
-        $roleList     = array_column($roleList, 'name', 'id');
+        $roleList = array_column($roleList, 'name', 'id');
         $userRoleList = array_map(function ($userRole) use ($roleList) {
             return [
-                'userId'   => $userRole['userId'],
+                'userId' => $userRole['userId'],
                 'roleName' => isset($roleList[$userRole['roleId']]) ? $roleList[$userRole['roleId']] : '',
             ];
         }, $userRoleList);
@@ -202,10 +202,10 @@ class IndexLogic
             return [];
         }
         $departmentIdArr = array_column($employeeDepartments, 'departmentId');
-        $departmentList  = $this->workDepartmentService->getWorkDepartmentsById($departmentIdArr, ['id', 'name']);
+        $departmentList = $this->workDepartmentService->getWorkDepartmentsById($departmentIdArr, ['id', 'name']);
         return empty($departmentList) ? [] : array_map(function ($department) {
             return [
-                'departmentId'   => $department['id'],
+                'departmentId' => $department['id'],
                 'departmentName' => $department['name'],
             ];
         }, $departmentList);

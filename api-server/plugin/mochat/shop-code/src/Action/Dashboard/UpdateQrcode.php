@@ -14,11 +14,11 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
@@ -67,7 +67,7 @@ class UpdateQrcode extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -102,7 +102,7 @@ class UpdateQrcode extends AbstractAction
     protected function rules(): array
     {
         return [
-            'id'      => 'required',
+            'id' => 'required',
             'qw_code' => 'required',
         ];
     }
@@ -114,7 +114,7 @@ class UpdateQrcode extends AbstractAction
     protected function messages(): array
     {
         return [
-            'id.required'      => 'id 必传',
+            'id.required' => 'id 必传',
             'qw_code.required' => '门店活码 必传',
         ];
     }

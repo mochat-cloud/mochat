@@ -49,8 +49,8 @@ class ContactReceiveIndexLogic
         ## 组织响应数据
         $data = [
             'page' => [
-                'perPage'   => $params['perPage'],
-                'total'     => 0,
+                'perPage' => $params['perPage'],
+                'total' => 0,
                 'totalPage' => 0,
             ],
             'list' => [],
@@ -59,12 +59,12 @@ class ContactReceiveIndexLogic
             return $data;
         }
         ## 处理分页数据
-        $data['page']['total']     = $res['total'];
+        $data['page']['total'] = $res['total'];
         $data['page']['totalPage'] = $res['last_page'];
-        $data['list']              = [];
+        $data['list'] = [];
         foreach ($res['data'] as $item) {
             $item['sendTime'] = $item['sendTime'] > 0 ? date('Y-m-d H:i:s', $item['sendTime']) : '';
-            $data['list'][]   = $item;
+            $data['list'][] = $item;
         }
         return $data;
     }

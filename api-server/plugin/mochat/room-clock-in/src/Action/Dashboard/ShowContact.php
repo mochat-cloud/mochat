@@ -13,11 +13,11 @@ namespace MoChat\Plugin\RoomClockIn\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Laminas\Stdlib\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\Framework\Action\AbstractAction;
@@ -78,10 +78,10 @@ class ShowContact extends AbstractAction
 
     public function __construct(\Hyperf\HttpServer\Contract\RequestInterface $request, ClockInContract $clockInService, ClockInContactContract $clockInContactService, WorkEmployeeContract $workEmployeeService, ClockInContactRecordContract $clockInContactRecordService)
     {
-        $this->request                     = $request;
-        $this->clockInService              = $clockInService;
-        $this->clockInContactService       = $clockInContactService;
-        $this->workEmployeeService         = $workEmployeeService;
+        $this->request = $request;
+        $this->clockInService = $clockInService;
+        $this->clockInContactService = $clockInContactService;
+        $this->workEmployeeService = $workEmployeeService;
         $this->clockInContactRecordService = $clockInContactRecordService;
     }
 
@@ -113,7 +113,7 @@ class ShowContact extends AbstractAction
     protected function rules(): array
     {
         return [
-            'id'     => 'required | integer | min:0 | bail',
+            'id' => 'required | integer | min:0 | bail',
             'status' => 'required',
         ];
     }
@@ -125,9 +125,9 @@ class ShowContact extends AbstractAction
     protected function messages(): array
     {
         return [
-            'id.required'     => '活动ID 必填',
-            'id.integer'      => '活动ID 必需为整数',
-            'id.min  '        => '活动ID 不可小于1',
+            'id.required' => '活动ID 必填',
+            'id.integer' => '活动ID 必需为整数',
+            'id.min  ' => '活动ID 不可小于1',
             'status.required' => '状态 必填',
         ];
     }
@@ -139,7 +139,7 @@ class ShowContact extends AbstractAction
      */
     private function handleParams(array $params): array
     {
-        $where['clock_in_id']                  = $params['id'];
+        $where['clock_in_id'] = $params['id'];
         empty($params['nickname']) || $where[] = ['nickname', 'LIKE', '%' . $params['nickname'] . '%'];
         if (! empty($params['total_day']) && $params['total_day'] > 0) {
             $where['total_day'] = $params['total_day'];
@@ -149,7 +149,7 @@ class ShowContact extends AbstractAction
             $where['total_day'] = 0;
         }
         if ($params['status'] == 2) {
-            $where[]         = ['total_day', '>', 0];
+            $where[] = ['total_day', '>', 0];
             $where['status'] = 0;
         }
         if ($params['status'] == 3) {
@@ -157,8 +157,8 @@ class ShowContact extends AbstractAction
         }
 
         $options = [
-            'perPage'    => $params['perPage'],
-            'page'       => $params['page'],
+            'perPage' => $params['perPage'],
+            'page' => $params['page'],
             'orderByRaw' => 'id desc',
         ];
 
@@ -172,13 +172,13 @@ class ShowContact extends AbstractAction
      */
     private function getClockInContactList(array $params): array
     {
-        $columns     = ['id', 'contact_id', 'nickname', 'avatar', 'updated_at', 'city', 'employee_ids', 'contact_clock_tags', 'total_day', 'series_day', 'status', 'clock_in_id'];
+        $columns = ['id', 'contact_id', 'nickname', 'avatar', 'updated_at', 'city', 'employee_ids', 'contact_clock_tags', 'total_day', 'series_day', 'status', 'clock_in_id'];
         $contactList = $this->clockInContactService->getClockInContactList($params['where'], $columns, $params['options']);
-        $list        = [];
-        $data        = [
+        $list = [];
+        $data = [
             'page' => [
-                'perPage'   => $this->perPage,
-                'total'     => '0',
+                'perPage' => $this->perPage,
+                'total' => '0',
                 'totalPage' => '0',
             ],
             'list' => $list,
@@ -196,22 +196,22 @@ class ShowContact extends AbstractAction
         $list = [];
         foreach ($contactList['data'] as $key => $val) {
             $list[$key] = [
-                'id'                 => $val['id'],
-                'nickname'           => $val['nickname'],
-                'avatar'             => file_full_url($val['avatar']),
-                'contact_type'       => $val['contactId'] > 0 ? '企业客户' : '非企业客户',
-                'clock_time'         => $this->clockTime((int) $val['clockInId'], (int) $val['id']),
-                'city'               => $val['city'],
-                'employees'          => $this->employee($val['employeeIds']),
+                'id' => $val['id'],
+                'nickname' => $val['nickname'],
+                'avatar' => file_full_url($val['avatar']),
+                'contact_type' => $val['contactId'] > 0 ? '企业客户' : '非企业客户',
+                'clock_time' => $this->clockTime((int) $val['clockInId'], (int) $val['id']),
+                'city' => $val['city'],
+                'employees' => $this->employee($val['employeeIds']),
                 'contact_clock_tags' => empty($val['contactClockTags']) ? '' : array_column(json_decode($val['contactClockTags'], true), 'tagname'),
-                'total_day'          => $val['totalDay'],
-                'series_day'         => $val['seriesDay'],
-                'user_action'        => $this->userAction((int) $val['totalDay'], (int) $val['status']),
+                'total_day' => $val['totalDay'],
+                'series_day' => $val['seriesDay'],
+                'user_action' => $this->userAction((int) $val['totalDay'], (int) $val['status']),
             ];
         }
-        $data['page']['total']     = $contactList['total'];
+        $data['page']['total'] = $contactList['total'];
         $data['page']['totalPage'] = $contactList['last_page'];
-        $data['list']              = $list;
+        $data['list'] = $list;
 
         return $data;
     }

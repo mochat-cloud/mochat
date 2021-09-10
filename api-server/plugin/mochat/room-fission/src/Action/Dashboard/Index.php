@@ -13,11 +13,11 @@ namespace MoChat\Plugin\RoomFission\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
@@ -64,7 +64,7 @@ class Index extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -88,8 +88,8 @@ class Index extends AbstractAction
         $this->validated($this->request->all());
         ## 接收参数
         $params = [
-            'name'    => $this->request->input('name'),
-            'page'    => $this->request->input('page', 1),
+            'name' => $this->request->input('name'),
+            'page' => $this->request->input('page', 1),
             'perPage' => $this->request->input('perPage', 10000),
         ];
 
@@ -135,8 +135,8 @@ class Index extends AbstractAction
             $where[] = ['active_name', 'LIKE', '%' . $params['name'] . '%'];
         }
         $options = [
-            'perPage'    => $params['perPage'],
-            'page'       => $params['page'],
+            'perPage' => $params['perPage'],
+            'page' => $params['page'],
             'orderByRaw' => 'id desc',
         ];
 
@@ -151,14 +151,14 @@ class Index extends AbstractAction
      */
     private function getRoomFission(array $user, array $params): array
     {
-        $columns         = ['id', 'active_name', 'created_at', 'end_time'];
+        $columns = ['id', 'active_name', 'created_at', 'end_time'];
         $roomFissionList = $this->roomFissionService->getRoomFissionList($params['where'], $columns, $params['options']);
 
         $list = [];
         $data = [
             'page' => [
-                'perPage'   => $this->perPage,
-                'total'     => '0',
+                'perPage' => $this->perPage,
+                'total' => '0',
                 'totalPage' => '0',
             ],
             'list' => $list,
@@ -178,18 +178,18 @@ class Index extends AbstractAction
         $list = [];
         foreach ($roomFissionList['data'] as $key => $val) {
             $list[$key] = [
-                'id'              => $val['id'],
-                'activeName'      => $val['activeName'],
-                'createdAt'       => $val['createdAt'],
-                'endTime'         => $val['endTime'],
-                'join_user_num'   => 0,
+                'id' => $val['id'],
+                'activeName' => $val['activeName'],
+                'createdAt' => $val['createdAt'],
+                'endTime' => $val['endTime'],
+                'join_user_num' => 0,
                 'finish_user_num' => 0,
-                'status'          => date('Y-m-d H:i:s') > $val['endTime'] ? 2 : 1,
+                'status' => date('Y-m-d H:i:s') > $val['endTime'] ? 2 : 1,
             ];
         }
-        $data['page']['total']     = $roomFissionList['total'];
+        $data['page']['total'] = $roomFissionList['total'];
         $data['page']['totalPage'] = $roomFissionList['last_page'];
-        $data['list']              = $list;
+        $data['list'] = $list;
         return $data;
     }
 }

@@ -39,7 +39,7 @@ class EmployeesLogic
         $res = $this->corpService->getCorpById($corpId);
 
         return [
-            'wxCorpid'      => $res['wxCorpid'],
+            'wxCorpid' => $res['wxCorpid'],
             'contactSecret' => $res['contactSecret'],
         ];
     }

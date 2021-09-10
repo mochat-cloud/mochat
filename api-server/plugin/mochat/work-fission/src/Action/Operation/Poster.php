@@ -103,14 +103,14 @@ class Poster extends AbstractAction
      */
     public function __construct(RequestInterface $request, WorkFissionPosterContract $workFissionPosterService, WorkFissionContactContract $workFissionContactService, WorkFissionContract $workFissionService, CorpContract $corpService, WorkContactContract $workContactService, WorkContactEmployeeContract $workContactEmployeeService, WorkEmployeeContract $workEmployeeService)
     {
-        $this->request                    = $request;
-        $this->workFissionPosterService   = $workFissionPosterService;
-        $this->workFissionContactService  = $workFissionContactService;
-        $this->workFissionService         = $workFissionService;
-        $this->corpService                = $corpService;
-        $this->workContactService         = $workContactService;
+        $this->request = $request;
+        $this->workFissionPosterService = $workFissionPosterService;
+        $this->workFissionContactService = $workFissionContactService;
+        $this->workFissionService = $workFissionService;
+        $this->corpService = $corpService;
+        $this->workContactService = $workContactService;
         $this->workContactEmployeeService = $workContactEmployeeService;
-        $this->workEmployeeService        = $workEmployeeService;
+        $this->workEmployeeService = $workEmployeeService;
     }
 
     /**
@@ -135,9 +135,9 @@ class Poster extends AbstractAction
     {
         return [
             'fission_id' => 'required',
-            'union_id'   => 'required',
-            'nickname'   => 'required',
-            'avatar'     => 'required',
+            'union_id' => 'required',
+            'nickname' => 'required',
+            'avatar' => 'required',
         ];
     }
 
@@ -149,9 +149,9 @@ class Poster extends AbstractAction
     {
         return [
             'fission_id.required' => '活动id 必填',
-            'union_id.required'   => 'union_id必填',
-            'nickname.required'   => 'nickname必填',
-            'avatar.required'     => 'avatar必填',
+            'union_id.required' => 'union_id必填',
+            'nickname.required' => 'nickname必填',
+            'avatar.required' => 'avatar必填',
         ];
     }
 
@@ -162,8 +162,8 @@ class Poster extends AbstractAction
     private function getPoster($params): array
     {
         ## 海报
-        $poster              = $this->workFissionPosterService->getWorkFissionPosterByFissionId((int) $params['fission_id']);
-        $qrcode              = $this->handleQrcode($params);
+        $poster = $this->workFissionPosterService->getWorkFissionPosterByFissionId((int) $params['fission_id']);
+        $qrcode = $this->handleQrcode($params);
         $poster['qrcodeUrl'] = file_full_url($qrcode[0]);
         unset($poster['id'], $poster['fissionId'], $poster['wxCoverPic'], $poster['createdAt'], $poster['updatedAt'], $poster['deletedAt']);
         if (! empty($poster['coverPic'])) {
@@ -185,12 +185,12 @@ class Poster extends AbstractAction
         $fissionContact = $this->workFissionContactService->getWorkFissionContactByFissionIDUnionId((int) $params['fission_id'], (string) $params['union_id'], ['id', 'qrcode_url']);
         if (empty($fissionContact)) {//无参与记录
             $contact = $this->workContactService->getWorkContactByUnionId((string) $params['union_id'], ['id', 'wx_external_userid']);
-            $data    = [
-                'fission_id'       => (int) $params['fission_id'],
-                'union_id'         => $params['union_id'],
-                'nickname'         => $params['nickname'],
-                'avatar'           => $params['avatar'],
-                'level'            => empty($contact) ? 0 : 1,
+            $data = [
+                'fission_id' => (int) $params['fission_id'],
+                'union_id' => $params['union_id'],
+                'nickname' => $params['nickname'],
+                'avatar' => $params['avatar'],
+                'level' => empty($contact) ? 0 : 1,
                 'external_user_id' => empty($contact) ? '' : $contact['wxExternalUserid'],
             ];
             $id = $this->workFissionContactService->createWorkFissionContact($data);
@@ -208,15 +208,15 @@ class Poster extends AbstractAction
      */
     private function getQRcode(int $id, array $params): string
     {
-        $fission   = $this->workFissionService->getWorkFissionById((int) $params['fission_id']);
+        $fission = $this->workFissionService->getWorkFissionById((int) $params['fission_id']);
         $employees = json_decode($fission['serviceEmployees'], true, 512, JSON_THROW_ON_ERROR);
-        $autoPass  = $fission['autoPass'] == 1 ? true : false;
+        $autoPass = $fission['autoPass'] == 1 ? true : false;
 
         ##EasyWeChat配置客户联系「联系我」方式
         $res = $this->wxApp((int) $fission['corpId'], 'contact')->contact_way->create(2, 2, [
             'skip_verify' => $autoPass,
-            'state'       => 'fission-' . $id,
-            'user'        => array_column($employees, 'wxUserId'),
+            'state' => 'fission-' . $id,
+            'user' => array_column($employees, 'wxUserId'),
         ]);
         if ($res['errcode'] !== 0) {
             $this->logger->error(sprintf('生成二维码 失败::[%s]', json_encode($res, JSON_THROW_ON_ERROR)));

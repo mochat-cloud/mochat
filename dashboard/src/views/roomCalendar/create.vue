@@ -119,7 +119,6 @@ export default {
     addClick () {
       if (!this.name) {
         this.$message.error('日历名称未填写')
-
         return false
       }
 
@@ -134,7 +133,6 @@ export default {
       const push = this.list.map(v => {
         return v.data
       })
-
       const pushData = []
       push.forEach(v => {
         v.forEach(v2 => pushData.push(v2))
@@ -194,16 +192,13 @@ export default {
             return true
           }
         })
-
         find.data.forEach((v, i) => {
           if (v.form.time === e.form.time) {
             this.list[findIndex].data[i] = e
           }
         })
-
         return false
       }
-
       this.list.forEach(v => {
         if (v.date === e.form.date) {
           v.data.push(e)
@@ -211,18 +206,15 @@ export default {
           return false
         }
       })
-
       this.list.push({
         date: e.form.date,
         data: [{ ...e }]
       })
     },
-
     getListData (date) {
       const find = this.list.find(v => {
         return v.date === date.format('YYYY-MM-DD')
       })
-
       if (find) return find.data
     },
 

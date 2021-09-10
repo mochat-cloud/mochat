@@ -8,7 +8,6 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
-
 namespace MoChat\App\OfficialAccount\Action\Operation\Traits;
 
 use Hyperf\Di\Annotation\Inject;
@@ -25,12 +24,6 @@ use MoChat\Framework\Exception\CommonException;
 trait OpenUserInfoTrait
 {
     /**
-     * @Inject()
-     * @var \Hyperf\Contract\SessionInterface
-     */
-    private $session;
-
-    /**
      * @Inject
      * @var OfficialAccountSetContract
      */
@@ -42,11 +35,17 @@ trait OpenUserInfoTrait
      */
     protected $officialAccountService;
 
+    /**
+     * @Inject
+     * @var \Hyperf\Contract\SessionInterface
+     */
+    private $session;
+
     public function execute()
     {
         $info = $this->getOfficialAccountInfo();
         $weChatUser = $this->session->get('wechat_user_' . $info['authorizerAppid']);
-        if (!empty($weChatUser)) {
+        if (! empty($weChatUser)) {
             return $weChatUser['raw'];
         }
         return [];
@@ -63,7 +62,7 @@ trait OpenUserInfoTrait
     }
 
     /**
-     * 获取公众号信息
+     * 获取公众号信息.
      *
      * @return array
      */
@@ -77,7 +76,7 @@ trait OpenUserInfoTrait
 
         $type = $this->getType();
         $set = $this->officialAccountSetService->getOfficialAccountSetByCorpIdType($corpId, $type, ['official_account_id']);
-        if (!empty($set)) {
+        if (! empty($set)) {
             $res = $this->officialAccountService->getOfficialAccountById($set['officialAccountId'], ['id', 'appid', 'authorizer_appid']);
         } else {
             $res = $this->officialAccountService->getOfficialAccountByCorpId($corpId, ['id', 'appid', 'authorizer_appid']);

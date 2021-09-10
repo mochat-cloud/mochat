@@ -14,10 +14,10 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
@@ -44,7 +44,7 @@ class Destroy extends AbstractAction
      *     @Middleware(DashboardAuthMiddleware::class),
      *     @Middleware(PermissionMiddleware::class)
      * })
-     * @RequestMapping(path="/dashboard/clock/destroy", methods="DELETE")
+     * @RequestMapping(path="/dashboard/roomClockIn/destroy", methods="DELETE")
      */
     public function handle(): array
     {
@@ -96,7 +96,7 @@ class Destroy extends AbstractAction
     {
         return [
             'id.required' => '活动id 必填',
-            'id.integer'  => '活动id 必须为整型',
+            'id.integer' => '活动id 必须为整型',
         ];
     }
 }

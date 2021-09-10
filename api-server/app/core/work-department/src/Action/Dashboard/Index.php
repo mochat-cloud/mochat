@@ -12,7 +12,10 @@ namespace MoChat\App\WorkDepartment\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\WorkDepartment\Contract\WorkDepartmentContract;
 use MoChat\App\WorkEmployee\Constants\Status;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
@@ -20,9 +23,6 @@ use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 获取全部部门、成员.
@@ -83,7 +83,7 @@ class Index extends AbstractAction
     {
         if (! empty($params['searchKeyWords'])) {
             //部门信息
-            $department = $this->departmentService->getWorkDepartmentsByCorpIdName(user()['corpIds'], $params['searchKeyWords']);
+            $department = $this->departmentService->getWorkDepartmentsByCorpIdName([user()['corpIds'][0]], $params['searchKeyWords']);
         } else {
             //部门信息
             $department = $this->departmentService->getWorkDepartmentsByCorpId(user()['corpIds'][0]);

@@ -35,7 +35,7 @@ class IndexLogic
     {
         $user = user();
 
-        $todayDate    = date('Y-m-d', time());
+        $todayDate = date('Y-m-d', time());
         $tomorrowDate = date('Y-m-d', time() + 86400);
 
         //企业的客户总数
@@ -59,30 +59,30 @@ class IndexLogic
         $user = user();
 
         $start = strtotime($params['startTime']);
-        $end   = strtotime($params['endTime']);
+        $end = strtotime($params['endTime']);
 
         $res = [];
         if ($params['employeeId']) {
             //统计员工
             for ($i = $start; $i <= $end; $i += 86400) {
-                $todayText    = date('Y/m/d', $i);
+                $todayText = date('Y/m/d', $i);
                 $tomorrowText = date('Y/m/d', $i + 86400);
 
-                $res[$todayText]['total'] = $this->workContactEmployeeService->countWorkContactEmployeesByEmployeeTime([$params['employeeId']], $tomorrowText);
-                $res[$todayText]['add']   = $this->workContactEmployeeService->countWorkContactEmployeesByEmployeeIdTime([$params['employeeId']], $todayText, $tomorrowText);
-                $res[$todayText]['loss']  = $this->workContactEmployeeService->countWorkContactEmployeesLossByEmployeeIdTime([$params['employeeId']], $todayText, $tomorrowText);
-                $res[$todayText]['net']   = $res[$todayText]['add'] - $res[$todayText]['loss'];
+                $res[$todayText]['total'] = $this->workContactEmployeeService->countWorkContactEmployeesByEmployeeTime($params['employeeId'], $tomorrowText);
+                $res[$todayText]['add'] = $this->workContactEmployeeService->countWorkContactEmployeesByEmployeeIdTime($params['employeeId'], $todayText, $tomorrowText);
+                $res[$todayText]['loss'] = $this->workContactEmployeeService->countWorkContactEmployeesLossByEmployeeIdTime($params['employeeId'], $todayText, $tomorrowText);
+                $res[$todayText]['net'] = $res[$todayText]['add'] - $res[$todayText]['loss'];
             }
         } else {
             //统计企业
             for ($i = $start; $i <= $end; $i += 86400) {
-                $todayText    = date('Y/m/d', $i);
+                $todayText = date('Y/m/d', $i);
                 $tomorrowText = date('Y/m/d', $i + 86400);
 
                 $res[$todayText]['total'] = $this->workContactEmployeeService->countWorkContactEmployeesByTime($user['corpIds'][0], [1], $tomorrowText);
-                $res[$todayText]['add']   = $this->workContactEmployeeService->countWorkContactEmployeesByCorpIdTime($user['corpIds'][0], $todayText, $tomorrowText);
-                $res[$todayText]['loss']  = $this->workContactEmployeeService->countLossWorkContactEmployeesByCorpIdTime($user['corpIds'][0], $todayText, $tomorrowText);
-                $res[$todayText]['net']   = $res[$todayText]['add'] - $res[$todayText]['loss'];
+                $res[$todayText]['add'] = $this->workContactEmployeeService->countWorkContactEmployeesByCorpIdTime($user['corpIds'][0], $todayText, $tomorrowText);
+                $res[$todayText]['loss'] = $this->workContactEmployeeService->countLossWorkContactEmployeesByCorpIdTime($user['corpIds'][0], $todayText, $tomorrowText);
+                $res[$todayText]['net'] = $res[$todayText]['add'] - $res[$todayText]['loss'];
             }
         }
 

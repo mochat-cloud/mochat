@@ -1,6 +1,5 @@
 import { Toast } from 'vant'
 import axios from 'axios'
-import router from '@/router'
 import { getCookie } from '@/utils'
 
 // 创建 axios 实例
@@ -19,8 +18,6 @@ const errorHandler = (error) => {
     const status = error.response.status
     if (status === 401) {
       errorMessage(data.msg)
-      const agentId = getCookie('agentId')
-      router.push({ path: '/codeAuth', query: { agentId, pageFlag: 'contact' } })
     } else {
       errorMessage(`${status || ''}  ${data.msg || 'error'}`)
     }
@@ -32,13 +29,11 @@ const errorHandler = (error) => {
 
 // request interceptor
 request.interceptors.request.use(config => {
-  config.headers['MoChat-Source-Type'] = 'wechat-app'
-  config.headers['MoChat-Corp-Id'] = getCookie('corpId')
   const token = getCookie('token')
   // 如果 token 存在
   if (token) {
     config.headers.Accept = `application/json`
-    config.headers.Authorization = token
+    config.headers.Authorization = 'Bearer ' + token
   }
   return config
 }, errorHandler)

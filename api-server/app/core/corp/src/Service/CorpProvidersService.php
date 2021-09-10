@@ -33,20 +33,20 @@ class CorpProvidersService implements AppConfigurable, UserConfigurable, Externa
     public function __construct()
     {
         $this->corpModel = make(Corp::class);
-        $this->corpData  = [];
+        $this->corpData = [];
     }
 
     public function appConfig(?string $wxCorpId = null, ?array $agentId = null): array
     {
-        $corpQuery             = $this->corpModel::query();
-        $corpQuery             = isset($wxCorpId) ? $corpQuery->where('wx_corpid', $wxCorpId) : $corpQuery->where('id', '=', $this->finCorpId());
-        $corpData              = $corpQuery->first(['*']);
+        $corpQuery = $this->corpModel::query();
+        $corpQuery = isset($wxCorpId) ? $corpQuery->where('wx_corpid', $wxCorpId) : $corpQuery->where('id', '=', $this->finCorpId());
+        $corpData = $corpQuery->first(['*']);
         $corpData || $corpData = collect([]);
-        $this->corpData        = $corpData->toArray();
+        $this->corpData = $corpData->toArray();
 
         return [
             'corp_id' => isset($this->corpData['wxCorpid']) ? $this->corpData['wxCorpid'] : '',
-            'token'   => isset($this->corpData['token']) ? $this->corpData['token'] : '',
+            'token' => isset($this->corpData['token']) ? $this->corpData['token'] : '',
             'aes_key' => isset($this->corpData['encodingAesKey']) ? $this->corpData['encodingAesKey'] : '',
         ];
     }
@@ -55,7 +55,7 @@ class CorpProvidersService implements AppConfigurable, UserConfigurable, Externa
     {
         return array_merge($this->appConfig($wxCorpId, $agentId), [
             'agent_id' => empty($agentId) ? '' : (string) $agentId[0],
-            'secret'   => empty($agentId) ? '' : self::getWorkAgentByCorpIdWxAgentId((string) $agentId[0])['secret'],
+            'secret' => empty($agentId) ? '' : self::getWorkAgentByCorpIdWxAgentId((string) $agentId[0])['secret'],
         ]);
     }
 
@@ -97,7 +97,7 @@ class CorpProvidersService implements AppConfigurable, UserConfigurable, Externa
             ->first(['wx_secret']);
 
         $workAgentData || $workAgentData = collect([]);
-        $workAgentData                   = $workAgentData->toArray();
+        $workAgentData = $workAgentData->toArray();
 
         return ['secret' => empty($workAgentData) ? '' : $workAgentData['wxSecret']];
     }

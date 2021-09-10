@@ -8,7 +8,6 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
-
 namespace MoChat\Plugin\RoomFission\Logic;
 
 use Hyperf\Contract\StdoutLoggerInterface;
@@ -77,8 +76,7 @@ class StoreLogic
         RoomFissionWelcomeContract $roomFissionWelcomeService,
         RoomFissionRoomContract $roomFissionRoomService,
         RoomFissionInviteContract $roomFissionInviteService
-    )
-    {
+    ) {
         $this->logger = $logger;
         $this->roomFissionService = $roomFissionService;
         $this->roomFissionPosterService = $roomFissionPosterService;
@@ -90,8 +88,8 @@ class StoreLogic
     /**
      * @param array $user 登录用户信息
      * @param array $params 请求参数
-     * @return array 响应数组
      * @throws \JsonException|\League\Flysystem\FileExistsException
+     * @return array 响应数组
      */
     public function handle(array $user, array $params): array
     {
@@ -107,8 +105,8 @@ class StoreLogic
      * 处理参数.
      * @param array $user 用户信息
      * @param array $params 接受参数
-     * @return array 响应数组
      * @throws \JsonException|\League\Flysystem\FileExistsException
+     * @return array 响应数组
      */
     private function handleParam(array $user, array $params): array
     {
@@ -116,11 +114,11 @@ class StoreLogic
             'official_account_id' => $params['fission']['official_account_id'],
             'active_name' => $params['fission']['active_name'],
             'end_time' => $params['fission']['end_time'],
-            'target_count' => (int)$params['fission']['target_count'],
-            'new_friend' => (int)$params['fission']['new_friend'],
-            'delete_invalid' => (int)$params['fission']['delete_invalid'],
+            'target_count' => (int) $params['fission']['target_count'],
+            'new_friend' => (int) $params['fission']['new_friend'],
+            'delete_invalid' => (int) $params['fission']['delete_invalid'],
             'receive_employees' => json_encode($params['fission']['receive_employees'], JSON_THROW_ON_ERROR),
-            'auto_pass' => (int)$params['fission']['auto_pass'],
+            'auto_pass' => (int) $params['fission']['auto_pass'],
             'tenant_id' => isset($params['tenant_id']) ? $params['tenant_id'] : 0,
             'corp_id' => $user['corpIds'][0],
             'create_user_id' => $user['id'],
@@ -128,7 +126,7 @@ class StoreLogic
         ];
 
         ##欢迎语
-        if (!empty($params['welcome']['link_pic'])) {
+        if (! empty($params['welcome']['link_pic'])) {
             $params['welcome']['link_pic'] = File::uploadBase64Image($params['welcome']['link_pic'], 'image/roomFission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg');
         }
         ##EasyWeChat上传图片
@@ -153,8 +151,8 @@ class StoreLogic
         ##海报
         $data['poster'] = [
             'cover_pic' => File::uploadBase64Image($params['poster']['cover_pic'], 'image/roomFission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg'),
-            'avatar_show' => (int)$params['poster']['avatar_show'],
-            'nickname_show' => (int)$params['poster']['nickname_show'],
+            'avatar_show' => (int) $params['poster']['avatar_show'],
+            'nickname_show' => (int) $params['poster']['nickname_show'],
             'nickname_color' => $params['poster']['nickname_color'],
             'qrcode_w' => $params['poster']['qrcode_w'],
             'qrcode_h' => $params['poster']['qrcode_h'],
@@ -166,11 +164,11 @@ class StoreLogic
         ##群聊
         $data['rooms'] = $params['rooms'];
         ##客户参与
-        if (!empty($params['invite']['link_pic'])) {
+        if (! empty($params['invite']['link_pic'])) {
             $params['invite']['link_pic'] = File::uploadBase64Image($params['invite']['link_pic'], 'image/roomFission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg');
         }
         $data['invite'] = [
-            'type' => (int)$params['invite']['type'],
+            'type' => (int) $params['invite']['type'],
             'employees' => empty($params['invite']['employees']) ? '{}' : json_encode($params['invite']['employees'], JSON_THROW_ON_ERROR),
             'choose_contact' => empty($params['invite']['choose_contact']) ? '{}' : json_encode($params['invite']['choose_contact'], JSON_THROW_ON_ERROR),
             'text' => $params['invite']['text'],

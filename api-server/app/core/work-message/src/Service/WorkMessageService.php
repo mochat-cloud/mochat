@@ -32,7 +32,7 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
     protected $query;
 
     /**
-     * @Inject()
+     * @Inject
      * @var CacheInterface
      */
     protected $cache;
@@ -54,7 +54,7 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
      */
     public function getWorkMessageById(int $id, array $columns = ['*']): array
     {
-        $data          = $this->query->find($id, $columns);
+        $data = $this->query->find($id, $columns);
         $data || $data = collect([]);
         return $data->toArray();
     }
@@ -67,7 +67,7 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
      */
     public function getWorkMessagesById(array $ids, array $columns = ['*']): array
     {
-        $data          = $this->query->whereIn('id', $ids)->get($columns);
+        $data = $this->query->whereIn('id', $ids)->get($columns);
         $data || $data = collect([]);
         return $data->toArray();
     }
@@ -84,12 +84,12 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
         $model = $this->model->optionWhere($where, $options)->from($this->model->getTable());
 
         ## 分页参数
-        $perPage  = isset($options['perPage']) ? (int) $options['perPage'] : 15;
+        $perPage = isset($options['perPage']) ? (int) $options['perPage'] : 15;
         $pageName = $options['pageName'] ?? 'page';
-        $page     = isset($options['page']) ? (int) $options['page'] : null;
+        $page = isset($options['page']) ? (int) $options['page'] : null;
 
         ## 分页
-        $data          = $model->paginate($perPage, $columns, $pageName, $page);
+        $data = $model->paginate($perPage, $columns, $pageName, $page);
         $data || $data = collect([]);
         return $data->toArray();
     }
@@ -365,6 +365,29 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
         return $data->toArray();
     }
 
+    /**
+     * 获取最近一条seq.
+     *
+     * @return int ...
+     */
+    public function getWorkMessageLastSeqByCorpId(int $corpId): int
+    {
+        if ($seq = $this->cache->get(sprintf('mochat:messageLastSeq:%d', $corpId))) {
+            return (int) $seq;
+        }
+        return (int) $this->query->where('corp_id', $corpId)->orderBy('msg_time', 'desc')->limit(1)->value('seq');
+    }
+
+    /**
+     * 设置最后一次更新的seq.
+     *
+     * @return mixed
+     */
+    public function updateWorkMessageLastSeqByCorpId(int $corpId, int $seq)
+    {
+        return $this->cache->set(sprintf('mochat:messageLastSeq:%d', $corpId), $seq, -1);
+    }
+
     protected function toCamel(array $data): array
     {
         $newData = [];
@@ -372,32 +395,5 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
             $newData[Str::camel($key)] = $item;
         }
         return $newData;
-    }
-
-    /**
-     * 获取最近一条seq.
-     * @param int $corpId
-     *
-     * @return int ...
-     */
-    public function getWorkMessageLastSeqByCorpId(int $corpId): int
-    {
-        if ($seq = $this->cache->get(sprintf("mochat:messageLastSeq:%d", $corpId))) {
-            return (int) $seq;
-        }
-        return (int) $this->query->where('corp_id', $corpId)->orderBy('msg_time', 'desc')->limit(1)->value('seq');
-    }
-
-    /**
-     * 设置最后一次更新的seq
-     *
-     * @param int $corpId
-     * @param int $seq
-     *
-     * @return mixed
-     */
-    public function updateWorkMessageLastSeqByCorpId(int $corpId, int $seq)
-    {
-        return $this->cache->set(sprintf("mochat:messageLastSeq:%d", $corpId), $seq, -1);
     }
 }

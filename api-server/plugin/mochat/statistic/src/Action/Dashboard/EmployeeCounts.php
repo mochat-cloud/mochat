@@ -13,11 +13,11 @@ namespace MoChat\Plugin\Statistic\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Logic\AppTrait;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
@@ -53,7 +53,7 @@ class EmployeeCounts extends AbstractAction
     public function __construct(EmployeesLogic $employeesLogic, RequestInterface $request)
     {
         $this->employeesLogic = $employeesLogic;
-        $this->request        = $request;
+        $this->request = $request;
     }
 
     /**
@@ -62,31 +62,31 @@ class EmployeeCounts extends AbstractAction
      *     @Middleware(DashboardAuthMiddleware::class),
      *     @Middleware(PermissionMiddleware::class)
      * })
-     * @RequestMapping(path="/dashboard/count/employeeCounts", methods="GET")
+     * @RequestMapping(path="/dashboard/statistic/employeeCounts", methods="GET")
      */
     public function handle(): array
     {
         $params['startTime'] = $this->request->input('startTime');
-        $params['endTime']   = $this->request->input('endTime');
-        $params['page']      = $this->request->input('page');
+        $params['endTime'] = $this->request->input('endTime');
+        $params['page'] = $this->request->input('page');
 
         $params['startTime'] = strtotime($params['startTime']);
-        $params['endTime']   = strtotime($params['endTime']);
+        $params['endTime'] = strtotime($params['endTime']);
 
         if ($params['endTime'] - $params['startTime'] > 2592000) {
             //大于30天 不行
             throw new CommonException(ErrorCode::INVALID_PARAMS, '日期范围不能超过30天');
         }
-        $user         = user();
+        $user = user();
         $employeeList = $this->employeesLogic->getEmployees($user['corpIds'][0]);
         //总人数
         $employeeTotal = count($employeeList);
 
-        $pageSize     = 5;
-        $indexStart   = ((int) $params['page'] - 1) * $pageSize;
+        $pageSize = 5;
+        $indexStart = ((int) $params['page'] - 1) * $pageSize;
         $employeeList = array_slice($employeeList, $indexStart, $pageSize);
         ##EasyWeChat获取「联系客户统计」数据
-        $wx    = $this->wxApp($user['corpIds'][0], 'contact')->external_contact_statistics;
+        $wx = $this->wxApp($user['corpIds'][0], 'contact')->external_contact_statistics;
         $table = [];
         foreach ($employeeList as $employee) {
             $res = $wx->userBehavior([$employee['wxUserId']], (string) $params['startTime'], (string) $params['endTime']);
@@ -94,14 +94,14 @@ class EmployeeCounts extends AbstractAction
                 $this->logger->error(sprintf('获取「联系客户统计」数据 失败::[%s]', json_encode($res, JSON_THROW_ON_ERROR)));
             }
             $temp = $res['behavior_data'];
-            $one  = [
-                'id'               => $employee['id'],
-                'name'             => $employee['name'],
-                'avatar'           => file_full_url($employee['avatar']),
-                'chat_cnt'         => 0,
-                'message_cnt'      => 0,
+            $one = [
+                'id' => $employee['id'],
+                'name' => $employee['name'],
+                'avatar' => file_full_url($employee['avatar']),
+                'chat_cnt' => 0,
+                'message_cnt' => 0,
                 'reply_percentage' => 0,
-                'avg_reply_time'   => 0,
+                'avg_reply_time' => 0,
             ];
             //计算一个人的总和
             foreach ($temp as $item) {
@@ -112,7 +112,7 @@ class EmployeeCounts extends AbstractAction
             }
 
             $one['reply_percentage'] = round($one['reply_percentage'] / count($temp), 2);
-            $one['avg_reply_time']   = round($one['avg_reply_time'] / count($temp), 2);
+            $one['avg_reply_time'] = round($one['avg_reply_time'] / count($temp), 2);
 
             $table[] = $one;
         }

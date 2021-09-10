@@ -12,10 +12,10 @@ namespace MoChat\App\WorkMessage\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\User\Logic\Traits\UserTrait;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
@@ -73,12 +73,12 @@ class Index extends AbstractAction
         );
         $this->validated($params);
         $params['workEmployeeId'] = (int) $params['workEmployeeId'];
-        $params['toUserType']     = (int) $params['toUserType'];
-        $params['toUserId']       = (int) $params['toUserId'];
+        $params['toUserType'] = (int) $params['toUserType'];
+        $params['toUserId'] = (int) $params['toUserId'];
 
         ## 分页查询
         [$where, $options] = $this->paramsHandle($params);
-        $pageData          = $this->workMessageService->getWorkMessageList(
+        $pageData = $this->workMessageService->getWorkMessageList(
             $where,
             ['id', 'action', 'from', 'corp_id', 'tolist_id', 'tolist_type', 'msg_type', 'content', 'msg_time', 'room_id'],
             $options
@@ -86,7 +86,7 @@ class Index extends AbstractAction
 
         ## 响应数据处理
         $employeeWxUserId = $this->getEmployee($params['workEmployeeId']);
-        $data             = array_map(function ($item) use ($employeeWxUserId) {
+        $data = array_map(function ($item) use ($employeeWxUserId) {
             $item['content'] = $this->contentFormat(json_decode($item['content'], true), $item['msgType']);
             $item['msgDataTime'] = date('Y-m-d H:i:s', (int) ($item['msgTime'] * 0.001));
             $item['type'] = $item['msgType'];
@@ -95,8 +95,8 @@ class Index extends AbstractAction
 
         return [
             'page' => [
-                'perPage'   => $pageData['per_page'],
-                'total'     => $pageData['total'],
+                'perPage' => $pageData['per_page'],
+                'total' => $pageData['total'],
                 'totalPage' => $pageData['last_page'],
             ],
             'list' => $data,
@@ -111,14 +111,14 @@ class Index extends AbstractAction
     {
         return [
             'workEmployeeId' => '员工',
-            'toUserType'     => '会话对象类型',
-            'toUserId'       => '会话对象',
-            'type'           => '会话内容类型',
-            'content'        => '搜索内容',
-            'dateTimeStart'  => '搜索开始时间',
-            'dateTimeEnd'    => '搜索结束时间',
-            'page'           => '页码',
-            'perPage'        => '每页条数',
+            'toUserType' => '会话对象类型',
+            'toUserId' => '会话对象',
+            'type' => '会话内容类型',
+            'content' => '搜索内容',
+            'dateTimeStart' => '搜索开始时间',
+            'dateTimeEnd' => '搜索结束时间',
+            'page' => '页码',
+            'perPage' => '每页条数',
         ];
     }
 
@@ -129,14 +129,14 @@ class Index extends AbstractAction
     {
         return [
             'workEmployeeId' => 'required|integer',
-            'toUserType'     => 'required|integer|in:0,1,2',
-            'toUserId'       => 'required|integer',
-            'content'        => 'sometimes|nullable|string',
-            'dateTimeStart'  => 'sometimes|nullable|date|before_or_equal:dateTimeEnd',
-            'dateTimeEnd'    => 'sometimes|nullable|date',
-            'type'           => 'integer',
-            'page'           => 'integer',
-            'perPage'        => 'integer',
+            'toUserType' => 'required|integer|in:0,1,2',
+            'toUserId' => 'required|integer',
+            'content' => 'sometimes|nullable|string',
+            'dateTimeStart' => 'sometimes|nullable|date|before_or_equal:dateTimeEnd',
+            'dateTimeEnd' => 'sometimes|nullable|date',
+            'type' => 'integer',
+            'page' => 'integer',
+            'perPage' => 'integer',
         ];
     }
 
@@ -185,11 +185,11 @@ class Index extends AbstractAction
             $where['room_id'] = $params['toUserId'];
         } else {
             $fromUserId = $this->getEmployee($params['workEmployeeId']);
-            $toUserId   = $params['toUserType'] === 0 ? $this->getEmployee($params['toUserId']) : $this->getContact($params['toUserId']);
-            $where[]    = [
+            $toUserId = $params['toUserType'] === 0 ? $this->getEmployee($params['toUserId']) : $this->getContact($params['toUserId']);
+            $where[] = [
                 "((`from` = ? AND `tolist_id`->'$[0]' = ?) OR (`from` = ? AND `tolist_id`->'$[0]' = ?))",
                 'RAW',
-                [$fromUserId, $params['toUserId'], $toUserId, $params['workEmployeeId'],], ];
+                [$fromUserId, $params['toUserId'], $toUserId, $params['workEmployeeId']], ];
         }
 
         if ($params['content']) {
@@ -205,8 +205,8 @@ class Index extends AbstractAction
         }
 
         $options = [
-            'page'       => $params['page'],
-            'perPage'    => $params['perPage'],
+            'page' => $params['page'],
+            'perPage' => $params['perPage'],
             'orderByRaw' => '`created_at` ASC',
         ];
 
@@ -222,8 +222,8 @@ class Index extends AbstractAction
     protected function otherResData(array $item, string $currentWxUserId): array
     {
         $data = [
-            'name'          => '系统',
-            'avatar'        => '',
+            'name' => '系统',
+            'avatar' => '',
             'isCurrentUser' => 0,
         ];
 
@@ -239,7 +239,7 @@ class Index extends AbstractAction
                 $data['name'] = $item['from'];
                 return $data;
             }
-            $data['name']                                = $contact['name'];
+            $data['name'] = $contact['name'];
             empty($contact['avatar']) || $data['avatar'] = file_full_url($contact['avatar']);
         } else {
             ## 员工
@@ -247,9 +247,9 @@ class Index extends AbstractAction
             if (empty($employee)) {
                 return $data;
             }
-            $data['name']                                                = $employee['name'];
+            $data['name'] = $employee['name'];
             $item['from'] === $currentWxUserId && $data['isCurrentUser'] = 1;
-            empty($employee['thumbAvatar']) || $data['avatar']           = file_full_url($employee['thumbAvatar']);
+            empty($employee['thumbAvatar']) || $data['avatar'] = file_full_url($employee['thumbAvatar']);
         }
 
         return $data;

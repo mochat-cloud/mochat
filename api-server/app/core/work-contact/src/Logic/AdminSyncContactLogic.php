@@ -134,16 +134,16 @@ class AdminSyncContactLogic
         }
 
         // 头像改为存储原地址
-        /**
-        //上传头像到存储
-        if (! empty($this->updateAvatar)) {
-            file_upload_queue($this->updateAvatar);
-        }
-        //上传头像到存储
-        if (! empty($this->createAvatar)) {
-            file_upload_queue($this->createAvatar);
-        }
-        */
+        /*
+         * //上传头像到存储
+         * if (! empty($this->updateAvatar)) {
+         * file_upload_queue($this->updateAvatar);
+         * }
+         * //上传头像到存储
+         * if (! empty($this->createAvatar)) {
+         * file_upload_queue($this->createAvatar);
+         * }
+         */
     }
 
     /**
@@ -155,7 +155,7 @@ class AdminSyncContactLogic
     private function addContact($val, $employee, $corpId)
     {
         $addContactEmployee = [];
-        $addContactTag      = [];
+        $addContactTag = [];
 
         //开启事务
         Db::beginTransaction();
@@ -166,17 +166,17 @@ class AdminSyncContactLogic
 
             //添加客户表
             $addContact = [
-                'corp_id'            => $corpId,
+                'corp_id' => $corpId,
                 'wx_external_userid' => $val['external_contact']['external_userid'],
-                'name'               => $val['external_contact']['name'],
-                'avatar'             => empty($val['external_contact']['avatar']) ? '' : $val['external_contact']['avatar'],
-                'type'               => isset($val['external_contact']['type']) ? $val['external_contact']['type'] : 0,
-                'gender'             => isset($val['external_contact']['gender']) ? $val['external_contact']['gender'] : 0,
-                'unionid'            => isset($val['external_contact']['unionid']) ? $val['external_contact']['unionid'] : '',
-                'position'           => isset($val['external_contact']['position']) ? $val['external_contact']['position'] : '',
-                'corp_name'          => isset($val['external_contact']['corp_name']) ? $val['external_contact']['corp_name'] : '',
-                'corp_full_name'     => isset($val['external_contact']['corp_full_name']) ? $val['external_contact']['corp_full_name'] : '',
-                'external_profile'   => isset($val['external_contact']['external_profile']) ? json_encode($val['external_contact']['external_profile']) : json_encode([]),
+                'name' => $val['external_contact']['name'],
+                'avatar' => empty($val['external_contact']['avatar']) ? '' : $val['external_contact']['avatar'],
+                'type' => isset($val['external_contact']['type']) ? $val['external_contact']['type'] : 0,
+                'gender' => isset($val['external_contact']['gender']) ? $val['external_contact']['gender'] : 0,
+                'unionid' => isset($val['external_contact']['unionid']) ? $val['external_contact']['unionid'] : '',
+                'position' => isset($val['external_contact']['position']) ? $val['external_contact']['position'] : '',
+                'corp_name' => isset($val['external_contact']['corp_name']) ? $val['external_contact']['corp_name'] : '',
+                'corp_full_name' => isset($val['external_contact']['corp_full_name']) ? $val['external_contact']['corp_full_name'] : '',
+                'external_profile' => isset($val['external_contact']['external_profile']) ? json_encode($val['external_contact']['external_profile']) : json_encode([]),
             ];
             $addContactRes = $this->workContact->createWorkContact($addContact);
             if (! is_int($addContactRes)) {
@@ -199,17 +199,17 @@ class AdminSyncContactLogic
                 }
 
                 $addContactEmployee[] = [
-                    'employee_id'      => $employeeId,
-                    'contact_id'       => $addContactRes,
-                    'remark'           => isset($item['remark']) ? $item['remark'] : '',
-                    'description'      => isset($item['description']) ? $item['description'] : '',
+                    'employee_id' => $employeeId,
+                    'contact_id' => $addContactRes,
+                    'remark' => isset($item['remark']) ? $item['remark'] : '',
+                    'description' => isset($item['description']) ? $item['description'] : '',
                     'remark_corp_name' => isset($item['remark_corp_name']) ? $item['remark_corp_name'] : '',
-                    'remark_mobiles'   => isset($item['remark_mobiles']) ? json_encode($item['remark_mobiles']) : json_encode([]),
-                    'add_way'          => isset($item['add_way']) ? $item['add_way'] : 0,
-                    'oper_userid'      => isset($item['oper_userid']) ? $item['oper_userid'] : '',
-                    'state'            => isset($item['state']) ? $item['state'] : '',
-                    'corp_id'          => $corpId,
-                    'create_time'      => isset($item['createtime']) ? date('Y-m-d H:i:s', $item['createtime']) : '',
+                    'remark_mobiles' => isset($item['remark_mobiles']) ? json_encode($item['remark_mobiles']) : json_encode([]),
+                    'add_way' => isset($item['add_way']) ? $item['add_way'] : 0,
+                    'oper_userid' => isset($item['oper_userid']) ? $item['oper_userid'] : '',
+                    'state' => isset($item['state']) ? $item['state'] : '',
+                    'corp_id' => $corpId,
+                    'create_time' => isset($item['createtime']) ? date('Y-m-d H:i:s', $item['createtime']) : '',
                 ];
 
                 //客户与标签
@@ -229,10 +229,10 @@ class AdminSyncContactLogic
                             }
 
                             $addContactTag[] = [
-                                'contact_id'     => $addContactRes,
-                                'employee_id'    => $employeeId,
+                                'contact_id' => $addContactRes,
+                                'employee_id' => $employeeId,
                                 'contact_tag_id' => $tagId,
-                                'type'           => $v['type'],
+                                'type' => $v['type'],
                             ];
                         }
                     }
@@ -274,15 +274,15 @@ class AdminSyncContactLogic
 //        $pathFileName = 'contact/avatar/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg';
 
         $this->updateContact[] = [
-            'id'               => $contactInfo[$val['external_contact']['external_userid']]['id'],
-            'name'             => $val['external_contact']['name'],
-            'avatar'           => empty($val['external_contact']['avatar']) ? '' : $val['external_contact']['avatar'],
-            'type'             => isset($val['external_contact']['type']) ? $val['external_contact']['type'] : 0,
-            'gender'           => isset($val['external_contact']['gender']) ? $val['external_contact']['gender'] : 0,
-            'unionid'          => isset($val['external_contact']['unionid']) ? $val['external_contact']['unionid'] : '',
-            'position'         => isset($val['external_contact']['position']) ? $val['external_contact']['position'] : '',
-            'corp_name'        => isset($val['external_contact']['corp_name']) ? $val['external_contact']['corp_name'] : '',
-            'corp_full_name'   => isset($val['external_contact']['corp_full_name']) ? $val['external_contact']['corp_full_name'] : '',
+            'id' => $contactInfo[$val['external_contact']['external_userid']]['id'],
+            'name' => $val['external_contact']['name'],
+            'avatar' => empty($val['external_contact']['avatar']) ? '' : $val['external_contact']['avatar'],
+            'type' => isset($val['external_contact']['type']) ? $val['external_contact']['type'] : 0,
+            'gender' => isset($val['external_contact']['gender']) ? $val['external_contact']['gender'] : 0,
+            'unionid' => isset($val['external_contact']['unionid']) ? $val['external_contact']['unionid'] : '',
+            'position' => isset($val['external_contact']['position']) ? $val['external_contact']['position'] : '',
+            'corp_name' => isset($val['external_contact']['corp_name']) ? $val['external_contact']['corp_name'] : '',
+            'corp_full_name' => isset($val['external_contact']['corp_full_name']) ? $val['external_contact']['corp_full_name'] : '',
             'external_profile' => isset($val['external_contact']['external_profile']) ? json_encode($val['external_contact']['external_profile']) : json_encode([]),
         ];
 
@@ -298,26 +298,26 @@ class AdminSyncContactLogic
         //客户与员工关联
         if (! empty($val['follow_user'])) {
             $addContactEmployee = [];
-            $addContactTag      = [];
+            $addContactTag = [];
 
             //客户与员工关联
             foreach ($val['follow_user'] as $item) {
                 $employeeId = 0;
 
                 if (isset($employee[$item['userid']])) {
-                    $employeeId    = $employee[$item['userid']]['id'];
+                    $employeeId = $employee[$item['userid']]['id'];
                     $employeeIds[] = $employee[$item['userid']]['id'];
                 }
 
                 //更新员工与客户关系
                 if (in_array($employeeId, $contactInfo[$val['external_contact']['external_userid']]['employeeIds'])) {
                     $updateContactEmployee = [
-                        'remark'           => isset($item['remark']) ? $item['remark'] : '',
-                        'description'      => isset($item['description']) ? $item['description'] : '',
+                        'remark' => isset($item['remark']) ? $item['remark'] : '',
+                        'description' => isset($item['description']) ? $item['description'] : '',
                         'remark_corp_name' => isset($item['remark_corp_name']) ? $item['remark_corp_name'] : '',
-                        'remark_mobiles'   => isset($item['remark_mobiles']) ? json_encode($item['remark_mobiles']) : json_encode([]),
-                        'state'            => isset($item['state']) ? $item['state'] : '',
-                        'create_time'      => isset($item['createtime']) ? date('Y-m-d H:i:s', $item['createtime']) : '',
+                        'remark_mobiles' => isset($item['remark_mobiles']) ? json_encode($item['remark_mobiles']) : json_encode([]),
+                        'state' => isset($item['state']) ? $item['state'] : '',
+                        'create_time' => isset($item['createtime']) ? date('Y-m-d H:i:s', $item['createtime']) : '',
                     ];
                     //更新员工、客户关联表
                     $updateRes = $this->workContactEmployee->updateWorkContactEmployeeByOtherIds(
@@ -332,17 +332,17 @@ class AdminSyncContactLogic
                 } else {
                     //新增员工与客户关系
                     $addContactEmployee[] = [
-                        'employee_id'      => $employeeId,
-                        'contact_id'       => $contactInfo[$val['external_contact']['external_userid']]['id'],
-                        'remark'           => isset($item['remark']) ? $item['remark'] : '',
-                        'description'      => isset($item['description']) ? $item['description'] : '',
+                        'employee_id' => $employeeId,
+                        'contact_id' => $contactInfo[$val['external_contact']['external_userid']]['id'],
+                        'remark' => isset($item['remark']) ? $item['remark'] : '',
+                        'description' => isset($item['description']) ? $item['description'] : '',
                         'remark_corp_name' => isset($item['remark_corp_name']) ? $item['remark_corp_name'] : '',
-                        'remark_mobiles'   => isset($item['remark_mobiles']) ? json_encode($item['remark_mobiles']) : json_encode([]),
-                        'add_way'          => isset($item['add_way']) ? $item['add_way'] : 0,
-                        'oper_userid'      => isset($item['oper_userid']) ? $item['oper_userid'] : '',
-                        'state'            => isset($item['state']) ? $item['state'] : '',
-                        'corp_id'          => user()['corpIds'][0],
-                        'create_time'      => isset($item['createtime']) ? date('Y-m-d H:i:s', $item['createtime']) : '',
+                        'remark_mobiles' => isset($item['remark_mobiles']) ? json_encode($item['remark_mobiles']) : json_encode([]),
+                        'add_way' => isset($item['add_way']) ? $item['add_way'] : 0,
+                        'oper_userid' => isset($item['oper_userid']) ? $item['oper_userid'] : '',
+                        'state' => isset($item['state']) ? $item['state'] : '',
+                        'corp_id' => user()['corpIds'][0],
+                        'create_time' => isset($item['createtime']) ? date('Y-m-d H:i:s', $item['createtime']) : '',
                     ];
                 }
 
@@ -385,10 +385,10 @@ class AdminSyncContactLogic
                         if ($wxTagId != 0 && ! in_array($wxTagId, $tagIds)) {
                             //添加客户标签
                             $addContactTag[] = [
-                                'contact_id'     => $contactInfo[$val['external_contact']['external_userid']]['id'],
-                                'employee_id'    => $employeeId,
+                                'contact_id' => $contactInfo[$val['external_contact']['external_userid']]['id'],
+                                'employee_id' => $employeeId,
                                 'contact_tag_id' => $wxTagId,
-                                'type'           => $v['type'],
+                                'type' => $v['type'],
                             ];
                         }
                     }
@@ -491,11 +491,11 @@ class AdminSyncContactLogic
         $contactEmployeeData = [];
         foreach ($contactEmployee as &$raw) {
             if (isset($contactEmployeeData[$raw['contactId']])) {
-                $contactEmployeeData[$raw['contactId']]['contactId']    = $raw['contactId'];
+                $contactEmployeeData[$raw['contactId']]['contactId'] = $raw['contactId'];
                 $contactEmployeeData[$raw['contactId']]['employeeId'][] = $raw['employeeId'];
             } else {
-                $tmp                 = [];
-                $tmp['contactId']    = $raw['contactId'];
+                $tmp = [];
+                $tmp['contactId'] = $raw['contactId'];
                 $tmp['employeeId'][] = $raw['employeeId'];
 
                 $contactEmployeeData[$raw['contactId']] = $tmp;
@@ -522,16 +522,16 @@ class AdminSyncContactLogic
         //如果查到 就更新
         if (! empty($workUpdateTime)) {
             $data['last_update_time'] = date('Y-m-d H:i:s');
-            $id                       = end($workUpdateTime)['id'];
-            $updateRes                = $this->workUpdateTime->updateWorkUpdateTimeById((int) $id, $data);
+            $id = end($workUpdateTime)['id'];
+            $updateRes = $this->workUpdateTime->updateWorkUpdateTimeById((int) $id, $data);
             if (! is_int($updateRes)) {
                 throw new CommonException(ErrorCode::SERVER_ERROR, '更新客户同步时间失败');
             }
         } else {
             //如果没有新增
             $params = [
-                'corp_id'          => user()['corpIds'][0],
-                'type'             => Type::CONTACT,
+                'corp_id' => user()['corpIds'][0],
+                'type' => Type::CONTACT,
                 'last_update_time' => date('Y-m-d H:i:s'),
             ];
 

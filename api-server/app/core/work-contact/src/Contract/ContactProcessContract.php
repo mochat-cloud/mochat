@@ -72,4 +72,11 @@ interface ContactProcessContract
      * @return int 删除条数
      */
     public function deleteContactProcesses(array $ids): int;
+
+    /**
+     * 查询多条-根据企业ID.
+     * @param array|string[] $columns
+     * @return mixed
+     */
+    public function getContactProcessesByCorpId(int $corpId, array $columns = ['*']): array;
 }

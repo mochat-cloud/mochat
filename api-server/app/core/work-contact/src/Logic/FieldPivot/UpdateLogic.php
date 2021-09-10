@@ -68,7 +68,7 @@ class UpdateLogic
             return;
         }
 
-        $content    = '编辑用户画像：';
+        $content = '编辑用户画像：';
         $createData = [];
         //处理数据
         foreach ($userPortrait as $key => &$raw) {
@@ -87,9 +87,9 @@ class UpdateLogic
             if (empty($raw['contactFieldPivotId'])) {
                 //新增用户画像
                 $createData[] = [
-                    'contact_id'       => $this->params['contactId'],
+                    'contact_id' => $this->params['contactId'],
                     'contact_field_id' => $raw['contactFieldId'],
-                    'value'            => $value,
+                    'value' => $value,
                 ];
                 //记录轨迹
                 if (! empty($value)) {
@@ -133,10 +133,10 @@ class UpdateLogic
     {
         $data = [
             'employee_id' => user()['workEmployeeId'],
-            'contact_id'  => $this->params['contactId'],
-            'content'     => $content,
-            'corp_id'     => user()['corpIds'][0],
-            'event'       => Event::USER_PORTRAIT,
+            'contact_id' => $this->params['contactId'],
+            'content' => $content,
+            'corp_id' => user()['corpIds'][0],
+            'event' => Event::USER_PORTRAIT,
         ];
 
         $res = $this->track->createContactEmployeeTrack($data);

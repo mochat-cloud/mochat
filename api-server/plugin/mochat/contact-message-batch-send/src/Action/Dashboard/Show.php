@@ -12,7 +12,11 @@ namespace MoChat\Plugin\ContactMessageBatchSend\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
 use MoChat\Plugin\ContactMessageBatchSend\Logic\ShowLogic;
@@ -32,6 +36,10 @@ class Show extends AbstractAction
     private $showLogic;
 
     /**
+     * @Middlewares({
+     *     @Middleware(DashboardAuthMiddleware::class),
+     *     @Middleware(PermissionMiddleware::class)
+     * })
      * @RequestMapping(path="/dashboard/contactMessageBatchSend/show", methods="GET")
      */
     public function handle(): array

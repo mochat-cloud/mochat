@@ -12,10 +12,10 @@ namespace MoChat\App\WorkContact\Action\Dashboard\Tag;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Contract\WorkContactTagContract;
 use MoChat\App\WorkContact\QueueService\Tag\DeleteApply;
@@ -76,11 +76,11 @@ class Destroy extends AbstractAction
             throw new CommonException(ErrorCode::SERVER_ERROR, '标签删除失败');
         }
 
-        $tagId              = [];
+        $tagId = [];
         $contactTagGroupIds = [];
         foreach ($tagInfo as &$raw) {
             if ($raw['contactTagGroupId'] != 0) {
-                $tagId[]              = $raw['wxContactTagId'];
+                $tagId[] = $raw['wxContactTagId'];
                 $contactTagGroupIds[] = $raw['contactTagGroupId'];
             }
         }
@@ -91,8 +91,8 @@ class Destroy extends AbstractAction
         if (! empty($tagId)) {
             //删除微信标签
             $this->service = make(DeleteApply::class);
-            $deleteParams  = [
-                'tag_id'   => $tagId,
+            $deleteParams = [
+                'tag_id' => $tagId,
                 'group_id' => [],
             ];
 

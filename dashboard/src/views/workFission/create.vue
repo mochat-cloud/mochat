@@ -69,7 +69,7 @@ export default {
         service_employees: data.services,
         auto_pass: data.autoPass,
         auto_add_tag: data.autoAddTag,
-        end_time: data.endTime.format('YYYY-MM-DD hh:ss'),
+        end_time: data.endTime,
         qr_code_invalid: data.expireDay,
         tasks: data.tasks,
         new_friend: data.newFriend,
@@ -153,7 +153,6 @@ export default {
 
         return false
       }
-
       const params = {
         fission: this.getFissionData(),
         poster: this.getPosterData(),
@@ -161,16 +160,12 @@ export default {
         push: this.getPushData(),
         invite: this.getInviteData()
       }
-
       this.loading = true
-
       add(params).then(res => {
         if (res.code === 200) {
           const inviteParams = this.$refs.step4.getInviteMsgFormData()
-
           if (inviteParams) {
             inviteParams.fission_id = res.data[0]
-
             inviteMsg(inviteParams).then(res => {
               if (res.code === 200) {
                 this.$message.success('添加成功')
@@ -178,10 +173,8 @@ export default {
                 this.$router.push('/workFission/taskpage')
               }
             })
-
             return false
           }
-
           this.$message.success('添加成功')
           this.loading = false
           this.$router.push('/workFission/taskpage')
@@ -191,11 +184,9 @@ export default {
 
     next () {
       let err = ''
-
       if (this.step === 0) err = this.$refs.step1.getVerify()
       if (this.step === 1) err = this.$refs.step2.getVerify()
       if (this.step === 2) err = this.$refs.step3.getVerify()
-
       if (err) {
         this.$message.error(err)
         err = ''

@@ -92,7 +92,7 @@ class LossContactLogic
     private function getInfo()
     {
         $perPage = isset($this->params['perPage']) ? (int) $this->params['perPage'] : 20;
-        $page    = isset($this->params['page']) ? (int) $this->params['page'] : 1;
+        $page = isset($this->params['page']) ? (int) $this->params['page'] : 1;
 
         //处理查询条件
         $where = $this->handleWhere();
@@ -100,8 +100,8 @@ class LossContactLogic
         if (isset($where['emptyData'])) {
             return [
                 'page' => [
-                    'perPage'   => 20,
-                    'total'     => 0,
+                    'perPage' => 20,
+                    'total' => 0,
                     'totalPage' => 0,
                 ],
                 'list' => [],
@@ -121,15 +121,15 @@ class LossContactLogic
         if (empty($info['data'])) {
             return [
                 'page' => [
-                    'perPage'   => 20,
-                    'total'     => 0,
+                    'perPage' => 20,
+                    'total' => 0,
                     'totalPage' => 0,
                 ],
                 'list' => [],
             ];
         }
 
-        $contactIds  = array_column($info['data'], 'contactId');
+        $contactIds = array_column($info['data'], 'contactId');
         $employeeIds = array_column($info['data'], 'employeeId');
 
         //根据客户id查询客户信息
@@ -139,20 +139,20 @@ class LossContactLogic
 
         foreach ($info['data'] as &$raw) {
             $raw['avatar'] = '';
-            $raw['name']   = '';
+            $raw['name'] = '';
             if (isset($contactInfo[$raw['contactId']])) {
                 $raw['avatar'] = empty($contactInfo[$raw['contactId']]['avatar']) ? '' : file_full_url($contactInfo[$raw['contactId']]['avatar']);
-                $raw['name']   = $contactInfo[$raw['contactId']]['name'];
+                $raw['name'] = $contactInfo[$raw['contactId']]['name'];
             }
 
             //查询客户标签
             $raw['tag'] = $this->getContactTag($raw['contactId'], $raw['employeeId']);
 
             $raw['employeeName'] = [];
-            $raw['remark']       = '';
+            $raw['remark'] = '';
             if (isset($employee[$raw['employeeId']])) {
                 $raw['employeeName'] = $employee[$raw['employeeId']]['corpName'] . ' ' . $employee[$raw['employeeId']]['name'];
-                $raw['remark']       = $employee[$raw['employeeId']]['name'];
+                $raw['remark'] = $employee[$raw['employeeId']]['name'];
             }
 
             $raw['user'] = user();
@@ -162,8 +162,8 @@ class LossContactLogic
 
         return [
             'page' => [
-                'perPage'   => isset($info['per_page']) ? $info['per_page'] : 20,
-                'total'     => isset($info['total']) ? $info['total'] : 0,
+                'perPage' => isset($info['per_page']) ? $info['per_page'] : 20,
+                'total' => isset($info['total']) ? $info['total'] : 0,
                 'totalPage' => isset($info['last_page']) ? $info['last_page'] : 0,
             ],
             'list' => $info['data'],

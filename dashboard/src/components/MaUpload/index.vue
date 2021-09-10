@@ -9,6 +9,7 @@
     :action="uploadApi"
     :before-upload="beforeUpload"
     @change="handleChange"
+    accept="image/*"
   >
     <div v-if="btnType">
       <div v-if="imageUrl" class="img-wrapper">
@@ -25,14 +26,18 @@
 import storage from 'store'
 
 export default {
+  model: {
+    prop: 'modelVal',
+    event: 'changeImg'
+  },
   props: {
-    imageUrl: {
-      type: String,
-      default: ''
-    },
     fileType: {
       type: Number || Array,
       default: 1
+    },
+    modelVal: {
+      default: '',
+      type: String
     },
     btnType: {
       type: Boolean,
@@ -42,7 +47,7 @@ export default {
   data () {
     return {
       loading: false,
-      // imageUrl: '',
+      imageUrl: '',
       FileTypeArr: [
         '',
         ['jpg', 'png', 'jpeg'],
@@ -50,7 +55,7 @@ export default {
         ['mp4'],
         ['doc', 'docx', 'xls', 'xlsx', 'csv', 'ppt', 'pptx', 'txt', 'pdf', 'Xmind']
       ],
-      uploadApi: 'http://mochat.test.tuub.cn' + '/common/upload'
+      uploadApi: process.env.VUE_APP_API_BASE_URL + '/dashboard/common/upload'
     }
   },
   computed: {
@@ -65,6 +70,10 @@ export default {
   created () {
   },
   methods: {
+    showImg (img) {
+      console.log(img)
+      this.imageUrl = img
+    },
     handleChange (info) {
       if (info.file.status === 'uploading') {
         this.loading = true
@@ -73,6 +82,8 @@ export default {
       if (info.file.status === 'done') {
         const data = info.file.response.data
         this.$emit('success', data)
+        this.$emit('changeImg', data.path)
+        this.imageUrl = data.fullPath
         this.loading = false
       }
       if (info.file.status === 'error') {

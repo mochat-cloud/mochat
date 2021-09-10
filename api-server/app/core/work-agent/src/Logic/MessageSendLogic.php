@@ -11,9 +11,9 @@ declare(strict_types=1);
 namespace MoChat\App\WorkAgent\Logic;
 
 use Hyperf\Contract\StdoutLoggerInterface;
+use Hyperf\Di\Annotation\Inject;
 use Hyperf\Utils\Codec\Json;
 use MoChat\App\Corp\Logic\AppTrait;
-use Hyperf\Di\Annotation\Inject;
 use MoChat\App\Utils\Media;
 use MoChat\App\WorkAgent\Contract\WorkAgentContract;
 use MoChat\Framework\Constants\ErrorCode;
@@ -28,21 +28,21 @@ class MessageSendLogic
 
     /**
      * @Inject
-     * @var StdoutLoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @Inject()
      * @var WorkAgentContract
      */
     protected $workAgentService;
 
     /**
-     * @Inject()
+     * @Inject
      * @var Media
      */
     protected $media;
+
+    /**
+     * @Inject
+     * @var StdoutLoggerInterface
+     */
+    private $logger;
 
     public function handle(array $params)
     {
@@ -67,12 +67,12 @@ class MessageSendLogic
                     $params['toUser'] = join('|', $params['toUser']);
                 }
                 $message['touser'] = $params['toUser'];
-            } else if (isset($params['toParty'])) {
+            } elseif (isset($params['toParty'])) {
                 if (is_array($params['toParty'])) {
                     $params['toParty'] = join('|', $params['toParty']);
                 }
                 $message['toparty'] = $params['toParty'];
-            } else if (isset($params['toTag'])) {
+            } elseif (isset($params['toTag'])) {
                 if (is_array($params['toTag'])) {
                     $params['toTag'] = join('|', $params['toTag']);
                 }
@@ -107,7 +107,7 @@ class MessageSendLogic
     protected function getMediaContent(array $params)
     {
         $content = $params['content'];
-        if (isset($content['media_id']) && !empty($content['media_id'])) {
+        if (isset($content['media_id']) && ! empty($content['media_id'])) {
             return $content;
         }
 

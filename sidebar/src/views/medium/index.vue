@@ -185,9 +185,8 @@
 </template>
 
 <script>
-import { mediumGroup, mediumDetail } from '@/api/medium'
-import { wxConfig, agentConfig, sendChatMessage } from '@/utils/wxCodeAuth'
-import { getCookie } from '@/utils'
+import { mediumGroup, mediumDetail, mediaIdUpdate } from '@/api/medium'
+import { sendChatMessage } from '@/utils/wxCodeAuth'
 
 export default {
   data () {
@@ -214,16 +213,8 @@ export default {
   created () {
     this.getAllGroup()
     this.getDetail()
-    this.config()
   },
   methods: {
-    config () {
-      const uriPath = this.$route.fullPath
-      const corpId = getCookie('corpId')
-      const agentId = getCookie('agentId')
-      wxConfig(corpId, uriPath)
-      agentConfig(corpId, uriPath, agentId)
-    },
     checkFileType (fileName) {
       const reg = /\.[a-zA-Z]+/
       let type = reg.exec(fileName)
@@ -354,7 +345,15 @@ export default {
           // 图片
           // sendChatMessage(2, item.content)
         } else {
-          sendChatMessage(this.type, item.mediaId)
+          if (item.mediaId === '') {
+            mediaIdUpdate({
+              mediumId: item.id
+            }).then(res => {
+              sendChatMessage(this.type, res.data.mediaId)
+            })
+          } else {
+            sendChatMessage(this.type, item.mediaId)
+          }
         }
       })
       // 1 文本 2 图片 3 图文 5 视频 7文件

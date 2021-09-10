@@ -122,38 +122,38 @@ class LogLogic
 
         foreach ($res as $re) {
             $employee = $this->workEmployeeService->getWorkEmployeeByCorpIdAndWxUserId($params['corpId'], $re['takeoverEmployeeId']);
-            $contact  = $this->workContactService->getWorkContactByCorpIdWxExternalUserId($params['corpId'], $re['contactId']);
+            $contact = $this->workContactService->getWorkContactByCorpIdWxExternalUserId($params['corpId'], $re['contactId']);
 
             if ($params['mode'] == 1) {
                 $result[] = [
-                    'contactId'  => $contact['id'],
-                    'name'       => $contact['name'],
-                    'corpName'   => $contact['corpName'],
-                    'employee'   => $employee['name'],
-                    'state'      => $re['state'] ? $stateText[$re['state']] : '',
+                    'contactId' => $contact['id'],
+                    'name' => $contact['name'],
+                    'corpName' => $contact['corpName'],
+                    'employee' => $employee['name'],
+                    'state' => $re['state'] ? $stateText[$re['state']] : '',
                     'createTime' => $re['createdAt'],
                 ];
             }
 
             if ($params['mode'] == 2) {
-                $room     = $this->workRoomService->getWorkRoomsByCorpIdWxChatId($params['corpId'], $re['contactId']);
-                $roomNum  = $this->workContactRoomService->countWorkContactRoomsByRoomIdContact($room['id']);
+                $room = $this->workRoomService->getWorkRoomByCorpIdWxChatId($params['corpId'], $re['contactId']);
+                $roomNum = $this->workContactRoomService->countWorkContactRoomsByRoomIdContact($room['id']);
                 $result[] = [
-                    'roomId'     => $room['id'],
-                    'name'       => $re['name'],
-                    'employee'   => $employee['name'],
-                    'roomNum'    => $roomNum,
+                    'roomId' => $room['id'],
+                    'name' => $re['name'],
+                    'employee' => $employee['name'],
+                    'roomNum' => $roomNum,
                     'createTime' => $re['createdAt'],
                 ];
             }
 
             if ($params['mode'] == 3) {
                 $result[] = [
-                    'contactId'  => $contact['id'],
-                    'name'       => $contact['name'],
-                    'corpName'   => $contact['corpName'],
-                    'employee'   => $employee['name'],
-                    'state'      => $re['state'] ? $stateText[$re['state']] : '',
+                    'contactId' => $contact['id'],
+                    'name' => $contact['name'],
+                    'corpName' => $contact['corpName'],
+                    'employee' => $employee['name'],
+                    'state' => $re['state'] ? $stateText[$re['state']] : '',
                     'createTime' => $re['createdAt'],
                 ];
             }

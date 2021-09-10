@@ -12,11 +12,11 @@ namespace MoChat\Plugin\RoomQuality\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
@@ -100,7 +100,7 @@ class ContactDetail
      */
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -122,12 +122,12 @@ class ContactDetail
         $this->validated($params);
         $roomEmployee = $this->workContactRoomService->getWorkContactRoomsByRoomIdEmployee((int) $params['room_id'], ['employee_id']);
         foreach ($roomEmployee as $k => $v) {
-            $employee                         = $this->workEmployeeService->getWorkEmployeeById($v['employeeId'], ['name', 'avatar', 'audit_status']);
-            $roomEmployee[$k]['name']         = $employee['name'];
-            $roomEmployee[$k]['avatar']       = file_full_url($employee['avatar']);
+            $employee = $this->workEmployeeService->getWorkEmployeeById($v['employeeId'], ['name', 'avatar', 'audit_status']);
+            $roomEmployee[$k]['name'] = $employee['name'];
+            $roomEmployee[$k]['avatar'] = file_full_url($employee['avatar']);
             $roomEmployee[$k]['audit_status'] = $employee['auditStatus'];
-            $roomEmployee[$k]['corp_id']      = $user['corpIds'][0];
-            $roomEmployee[$k]['employee_id']  = $v['employeeId'];
+            $roomEmployee[$k]['corp_id'] = $user['corpIds'][0];
+            $roomEmployee[$k]['employee_id'] = $v['employeeId'];
         }
 
         return ['room_employee' => $roomEmployee];
@@ -153,7 +153,7 @@ class ContactDetail
     {
         return [
             'room_id.required' => '群聊id 必填',
-            'room_id.integer'  => '群聊id 必须为整型',
+            'room_id.integer' => '群聊id 必须为整型',
         ];
     }
 }

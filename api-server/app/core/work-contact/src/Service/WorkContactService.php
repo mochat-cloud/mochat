@@ -16,6 +16,7 @@ use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\App\WorkContact\Model\WorkContact;
 use MoChat\App\WorkContact\Model\WorkContactEmployee;
 use MoChat\App\WorkContact\Model\WorkContactTagPivot;
+use MoChat\App\WorkContact\QueueService\SendWelcome;
 use MoChat\App\WorkEmployee\Model\WorkEmployee;
 use MoChat\Framework\Service\AbstractService;
 use MoChat\Plugin\ShopCode\Model\ShopCode;
@@ -190,7 +191,7 @@ class WorkContactService extends AbstractService implements WorkContactContract
         }, $columns);
 
         $nameStr = '%' . $name . '%';
-        $data    = $this->model::query()
+        $data = $this->model::query()
             ->where('corp_id', $corpId)
             ->where(function ($query) use ($nameStr) {
                 $query->where('name', 'LIKE', $nameStr)
@@ -361,16 +362,16 @@ class WorkContactService extends AbstractService implements WorkContactContract
      */
     public function getWorkContactsByEmployeeIdSearch(int $corpId, int $employeeId, array $params): array
     {
-        $isAll    = $params['is_all'];
-        $gender   = '';
+        $isAll = $params['is_all'];
+        $gender = '';
         $starTime = '';
-        $endTime  = '';
-        $tagIds   = '';
+        $endTime = '';
+        $tagIds = '';
         if ($isAll === 1) {
-            $gender   = isset($params['gender']) ? (int) $params['gender'] : '';
+            $gender = isset($params['gender']) ? (int) $params['gender'] : '';
             $starTime = isset($params['start_time']) ? $params['start_time'] : '';
-            $endTime  = isset($params['end_time']) ? $params['end_time'] : '';
-            $tagIds   = isset($params['tag_ids']) ? $params['tag_ids'] : '';
+            $endTime = isset($params['end_time']) ? $params['end_time'] : '';
+            $tagIds = isset($params['tag_ids']) ? $params['tag_ids'] : '';
         }
         $data = $this->model::from($this->model::query()->getModel()->getTable() . ' as work_contact')
             ->join(WorkContactEmployee::query()->getModel()->getTable() . ' as ce', 'work_contact.id', 'ce.contact_id')
@@ -405,16 +406,16 @@ class WorkContactService extends AbstractService implements WorkContactContract
      */
     public function getWorkContactsBySearch(int $corpId, array $employeeIds, array $params): array
     {
-        $isAll    = $params['is_all'];
-        $gender   = '';
+        $isAll = $params['is_all'];
+        $gender = '';
         $starTime = '';
-        $endTime  = '';
-        $tagIds   = '';
+        $endTime = '';
+        $tagIds = '';
         if ($isAll === 1) {
-            $gender   = (isset($params['gender']) && $params['gender'] !== '') ? (int) $params['gender'] : '';
+            $gender = (isset($params['gender']) && $params['gender'] !== '') ? (int) $params['gender'] : '';
             $starTime = isset($params['start_time']) ? $params['start_time'] : '';
-            $endTime  = isset($params['end_time']) ? $params['end_time'] : '';
-            $tagIds   = isset($params['tag_ids']) ? $params['tag_ids'] : '';
+            $endTime = isset($params['end_time']) ? $params['end_time'] : '';
+            $tagIds = isset($params['tag_ids']) ? $params['tag_ids'] : '';
         }
 
         $data = $this->model::from($this->model::query()->getModel()->getTable() . ' as work_contact')
@@ -456,17 +457,17 @@ class WorkContactService extends AbstractService implements WorkContactContract
      */
     public function countWorkContactsBySearch(int $corpId, array $params): int
     {
-        $isAll       = (int) $params['is_all'];
+        $isAll = (int) $params['is_all'];
         $employeeIds = $params['employees'];
-        $gender      = '';
-        $starTime    = '';
-        $endTime     = '';
-        $tagIds      = '';
+        $gender = '';
+        $starTime = '';
+        $endTime = '';
+        $tagIds = '';
         if ($isAll === 1) {
-            $gender   = (isset($params['gender']) && $params['gender'] !== '') ? (int) $params['gender'] : '';
+            $gender = (isset($params['gender']) && $params['gender'] !== '') ? (int) $params['gender'] : '';
             $starTime = isset($params['start_time']) ? $params['start_time'] : '';
-            $endTime  = isset($params['end_time']) ? $params['end_time'] : '';
-            $tagIds   = isset($params['tag_ids']) ? $params['tag_ids'] : '';
+            $endTime = isset($params['end_time']) ? $params['end_time'] : '';
+            $tagIds = isset($params['tag_ids']) ? $params['tag_ids'] : '';
         }
 
         return $this->model::from($this->model::query()->getModel()->getTable() . ' as work_contact')
@@ -514,14 +515,14 @@ class WorkContactService extends AbstractService implements WorkContactContract
     public function getWorkContactsByStateSearch(int $corpId, array $state, array $params): array
     {
         $contactName = empty($params['contactName']) ? '' : $params['contactName'];
-        $employeeId  = empty($params['employeeId']) ? '' : $params['employeeId'];
-        $starTime    = empty($params['start_time']) ? '' : $params['start_time'];
-        $endTime     = empty($params['end_time']) ? '' : $params['end_time'];
-        $shopName    = empty($params['shopName']) ? '' : $params['shopName'];
-        $status      = empty($params['status']) ? '' : $params['status'];
-        $province    = empty($params['province']) ? '' : $params['province'];
-        $city        = empty($params['city']) ? '' : $params['city'];
-        $res         = $this->model::from($this->model::query()->getModel()->getTable() . ' as work_contact')
+        $employeeId = empty($params['employeeId']) ? '' : $params['employeeId'];
+        $starTime = empty($params['start_time']) ? '' : $params['start_time'];
+        $endTime = empty($params['end_time']) ? '' : $params['end_time'];
+        $shopName = empty($params['shopName']) ? '' : $params['shopName'];
+        $status = empty($params['status']) ? '' : $params['status'];
+        $province = empty($params['province']) ? '' : $params['province'];
+        $city = empty($params['city']) ? '' : $params['city'];
+        $res = $this->model::from($this->model::query()->getModel()->getTable() . ' as work_contact')
             ->join(WorkContactEmployee::query()->getModel()->getTable() . ' as ce', 'work_contact.id', 'ce.contact_id')
             ->join(WorkEmployee::query()->getModel()->getTable() . ' as e', 'e.id', 'ce.employee_id')
             ->join(ShopCode::query()->getModel()->getTable() . ' as sc', 'e.id', 'sc.employee->id')
@@ -565,5 +566,18 @@ class WorkContactService extends AbstractService implements WorkContactContract
         }
 
         return $res->toArray();
+    }
+
+    /**
+     * 发送欢迎语.
+     *
+     * @param int|string $corpId 企业id
+     * @param array $contact 客户信息
+     * @param string $welcomeCode 发送欢迎语的凭证
+     * @param array $content 欢迎语内容
+     */
+    public function sendWelcome($corpId, array $contact, string $welcomeCode, array $content): bool
+    {
+        return make(SendWelcome::class)->handle($corpId, $contact, $welcomeCode, $content);
     }
 }

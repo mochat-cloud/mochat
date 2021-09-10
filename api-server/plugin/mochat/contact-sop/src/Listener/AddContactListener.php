@@ -11,16 +11,16 @@ declare(strict_types=1);
 namespace MoChat\Plugin\ContactSop\Listener;
 
 use Hyperf\Di\Annotation\Inject;
-use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Event\Annotation\Listener;
+use Hyperf\Event\Contract\ListenerInterface;
+use MoChat\App\WorkContact\Event\AddContactEvent;
+use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\Plugin\ContactSop\QueueService\ContactSopPush;
 use MoChat\Plugin\ContactSop\Service\ContactSopLogService;
 use MoChat\Plugin\ContactSop\Service\ContactSopService;
-use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
-use MoChat\App\WorkContact\Event\AddContactEvent;
 
 /**
- * 添加企业客户事件
+ * 添加企业客户事件.
  *
  * @Listener
  */
@@ -39,7 +39,7 @@ class AddContactListener implements ListenerInterface
     protected $contactSopService;
 
     /**
-     * @Inject()
+     * @Inject
      * @var WorkEmployeeContract
      */
     protected $workEmployeeService;
@@ -53,7 +53,7 @@ class AddContactListener implements ListenerInterface
     public function listen(): array
     {
         return [
-            AddContactEvent::class
+            AddContactEvent::class,
         ];
     }
 
@@ -99,22 +99,22 @@ class AddContactListener implements ListenerInterface
 
                 //添加触发记录
                 $sopLogId = $this->contactSopLogService->createContactSopLog([
-                    'corp_id'        => $contact['corpId'],
+                    'corp_id' => $contact['corpId'],
                     'contact_sop_id' => $item['id'],
-                    'employee'       => $employee['wxUserId'],
-                    'contact'        => $contact['wxExternalUserid'],
-                    'task'           => json_encode($task, JSON_THROW_ON_ERROR),
-                    'created_at'     => date('Y-m-d H:i:s'),
+                    'employee' => $employee['wxUserId'],
+                    'contact' => $contact['wxExternalUserid'],
+                    'task' => json_encode($task, JSON_THROW_ON_ERROR),
+                    'created_at' => date('Y-m-d H:i:s'),
                 ]);
 
                 // 启动倒计时提醒
                 $this->contactSopPush->push([
-                    'corpId'          => $contact['corpId'],
-                    'contactSopId'    => $item['id'],
+                    'corpId' => $contact['corpId'],
+                    'contactSopId' => $item['id'],
                     'contactSopLogId' => $sopLogId,
-                    'employeeWxId'    => $employee['wxUserId'],
-                    'contactName'     => $contact['name'],
-                    'sopName'         => $item['name'],
+                    'employeeWxId' => $employee['wxUserId'],
+                    'contactName' => $contact['name'],
+                    'sopName' => $item['name'],
                 ], $delay);
             }
         }

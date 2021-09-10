@@ -78,13 +78,13 @@ class StoreLogic
     private function handleParam(array $user, array $params): array
     {
         return [
-            'name'            => $params['name'],
-            'tenant_id'       => $user['tenantId'],
-            'remarks'         => $params['remarks'],
-            'operate_id'      => $user['id'],
-            'operate_name'    => $user['name'],
+            'name' => $params['name'],
+            'tenant_id' => $user['tenantId'],
+            'remarks' => $params['remarks'],
+            'operate_id' => $user['id'],
+            'operate_name' => $user['name'],
             'data_permission' => json_encode([['corpId' => $user['corpIds'][0], 'permissionType' => $params['dataPermission']]]),
-            'created_at'      => date('Y-m-d H:i:s'),
+            'created_at' => date('Y-m-d H:i:s'),
         ];
     }
 
@@ -132,8 +132,8 @@ class StoreLogic
             $roleMenuData = [];
             foreach ($roleMenus as $key => &$val) {
                 $roleMenuData[$key] = [
-                    'role_id'    => $newRoleId,
-                    'menu_id'    => $val['menuId'],
+                    'role_id' => $newRoleId,
+                    'menu_id' => $val['menuId'],
                     'created_at' => date('Y-m-d H:i:s'),
                 ];
             }

@@ -98,20 +98,20 @@ class IndexLogic
      */
     public function handle($params)
     {
-        $wx     = $this->wxApp($params['corpId'], 'contact')->external_contact;
+        $wx = $this->wxApp($params['corpId'], 'contact')->external_contact;
         $result = [];
         //离职分配
         if ($params['type'] == 1) {
             foreach ($params['list'] as $param) {
-                $temp     = $wx->transferCustomer([$param->contactWxId], $param->employeeWxId, $params['takeoverUserId'], '');
+                $temp = $wx->transferCustomer([$param->contactWxId], $param->employeeWxId, $params['takeoverUserId'], '');
                 $result[] = $temp;
                 if ($temp['errcode'] === 0) {
                     $this->workTransferLogService->createWorkTransferLog([
-                        'corp_id'              => $params['corpId'],
-                        'status'               => 1,
-                        'type'                 => 1,
-                        'name'                 => $this->workContactService->getWorkContactByCorpIdWxExternalUserId($params['corpId'], $param->contactWxId),
-                        'contact_id'           => $param->contactWxId,
+                        'corp_id' => $params['corpId'],
+                        'status' => 1,
+                        'type' => 1,
+                        'name' => $this->workContactService->getWorkContactByCorpIdWxExternalUserId($params['corpId'], $param->contactWxId),
+                        'contact_id' => $param->contactWxId,
                         'handover_employee_id' => $param->employeeWxId,
                         'takeover_employee_id' => $params['takeoverUserId'],
                     ]);
@@ -121,15 +121,15 @@ class IndexLogic
         //在职分配
         if ($params['type'] == 2) {
             foreach ($params['list'] as $param) {
-                $temp     = $wx->transferCustomer([$param->contactWxId], $param->employeeWxId, $params['takeoverUserId'], '');
+                $temp = $wx->transferCustomer([$param->contactWxId], $param->employeeWxId, $params['takeoverUserId'], '');
                 $result[] = $temp;
                 if ($temp['errcode'] === 0) {
                     $this->workTransferLogService->createWorkTransferLog([
-                        'corp_id'              => $params['corpId'],
-                        'status'               => 2,
-                        'type'                 => 1,
-                        'name'                 => $this->workContactService->getWorkContactByCorpIdWxExternalUserId($params['corpId'], $param->contactWxId)['name'],
-                        'contact_id'           => $param->contactWxId,
+                        'corp_id' => $params['corpId'],
+                        'status' => 2,
+                        'type' => 1,
+                        'name' => $this->workContactService->getWorkContactByCorpIdWxExternalUserId($params['corpId'], $param->contactWxId)['name'],
+                        'contact_id' => $param->contactWxId,
                         'handover_employee_id' => $param->employeeWxId,
                         'takeover_employee_id' => $params['takeoverUserId'],
                     ]);

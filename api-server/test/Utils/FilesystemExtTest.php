@@ -10,8 +10,8 @@ declare(strict_types=1);
  */
 namespace HyperfTest\Utils;
 
-use MoChat\App\Utils\FilesystemExt;
 use League\Flysystem\Filesystem;
+use MoChat\App\Utils\FilesystemExt;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -33,7 +33,7 @@ class FilesystemExtTest extends TestCase
     public function __construct($name = null, array $data = [], $dataName = '')
     {
         $this->filesystemExt = make(FilesystemExt::class);
-        $this->filesystem    = make(Filesystem::class);
+        $this->filesystem = make(Filesystem::class);
         parent::__construct($name, $data, $dataName);
     }
 
@@ -53,7 +53,7 @@ class FilesystemExtTest extends TestCase
         ## 获取完整URL
         $fullUrl = $this->filesystemExt->getFullUrl($path);
         if ($this->filesystemExt->getAdapterName() === 'local') {
-            $root    = $this->filesystemExt->getConfig()['root'];
+            $root = $this->filesystemExt->getConfig()['root'];
             $fullUrl = str_replace(config('framework.app_domain', ''), $root, $fullUrl);
         }
 

@@ -134,6 +134,7 @@ export default {
     // 获取详情数据
     getDetailsData (params) {
       infoApi(params).then((res) => {
+        this.formAskData.type = res.data.type
         this.formAskData.title = res.data.title
         this.formAskData.link = res.data.link
         this.formAskData.link_title = res.data.linkTitle
@@ -182,8 +183,9 @@ export default {
         this.$message.error('雷达标题不能为空')
         return false
       }
-      if (this.formAskData.title == '') {
-        this.$message.error('雷达链接不能为空')
+      const rep = /^(((ht|f)tps?):\/\/)?[\w-]+(\.[\w-]+)+([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?$/
+      if (!rep.test(this.formAskData.link)) {
+        this.$message.error('雷达链接不正确')
         return false
       }
       if (this.formAskData.link_title == '') {

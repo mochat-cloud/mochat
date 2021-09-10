@@ -12,13 +12,13 @@ namespace MoChat\Plugin\ContactSop\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Plugin\ContactSop\Logic\LogStateLogic;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * @Controller
@@ -39,7 +39,7 @@ class LogState extends AbstractAction
     public function __construct(LogStateLogic $logState, RequestInterface $request)
     {
         $this->logState = $logState;
-        $this->request  = $request;
+        $this->request = $request;
     }
 
     /**

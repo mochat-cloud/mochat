@@ -13,10 +13,10 @@ namespace MoChat\Plugin\SensitiveWord\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
@@ -69,7 +69,7 @@ class StatusUpdate extends AbstractAction
         $this->validated($this->request->all(), 'statusUpdate');
 
         ## 接收参数
-        $id     = (int) $this->request->input('sensitiveWordId');
+        $id = (int) $this->request->input('sensitiveWordId');
         $status = (int) $this->request->input('status');
 
         try {
@@ -92,7 +92,7 @@ class StatusUpdate extends AbstractAction
     {
         return [
             'sensitiveWordId' => 'required | numeric | bail',
-            'status'          => 'required | integer |  in:1,2, | bail',
+            'status' => 'required | integer |  in:1,2, | bail',
         ];
     }
 
@@ -104,10 +104,10 @@ class StatusUpdate extends AbstractAction
     {
         return [
             'sensitiveWordId.required' => '敏感词id 必填',
-            'sensitiveWordId.numeric'  => '敏感词id 必须为数字类型',
-            'status.required'          => '状态 必填',
-            'status.integer'           => '状态 必须为整数',
-            'status.in'                => '状态 值必须在列表内：[1,2]',
+            'sensitiveWordId.numeric' => '敏感词id 必须为数字类型',
+            'status.required' => '状态 必填',
+            'status.integer' => '状态 必须为整数',
+            'status.in' => '状态 值必须在列表内：[1,2]',
         ];
     }
 }

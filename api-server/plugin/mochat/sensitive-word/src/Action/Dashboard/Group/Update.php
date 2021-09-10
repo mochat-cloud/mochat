@@ -12,10 +12,10 @@ namespace MoChat\Plugin\SensitiveWord\Action\Dashboard\Group;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
@@ -64,7 +64,7 @@ class Update extends AbstractAction
     {
         ## 参数验证
         $this->validated($this->request->all());
-        $id   = (int) $this->request->input('groupId');
+        $id = (int) $this->request->input('groupId');
         $name = $this->request->input('name');
 
         $user = user();
@@ -92,7 +92,7 @@ class Update extends AbstractAction
     protected function rules(): array
     {
         return [
-            'name'    => 'required | string | min:1 | bail',
+            'name' => 'required | string | min:1 | bail',
             'groupId' => 'required | integer | bail',
         ];
     }
@@ -104,11 +104,11 @@ class Update extends AbstractAction
     protected function messages(): array
     {
         return [
-            'name.required'    => '敏感词分组名称 必填',
-            'name.string'      => '敏感词分组名称 必须为字符串',
-            'name.min'         => '敏感词分组名称 字符串长度不可小于1',
+            'name.required' => '敏感词分组名称 必填',
+            'name.string' => '敏感词分组名称 必须为字符串',
+            'name.min' => '敏感词分组名称 字符串长度不可小于1',
             'groupId.required' => '敏感词分组id 必填',
-            'groupId.integer'  => '敏感词分组id 必须为整型',
+            'groupId.integer' => '敏感词分组id 必须为整型',
         ];
     }
 
@@ -120,7 +120,7 @@ class Update extends AbstractAction
      */
     private function nameIsUnique(string $name, int $id)
     {
-        $client    = $this->container->get(SensitiveWordGroupContract::class);
+        $client = $this->container->get(SensitiveWordGroupContract::class);
         $existData = $client->getSensitiveWordGroupByNameCorpId($name, (int) $this->corpId, ['id']);
         if (empty($existData)) {
             return true;

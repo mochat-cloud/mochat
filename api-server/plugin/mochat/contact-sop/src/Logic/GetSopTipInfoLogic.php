@@ -100,9 +100,9 @@ class GetSopTipInfoLogic
     public function handle($params)
     {
         $contactSopLog = $this->contactSopLogService->getContactSopLogList([
-            'corp_id'  => $params['corpId'],
+            'corp_id' => $params['corpId'],
             'employee' => $params['employeeWxId'],
-            'contact'  => $params['contactWxId'],
+            'contact' => $params['contactWxId'],
         ]);
         $result = [];
 
@@ -123,7 +123,7 @@ class GetSopTipInfoLogic
             $datum->task = json_decode($datum->task);
             if ($datum->task->time->type == 0) {
                 //1时 30分
-                $sec     = ((int) $datum->task->time->data->first * 60 * 60) + ((int) $datum->task->time->data->last * 60);
+                $sec = ((int) $datum->task->time->data->first * 60 * 60) + ((int) $datum->task->time->data->last * 60);
                 $tipTime = date('H:i', strtotime($datum->createdAt) + $sec);
             } else {
                 //1天 11:30

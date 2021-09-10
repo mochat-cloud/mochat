@@ -13,6 +13,7 @@ namespace MoChat\App\WorkEmployee\EventHandler;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use MoChat\App\Corp\Contract\CorpContract;
+use MoChat\App\User\Contract\UserContract;
 use MoChat\App\WorkContact\Contract\WorkContactEmployeeContract;
 use MoChat\App\WorkContact\Contract\WorkContactTagPivotContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
@@ -57,6 +58,11 @@ class EmployeeMoveHandler extends AbstractEventHandler
      */
     protected $logger;
 
+    /**
+     * @var UserContract
+     */
+    protected $userService;
+
     public function process()
     {
         $this->logger = make(StdoutLoggerInterface::class);
@@ -67,19 +73,19 @@ class EmployeeMoveHandler extends AbstractEventHandler
         $this->workEmployeeService = make(WorkEmployeeContract::class);
         //获取公司corpId
         $this->corpService = make(CorpContract::class);
-        $corpData          = $this->corpService->getCorpsByWxCorpId($this->message['ToUserName'], ['id']);
+        $corpData = $this->corpService->getCorpsByWxCorpId($this->message['ToUserName'], ['id']);
         if (empty($corpData)) {
             $this->logger->error('EmployeeMoveHandler->process同步删除成员corp不能为空');
             return 'success';
         }
-        $employeeData = $this->workEmployeeService->getWorkEmployeeByCorpIdWxUserId((string) $corpData['id'], (string) $this->message['UserID'], ['id']);
+        $employeeData = $this->workEmployeeService->getWorkEmployeeByCorpIdWxUserId((string) $corpData['id'], (string) $this->message['UserID'], ['id', 'mobile']);
         if (empty($employeeData)) {
             $this->logger->error('EmployeeMoveHandler->process同步删除成员employee不能为空');
             return 'success';
         }
-        $employeeId                          = current($employeeData)['id'];
+        $employeeId = current($employeeData)['id'];
         $this->workEmployeeDepartmentService = make(WorkEmployeeDepartmentContract::class);
-        $employeeDepartment                  = $this->workEmployeeDepartmentService->getWorkEmployeeDepartmentsByEmployeeId($employeeId, ['id']);
+        $employeeDepartment = $this->workEmployeeDepartmentService->getWorkEmployeeDepartmentsByEmployeeId($employeeId, ['id']);
         //成员下客户
 //        $contactEmployee = $this->workContactEmployeeService->getWorkContactEmployeeByCorpIdEmployeeId((int) $employeeId, (int) $corpData['id'], ['id', 'contact_id']);
 //        if (! empty($contactEmployee)) {
@@ -102,6 +108,14 @@ class EmployeeMoveHandler extends AbstractEventHandler
         try {
             //删除成员
             $this->workEmployeeService->deleteWorkEmployee($employeeId);
+            // 员工离职子账户禁用
+            foreach ($employeeData as $item) {
+                if (! empty($item['mobile'])) {
+                    $this->userService = make(UserContract::class);
+                    $this->userService->updateUserStatusByPhone($item['mobile'], 2);
+                }
+            }
+
             if (! empty($employeeDepartment)) {
                 foreach ($employeeDepartment as $edk => $edv) {
                     $employeeDepartmentIds[] = $edv['id'];

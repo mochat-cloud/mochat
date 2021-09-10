@@ -16,12 +16,10 @@ use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\RequestMapping;
-use Hyperf\HttpServer\Contract\RequestInterface;
 use MoChat\App\OfficialAccount\Contract\OfficialAccountContract;
 use MoChat\App\Utils\File;
 use MoChat\App\Utils\Url;
 use MoChat\Framework\Action\AbstractAction;
-use Psr\Container\ContainerInterface;
 
 /**
  * 授权变更通知推送
@@ -69,6 +67,20 @@ class AuthRedirect extends AbstractAction
     }
 
     /**
+     * TODO 可以处理成异步优化性能
+     * 自动绑定公众号至开放平台用来获取unionid.
+     */
+    protected function officialAccountBindOpenPlatform(array $authorizationInfo)
+    {
+        $officialAccount = $this->openPlatform->officialAccount(
+            $authorizationInfo['authorizer_appid'],
+            $authorizationInfo['authorizer_refresh_token'],
+        );
+        $officialAccount = rebind_app($officialAccount, $this->request);
+        $officialAccount->account->create();
+    }
+
+    /**
      * @param $params
      * @throws \JsonException
      */
@@ -77,18 +89,18 @@ class AuthRedirect extends AbstractAction
         ## EasyWeChat
         $this->openPlatform = Factory::openPlatform($this->config);
         $this->openPlatform = rebind_app($this->openPlatform, $this->request);
-        $result       = $this->openPlatform->handleAuthorize($params['auth_code']);
+        $result = $this->openPlatform->handleAuthorize($params['auth_code']);
         if (! empty($result['authorization_info'])) {
-            $res  = $result['authorization_info'];
+            $res = $result['authorization_info'];
             $data = [
-                'appid'             => $this->config['app_id'],
+                'appid' => $this->config['app_id'],
                 'authorized_status' => 1,
-                'authorizer_appid'  => $res['authorizer_appid'],
-                'encoding_aes_key'  => $this->config['aes_key'],
-                'token'             => $this->config['token'],
-                'secret'            => $this->config['secret'],
-                'func_info'         => json_encode($res['func_info'], JSON_THROW_ON_ERROR),
-                'corp_id'           => (int) $params['corp_id'],
+                'authorizer_appid' => $res['authorizer_appid'],
+                'encoding_aes_key' => $this->config['aes_key'],
+                'token' => $this->config['token'],
+                'secret' => $this->config['secret'],
+                'func_info' => json_encode($res['func_info'], JSON_THROW_ON_ERROR),
+                'corp_id' => (int) $params['corp_id'],
             ];
             $authorizerAppid = $res['authorizer_appid'];
             ## 数据操作
@@ -97,7 +109,7 @@ class AuthRedirect extends AbstractAction
                 $info = $this->officialAccountService->getOfficialAccountByAppIdAuthorizerAppidCorpId($this->config['app_id'], $res['authorizer_appid'], (int) $params['corp_id'], ['id']);
                 if (empty($info)) {
                     $data['created_at'] = date('Y-m-d H:i:s');
-                    $id                 = $this->officialAccountService->createOfficialAccount($data);
+                    $id = $this->officialAccountService->createOfficialAccount($data);
                 } else {
                     $id = $info['id'];
                     $this->officialAccountService->updateOfficialAccountById($info['id'], $data);
@@ -123,21 +135,21 @@ class AuthRedirect extends AbstractAction
         if ($authorizer['id'] === 0) {
             return;
         }
-        $result       = $this->openPlatform->getAuthorizer($authorizer['authorizer_appid']);
+        $result = $this->openPlatform->getAuthorizer($authorizer['authorizer_appid']);
         if (! empty($result['authorizer_info'])) {
-            $res  = $result['authorizer_info'];
+            $res = $result['authorizer_info'];
             $data = [
-                'nickname'          => $res['nick_name'],
-                'head_img'          => $res['head_img'],
-                'avatar'            => File::uploadUrlImage($res['head_img'], 'contact/avatar/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg'),
+                'nickname' => $res['nick_name'],
+                'head_img' => $res['head_img'],
+                'avatar' => File::uploadUrlImage($res['head_img'], 'contact/avatar/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg'),
                 'service_type_info' => $res['service_type_info']['id'],
-                'verify_type_info'  => $res['verify_type_info']['id'],
-                'user_name'         => $res['user_name'],
-                'principal_name	'   => $res['principal_name'],
-                'alias'             => isset($res['alias']) ? $res['alias'] : '',
-                'business_info'     => json_encode($res['business_info'], JSON_THROW_ON_ERROR),
-                'qrcode_url'        => $res['qrcode_url'],
-                'local_qrcode_url'  => File::uploadUrlImage($res['qrcode_url'], 'contact/avatar/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg'),
+                'verify_type_info' => $res['verify_type_info']['id'],
+                'user_name' => $res['user_name'],
+                'principal_name	' => $res['principal_name'],
+                'alias' => isset($res['alias']) ? $res['alias'] : '',
+                'business_info' => json_encode($res['business_info'], JSON_THROW_ON_ERROR),
+                'qrcode_url' => $res['qrcode_url'],
+                'local_qrcode_url' => File::uploadUrlImage($res['qrcode_url'], 'contact/avatar/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg'),
             ];
             ## 数据操作
             Db::beginTransaction();
@@ -150,21 +162,5 @@ class AuthRedirect extends AbstractAction
                 $this->logger->error($e->getTraceAsString());
             }
         }
-    }
-
-    /**
-     * TODO 可以处理成异步优化性能
-     * 自动绑定公众号至开放平台用来获取unionid
-     *
-     * @param array $authorizationInfo
-     */
-    protected function officialAccountBindOpenPlatform(array $authorizationInfo)
-    {
-        $officialAccount = $this->openPlatform->officialAccount(
-            $authorizationInfo['authorizer_appid'],
-            $authorizationInfo['authorizer_refresh_token'],
-            );
-        $officialAccount = rebind_app($officialAccount, $this->request);
-        $officialAccount->account->create();
     }
 }

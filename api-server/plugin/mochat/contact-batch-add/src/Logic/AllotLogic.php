@@ -61,45 +61,46 @@ class AllotLogic
      */
     private function handleContact(array $params, array $user): array
     {
-        $ids        = $params['id'];
+        $ids = $params['id'];
         $employeeId = $params['employeeId'];
-        $contact    = $this->contactBatchAddImportService->getContactBatchAddImportsById($ids, ['id', 'employee_id', 'status']);
-        $co         = collect($contact);
-        $group      = $co->groupBy('status');
+        $contact = $this->contactBatchAddImportService->getContactBatchAddImportsById($ids, ['id', 'employee_id', 'status']);
+        $co = collect($contact);
+        $group = $co->groupBy('status');
 
         ## $group['1']; ## 已分配 先回收再分配
-        $recycleArr   = $group->get('1', collect([]))->toArray();
+        $recycleArr = $group->get('1', collect([]))->toArray();
         $allotRecycle = []; ## 回收分配记录
         foreach ($recycleArr as $item) {
             $allotRecycle[] = [
-                'import_id'   => $item['id'],
+                'import_id' => $item['id'],
                 'employee_id' => $item['employeeId'],
-                'type'        => 0,
-                'operate_id'  => $user['id'],
-                'created_at'  => date('Y-m-d H:i:s'),
+                'type' => 0,
+                'operate_id' => $user['id'],
+                'created_at' => date('Y-m-d H:i:s'),
             ];
         }
 
         ## $group['0']; ## 未分配 直接分配
         $allotArr = array_merge($group->get('0', collect([]))->toArray(), $group->get('1', collect([]))->toArray()); ## 重新分配叠加之前已回收的
 
-        $allot         = []; ## 分配记录
+        $allot = []; ## 分配记录
         $updateContact = []; ## 客户重新分配员工数据
 
         foreach ($allotArr as $item) {
+            $info = $this->contactBatchAddImportService->getContactBatchAddImportById($item['id'], ['employee_id', 'allot_num']);
             $allot[] = [
-                'import_id'   => $item['id'],
+                'import_id' => $item['id'],
                 'employee_id' => $employeeId,
-                'type'        => 1,
-                'operate_id'  => $user['id'],
-                'created_at'  => date('Y-m-d H:i:s'),
+                'type' => 1,
+                'operate_id' => $user['id'],
+                'created_at' => date('Y-m-d H:i:s'),
             ];
-
+            $allotNum = $info['employeeId'] === $employeeId ? $info['allotNum'] : $info['allotNum'] + 1;
             $updateContact[] = [
-                'id'          => $item['id'],
-                'status'      => 1,
+                'id' => $item['id'],
+                'status' => 1,
                 'employee_id' => $employeeId,
-                'allot_num'   => DB::raw('allot_num + 1'),
+                'allot_num' => $allotNum, //DB::raw('allot_num+ 1'),
             ];
         }
         ## $group['2']; ## 申请中拒绝操作

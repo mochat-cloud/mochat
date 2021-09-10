@@ -82,8 +82,8 @@ class Receive extends AbstractAction
     {
         return [
             'id.required' => '获奖记录ID 必填',
-            'id.integer'  => '获奖记录ID 必需为整数',
-            'id.min  '    => '获奖记录ID 不可小于1',
+            'id.integer' => '获奖记录ID 必需为整数',
+            'id.min  ' => '获奖记录ID 不可小于1',
         ];
     }
 

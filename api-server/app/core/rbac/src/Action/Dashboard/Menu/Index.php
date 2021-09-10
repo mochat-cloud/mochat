@@ -12,10 +12,10 @@ namespace MoChat\App\Rbac\Action\Dashboard\Menu;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Logic\Menu\IndexLogic;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
@@ -48,8 +48,8 @@ class Index extends AbstractAction
     public function handle(): array
     {
         $params = [
-            'name'    => $this->request->input('name', null),
-            'page'    => $this->request->input('page', 1),
+            'name' => $this->request->input('name', null),
+            'page' => $this->request->input('page', 1),
             'perPage' => $this->request->input('perPage', 10),
         ];
         return $this->indexLogic->handle($params);

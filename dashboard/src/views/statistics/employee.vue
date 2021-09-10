@@ -119,7 +119,7 @@
 import echarts from 'echarts'
 import moment from 'moment'
 // eslint-disable-next-line no-unused-vars
-import { employeesInfo, employeesTrendInfo, getEmployeeCounts, topList, department } from '@/api/employeeCount'
+import { employeesInfo, employeesTrendInfo, getEmployeeCounts, topList, department } from '@/api/statistic'
 
 export default {
   data () {

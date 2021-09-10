@@ -12,13 +12,13 @@ namespace MoChat\App\Rbac\Action\Dashboard\Role;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Contract\RbacRoleContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 租户下-角色下拉列表.
@@ -46,7 +46,7 @@ class Select extends AbstractAction
     public function handle(): array
     {
         ## 获取当前登录用户
-        $user     = user();
+        $user = user();
         $tenantId = $user['tenantId'];
 
         ## 根据租户id获取角色列表
@@ -60,7 +60,7 @@ class Select extends AbstractAction
         foreach ($roles as $v) {
             $data[] = [
                 'roleId' => $v['id'],
-                'name'   => $v['name'],
+                'name' => $v['name'],
             ];
         }
 

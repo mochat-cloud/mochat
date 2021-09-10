@@ -67,9 +67,9 @@ class UpdateContactCallBackLogic
 
         if (! empty($data)) {
             $contactEmployeeData = [
-                'remark'         => $data['remark'],
-                'description'    => $data['description'],
-                'add_way'        => $data['add_way'],
+                'remark' => $data['remark'],
+                'description' => $data['description'],
+                'add_way' => $data['add_way'],
                 'remark_mobiles' => ! empty($data['remark_mobiles']) ? json_encode($data['remark_mobiles']) : json_encode([]),
             ];
 
@@ -114,7 +114,7 @@ class UpdateContactCallBackLogic
         $wxTagIds = [];
         if (! empty($tags)) {
             $addContactTag = [];
-            $wxTagId       = 0;
+            $wxTagId = 0;
             foreach ($tags as $v) {
                 //根据分组名查询分组id
                 $groupInfo = $this->workContactTagGroup->getWorkContactTagGroupByCorpIdName($params['corpId'], $v['group_name'], ['id']);
@@ -137,10 +137,10 @@ class UpdateContactCallBackLogic
                 if ($wxTagId != 0 && ! in_array($wxTagId, $contactTagIds)) {
                     //添加客户标签
                     $addContactTag[] = [
-                        'contact_id'     => $params['contactId'],
-                        'employee_id'    => $params['employeeId'],
+                        'contact_id' => $params['contactId'],
+                        'employee_id' => $params['employeeId'],
                         'contact_tag_id' => $wxTagId,
-                        'type'           => $v['type'],
+                        'type' => $v['type'],
                     ];
                 }
             }

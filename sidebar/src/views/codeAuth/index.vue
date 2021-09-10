@@ -105,11 +105,11 @@ export default {
     async login () {
       const uriPath = this.$route.fullPath
       try {
-        await wxConfig(this.corpId, uriPath)
-        await agentConfig(this.corpId, uriPath, this.agentId)
+        await wxConfig(uriPath)
+        await agentConfig(uriPath, this.agentId)
         const entry = await getContext()
         if (entry == 'group_chat_tools' && this.pageFlag === 'contact') {
-          this.$router.push({ path: '/roomSide' })
+          this.$router.push({ path: '/room' })
           this.loading = false
           this.btnShow = false
           return

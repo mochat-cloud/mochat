@@ -12,10 +12,10 @@ namespace MoChat\App\Rbac\Action\Dashboard\Menu;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Contract\RbacMenuContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
@@ -77,7 +77,7 @@ class Destroy extends AbstractAction
     {
         return [
             'menuId.required' => '菜单id 必填',
-            'menuId.integer'  => '菜单id 必须为整型',
+            'menuId.integer' => '菜单id 必须为整型',
         ];
     }
 
@@ -88,8 +88,8 @@ class Destroy extends AbstractAction
     private function deleteChildrenMenu(int $menuId)
     {
         ## 获取要删除的子菜单id
-        $idPath  = '#' . $menuId . '#';
-        $menus   = $this->menuService->getMenusByPath($idPath, ['id']);
+        $idPath = '#' . $menuId . '#';
+        $menus = $this->menuService->getMenusByPath($idPath, ['id']);
         $menuIds = array_column($menus, 'id');
 
         ## 追加当前菜单id

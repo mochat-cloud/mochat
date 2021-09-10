@@ -65,8 +65,7 @@
 // eslint-disable-next-line no-unused-vars
 import { getSopInfoApi, logStateApi } from '@/api/roomSop'
 // eslint-disable-next-line no-unused-vars
-import { wxConfig, agentConfig, openExistedChatWithMsg } from '@/utils/wxCodeAuth'
-import { getCookie } from 'utils'
+import { openExistedChatWithMsg } from '@/utils/wxCodeAuth'
 import { Toast } from 'vant'
 export default {
   components: {
@@ -80,7 +79,6 @@ export default {
   created () {
     this.id = this.$route.query.id
     this.getSopInfoData(this.id)
-    this.getwxConfig()
   },
   methods: {
     copyLink (value) {
@@ -89,13 +87,6 @@ export default {
       inputElement.value = value
       inputElement.select()
       document.execCommand('Copy')
-    },
-    getwxConfig () {
-      const uriPath = this.$route.fullPath
-      const corpId = getCookie('corpId')
-      const agentId = getCookie('agentId')
-      wxConfig(corpId, uriPath)
-      agentConfig(corpId, uriPath, agentId)
     },
     getSopInfoData (id) {
       getSopInfoApi({ id }).then((res) => {

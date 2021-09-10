@@ -42,11 +42,11 @@ class UpdateApply
      */
     public function handle($params): void
     {
-        $this->contactTagService      = make(WorkContactTagContract::class);
+        $this->contactTagService = make(WorkContactTagContract::class);
         $this->contactTagGroupService = make(WorkContactTagGroupContract::class);
 
         ## 获取企业微信授信信息
-        $corp     = make(CorpContract::class)->getCorpById($params['corpId'], ['id', 'wx_corpid']);
+        $corp = make(CorpContract::class)->getCorpById($params['corpId'], ['id', 'wx_corpid']);
         $ecClient = $this->wxApp($corp['wxCorpid'], 'contact')->external_contact;
 
         //编辑标签
@@ -65,11 +65,11 @@ class UpdateApply
      */
     public function delete(array $params, array $contactTagGroupIds, $corpId): void
     {
-        $this->contactTagService      = make(WorkContactTagContract::class);
+        $this->contactTagService = make(WorkContactTagContract::class);
         $this->contactTagGroupService = make(WorkContactTagGroupContract::class);
 
         ## 获取企业微信授信信息
-        $corp     = make(CorpContract::class)->getCorpById($corpId, ['id', 'wx_corpid']);
+        $corp = make(CorpContract::class)->getCorpById($corpId, ['id', 'wx_corpid']);
         $ecClient = $this->wxApp($corp['wxCorpid'], 'contact')->external_contact;
 
         //删除标签

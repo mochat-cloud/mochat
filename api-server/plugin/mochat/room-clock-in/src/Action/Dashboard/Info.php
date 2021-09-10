@@ -13,11 +13,11 @@ namespace MoChat\Plugin\RoomClockIn\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Laminas\Stdlib\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\Framework\Action\AbstractAction;
@@ -73,10 +73,10 @@ class Info extends AbstractAction
 
     public function __construct(\Hyperf\HttpServer\Contract\RequestInterface $request, ClockInContract $clockInService, ClockInContactContract $clockInContactService, WorkEmployeeContract $workEmployeeService, ClockInContactRecordContract $clockInContactRecordService)
     {
-        $this->request                     = $request;
-        $this->clockInService              = $clockInService;
-        $this->clockInContactService       = $clockInContactService;
-        $this->workEmployeeService         = $workEmployeeService;
+        $this->request = $request;
+        $this->clockInService = $clockInService;
+        $this->clockInContactService = $clockInContactService;
+        $this->workEmployeeService = $workEmployeeService;
         $this->clockInContactRecordService = $clockInContactRecordService;
     }
 
@@ -119,22 +119,22 @@ class Info extends AbstractAction
     {
         return [
             'id.required' => '活动ID 必填',
-            'id.integer'  => '活动ID 必需为整数',
-            'id.min  '    => '活动ID 不可小于1',
+            'id.integer' => '活动ID 必需为整数',
+            'id.min  ' => '活动ID 不可小于1',
         ];
     }
 
     private function handleData($id): array
     {
         ## 数据详情
-        $clockIn                   = $this->clockInService->getClockInById((int) $id, ['id', 'name', 'description', 'tasks', 'start_time', 'end_time', 'type', 'time_type', 'contact_clock_tags', 'employee_qrcode', 'corp_card_status', 'corp_card', 'point', 'create_user_id', 'created_at']);
+        $clockIn = $this->clockInService->getClockInById((int) $id, ['id', 'name', 'description', 'tasks', 'start_time', 'end_time', 'type', 'time_type', 'contact_clock_tags', 'employee_qrcode', 'corp_card_status', 'corp_card', 'point', 'create_user_id', 'created_at']);
         $clockIn['employeeQrcode'] = file_full_url($clockIn['employeeQrcode']);
-        $corp                      = json_decode($clockIn['corpCard'], true);
+        $corp = json_decode($clockIn['corpCard'], true);
         if (! empty($corp['logo'])) {
             $corp['logo'] = file_full_url($corp['logo']);
         }
-        $clockIn['corpCard']         = $corp;
-        $clockIn['tasks']            = json_decode($clockIn['tasks'], true, 512, JSON_THROW_ON_ERROR);
+        $clockIn['corpCard'] = $corp;
+        $clockIn['tasks'] = json_decode($clockIn['tasks'], true, 512, JSON_THROW_ON_ERROR);
         $clockIn['contactClockTags'] = json_decode($clockIn['contactClockTags'], true, 512, JSON_THROW_ON_ERROR);
         return $clockIn;
     }

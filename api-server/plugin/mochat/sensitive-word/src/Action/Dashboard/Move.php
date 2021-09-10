@@ -13,10 +13,10 @@ namespace MoChat\Plugin\SensitiveWord\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
@@ -70,7 +70,7 @@ class Move extends AbstractAction
         $this->validated($this->request->all(), 'update');
 
         ## 接收参数
-        $id      = (int) $this->request->input('sensitiveWordId');
+        $id = (int) $this->request->input('sensitiveWordId');
         $groupId = (int) $this->request->input('groupId');
 
         try {
@@ -93,7 +93,7 @@ class Move extends AbstractAction
     {
         return [
             'sensitiveWordId' => 'required | numeric | bail',
-            'groupId'         => 'required | numeric | bail',
+            'groupId' => 'required | numeric | bail',
         ];
     }
 
@@ -105,9 +105,9 @@ class Move extends AbstractAction
     {
         return [
             'sensitiveWordId.required' => '敏感词id 必填',
-            'sensitiveWordId.numeric'  => '敏感词id 必须为数字类型',
-            'groupId.required'         => '敏感词分组id 必填',
-            'groupId.numeric'          => '敏感词分组id 必须为数字类型',
+            'sensitiveWordId.numeric' => '敏感词id 必须为数字类型',
+            'groupId.required' => '敏感词分组id 必填',
+            'groupId.numeric' => '敏感词分组id 必须为数字类型',
         ];
     }
 }

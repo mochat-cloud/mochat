@@ -32,15 +32,16 @@ class RoomSopJob extends Job
         /** @var WorkAgentContract $workAgentService */
         $workAgentService = make(WorkAgentContract::class);
         $messageRemind = make(MessageRemind::class);
-        $agent = $workAgentService->getWorkAgentRemindByCorpId((int)$this->params['corpId'], ['id']);
+        $agent = $workAgentService->getWorkAgentRemindByCorpId((int) $this->params['corpId'], ['id']);
 
-        $url   = Url::getSidebarBaseUrl() . '/?agentId='.$agent['id'].'&pageFlag=roomSop&id=' . $this->params['roomSopLogId'];
-        $text  = "管理员 {$this->params['sopCreatorName']} 创建了群推送任务，提醒你给1个群聊发送消息\n<a href='{$url}'>点击查看详情</a>";
+        $url = Url::getSidebarBaseUrl() . '/roomSop?agentId=' . $agent['id'] . '&id=' . $this->params['roomSopLogId'];
+        $text = "管理员 {$this->params['sopCreatorName']} 创建了群推送任务，提醒你给1个群聊发送消息\n<a href='{$url}'>点击查看详情</a>";
 
         $messageRemind->sendToEmployee(
-            (int)$this->params['corpId'],
+            (int) $this->params['corpId'],
             $this->params['employeeWxId'],
             'text',
-            $text);
+            $text
+        );
     }
 }

@@ -12,11 +12,10 @@ namespace MoChat\Plugin\RoomSop\Action\Sidebar;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\SidebarAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
-use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\SidebarAuthMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
@@ -29,21 +28,10 @@ use MoChat\Plugin\RoomSop\Logic\SetRoomLogic;
 class SetRoom extends AbstractAction
 {
     /**
+     * @Inject
      * @var SetRoomLogic
      */
     protected $setRoomLogic;
-
-    /**
-     * @Inject
-     * @var RequestInterface
-     */
-    protected $request;
-
-    public function __construct(SetRoomLogic $setRoomLogic, RequestInterface $request)
-    {
-        $this->setRoomLogic = $setRoomLogic;
-        $this->request      = $request;
-    }
 
     /**
      * 修改某个规则的使用成员.
@@ -54,11 +42,11 @@ class SetRoom extends AbstractAction
      */
     public function handle(): array
     {
-        $params['id']        = $this->request->input('id'); //规则id
+        $params['id'] = $this->request->input('id'); //规则id
         $params['employees'] = $this->request->input('rooms'); //成员id json
 
-        $user             = user();
-        $params['corpId'] = $user['corpIds'][0];
+        $user = user();
+        $params['corpId'] = (int) $user['corpId'];
 
         $res = $this->setRoomLogic->handle($params);
         if ($res) {

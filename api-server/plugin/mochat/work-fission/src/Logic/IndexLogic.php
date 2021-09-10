@@ -35,7 +35,7 @@ class IndexLogic
 
     public function __construct(WorkFissionContract $workFissionService, WorkFissionContactContract $workFissionContactService)
     {
-        $this->workFissionService        = $workFissionService;
+        $this->workFissionService = $workFissionService;
         $this->workFissionContactService = $workFissionContactService;
     }
 
@@ -70,8 +70,8 @@ class IndexLogic
             $where['create_user_id'] = $user['id'];
         }
         $options = [
-            'perPage'    => $params['perPage'],
-            'page'       => $params['page'],
+            'perPage' => $params['perPage'],
+            'page' => $params['page'],
             'orderByRaw' => 'id desc',
         ];
 
@@ -85,14 +85,14 @@ class IndexLogic
      */
     private function getFissionList(array $params): array
     {
-        $columns     = ['id', 'active_name', 'end_time', 'service_employees', 'contact_tags', 'tasks', 'created_at'];
+        $columns = ['id', 'active_name', 'end_time', 'service_employees', 'contact_tags', 'tasks', 'created_at'];
         $fissionList = $this->workFissionService->getWorkFissionList($params['where'], $columns, $params['options']);
 
         $list = [];
         $data = [
             'page' => [
-                'perPage'   => $this->perPage,
-                'total'     => '0',
+                'perPage' => $this->perPage,
+                'total' => '0',
                 'totalPage' => '0',
             ],
             'list' => $list,
@@ -111,20 +111,20 @@ class IndexLogic
         $list = [];
         foreach ($roleList['data'] as $key => $val) {
             $list[$key] = [
-                'id'                => $val['id'],
-                'tasks'             => $val['tasks'],
-                'active_name'       => $val['activeName'],
+                'id' => $val['id'],
+                'tasks' => $val['tasks'],
+                'active_name' => $val['activeName'],
                 'service_employees' => $val['serviceEmployees'],
-                'contact_tags'      => $val['contactTags'],
-                'created_at'        => $val['createdAt'],
-                'status'            => time() > strtotime($val['endTime']) ? '已结束' : '进行中',
-                'finance_tag'       => '1/2', //任务达成标签-待完善
-                'employeeNum'       => $this->workFissionContactService->countWorkFissionContactByFissionId((int) $val['id']),
+                'contact_tags' => $val['contactTags'],
+                'created_at' => $val['createdAt'],
+                'status' => time() > strtotime($val['endTime']) ? '已结束' : '进行中',
+                'finance_tag' => '1/2', //任务达成标签-待完善
+                'employeeNum' => $this->workFissionContactService->countWorkFissionContactByFissionId((int) $val['id']),
             ];
         }
-        $data['page']['total']     = $roleList['total'];
+        $data['page']['total'] = $roleList['total'];
         $data['page']['totalPage'] = $roleList['last_page'];
-        $data['list']              = $list;
+        $data['list'] = $list;
 
         return $data;
     }

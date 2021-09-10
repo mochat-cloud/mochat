@@ -66,14 +66,14 @@ trait UserTrait
             && $headers['mochat-source-type'][0] == 'wechat-app'
         ) {
             $corpId = isset($headers['mochat-corp-id']) && is_numeric($headers['mochat-corp-id'][0]) ? (int) $headers['mochat-corp-id'][0] : 0;
-            $data   = [[$corpId], self::employeeByIdCorpId($id, $corpId), 2];
+            $data = [[$corpId], self::employeeByIdCorpId($id, $corpId), 2];
         } else {
             $container = ApplicationContext::getContainer();
-            $redis     = $container->get(Redis::class);
+            $redis = $container->get(Redis::class);
             $cacheData = $redis->get('mc:user.' . $id);
             if ($cacheData) {
                 $cacheData = explode('-', $cacheData);
-                $data      = [[(int) $cacheData[0]], (int) $cacheData[1]];
+                $data = [[(int) $cacheData[0]], (int) $cacheData[1]];
             } else {
                 $data = self::employeeByLoginUserId($id);
             }
@@ -91,7 +91,7 @@ trait UserTrait
 
     protected static function employeeByIdCorpId(int $id, int $corpId): int
     {
-        $res              = 0;
+        $res = 0;
         $workEmployeeData = WorkEmployee::query()->where('log_user_id', $id)->where('corp_id', $corpId)->first(['id']);
         if (! empty($workEmployeeData)) {
             $res = $workEmployeeData->toArray()['id'];
@@ -101,11 +101,11 @@ trait UserTrait
 
     protected static function employeeByLoginUserId(int $loginUserId): array
     {
-        $res              = [[], 0];
+        $res = [[], 0];
         $workEmployeeData = WorkEmployee::query()->where('log_user_id', $loginUserId)->first(['id', 'corp_id']);
         if (! empty($workEmployeeData)) {
             $workEmployeeData = $workEmployeeData->toArray();
-            $res              = [[(int) $workEmployeeData['corpId']], $workEmployeeData['id']];
+            $res = [[(int) $workEmployeeData['corpId']], $workEmployeeData['id']];
         }
         return $res;
     }

@@ -79,11 +79,11 @@ class IndexLogic
     private function getLotteryList(array $user, array $params): array
     {
         $lotteryList = $this->lotteryService->getLotteryListBySearch($user, $params);
-        $list        = [];
-        $data        = [
+        $list = [];
+        $data = [
             'page' => [
-                'perPage'   => $this->perPage,
-                'total'     => '0',
+                'perPage' => $this->perPage,
+                'total' => '0',
                 'totalPage' => '0',
             ],
             'list' => $list,
@@ -103,12 +103,12 @@ class IndexLogic
         foreach ($lotteryList['data'] as $key => $val) {
             //处理创建者信息
             $username = $this->userService->getUserById($val['createUserId']);
-            $time     = '永久有效';
+            $time = '永久有效';
             if ($val['timeType'] === 2) {
                 $time = $val['startTime'] . '-' . $val['endTime'];
             }
             $status = '进行中';
-            $date   = date('Y-m-d H:i:s');
+            $date = date('Y-m-d H:i:s');
             if ($val['timeType'] === 2) {
                 if ($val['startTime'] >= $date) {
                     $status = '未开始';
@@ -122,20 +122,20 @@ class IndexLogic
             }
 
             $list[$key] = [
-                'id'                 => $val['id'],
-                'name'               => $val['name'],
+                'id' => $val['id'],
+                'name' => $val['name'],
                 'contact_clock_tags' => empty($val['contactClockTags']) ? '' : array_column(json_decode($val['contactClockTags']), 'tags'),
-                'nickname'           => isset($username['name']) ? $username['name'] : '',
-                'total_user'         => $this->lotteryContactService->countLotteryContactByLotteryIdDrawNum((int) $val['id']),
-                'time'               => $time,
-                'created_at'         => $val['createdAt'],
-                'status'             => $status,
-                'share_link'         => Url::getAuthRedirectUrl(2, $val['id'], ['source' => 'from_pc']),
+                'nickname' => isset($username['name']) ? $username['name'] : '',
+                'total_user' => $this->lotteryContactService->countLotteryContactByLotteryIdDrawNum((int) $val['id']),
+                'time' => $time,
+                'created_at' => $val['createdAt'],
+                'status' => $status,
+                'share_link' => Url::getAuthRedirectUrl(2, $val['id'], ['source' => 'from_pc']),
             ];
         }
-        $data['page']['total']     = $lotteryList['total'];
+        $data['page']['total'] = $lotteryList['total'];
         $data['page']['totalPage'] = $lotteryList['last_page'];
-        $data['list']              = $list;
+        $data['list'] = $list;
 
         return $data;
     }

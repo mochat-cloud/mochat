@@ -134,12 +134,12 @@ class EditLogic
         $params['setting'] = json_encode($params['setting']);
 
         $data = [
-            'corp_id'      => $params['corpId'],
-            'creator_id'   => $params['workEmployeeId'],
-            'name'         => $params['name'],
-            'setting'      => $params['setting'],
+            'corp_id' => $params['corpId'],
+            'creator_id' => $params['workEmployeeId'],
+            'name' => $params['name'],
+            'setting' => $params['setting'],
             'employee_ids' => $params['employees'],
-            'state'        => 0,
+            'state' => 0,
         ];
 
         return $this->contactSopService->updateContactSopById((int) $params['id'], $data) ? true : false;

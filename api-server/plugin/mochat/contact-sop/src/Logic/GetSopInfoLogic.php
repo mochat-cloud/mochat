@@ -19,6 +19,8 @@ use MoChat\App\WorkContact\Contract\WorkContactTagContract;
 use MoChat\App\WorkContact\Contract\WorkContactTagPivotContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\App\WorkMessage\Contract\WorkMessageContract;
+use MoChat\Framework\Constants\ErrorCode;
+use MoChat\Framework\Exception\CommonException;
 use MoChat\Plugin\ContactSop\Contract\ContactSopContract;
 use MoChat\Plugin\ContactSop\Contract\ContactSopLogContract;
 use MoChat\Plugin\ContactTransfer\Contract\WorkUnassignedContract;
@@ -100,12 +102,24 @@ class GetSopInfoLogic
     public function handle($params)
     {
         $contactSopLog = $this->contactSopLogService->getContactSopLogById($params['id']);
+        if (empty($contactSopLog)) {
+            throw new CommonException(ErrorCode::INVALID_PARAMS, 'sop记录不存在');
+        }
 
         $contactSop = $this->contactSopService->getContactSopById($contactSopLog['contactSopId']);
+        if (empty($contactSop)) {
+            throw new CommonException(ErrorCode::INVALID_PARAMS, 'sop记录不存在');
+        }
 
         $user = $this->userService->getUserById($contactSop['creatorId']);
+        if (empty($user)) {
+            throw new CommonException(ErrorCode::INVALID_PARAMS, '用户不存在');
+        }
 
         $contact = $this->workContactService->getWorkContactByCorpIdWxExternalUserId($contactSopLog['corpId'], $contactSopLog['contact']);
+        if (empty($contact)) {
+            throw new CommonException(ErrorCode::INVALID_PARAMS, '客户不存在');
+        }
 
         $contact['avatar'] = file_full_url($contact['avatar']);
 
@@ -133,9 +147,9 @@ class GetSopInfoLogic
 
         return [
             'creator' => $user['name'],
-            'time'    => $time,
+            'time' => $time,
             'tipTime' => $tipTime,
-            'task'    => $task,
+            'task' => $task,
             'contact' => $contact,
         ];
     }

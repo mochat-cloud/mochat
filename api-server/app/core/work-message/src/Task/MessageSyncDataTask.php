@@ -10,13 +10,13 @@ declare(strict_types=1);
  */
 namespace MoChat\App\WorkMessage\Task;
 
+use MoChat\App\SyncData\Annotation\DynamicCrontab;
 use MoChat\App\SyncData\Contract\DataFetcherInterface;
 use MoChat\App\SyncData\Task\AbstractSyncDataTask;
 use MoChat\App\WorkMessage\Fetcher\MessageDataFetcher;
-use MoChat\App\SyncData\Annotation\DynamicCrontab;
 
 /**
- * TODO 本功能暂未启用
+ * TODO 本功能暂未启用.
  *
  * @DynamicCrontab(name="messageSyncDataTask", scheduleRule="*\/5 * * * *", rule="*\/3 * * * * *", callback="execute", singleton=true)
  */
@@ -28,6 +28,6 @@ class MessageSyncDataTask extends AbstractSyncDataTask
             return new MessageDataFetcher();
         }
 
-        return MessageDataFetcher::get((int)$id);
+        return MessageDataFetcher::get((int) $id);
     }
 }

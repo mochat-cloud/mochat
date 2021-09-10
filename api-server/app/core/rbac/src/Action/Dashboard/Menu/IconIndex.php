@@ -12,13 +12,13 @@ namespace MoChat\App\Rbac\Action\Dashboard\Menu;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Contract\RbacMenuContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 菜单-菜单已使用图标.
@@ -47,7 +47,7 @@ class IconIndex extends AbstractAction
     {
         ## 获取数据
         $columns = ['icon'];
-        $menu    = $this->menuService->getMenusBySearch([], $columns);
+        $menu = $this->menuService->getMenusBySearch([], $columns);
         if (empty($menu)) {
             return [];
         }

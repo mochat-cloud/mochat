@@ -11,22 +11,22 @@ declare(strict_types=1);
 namespace MoChat\App\WorkContact\Listener;
 
 use Hyperf\Di\Annotation\Inject;
-use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Event\Annotation\Listener;
+use Hyperf\Event\Contract\ListenerInterface;
 use MoChat\App\WorkContact\Constants\Employee\Status;
+use MoChat\App\WorkContact\Event\DeleteContactRawEvent;
 use MoChat\App\WorkContact\Logic\DestroyCallBackLogic;
 use Psr\Container\ContainerInterface;
-use MoChat\App\WorkContact\Event\DeleteContactRawEvent;
 
 /**
- * 删除企业客户事件
+ * 删除企业客户事件.
  *
  * @Listener(priority=9999)
  */
 class DeleteContactRawListener implements ListenerInterface
 {
     /**
-     * @Inject()
+     * @Inject
      * @var ContainerInterface
      */
     protected $container;
@@ -34,7 +34,7 @@ class DeleteContactRawListener implements ListenerInterface
     public function listen(): array
     {
         return [
-            DeleteContactRawEvent::class
+            DeleteContactRawEvent::class,
         ];
     }
 

@@ -12,7 +12,6 @@ namespace MoChat\App\Common\Middleware;
 
 use Hyperf\HttpMessage\Exception\MethodNotAllowedHttpException;
 use Hyperf\HttpMessage\Exception\NotFoundHttpException;
-use Hyperf\HttpMessage\Stream\SwooleStream;
 use Hyperf\Utils\Contracts\Arrayable;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -37,6 +36,6 @@ class CoreMiddleware extends \Hyperf\HttpServer\CoreMiddleware
     protected function handleMethodNotAllowed(array $methods, ServerRequestInterface $request)
     {
         // 重写 HTTP 方法不允许的处理逻辑
-        throw new MethodNotAllowedHttpException(sprintf("Not Allowed，Method: %s, Path: %s, Allow: %s", $request->getMethod(), $request->getUri()->getPath(), implode(', ', $methods)));
+        throw new MethodNotAllowedHttpException(sprintf('Not Allowed，Method: %s, Path: %s, Allow: %s', $request->getMethod(), $request->getUri()->getPath(), implode(', ', $methods)));
     }
 }

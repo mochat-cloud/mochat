@@ -12,10 +12,10 @@ namespace MoChat\App\WorkDepartment\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkDepartment\Logic\ShowEmployeeLogic;
@@ -66,8 +66,8 @@ class ShowEmployee extends AbstractAction
         }
         $params = [
             'departmentId' => $this->request->input('departmentId', null),
-            'page'         => $this->request->input('page', 1),
-            'perPage'      => $this->request->input('perPage', 10),
+            'page' => $this->request->input('page', 1),
+            'perPage' => $this->request->input('perPage', 10),
         ];
 
         return $this->showEmployeeLogic->handle($user, $params);
@@ -93,8 +93,8 @@ class ShowEmployee extends AbstractAction
     {
         return [
             'departmentId.required' => '部门ID 必填',
-            'departmentId.integer'  => '部门ID 必须为整数',
-            'departmentId.min  '    => '部门ID 不可小于1',
+            'departmentId.integer' => '部门ID 必须为整数',
+            'departmentId.min  ' => '部门ID 不可小于1',
         ];
     }
 }

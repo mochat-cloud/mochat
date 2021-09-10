@@ -46,7 +46,7 @@ trait ContactTrait
             if (isset($contact[$raw['contactId']])) {
                 $contact[$raw['contactId']]['employeeName'][] = $raw['employeeName'];
             } else {
-                $tmp                   = [];
+                $tmp = [];
                 $tmp['employeeName'][] = $raw['employeeName'];
 
                 $contact[$raw['contactId']] = $tmp;
@@ -65,7 +65,7 @@ trait ContactTrait
     private function getEmployee($employeeIds)
     {
         $employee = make(WorkEmployeeContract::class);
-        $corp     = make(CorpContract::class);
+        $corp = make(CorpContract::class);
 
         //根据员工id查询员工信息、企业id
         $employeeInfo = $employee->getWorkEmployeesById($employeeIds, ['id', 'name', 'corp_id']);
@@ -105,7 +105,7 @@ trait ContactTrait
      */
     private function getTag($contactIds)
     {
-        $contactTag      = make(WorkContactTagContract::class);
+        $contactTag = make(WorkContactTagContract::class);
         $contactTagPivot = make(WorkContactTagPivotContract::class);
 
         $contactTagInfo = $contactTagPivot->getWorkContactTagPivotsSoftByContactIds($contactIds, ['contact_id', 'contact_tag_id']);
@@ -136,7 +136,7 @@ trait ContactTrait
             if (isset($val['contactId'])) {
                 $tagData[$val['contactId']]['tagName'][] = $val['tagName'];
             } else {
-                $tmp              = [];
+                $tmp = [];
                 $tmp['tagName'][] = $val['tagName'];
 
                 $tagData[$val['contactId']] = $tmp;

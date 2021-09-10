@@ -13,10 +13,10 @@
           <a @click="$refs.group.show(rooms,data.calendar.id)">查看全部</a>
         </div>
         <div class="switch">
-          <a-tabs default-active-key="1">
-            <a-tab-pane key="1" tab="日历">
+          <a-tabs v-model="switchTab">
+            <a-tab-pane :key="1" tab="日历">
               <div>
-                <Calendar mode="month">
+                <Calendar mode="month" v-model="setUpDate">
                   <div slot="dateCellRender" slot-scope="value">
                     <div
                       v-for="(v,i) in getListData(value)"
@@ -24,7 +24,7 @@
                       class="calendar-item"
                     >
                       <div class="text">
-                        <div class="text">
+                        <div class="text show_data" @click="contentCalendar">
                           【{{ v.time }}】
                           {{ v.name }}
                         </div>
@@ -34,7 +34,7 @@
                 </Calendar>
               </div>
             </a-tab-pane>
-            <a-tab-pane key="2" tab="时间轴" force-render>
+            <a-tab-pane :key="2" tab="时间轴" force-render>
               <div class="timeline-box">
                 <div class="time-list" v-for="(v,i) in data.push" :key="i">
                   <p class="date">
@@ -52,12 +52,14 @@
                     <span class="date-title">
                       {{ v.name }}
                     </span>
+                    <a-icon
+                      type="edit"
+                      style="font-size: 17px;margin-left: 15px;cursor: pointer;"
+                      @click="$refs.setCalnder.modifyShow(v)"
+                    />
                   </div>
                   <div class="content flex">
                     <div class="warp">
-                      <div class="text-content">
-                        111
-                      </div>
                       <div
                         class="text-content"
                         v-for="(content,contentIndex) in v.pushContent"
@@ -80,30 +82,63 @@
     </a-card>
 
     <group ref="group" @change="getData"/>
+    <!--    设置日历-->
+    <setCalnder ref="setCalnder" @change="modifyData" />
   </div>
 </template>
 
 <script>
 import { Calendar } from 'ant-design-vue'
-import { getInfo } from '@/api/roomCalendar'
+// eslint-disable-next-line no-unused-vars
+import { getInfo, updateApi } from '@/api/roomCalendar'
 import group from './components/group'
-
+import moment from 'moment'
+import setCalnder from '@/views/roomCalendar/components/setCalnder'
 export default {
+  components: {
+    Calendar, group, setCalnder
+  },
   data () {
     return {
+      // 切换面板
+      switchTab: 1,
       data: {
         calendar: {
           name: ''
         },
         push: []
       },
-      rooms: []
+      rooms: [],
+      setUpDate: ''
     }
   },
   mounted () {
     this.getData()
   },
   methods: {
+    // 修改日历
+    modifyData (e) {
+      const push = []
+      const pushArr = {
+        id: e.form.id,
+        name: e.form.name,
+        day: `${e.form.date} ${e.form.time}`,
+        push_content: e.list
+      }
+      push[0] = pushArr
+      console.log(push)
+      updateApi({
+        id: this.$route.query.id,
+        push
+      }).then((res) => {
+        this.$message.success('修改成功')
+        this.getData()
+      })
+    },
+    // 查看日历内容
+    contentCalendar () {
+      this.switchTab = 2
+    },
     getContent (data) {
       const map = {
         'text': {
@@ -119,13 +154,10 @@ export default {
           content: data.link_title
         }
       }
-
       return map[data.type]
     },
-
     getListData (date) {
       const data = []
-
       this.data.push.forEach(v => {
         if (this.deDate(v.day).date === date.format('YYYY-MM-DD')) {
           data.push({
@@ -133,38 +165,30 @@ export default {
           })
         }
       })
-
       if (data) {
         return data
       }
     },
-
     getData () {
       getInfo({
         id: this.$route.query.id
       }).then(res => {
         this.data = res.data
-
         this.rooms = this.data.calendar.rooms
-
         this.data.push.forEach(v => {
           v.time = this.deDate(v.day).time
           v.date = this.deDate(v.day).date
         })
+        this.setUpDate = moment(this.data.push[0].date)
       })
     },
-
     deDate (date) {
       const match = date.match(/(.+) (.+)/i)
-
       return {
         date: match[1],
         time: match[2]
       }
     }
-  },
-  components: {
-    Calendar, group
   }
 }
 </script>
@@ -395,9 +419,12 @@ export default {
   line-height: 17px;
   display: flex;
   align-items: center;
-
   .text {
     flex: 1;
+  }
+  .show_data{
+    width: 100%;
+    height: 50px;
   }
 }
 </style>

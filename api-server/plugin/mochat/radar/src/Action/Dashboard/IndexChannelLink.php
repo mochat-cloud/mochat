@@ -12,10 +12,10 @@ namespace MoChat\Plugin\Radar\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\User\Contract\UserContract;
 use MoChat\Framework\Action\AbstractAction;
@@ -101,10 +101,10 @@ class IndexChannelLink extends AbstractAction
     {
         $list = $this->radarChannelLinkService->getRadarChannelLinkByCorpIdRadarId($user['corpIds'][0], (int) $params['radar_id'], ['id', 'radar_id', 'channel_id', 'link', 'click_num', 'click_person_num', 'create_user_id', 'created_at']);
         foreach ($list as $k => $v) {
-            $channel                 = $this->radarChannelService->getRadarChannelById($v['channelId'], ['name']);
-            $list[$k]['name']        = $channel['name'];
-            $username                = $this->userService->getUserById($v['createUserId']);
-            $list[$k]['link']        = $v['link'];
+            $channel = $this->radarChannelService->getRadarChannelById($v['channelId'], ['name']);
+            $list[$k]['name'] = $channel['name'];
+            $username = $this->userService->getUserById($v['createUserId']);
+            $list[$k]['link'] = $v['link'];
             $list[$k]['create_user'] = isset($username['name']) ? $username['name'] : '';
             unset($list[$k]['id'], $list[$k]['radarId'], $list[$k]['channelId'], $list[$k]['createUserId']);
         }

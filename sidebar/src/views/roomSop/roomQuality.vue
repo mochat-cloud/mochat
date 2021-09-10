@@ -88,7 +88,6 @@ export default {
         if (item.name == this.ruleListData[lastIndex].name) {
           delRoomQualityApi({
             id: item.id,
-            corpId: this.corpId,
             roomId: this.roomId
           }).then((res) => {
             Toast({ position: 'top', message: '删除成功' })
@@ -100,10 +99,9 @@ export default {
     switchGroup (e) {
       this.listRuleData.forEach((item) => {
         if (item.name == this.ruleName) {
-          console.log(item)
+          // console.log(item)
           setRoomQualityApi({
             id: item.id,
-            corpId: this.corpId,
             roomId: this.roomId
           }).then((res) => {
             Toast({ position: 'top', message: '添加成功' })
@@ -116,16 +114,14 @@ export default {
       this.$emit('change', true)
       this.show = false
     },
-    showPopup (corpId, roomId) {
+    showPopup (roomId) {
       this.show = true
-      this.corpId = corpId
       this.roomId = roomId
       this.getGroupQuality()
     },
     //  获取群聊质检列表
     getGroupQuality () {
       roomQualityApi({
-        corpId: this.corpId,
         roomId: this.roomId
       }).then((res) => {
         this.listRuleData = res.data.list
@@ -201,7 +197,8 @@ export default {
 .option_box option{
   height: 50px;
 }
-/deep/ .van-popup--center{
+
+:deep(.van-popup--center){
   width: 92%;
 }
 .pop_foot{

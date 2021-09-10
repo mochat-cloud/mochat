@@ -30,7 +30,7 @@ trait RequestTrait
     public function scene(): array
     {
         return [
-            'store'  => ['corpName', 'wxCorpId', 'employeeSecret', 'contactSecret'],
+            'store' => ['corpName', 'wxCorpId', 'employeeSecret', 'contactSecret'],
             'update' => ['corpId', 'corpName', 'wxCorpId', 'employeeSecret', 'contactSecret'],
         ];
     }
@@ -42,11 +42,11 @@ trait RequestTrait
     protected function rules(): array
     {
         return [
-            'corpId'         => 'required|integer|min:0|bail',
-            'corpName'       => 'required|string|min:1|bail',
-            'wxCorpId'       => 'required|string|between:1,18|bail',
+            'corpId' => 'required|integer|min:0|bail',
+            'corpName' => 'required|string|min:1|bail',
+            'wxCorpId' => 'required|string|between:1,18|bail',
             'employeeSecret' => 'required|string|between:1,43|bail',
-            'contactSecret'  => 'required|string|between:1,43|bail',
+            'contactSecret' => 'required|string|between:1,43|bail',
         ];
     }
 
@@ -57,21 +57,21 @@ trait RequestTrait
     protected function messages(): array
     {
         return [
-            'corpId.required'         => '企业授信ID 必填',
-            'corpId.integer'          => '企业授信ID 必需为整数',
-            'corpId.min'              => '企业授信ID 不可小于1',
-            'corpName.required'       => '企业名称 必填',
-            'corpName.string'         => '企业名称 必需是字符串类型',
-            'corpName.min'            => '企业名称 不可为空',
-            'wxCorpId.required'       => '企业ID 必填',
-            'wxCorpId.string'         => '企业ID 必需是字符串类型',
-            'wxCorpId.between'        => '企业ID 字符串最大长度18',
+            'corpId.required' => '企业授信ID 必填',
+            'corpId.integer' => '企业授信ID 必需为整数',
+            'corpId.min' => '企业授信ID 不可小于1',
+            'corpName.required' => '企业名称 必填',
+            'corpName.string' => '企业名称 必需是字符串类型',
+            'corpName.min' => '企业名称 不可为空',
+            'wxCorpId.required' => '企业ID 必填',
+            'wxCorpId.string' => '企业ID 必需是字符串类型',
+            'wxCorpId.between' => '企业ID 字符串最大长度18',
             'employeeSecret.required' => '通讯录管理secret 必填',
-            'employeeSecret.string'   => '通讯录管理secret 必需是字符串类型',
-            'employeeSecret.between'  => '通讯录管理secret  字符串最大长度43',
-            'contactSecret.required'  => '外部联系人管理secret 必填',
-            'contactSecret.string'    => '外部联系人管理secret 必需是字符串类型',
-            'contactSecret.between'   => '外部联系人管理secret 字符串最大长度43',
+            'employeeSecret.string' => '通讯录管理secret 必需是字符串类型',
+            'employeeSecret.between' => '通讯录管理secret  字符串最大长度43',
+            'contactSecret.required' => '外部联系人管理secret 必填',
+            'contactSecret.string' => '外部联系人管理secret 必需是字符串类型',
+            'contactSecret.between' => '外部联系人管理secret 字符串最大长度43',
         ];
     }
 
@@ -85,23 +85,23 @@ trait RequestTrait
         $config = [
             'user' => [
                 'corp_id' => $inputs['wxCorpId'],
-                'secret'  => $inputs['employeeSecret'],
+                'secret' => $inputs['employeeSecret'],
             ],
             'contact' => [
                 'corp_id' => $inputs['wxCorpId'],
-                'secret'  => $inputs['contactSecret'],
+                'secret' => $inputs['contactSecret'],
             ],
         ];
         try {
-            $userService    = $this->wxClient->app($config['user'])->user->get('1');
+            $userService = $this->wxClient->app($config['user'])->user->get('1');
             $contactService = $this->wxClient->app($config['contact'])->external_contact->get('1');
         } catch (\EasyWeChat\Kernel\Exceptions\HttpException $e) {
             if ($e->formattedResponse['errcode'] === 40012) {
                 throw new CommonException(ErrorCode::INVALID_PARAMS, '企业ID无效');
             }
             if ($e->formattedResponse['errcode'] === 40001) {
-                $msg                                                      = '无效';
-                isset($userService) || $msg                               = '通讯录管理secret或企业ID' . $msg;
+                $msg = '无效';
+                isset($userService) || $msg = '通讯录管理secret或企业ID' . $msg;
                 (isset($userService) && ! isset($contactService)) && $msg = '外部联系人管理secret' . $msg;
                 throw new CommonException(ErrorCode::INVALID_PARAMS, $msg);
             }

@@ -12,10 +12,10 @@ namespace MoChat\App\Rbac\Action\Dashboard\Role;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Rbac\Logic\Role\UpdateLogic;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
@@ -79,9 +79,9 @@ class Update extends AbstractAction
     protected function rules(): array
     {
         return [
-            'roleId'         => 'required | integer | bail',
-            'name'           => 'required | string | bail',
-            'remarks'        => 'required | string | bail',
+            'roleId' => 'required | integer | bail',
+            'name' => 'required | string | bail',
+            'remarks' => 'required | string | bail',
             'dataPermission' => 'required | integer | bail',
         ];
     }
@@ -93,14 +93,14 @@ class Update extends AbstractAction
     protected function messages(): array
     {
         return [
-            'roleId.required'         => '角色id 必填',
-            'roleId.integer'          => '角色id 必须为整型',
-            'name.required'           => '角色名称 必填',
-            'name.string'             => '角色名称 必须为字符串',
-            'remarks.required'        => '角色描述 必填',
-            'remarks.string'          => '角色描述 必须为文本',
+            'roleId.required' => '角色id 必填',
+            'roleId.integer' => '角色id 必须为整型',
+            'name.required' => '角色名称 必填',
+            'name.string' => '角色名称 必须为字符串',
+            'remarks.required' => '角色描述 必填',
+            'remarks.string' => '角色描述 必须为文本',
             'dataPermission.required' => '数据权限 必填',
-            'dataPermission.string'   => '数据权限 值必须在列表内：[1,2]',
+            'dataPermission.string' => '数据权限 值必须在列表内：[1,2]',
         ];
     }
 }

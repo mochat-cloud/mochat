@@ -12,11 +12,11 @@ namespace MoChat\Plugin\RoomTagPull\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Contract\WorkContactRoomContract;
@@ -93,7 +93,7 @@ class Show
      */
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -137,7 +137,7 @@ class Show
     {
         return [
             'id.required' => '活动id 必填',
-            'id.integer'  => '活动id 必须为整型',
+            'id.integer' => '活动id 必须为整型',
         ];
     }
 
@@ -150,19 +150,19 @@ class Show
     private function getRoomTagPull(array $user, array $params): array
     {
         $roomTagPull = $this->roomTagPullService->getRoomTagPullById((int) $params['id'], ['employees', 'rooms', 'wx_tid']);
-        $employees   = $this->workEmployeeService->getWorkEmployeesById(explode(',', $roomTagPull['employees']), ['name', 'avatar', 'wx_user_id']);
+        $employees = $this->workEmployeeService->getWorkEmployeesById(explode(',', $roomTagPull['employees']), ['name', 'avatar', 'wx_user_id']);
         foreach ($employees as $key => $val) {
             $employees[$key]['avatar'] = file_full_url($val['avatar']);
         }
         $rooms = json_decode($roomTagPull['rooms'], true, 512, JSON_THROW_ON_ERROR);
         foreach ($rooms as $k => $v) {
-            $room                     = $this->workRoomService->getWorkRoomById($v['id'], ['id', 'wx_chat_id', 'name', 'owner_id', 'room_max']);
+            $room = $this->workRoomService->getWorkRoomById($v['id'], ['id', 'wx_chat_id', 'name', 'owner_id', 'room_max']);
             $rooms[$k]['contact_num'] = $this->workContactRoomService->countWorkContactRoomsByRoomIdContact((int) $v['id']);
-            $rooms[$k]['room_max']    = $room['roomMax'];
-            $rooms[$k]['image']       = file_full_url($v['image']);
+            $rooms[$k]['room_max'] = $room['roomMax'];
+            $rooms[$k]['image'] = file_full_url($v['image']);
             unset($rooms[$k]['num'], $rooms[$k]['image'], $rooms[$k]['wx_image']);
         }
-        $send_num  = 0;
+        $send_num = 0;
         $noSendNum = 0;
         foreach (json_decode($roomTagPull['wxTid'], true, 512, JSON_THROW_ON_ERROR) as $tid) {
             if ($tid['status'] !== 0) {
@@ -173,14 +173,14 @@ class Show
             }
         }
         return [
-            'employees'        => $employees,
-            'rooms'            => $rooms,
-            'join_room_num'    => $this->roomTagPullContactService->countRoomTagPullContactByRoomTagPullIdJoinRoom((int) $params['id'], 1),
+            'employees' => $employees,
+            'rooms' => $rooms,
+            'join_room_num' => $this->roomTagPullContactService->countRoomTagPullContactByRoomTagPullIdJoinRoom((int) $params['id'], 1),
             'no_join_room_num' => $this->roomTagPullContactService->countRoomTagPullContactByRoomTagPullIdJoinRoom((int) $params['id'], 0),
-            'invite_num'       => $this->roomTagPullContactService->countRoomTagPullContactByRoomTagPullIdSendStatus((int) $params['id'], [1]),
-            'no_invite_num'    => $this->roomTagPullContactService->countRoomTagPullContactByRoomTagPullIdSendStatus((int) $params['id'], [0]),
-            'send_num'         => $send_num,
-            'no_send_num'      => $noSendNum,
+            'invite_num' => $this->roomTagPullContactService->countRoomTagPullContactByRoomTagPullIdSendStatus((int) $params['id'], [1]),
+            'no_invite_num' => $this->roomTagPullContactService->countRoomTagPullContactByRoomTagPullIdSendStatus((int) $params['id'], [0]),
+            'send_num' => $send_num,
+            'no_send_num' => $noSendNum,
         ];
     }
 }

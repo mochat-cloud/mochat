@@ -10,13 +10,12 @@ declare(strict_types=1);
  */
 namespace MoChat\Plugin\RoomWelcome\Action\Dashboard;
 
-use http\Client\Curl\User;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
@@ -63,7 +62,7 @@ class Update extends AbstractAction
         $this->validated($this->request->all(), 'store');
 
         $params['corp_id'] = $user['corpIds'][0];
-        $logic             = $this->container->get(UpdateLogic::class);
+        $logic = $this->container->get(UpdateLogic::class);
         return $logic->handle($user, $params);
     }
 
@@ -76,7 +75,7 @@ class Update extends AbstractAction
     {
         return [
             'msg_text' => 'string | bail',
-            'notice'   => 'required',
+            'notice' => 'required',
         ];
     }
 

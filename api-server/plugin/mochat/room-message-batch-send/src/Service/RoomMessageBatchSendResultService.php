@@ -100,12 +100,12 @@ class RoomMessageBatchSendResultService extends AbstractService implements RoomM
      */
     public function getRoomMessageBatchSendResultsBySearch(array $params): array
     {
-        $batchId     = $params['batchId'];
+        $batchId = $params['batchId'];
         $employeeIds = $params['employeeIds'] ?? null;
-        $sendStatus  = $params['sendStatus'] ?? '';
-        $keyWords    = $params['keyWords'] ?? '';
-        $page        = (int) $params['page'];
-        $perPage     = (int) $params['perPage'];
+        $sendStatus = $params['sendStatus'] ?? '';
+        $keyWords = $params['keyWords'] ?? '';
+        $page = (int) $params['page'];
+        $perPage = (int) $params['perPage'];
 
         $data = $this->model::from($this->model::query()->getModel()->getTable() . ' as a')
             ->join(WorkEmployee::query()->getModel()->getTable() . ' as e', 'a.employee_id', 'e.id')

@@ -51,12 +51,12 @@ class UpdateCallback
                 ## 获取客户群列表
                 $chatListParams = [
                     'status_filter' => 0,
-                    'owner_filter'  => [
-                        'userid_list'  => [$groupChat['group_chat']['owner']],
+                    'owner_filter' => [
+                        'userid_list' => [$groupChat['group_chat']['owner']],
                         'partyid_list' => [],
                     ],
                     'offset' => 0,
-                    'limit'  => 100,
+                    'limit' => 100,
                 ];
                 $groupChatList = $ecClient->getGroupChats($chatListParams);
                 if ($groupChatList['errcode'] != 0) {

@@ -11,10 +11,10 @@ declare(strict_types=1);
 namespace MoChat\App\WorkContact\Action\Dashboard\Field;
 
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Action\Dashboard\Field\Traits\RequestTrait;
 use MoChat\App\WorkContact\Constants\Field\Options;
@@ -47,11 +47,11 @@ class Index extends AbstractAction
         );
 
         ## 契约模型
-        $client  = $this->container->get(ContactFieldContract::class);
-        $where   = $params['status'] == 2 ? [] : ['status' => $params['status']];
+        $client = $this->container->get(ContactFieldContract::class);
+        $where = $params['status'] == 2 ? [] : ['status' => $params['status']];
         $options = [
-            'page'       => $params['page'],
-            'perPage'    => $params['perPage'],
+            'page' => $params['page'],
+            'perPage' => $params['perPage'],
             'orderByRaw' => '`order` DESC',
         ];
         $pageData = $client->getContactFieldList(
@@ -68,8 +68,8 @@ class Index extends AbstractAction
 
         return [
             'page' => [
-                'perPage'   => $pageData['per_page'],
-                'total'     => $pageData['total'],
+                'perPage' => $pageData['per_page'],
+                'total' => $pageData['total'],
                 'totalPage' => $pageData['last_page'],
             ],
             'list' => $data,

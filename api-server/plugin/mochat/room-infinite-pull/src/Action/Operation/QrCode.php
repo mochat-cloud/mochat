@@ -106,7 +106,7 @@ class QrCode
      */
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -121,9 +121,9 @@ class QrCode
         $params = $this->request->all();
         $this->validated($params);
         $roomInfinite = $this->roomInfiniteService->getRoomInfiniteById((int) $params['id'], ['title', 'describe', 'logo', 'qw_code', 'total_num']);
-        $qwCode       = json_decode($roomInfinite['qwCode'], true, 512, JSON_THROW_ON_ERROR);
-        $totalNum     = $roomInfinite['totalNum'];
-        $qrcode       = '';
+        $qwCode = json_decode($roomInfinite['qwCode'], true, 512, JSON_THROW_ON_ERROR);
+        $totalNum = $roomInfinite['totalNum'];
+        $qrcode = '';
         foreach ($qwCode as $k => $v) {
             $qwCode[$k]['status'] = 1;
             if ($totalNum < (int) $v['upper_limit']) {
@@ -170,7 +170,7 @@ class QrCode
     {
         return [
             'id.required' => '质检id 必填',
-            'id.integer'  => '质检id 必须为整型',
+            'id.integer' => '质检id 必须为整型',
         ];
     }
 }

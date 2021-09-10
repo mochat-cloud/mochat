@@ -31,7 +31,7 @@
               <a-input-number
                 v-model="form.hour.first"
                 size="small"
-                :min="1"
+                :min="0"
                 :max="100"
               />
             </div>
@@ -66,6 +66,7 @@
               <a-time-picker
                 v-model="form.day.last"
                 format="HH:mm"
+                style="width: 110px;"
               />
             </div>
             提醒发送
@@ -204,7 +205,7 @@ export default {
         params.time.data = form.hour
       } else {
         params.time.data = form.day
-        params.time.data.last = moment(params.time.data.last).format('h:mm')
+        params.time.data.last = moment(params.time.data.last).format('HH:mm')
       }
 
       if (this.type === 'add') {

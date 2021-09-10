@@ -72,9 +72,9 @@ class UpdateLogic
     {
         ## 更新数据
         $data = [
-            'name'         => $params['name'],
-            'remarks'      => $params['remarks'],
-            'operate_id'   => $user['id'],
+            'name' => $params['name'],
+            'remarks' => $params['remarks'],
+            'operate_id' => $user['id'],
             'operate_name' => $user['name'],
         ];
 
@@ -96,7 +96,7 @@ class UpdateLogic
         $flag = 0;
         foreach ($dataPermission as $k => &$v) {
             if ($v['corpId'] == $this->corpId) {
-                $flag                = 1;
+                $flag = 1;
                 $v['permissionType'] = $params['dataPermission'];
             }
         }

@@ -77,12 +77,12 @@ return (new PhpCsFixer\Config())
         'single_quote' => true,
         'standardize_not_equals' => true,
         'multiline_comment_opening_closing' => true,
-        'binary_operator_spaces' => [
-            'operators' => [
-                '=' => 'align_single_space_minimal',
-                '=>' => 'align_single_space_minimal',
-            ],
-        ]
+//        'binary_operator_spaces' => [
+//            'operators' => [
+//                '=' => 'align_single_space_minimal',
+//                '=>' => 'align_single_space_minimal',
+//            ],
+//        ]
     ])
     ->setFinder(
         PhpCsFixer\Finder::create()

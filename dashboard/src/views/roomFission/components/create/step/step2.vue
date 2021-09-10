@@ -97,7 +97,7 @@ export default {
     //  抛出数据
     outputStep2 () {
       if (!this.poster.cover_pic) {
-        this.$message.error('封面图片不能为空')
+        this.$message.error('请上传海报图片')
         return false
       }
       if (this.showStep2News.avatar_show) {

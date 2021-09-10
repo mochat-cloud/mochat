@@ -1,18 +1,17 @@
-import { getConfigInfo } from '@/api/wxconfig'
+import { getJssdkConfig } from '@/api/wxconfig'
 import { Toast } from 'vant'
 
 const wx = window.wx
 // 获取微信注入参数
-async function getConfigParam (corpId, uriPath, agentId) {
+async function getConfigParam (uriPath, agentId) {
   try {
     const params = {
-      corpId,
       uriPath
     }
     if (agentId) {
       params.agentId = agentId
     }
-    const { data } = await getConfigInfo(params)
+    const { data } = await getJssdkConfig(params)
     return data
   } catch (e) {
     console.log(e)
@@ -20,9 +19,9 @@ async function getConfigParam (corpId, uriPath, agentId) {
 }
 const jsApiList = ['getCurExternalContact', 'sendChatMessage', 'getContext', 'openUserProfile', 'getCurExternalChat', 'openExistedChatWithMsg']
 // wx.config
-export function wxConfig (corpId, uriPath) {
+export function wxConfig (uriPath) {
   return new Promise((resolve, reject) => {
-    getConfigParam(corpId, uriPath).then(data => {
+    getConfigParam(uriPath).then(data => {
       const { appId, timestamp, nonceStr, signature } = data
       wx.config({
         beta: true, // 必须这么写，否则wx.invoke调用形式的jsapi会有问题
@@ -47,9 +46,9 @@ export function wxConfig (corpId, uriPath) {
   })
 }
 // wx.agentConfig
-export function agentConfig (corpId, uriPath, agentId) {
+export function agentConfig (uriPath, agentId) {
   return new Promise((resolve, reject) => {
-    getConfigParam(corpId, uriPath, agentId).then(data => {
+    getConfigParam(uriPath, agentId).then(data => {
       const { corpid, agentid, timestamp, nonceStr, signature } = data
       wx.agentConfig({
         corpid: corpid, // 必填，企业微信的corpid，必须与当前登录的企业一致
@@ -225,3 +224,14 @@ export function openExistedChatWithMsg (chatId) {
 //     }
 //   })
 // }
+
+// 进入添加客户界面
+export function navigateToAddCustomer () {
+  return new Promise((resolve, reject) => {
+    wx.invoke('navigateToAddCustomer',
+      {},
+      function (res) {
+      }
+    )
+  })
+}

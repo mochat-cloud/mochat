@@ -101,14 +101,14 @@ class IndexLogic
     {
         //获取本月第一天及最后一天.
         $beginDate = date('Y-m-01', strtotime(date('Y-m-d')));
-        $endDate   = date('Y-m-d', strtotime("{$beginDate} +1 month -1 day"));
+        $endDate = date('Y-m-d', strtotime("{$beginDate} +1 month -1 day"));
 
         //查询本月数据
         $month = $this->dayData->getCorpDayDatasByCorpIdTime((int) $this->corpId, $beginDate, $endDate);
 
         //获取上月第一天和最后一天
         $lastBeginDate = date('Y-m-01', strtotime('-1 month'));
-        $lastEndDate   = date('Y-m-t', strtotime('-1 month'));
+        $lastEndDate = date('Y-m-t', strtotime('-1 month'));
 
         //查询上月数据
         $lastMonth = $this->dayData->getCorpDayDatasByCorpIdTime((int) $this->corpId, $lastBeginDate, $lastEndDate);
@@ -186,9 +186,9 @@ class IndexLogic
 
         return [
             'weChatContactNum' => $totalContact,
-            'weChatRoomNum'    => $totalRooms,
-            'roomMemberNum'    => empty($totalMember) ? 0 : $totalMember,
-            'corpMemberNum'    => $totalEmployee,
+            'weChatRoomNum' => $totalRooms,
+            'roomMemberNum' => empty($totalMember) ? 0 : $totalMember,
+            'corpMemberNum' => $totalEmployee,
         ];
     }
 

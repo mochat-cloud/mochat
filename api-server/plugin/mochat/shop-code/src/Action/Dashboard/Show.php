@@ -13,10 +13,10 @@ namespace MoChat\Plugin\ShopCode\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\Framework\Action\AbstractAction;
@@ -113,7 +113,7 @@ class Show extends AbstractAction
     {
         return [
             'type.required' => '类型 必填',
-            'type.integer'  => '类型 必须为整型',
+            'type.integer' => '类型 必须为整型',
         ];
     }
 
@@ -123,19 +123,19 @@ class Show extends AbstractAction
     private function shop(array $user, array $params): array
     {
         $shopList = $this->shopCodeService->getShopCodeByCorpIdType($user['corpIds'][0], (int) $params['type'], '', ['id']);
-        $shop     = [];
+        $shop = [];
         foreach ($shopList as $k => $v) {
             $shop[] = 'shopCode-' . $v['id'];
         }
         ## 今日数据
-        $day                               = date('Y-m-d');
+        $day = date('Y-m-d');
         $dataStatistics['today_click_num'] = $this->shopCodeRecordService->countShopCodeRecordByCorpIdTypeCreatedAt($user['corpIds'][0], (int) $params['type'], $day);
-        $dataStatistics['today_add_num']   = $this->workContactService->countWorkContactsByCorpIdStateStatus($user['corpIds'][0], $shop, 1, $day);
-        $dataStatistics['today_loss_num']  = $this->workContactService->countWorkContactsByCorpIdStateStatus($user['corpIds'][0], $shop, 2, $day);
+        $dataStatistics['today_add_num'] = $this->workContactService->countWorkContactsByCorpIdStateStatus($user['corpIds'][0], $shop, 1, $day);
+        $dataStatistics['today_loss_num'] = $this->workContactService->countWorkContactsByCorpIdStateStatus($user['corpIds'][0], $shop, 2, $day);
         ## 总数据
         $dataStatistics['total_click_num'] = $this->shopCodeRecordService->countShopCodeRecordByCorpIdTypeCreatedAt($user['corpIds'][0], (int) $params['type']);
-        $dataStatistics['total_add_num']   = $this->workContactService->countWorkContactsByCorpIdStateStatus($user['corpIds'][0], $shop, 1);
-        $dataStatistics['total_loss_num']  = $this->workContactService->countWorkContactsByCorpIdStateStatus($user['corpIds'][0], $shop, 2);
+        $dataStatistics['total_add_num'] = $this->workContactService->countWorkContactsByCorpIdStateStatus($user['corpIds'][0], $shop, 1);
+        $dataStatistics['total_loss_num'] = $this->workContactService->countWorkContactsByCorpIdStateStatus($user['corpIds'][0], $shop, 2);
         return [$dataStatistics];
     }
 
@@ -146,21 +146,21 @@ class Show extends AbstractAction
     private function shopRoom(array $user, array $params): array
     {
         $shopList = $this->shopCodeService->getShopCodeByCorpIdType($user['corpIds'][0], (int) $params['type'], '', ['id', 'qw_code']);
-        $shop     = [];
+        $shop = [];
         foreach ($shopList as $k => $v) {
-            $qwCode             = json_decode($v['qwCode'], true, 512, JSON_THROW_ON_ERROR);
+            $qwCode = json_decode($v['qwCode'], true, 512, JSON_THROW_ON_ERROR);
             $workRoomAutoPullId = $qwCode['workRoomAutoPullId'];
-            $shop[]             = 'workRoomAutoPullId-' . $workRoomAutoPullId;
+            $shop[] = 'workRoomAutoPullId-' . $workRoomAutoPullId;
         }
         ## 今日数据
-        $day                               = date('Y-m-d');
+        $day = date('Y-m-d');
         $dataStatistics['today_click_num'] = $this->shopCodeRecordService->countShopCodeRecordByCorpIdTypeCreatedAt($user['corpIds'][0], (int) $params['type'], $day);
-        $dataStatistics['today_add_num']   = $this->workContactService->countWorkContactsByCorpIdStateStatus($user['corpIds'][0], $shop, 1, $day);
-        $dataStatistics['today_loss_num']  = $this->workContactService->countWorkContactsByCorpIdStateStatus($user['corpIds'][0], $shop, 2, $day);
+        $dataStatistics['today_add_num'] = $this->workContactService->countWorkContactsByCorpIdStateStatus($user['corpIds'][0], $shop, 1, $day);
+        $dataStatistics['today_loss_num'] = $this->workContactService->countWorkContactsByCorpIdStateStatus($user['corpIds'][0], $shop, 2, $day);
         ## 总数据
         $dataStatistics['total_click_num'] = $this->shopCodeRecordService->countShopCodeRecordByCorpIdTypeCreatedAt($user['corpIds'][0], (int) $params['type']);
-        $dataStatistics['total_add_num']   = $this->workContactService->countWorkContactsByCorpIdStateStatus($user['corpIds'][0], $shop, 1);
-        $dataStatistics['total_loss_num']  = $this->workContactService->countWorkContactsByCorpIdStateStatus($user['corpIds'][0], $shop, 2);
+        $dataStatistics['total_add_num'] = $this->workContactService->countWorkContactsByCorpIdStateStatus($user['corpIds'][0], $shop, 1);
+        $dataStatistics['total_loss_num'] = $this->workContactService->countWorkContactsByCorpIdStateStatus($user['corpIds'][0], $shop, 2);
         return [$dataStatistics];
     }
 
@@ -171,21 +171,21 @@ class Show extends AbstractAction
     private function cityRoom(array $user, array $params): array
     {
         $shopList = $this->shopCodeService->getShopCodeByCorpIdType($user['corpIds'][0], (int) $params['type'], '', ['id', 'qw_code']);
-        $shop     = [];
+        $shop = [];
         foreach ($shopList as $k => $v) {
-            $qwCode             = json_decode($v['qwCode'], true, 512, JSON_THROW_ON_ERROR);
+            $qwCode = json_decode($v['qwCode'], true, 512, JSON_THROW_ON_ERROR);
             $workRoomAutoPullId = $qwCode['workRoomAutoPullId'];
-            $shop[]             = 'workRoomAutoPullId-' . $workRoomAutoPullId;
+            $shop[] = 'workRoomAutoPullId-' . $workRoomAutoPullId;
         }
         ## 今日数据
-        $day                               = date('Y-m-d');
+        $day = date('Y-m-d');
         $dataStatistics['today_click_num'] = $this->shopCodeRecordService->countShopCodeRecordByCorpIdTypeCreatedAt($user['corpIds'][0], (int) $params['type'], $day);
-        $dataStatistics['today_add_num']   = $this->workContactService->countWorkContactsByCorpIdStateStatus($user['corpIds'][0], $shop, 1, $day);
-        $dataStatistics['today_loss_num']  = $this->workContactService->countWorkContactsByCorpIdStateStatus($user['corpIds'][0], $shop, 2, $day);
+        $dataStatistics['today_add_num'] = $this->workContactService->countWorkContactsByCorpIdStateStatus($user['corpIds'][0], $shop, 1, $day);
+        $dataStatistics['today_loss_num'] = $this->workContactService->countWorkContactsByCorpIdStateStatus($user['corpIds'][0], $shop, 2, $day);
         ## 总数据
         $dataStatistics['total_click_num'] = $this->shopCodeRecordService->countShopCodeRecordByCorpIdTypeCreatedAt($user['corpIds'][0], (int) $params['type']);
-        $dataStatistics['total_add_num']   = $this->workContactService->countWorkContactsByCorpIdStateStatus($user['corpIds'][0], $shop, 1);
-        $dataStatistics['total_loss_num']  = $this->workContactService->countWorkContactsByCorpIdStateStatus($user['corpIds'][0], $shop, 2);
+        $dataStatistics['total_add_num'] = $this->workContactService->countWorkContactsByCorpIdStateStatus($user['corpIds'][0], $shop, 1);
+        $dataStatistics['total_loss_num'] = $this->workContactService->countWorkContactsByCorpIdStateStatus($user['corpIds'][0], $shop, 2);
         return [$dataStatistics];
     }
 }

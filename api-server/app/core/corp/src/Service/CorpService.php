@@ -33,6 +33,19 @@ class CorpService extends AbstractService implements CorpContract
     }
 
     /**
+     * 查询单条 - 根据ID.
+     * @param string $wxCorpId 企业微信ID
+     * @param array|string[] $columns 查询字段
+     * @return array 数组
+     */
+    public function getCorpByWxCorpId(string $wxCorpId, array $columns = ['*']): array
+    {
+        $data = $this->model::query()->where('wx_corpid', $wxCorpId)->first();
+        $data || $data = collect([]);
+        return $data->toArray();
+    }
+
+    /**
      * 查询多条 - 根据ID.
      * @param array $ids ID
      * @param array|string[] $columns 查询字段

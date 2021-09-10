@@ -106,25 +106,25 @@ class IndexLogic
      */
     public function handle($params)
     {
-        $res    = $this->roomSopService->getRoomSopByCorpId([$params['corpId']]);
+        $res = $this->roomSopService->getRoomSopByCorpId([$params['corpId']]);
         $result = [];
         foreach ($res as $re) {
-            $employees   = $this->workRoomService->getWorkRoomsById(json_decode($re['roomIds']));
+            $employees = $this->workRoomService->getWorkRoomsById(json_decode($re['roomIds']));
             $employeeArr = [];
             foreach ($employees as $employee) {
                 $employeeArr[] = [
-                    'id'       => $employee['id'],
+                    'id' => $employee['id'],
                     'wxUserId' => $employee['wxChatId'],
-                    'name'     => $employee['name'],
+                    'name' => $employee['name'],
                 ];
             }
             $result[] = [
-                'id'          => $re['id'],
-                'name'        => $re['name'],
+                'id' => $re['id'],
+                'name' => $re['name'],
                 'creatorName' => $this->userService->getUserById($re['creatorId'])['name'],
-                'rooms'       => $employeeArr,
-                'createTime'  => $re['createdAt'],
-                'state'       => $re['state'],
+                'rooms' => $employeeArr,
+                'createTime' => $re['createdAt'],
+                'state' => $re['state'],
             ];
         }
         return $result;

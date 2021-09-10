@@ -12,15 +12,15 @@ namespace MoChat\App\WorkDepartment\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\WorkDepartment\Contract\WorkDepartmentContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeDepartmentContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 成员部门管理-根据手机号匹配成员部门下拉列表.
@@ -65,14 +65,15 @@ class SelectByPhone extends AbstractAction
         $user = user();
         ## 接收参数
         $phone = $this->request->input('phone');
-        $type  = $this->request->input('type', 1);
+        $type = $this->request->input('type', 1);
 
         ## 根据手机号查询成员通讯录
-        $employeeList = $this->workEmployeeService->getWorkEmployeesByMobile($phone, ['id', 'corp_id']);
+        $corpId = (int) $user['corpIds'][0];
+        $employeeList = $this->workEmployeeService->getWorkEmployeesByMobile($corpId, $phone, ['id', 'corp_id']);
         if (empty($employeeList)) {
             return [];
         }
-        $employeeList  = array_column($employeeList, 'id', 'corpId');
+        $employeeList = array_column($employeeList, 'id', 'corpId');
         $employeeIdArr = ($type == 1) ? array_values($employeeList) : (
             isset($employeeList[$user['corpIds'][0]]) ? [$employeeList[$user['corpIds'][0]]] : []
         );
@@ -89,8 +90,8 @@ class SelectByPhone extends AbstractAction
 
         return empty($departmentList) ? [] : array_map(function ($department) {
             return [
-                'corpId'             => $department['corpId'],
-                'workDepartmentId'   => $department['id'],
+                'corpId' => $department['corpId'],
+                'workDepartmentId' => $department['id'],
                 'workDepartmentName' => $department['name'],
             ];
         }, $departmentList);
@@ -105,7 +106,7 @@ class SelectByPhone extends AbstractAction
     {
         return [
             'phone' => 'required | string | size:11 | bail',
-            'type'  => 'integer | in:1,2, | bail',
+            'type' => 'integer | in:1,2, | bail',
         ];
     }
 
@@ -117,10 +118,10 @@ class SelectByPhone extends AbstractAction
     {
         return [
             'phone.required' => '手机号码 必填',
-            'phone.string'   => '手机号码 必需为字符串',
-            'phone.size'     => '手机号码 字符串长度为固定值：11',
-            'type.integer'   => '数据类型 必需为整数',
-            'type.in'        => '数据类型 值必须在列表内：[1,2]',
+            'phone.string' => '手机号码 必需为字符串',
+            'phone.size' => '手机号码 字符串长度为固定值：11',
+            'type.integer' => '数据类型 必需为整数',
+            'type.in' => '数据类型 值必须在列表内：[1,2]',
         ];
     }
 }

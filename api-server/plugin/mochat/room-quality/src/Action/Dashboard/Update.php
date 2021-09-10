@@ -14,11 +14,11 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
@@ -60,7 +60,7 @@ class Update extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -97,11 +97,11 @@ class Update extends AbstractAction
     protected function rules(): array
     {
         return [
-            'id'                => 'required',
-            'name'              => 'required',
-            'rooms'             => 'required',
-            'quality_type'      => 'required',
-            'rule'              => 'required',
+            'id' => 'required',
+            'name' => 'required',
+            'rooms' => 'required',
+            'quality_type' => 'required',
+            'rule' => 'required',
             'white_list_status' => 'required',
         ];
     }
@@ -113,11 +113,11 @@ class Update extends AbstractAction
     protected function messages(): array
     {
         return [
-            'id.required'                => 'id 必传',
-            'name.required'              => '名称 必传',
-            'rooms.required'             => '群聊 必传',
-            'quality_type.required'      => '质检时间 必传',
-            'rule.required'              => '规则 必传',
+            'id.required' => 'id 必传',
+            'name.required' => '名称 必传',
+            'rooms.required' => '群聊 必传',
+            'quality_type.required' => '质检时间 必传',
+            'rule.required' => '规则 必传',
             'white_list_status.required' => '群聊质检白名单 必传',
         ];
     }
@@ -133,13 +133,13 @@ class Update extends AbstractAction
     {
         ## 基本信息
         return [
-            'name'              => $params['name'],
-            'rooms'             => json_encode($params['rooms'], JSON_THROW_ON_ERROR),
-            'quality_type'      => (int) $params['quality_type'],
-            'work_cycle'        => json_encode($params['work_cycle'], JSON_THROW_ON_ERROR),
-            'rule'              => json_encode($params['rule'], JSON_THROW_ON_ERROR),
+            'name' => $params['name'],
+            'rooms' => json_encode($params['rooms'], JSON_THROW_ON_ERROR),
+            'quality_type' => (int) $params['quality_type'],
+            'work_cycle' => json_encode($params['work_cycle'], JSON_THROW_ON_ERROR),
+            'rule' => json_encode($params['rule'], JSON_THROW_ON_ERROR),
             'white_list_status' => (int) $params['white_list_status'],
-            'keyword'           => (isset($params['keyword']) && ! empty($params['keyword'])) ? implode(',', $params['keyword']) : '',
+            'keyword' => (isset($params['keyword']) && ! empty($params['keyword'])) ? implode(',', $params['keyword']) : '',
         ];
     }
 

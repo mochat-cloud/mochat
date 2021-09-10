@@ -54,7 +54,7 @@
       <div class="item">
         <span class="label required">活动结束时间：</span>
         <div class="input">
-          <a-date-picker v-model="form.endTime" placeholder="请选择结束时间" format="YYYY-MM-DD hh:ss"/>
+          <a-date-picker v-model="form.endTime" placeholder="请选择结束时间" format="YYYY-MM-DD HH:ss" valueFormat="YYYY-MM-DD HH:ss"/>
         </div>
       </div>
       <div class="item">
@@ -259,13 +259,16 @@ export default {
       if (!this.form.services.length) return '客户成员未选择'
       if (!this.form.endTime) return '结束时间未填写'
       if (!this.form.expireDay && this.radio.qrcodeTime.value === '1') return '二维码有效期未填写'
-
-      for (const v of this.taskTable.data) {
-        if (!v.count) {
+      for (let i = 0; i < this.taskTable.data.length; i++) {
+        if (!this.taskTable.data[i].count) {
           return '任务目标人数未填写'
         }
+        if (i < this.taskTable.data.length - 1) {
+          if (parseInt(this.taskTable.data[i].count) > parseInt(this.taskTable.data[i + 1].count)) {
+            return '后续的裂变任务人数不能比前面人数少'
+          }
+        }
       }
-
       if (this.radio.rewardMethod.value === '1') {
         for (const v of this.taskTable.data) {
           if (!v.prizeLink) {
@@ -276,20 +279,17 @@ export default {
         if (!this.form.receivePrizeServices.length) return '领奖客服未选择'
       }
     },
-
     getFormData () {
       const params = {
         ...this.form,
         tasks: this.taskTable.data,
         receivePrizeType: this.radio.rewardMethod.value
       }
-
       if (this.radio.rewardMethod.value === '1') {
         params.receivePrizeLinks = this.taskTable.data.map(v => {
           return v.prizeLink
         })
       }
-
       return params
     },
 

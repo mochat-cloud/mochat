@@ -80,14 +80,14 @@ class IndexLogic
         $where = [];
         ## 企业
         $corpIds = isset($user['corpIds']) ? $user['corpIds'] : [];
-        $where[] = ['corp_id', 'IN', $corpIds];
+        $where[] = ['corp_id', '=', $corpIds[0]];
         ## 数据权限-群主
         $ownerIdArr = empty($params['workRoomOwnerId']) ? [] : explode(',', $params['workRoomOwnerId']);
         if ($user['dataPermission'] == 0) {
             empty($ownerIdArr) || $where[] = ['owner_id', 'IN', $ownerIdArr];
         } else {
             $ownerIdArr = empty($ownerIdArr) ? $user['deptEmployeeIds'] : array_intersect($ownerIdArr, $user['deptEmployeeIds']);
-            $where[]    = ['owner_id', 'IN', $ownerIdArr];
+            $where[] = ['owner_id', 'IN', $ownerIdArr];
         }
         ## 客户群分组
         ! is_numeric($params['roomGroupId']) || $where['room_group_id'] = $params['roomGroupId'];
@@ -102,13 +102,13 @@ class IndexLogic
 
         ## 分页信息
         $options = [
-            'page'       => $params['page'],
-            'perPage'    => $params['perPage'],
+            'page' => $params['page'],
+            'perPage' => $params['perPage'],
             'orderByRaw' => 'create_time desc',
         ];
 
         return $data = [
-            'where'   => $where,
+            'where' => $where,
             'options' => $options,
         ];
     }
@@ -124,8 +124,8 @@ class IndexLogic
         ## 组织响应数据
         $data = [
             'page' => [
-                'perPage'   => $params['options']['perPage'],
-                'total'     => 0,
+                'perPage' => $params['options']['perPage'],
+                'total' => 0,
                 'totalPage' => 0,
             ],
             'list' => [],
@@ -134,7 +134,7 @@ class IndexLogic
         if (empty($rooms['data'])) {
             return $data;
         }
-        $data['page']['total']     = $rooms['total'];
+        $data['page']['total'] = $rooms['total'];
         $data['page']['totalPage'] = $rooms['last_page'];
         ## 群主信息-群主名称-所属公司名称
         $ownerIdArr = array_unique(array_column($rooms['data'], 'ownerId'));
@@ -160,8 +160,8 @@ class IndexLogic
         $list = [];
         foreach ($rooms['data'] as $room) {
             ## 群主信息
-            $owner     = isset($ownerList[$room['ownerId']]) ? $ownerList[$room['ownerId']] : [];
-            $corp      = (! empty($owner) && isset($corpList[$owner['corpId']])) ? $corpList[$owner['corpId']] : '';
+            $owner = isset($ownerList[$room['ownerId']]) ? $ownerList[$room['ownerId']] : [];
+            $corp = (! empty($owner) && isset($corpList[$owner['corpId']])) ? $corpList[$owner['corpId']] : '';
             $ownerName = (! empty($owner['name']) && ! empty($corp)) ? $corp . '-' . $owner['name'] : (! empty($owner['name']) ? $owner['name'] : '');
             ## 群成员数量统计
             $workContactRoomList = $this->workContactRoomService->getWorkContactRoomsByRoomId((int) $room['id'], ['id', 'join_time', 'status', 'out_time']);
@@ -183,15 +183,15 @@ class IndexLogic
 
             $list[] = [
                 'workRoomId' => $room['id'],
-                'memberNum'  => $memberNum,
-                'roomName'   => $room['name'],
-                'ownerName'  => $ownerName,
-                'roomGroup'  => isset($roomGroupList[$room['roomGroupId']]) ? $roomGroupList[$room['roomGroupId']] : '',
-                'status'     => $room['status'],
+                'memberNum' => $memberNum,
+                'roomName' => $room['name'],
+                'ownerName' => $ownerName,
+                'roomGroup' => isset($roomGroupList[$room['roomGroupId']]) ? $roomGroupList[$room['roomGroupId']] : '',
+                'status' => $room['status'],
                 'statusText' => WorkRoomStatus::getMessage($room['status']),
-                'inRoomNum'  => $inRoomNum,
+                'inRoomNum' => $inRoomNum,
                 'outRoomNum' => $outRoomNum,
-                'notice'     => $room['notice'],
+                'notice' => $room['notice'],
                 'createTime' => $room['createTime'],
             ];
         }

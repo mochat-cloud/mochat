@@ -13,18 +13,12 @@ namespace MoChat\Plugin\ContactMessageBatchSend\Logic;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
-use MoChat\App\WorkContact\Contract\WorkContactContract;
-use MoChat\App\WorkContact\Contract\WorkContactEmployeeContract;
-use MoChat\App\WorkContact\Contract\WorkContactRoomContract;
 use MoChat\App\WorkContact\Contract\WorkContactTagContract;
-use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\App\WorkRoom\Contract\WorkRoomContract;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
 use MoChat\Plugin\ContactMessageBatchSend\Contract\ContactMessageBatchSendContract;
-use MoChat\Plugin\ContactMessageBatchSend\Contract\ContactMessageBatchSendEmployeeContract;
-use MoChat\Plugin\ContactMessageBatchSend\Contract\ContactMessageBatchSendResultContract;
-use MoChat\Plugin\ContactMessageBatchSend\QueueService\StoreApply;
+use MoChat\Plugin\ContactMessageBatchSend\Queue\ContactMessageBatchSendQueue;
 
 class StoreLogic
 {
@@ -36,52 +30,21 @@ class StoreLogic
 
     /**
      * @Inject
-     * @var ContactMessageBatchSendEmployeeContract
+     * @var ContactMessageBatchSendQueue
      */
-    private $contactMessageBatchSendEmployee;
-
-    /**
-     * @Inject
-     * @var ContactMessageBatchSendResultContract
-     */
-    private $contactMessageBatchSendResult;
-
-    /**
-     * @Inject
-     * @var WorkEmployeeContract
-     */
-    private $workEmployee;
-
-    /**
-     * 客户.
-     * @Inject
-     * @var WorkContactContract
-     */
-    private $workContact;
-
-    /**
-     * @Inject
-     * @var WorkContactEmployeeContract
-     */
-    private $workContactEmployee;
+    private $contactMessageBatchSendQueue;
 
     /**
      * @Inject
      * @var WorkRoomContract
      */
-    private $workRoom;
-
-    /**
-     * @Inject
-     * @var WorkContactRoomContract
-     */
-    private $workContactRoom;
+    private $workRoomService;
 
     /**
      * @Inject
      * @var WorkContactTagContract
      */
-    private $workContactTag;
+    private $workContactTagService;
 
     /**
      * @Inject
@@ -95,23 +58,15 @@ class StoreLogic
      */
     public function handle(array $params, array $user): bool
     {
-        $corpId      = $user['corpIds'][0];
-        $employeeIds = (array) $params['employeeIds'];
-
-        ## 获取用户成员
-        $employees = $this->workEmployee->getWorkEmployeesByIdCorpIdStatus($corpId, $employeeIds, 1, ['id', 'wx_user_id']);
-        if (count($employees) !== count($employeeIds)) {
-            throw new CommonException(ErrorCode::INVALID_PARAMS);
-        }
-
+        $corpId = $user['corpIds'][0];
         $filterParams = empty($params['filterParams']) ? [] : (array) $params['filterParams'];
 
         $filterParamsDetail = [
-            'gender'          => $filterParams['gender'] ?? '',
-            'addTimeStart'    => $filterParams['addTimeStart'] ?? '',
-            'addTimeEnd'      => $filterParams['addTimeEnd'] ?? '',
-            'rooms'           => [],
-            'tags'            => [],
+            'gender' => $filterParams['gender'] ?? '',
+            'addTimeStart' => $filterParams['addTimeStart'] ?? '',
+            'addTimeEnd' => $filterParams['addTimeEnd'] ?? '',
+            'rooms' => [],
+            'tags' => [],
             'excludeContacts' => [],
         ];
 
@@ -128,68 +83,38 @@ class StoreLogic
         }
 
         if (! empty($filterParams['rooms'])) {
-            $filterParamsDetail['rooms'] = $this->workRoom->getWorkRoomsById($filterParams['rooms'], ['id', 'name']);
+            $filterParamsDetail['rooms'] = $this->workRoomService->getWorkRoomsById($filterParams['rooms'], ['id', 'name']);
         }
+
         if (! empty($filterParams['tags'])) {
-            $filterParamsDetail['tags'] = $this->workContactTag->getWorkContactTagsById($filterParams['tags'], ['id', 'name']);
-        }
-        if (! empty($filterParams['excludeContacts'])) {
-            $filterParamsDetail['excludeContacts'] = $this->workContact->getWorkContactsById($filterParams['excludeContacts'], ['id', 'name']);
+            $filterParamsDetail['tags'] = $this->workContactTagService->getWorkContactTagsById($filterParams['tags'], ['id', 'name']);
         }
 
         ## 入库
         Db::beginTransaction();
         try {
             $batchContent = $params['content'];
-            $batchId      = $this->contactMessageBatchSend->createContactMessageBatchSend([
-                'corp_id'              => $corpId,
-                'user_id'              => $user['id'],
-                'user_name'            => $user['name'] ?: $user['phone'],
-                'filter_params'        => json_encode($filterParams, JSON_UNESCAPED_UNICODE),
+            $employeeIds = ! empty($params['employeeIds']) ? json_encode($params['employeeIds'], JSON_UNESCAPED_UNICODE) : '[]';
+            $batchId = $this->contactMessageBatchSend->createContactMessageBatchSend([
+                'corp_id' => $corpId,
+                'user_id' => $user['id'],
+                'user_name' => $user['name'] ?: $user['phone'],
+                'employee_ids' => $employeeIds,
+                'filter_params' => json_encode($filterParams, JSON_UNESCAPED_UNICODE),
                 'filter_params_detail' => json_encode($filterParamsDetail, JSON_UNESCAPED_UNICODE),
-                'content'              => json_encode($batchContent, JSON_UNESCAPED_UNICODE),
-                'send_way'             => $params['sendWay'],
-                'definite_time'        => $params['definiteTime'],
-                'created_at'           => date('Y-m-d H:i:s'),
+                'content' => json_encode($batchContent, JSON_UNESCAPED_UNICODE),
+                'send_way' => $params['sendWay'],
+                'definite_time' => $params['definiteTime'],
+                'created_at' => date('Y-m-d H:i:s'),
             ]);
 
-            $employeeTotal = 0;
-            $contactTotal  = 0;
-            foreach ($employees as $employee) {
-                ++$employeeTotal;
-                ## 获取成员客户
-                $contacts = $this->getWorkContactsByEmployeeFilterParams($employee['id'], $filterParams);
-                $contactTotal += count($contacts);
-                ## 扩展多条消息
-                foreach ($batchContent as $content) {
-                    ## 客户
-                    $contactTotal = 0;
-                    foreach ($contacts as $contact) {
-                        $this->contactMessageBatchSendResult->createContactMessageBatchSendResult([
-                            'batch_id'         => $batchId,
-                            'employee_id'      => $employee['id'],
-                            'contact_id'       => $contact['id'],
-                            'external_user_id' => $contact['wxExternalUserid'],
-                            'created_at'       => date('Y-m-d H:i:s'),
-                        ]);
-                        ++$contactTotal;
-                    }
-                    ## 成员
-                    $this->contactMessageBatchSendEmployee->createContactMessageBatchSendEmployee([
-                        'batch_id'           => $batchId,
-                        'employee_id'        => $employee['id'],
-                        'wx_user_id'         => $employee['wxUserId'],
-                        'send_contact_total' => $contactTotal,
-                        'content'            => json_encode($content, JSON_UNESCAPED_UNICODE),
-                        'created_at'         => date('Y-m-d H:i:s'),
-                        'last_sync_time'     => date('Y-m-d H:i:s'),
-                    ]);
-                }
+            $delay = 0;
+            if ((int) $params['sendWay'] === 2) {
+                $delay = strtotime($params['definiteTime']) - time();
+                $delay = $delay < 0 ? 0 : $delay;
             }
-            $this->contactMessageBatchSend->updateContactMessageBatchSendById($batchId, [
-                'sendEmployeeTotal' => $employeeTotal,
-                'sendContactTotal'  => $contactTotal,
-            ]);
+
+            $this->contactMessageBatchSendQueue->push(['batchId' => $batchId], $delay);
             Db::commit();
         } catch (\Throwable $e) {
             Db::rollBack();
@@ -197,46 +122,6 @@ class StoreLogic
             $this->logger->error($e->getTraceAsString());
             throw new CommonException(ErrorCode::SERVER_ERROR, '客户消息创建失败');
         }
-
-        if ($params['sendWay'] == 1) {
-            make(StoreApply::class)->handle($batchId);
-        }
-
         return true;
-    }
-
-    /**
-     * 获取过滤后的多条
-     * @param array $params 过滤参数
-     * @return array 响应数组
-     */
-    protected function getWorkContactsByEmployeeFilterParams(int $employeeId, array $params)
-    {
-        $gender          = $params['gender'] ?? null;
-        $rooms           = $params['rooms'] ?? [];
-        $addTimeStart    = $params['addTimeStart'] ?? null;
-        $addTimeEnd      = $params['addTimeEnd'] ?? null;
-        $tags            = $params['tags'] ?? [];
-        $excludeContacts = $params['excludeContacts'] ?? [];
-
-        ## 查询条件
-        $where = [];
-        if ($gender !== null) {
-            $where[] = ['gender', '=', $gender];
-        }
-
-        ## 获取成员所有客户
-        $contactIds = $this->workContactEmployee->getWorkContactEmployeeContactIdsByEmployeeId($employeeId, $addTimeStart, $addTimeEnd);
-
-        if (! empty($excludeContacts)) {
-            $contactIds = array_diff($contactIds, (array) $excludeContacts);
-        }
-
-        if (! empty($rooms)) {
-            $roomContactIds = $this->workContactRoom->getWorkContactRoomsContactIdsByRoomIds((array) $rooms);
-            $contactIds     = array_intersect($contactIds, $roomContactIds);
-        }
-
-        return $this->workContact->getWorkContactsByIdsTagIds($contactIds, (array) $tags);
     }
 }

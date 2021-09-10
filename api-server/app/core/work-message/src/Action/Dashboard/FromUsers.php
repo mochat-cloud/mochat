@@ -12,14 +12,14 @@ namespace MoChat\App\WorkMessage\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\User\Logic\Traits\UserTrait;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\App\WorkMessage\Contract\WorkMessageIndexContract;
 use MoChat\Framework\Action\AbstractAction;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * @Controller
@@ -50,7 +50,7 @@ class FromUsers extends AbstractAction
     {
         ## 请求参数.验证
         $corpId = $this->corpId();
-        $name   = $this->request->query('name', '');
+        $name = $this->request->query('name', '');
 
         ## 已经存在的聊天员工
         $msgIndex = $this->workMsgIndexService->getWorkMessageIndicesUniqueColumns($corpId, ['from_id']);

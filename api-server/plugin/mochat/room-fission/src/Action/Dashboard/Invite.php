@@ -8,18 +8,17 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
-
 namespace MoChat\Plugin\RoomFission\Action\Dashboard;
 
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
+use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\Utils\Codec\Json;
 use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
-use Hyperf\HttpServer\Annotation\RequestMapping;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Corp\Logic\AppTrait;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
@@ -117,21 +116,21 @@ class Invite extends AbstractAction
      *     @Middleware(PermissionMiddleware::class)
      * })
      * @RequestMapping(path="/dashboard/roomFission/invite", methods="post")
-     * @return array 返回数组
      * @throws \Exception
+     * @return array 返回数组
      */
     public function handle(): array
     {
         $user = user();
         ## 判断用户绑定企业信息
-        if (!isset($user['corpIds']) || count($user['corpIds']) !== 1) {
+        if (! isset($user['corpIds']) || count($user['corpIds']) !== 1) {
             throw new CommonException(ErrorCode::INVALID_PARAMS, '未选择登录企业，不可操作');
         }
         ## 参数验证
         $params = $this->request->all();
         ## 处理参数
         $data = $this->handleParam($user, $params);
-        return $this->handleInvite((int)$params['id'], $data);
+        return $this->handleInvite((int) $params['id'], $data);
     }
 
     /**
@@ -157,18 +156,18 @@ class Invite extends AbstractAction
      * 处理参数.
      * @param array $user 用户信息
      * @param array $params 接受参数
-     * @return array 响应数组
      * @throws \Exception
+     * @return array 响应数组
      */
     private function handleParam(array $user, array $params): array
     {
         ##邀请客户
-        if (!empty($params['link_pic'])) {
+        if (! empty($params['link_pic'])) {
             $params['link_pic'] = File::uploadBase64Image($params['link_pic'], 'image/roomFission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg');
         }
 
         $data = [
-            'type' => (int)$params['type'],
+            'type' => (int) $params['type'],
             'employees' => empty($params['employees']) ? '{}' : json_encode($params['employees'], JSON_THROW_ON_ERROR),
             'choose_contact' => empty($params['choose_contact']) ? '{}' : json_encode($params['choose_contact'], JSON_THROW_ON_ERROR),
             'text' => $params['text'],
@@ -180,15 +179,15 @@ class Invite extends AbstractAction
         ];
 
         ## 发送微信邀请
-        if ((int)$params['type'] === 1) {
+        if ((int) $params['type'] === 1) {
             ##EasyWeChat添加企业群发消息模板.
             $wx = $this->wxApp($user['corpIds'][0], 'contact')->external_contact_message;
             foreach ($params['employees'] as $employeeId) {
                 $contact = $this->workContactService->getWorkContactsBySearch($user['corpIds'][0], [$employeeId], $params['choose_contact']);
-                $employee = $this->workEmployeeService->getWorkEmployeeById((int)$employeeId, ['wx_user_id']);
+                $employee = $this->workEmployeeService->getWorkEmployeeById((int) $employeeId, ['wx_user_id']);
 
                 $easyWeChatParams['text']['content'] = $data['text'];
-                $easyWeChatParams['link'] = ['title' => $data['link_title'], 'picurl' => $data['link_pic'], 'desc' => $data['link_desc'], 'url' => Url::getAuthRedirectUrl(8, (int)$params['id'], [
+                $easyWeChatParams['link'] = ['title' => $data['link_title'], 'picurl' => $data['link_pic'], 'desc' => $data['link_desc'], 'url' => Url::getAuthRedirectUrl(8, (int) $params['id'], [
                     'parent_union_id' => '',
                     'wx_user_id' => $employee['wxUserId'],
                 ])];

@@ -10,8 +10,8 @@ declare(strict_types=1);
  */
 namespace MoChat\App\WorkAgent\QueueService;
 
-use MoChat\App\WorkAgent\Logic\MessageSendLogic;
 use Hyperf\AsyncQueue\Annotation\AsyncQueueMessage;
+use MoChat\App\WorkAgent\Logic\MessageSendLogic;
 
 /**
  * 消息提醒发送
@@ -23,9 +23,9 @@ class MessageRemind
      * 发送提醒给员工
      *
      * @param int|string $corpId 企业id
-     * @param string|array $to 接收方
+     * @param array|string $to 接收方
      * @param string $msgType 消息类型
-     * @param string|array $content 消息内容
+     * @param array|string $content 消息内容
      * @param array $extra 扩展选项
      *
      * @return array
@@ -40,9 +40,9 @@ class MessageRemind
      * 发送提醒给部门
      *
      * @param int|string $corpId 企业id
-     * @param string|array $to 接收方
+     * @param array|string $to 接收方
      * @param string $msgType 消息类型
-     * @param string|array $content 消息内容
+     * @param array|string $content 消息内容
      * @param array $extra 扩展选项
      *
      * @return array
@@ -57,9 +57,9 @@ class MessageRemind
      * 发送提醒给指定标签人员
      *
      * @param int|string $corpId 企业id
-     * @param string|array $to 接收方
+     * @param array|string $to 接收方
      * @param string $msgType 消息类型
-     * @param string|array $content 消息内容
+     * @param array|string $content 消息内容
      * @param array $extra 扩展选项
      *
      * @return array
@@ -70,13 +70,13 @@ class MessageRemind
     }
 
     /**
-     * 发送提醒
+     * 发送提醒.
      *
      * @param int|string $corpId 企业id
      * @param string $toType 接收方类型
-     * @param string|array $to 接收方
+     * @param array|string $to 接收方
      * @param string $msgType 消息类型
-     * @param string|array $content 消息内容
+     * @param array|string $content 消息内容
      * @param array $extra 扩展选项
      *
      * @return array
@@ -92,9 +92,9 @@ class MessageRemind
 
         if ($toType == 'user') {
             $params['toUser'] = $to;
-        } else if ($toType == 'party') {
+        } elseif ($toType == 'party') {
             $params['toParty'] = $to;
-        } else if ($toType == 'tag') {
+        } elseif ($toType == 'tag') {
             $params['toTag'] = $to;
         }
 

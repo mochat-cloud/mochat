@@ -13,11 +13,11 @@ namespace MoChat\Plugin\ShopCode\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\Framework\Action\AbstractAction;
@@ -66,7 +66,7 @@ class Info extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -90,7 +90,7 @@ class Info extends AbstractAction
         $params = $this->request->all();
         $this->validated($params);
         ## 详情
-        $info             = $this->shopCodeService->getShopCodeById((int) $params['id'], ['name', 'type', 'employee', 'qw_code', 'search_keyword', 'address', 'country', 'province', 'city', 'district', 'lat', 'lng', 'status']);
+        $info = $this->shopCodeService->getShopCodeById((int) $params['id'], ['name', 'type', 'employee', 'qw_code', 'search_keyword', 'address', 'country', 'province', 'city', 'district', 'lat', 'lng', 'status']);
         $info['employee'] = json_decode($info['employee'], true, 512, JSON_THROW_ON_ERROR);
         if ($info['type'] === 2 || $info['type'] === 3) {
             $info['qwCode'] = json_decode($info['qwCode'], true, 512, JSON_THROW_ON_ERROR);

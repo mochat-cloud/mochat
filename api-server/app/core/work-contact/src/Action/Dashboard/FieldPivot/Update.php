@@ -12,13 +12,13 @@ namespace MoChat\App\WorkContact\Action\Dashboard\FieldPivot;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\WorkContact\Logic\FieldPivot\UpdateLogic;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 客户详情 - 编辑用户画像.
@@ -47,7 +47,7 @@ class Update extends AbstractAction
     {
         //接收参数
         $params['userPortrait'] = $this->request->input('userPortrait');
-        $params['contactId']    = $this->request->input('contactId');
+        $params['contactId'] = $this->request->input('contactId');
 
         //校验参数
         $this->validated($params);
@@ -61,7 +61,7 @@ class Update extends AbstractAction
     public function rules(): array
     {
         return [
-            'contactId'    => 'required',
+            'contactId' => 'required',
             'userPortrait' => 'required',
         ];
     }
@@ -72,7 +72,7 @@ class Update extends AbstractAction
     public function messages(): array
     {
         return [
-            'contactId.required'    => '客户id必传',
+            'contactId.required' => '客户id必传',
             'userPortrait.required' => '修改内容必传',
         ];
     }

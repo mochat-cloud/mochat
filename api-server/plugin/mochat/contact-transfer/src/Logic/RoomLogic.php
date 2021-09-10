@@ -98,18 +98,18 @@ class RoomLogic
             $employee = $this->workEmployeeService->getWorkEmployeeByWxUserId($userWxId);
             $roomList = $this->workRoomService->getWorkRoomsByCorpIdOwnerIds($params['corpId'], [
                 'employees' => [$employee['id']],
-                'name'      => $params['roomName'],
+                'name' => $params['roomName'],
             ]);
 
             foreach ($roomList as $item) {
                 $res[] = [
-                    'roomId'     => $item['id'],
-                    'chatId'     => $item['wxChatId'],
-                    'roomName'   => $item['name'],
-                    'owner'      => $employee['name'],
-                    'userNum'    => $this->workContactRoomService->countWorkContactRoomsByRoomIdContact($item['id']),
-                    'addNum'     => $this->workContactRoomService->countAddWorkContactRoomsByRoomIdTime([$item['id']], date('Y-m-d', time()), date('Y-m-d', time() + 86400)),
-                    'quitNum'    => $this->workContactRoomService->countQuitWorkContactRoomsByRoomIdTime([$item['id']], date('Y-m-d', time()), date('Y-m-d', time() + 86400)),
+                    'roomId' => $item['id'],
+                    'chatId' => $item['wxChatId'],
+                    'roomName' => $item['name'],
+                    'owner' => $employee['name'],
+                    'userNum' => $this->workContactRoomService->countWorkContactRoomsByRoomIdContact($item['id']),
+                    'addNum' => $this->workContactRoomService->countAddWorkContactRoomsByRoomIdTime([$item['id']], date('Y-m-d', time()), date('Y-m-d', time() + 86400)),
+                    'quitNum' => $this->workContactRoomService->countQuitWorkContactRoomsByRoomIdTime([$item['id']], date('Y-m-d', time()), date('Y-m-d', time() + 86400)),
                     'createTime' => $item['createdAt'],
                 ];
             }

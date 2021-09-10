@@ -75,7 +75,7 @@ class ShowEmployeeLogic
     private function handleParams(array $user, array $params): array
     {
         ## 列表查询条件
-        $this->corpId     = $user['corpIds'][0];
+        $this->corpId = $user['corpIds'][0];
         $where['corp_id'] = $this->corpId;
 
         ## 根据部门id搜索
@@ -87,13 +87,13 @@ class ShowEmployeeLogic
 
         ## 分页信息
         $options = [
-            'page'       => $params['page'],
-            'perPage'    => $params['perPage'],
+            'page' => $params['page'],
+            'perPage' => $params['perPage'],
             'orderByRaw' => 'updated_at desc',
         ];
 
         return $data = [
-            'where'   => $where,
+            'where' => $where,
             'options' => $options,
         ];
     }
@@ -106,14 +106,14 @@ class ShowEmployeeLogic
     private function getUserDepartment(array $params): array
     {
         ## 分页查询成员表数据表
-        $columns      = ['id', 'log_user_id', 'name', 'mobile'];
+        $columns = ['id', 'log_user_id', 'name', 'mobile'];
         $employeeList = $this->workEmployeeService->getWorkEmployeeList($params['where'], $columns, $params['options']);
 
         ## 组织响应数据
         $data = [
             'page' => [
-                'perPage'   => $params['options']['perPage'],
-                'total'     => 0,
+                'perPage' => $params['options']['perPage'],
+                'total' => 0,
                 'totalPage' => 0,
             ],
             'list' => [],
@@ -132,17 +132,17 @@ class ShowEmployeeLogic
     private function handleData(array $data, array $employeeList): array
     {
         ## 分页数据
-        $data['page']['total']     = $employeeList['total'];
+        $data['page']['total'] = $employeeList['total'];
         $data['page']['totalPage'] = $employeeList['last_page'];
 
         ## 数据处理
         $data['list'] = array_map(function ($val) {
             $role = $this->getRoleNameByUserId($val['logUserId']);
             return [
-                'employeeId'   => $val['id'],
+                'employeeId' => $val['id'],
                 'employeeName' => $val['name'],
-                'phone'        => $val['mobile'],
-                'roleName'     => ! empty($role) ? $role['name'] : '',
+                'phone' => $val['mobile'],
+                'roleName' => ! empty($role) ? $role['name'] : '',
             ];
         }, $employeeList['data']);
 
@@ -179,7 +179,7 @@ class ShowEmployeeLogic
      */
     private function getEmployeesByDepartmentId(int $departmentId): array
     {
-        $columns  = ['employee_id'];
+        $columns = ['employee_id'];
         $employee = $this->workEmployeeDepartmentService->getWorkEmployeeDepartmentsByDepartmentIds([$departmentId], $columns);
         return ! empty($employee) ? array_column($employee, 'employeeId') : [];
     }

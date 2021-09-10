@@ -41,7 +41,7 @@ class Receive extends AbstractAction
 
     public function __construct(RequestInterface $request, ClockInContactContract $clockInContactService)
     {
-        $this->request               = $request;
+        $this->request = $request;
         $this->clockInContactService = $clockInContactService;
     }
 
@@ -66,9 +66,9 @@ class Receive extends AbstractAction
     protected function rules(): array
     {
         return [
-            'id'       => 'required | integer | min:0 | bail',
+            'id' => 'required | integer | min:0 | bail',
             'union_id' => 'required',
-            'level'    => 'required',
+            'level' => 'required',
         ];
     }
 
@@ -79,11 +79,11 @@ class Receive extends AbstractAction
     protected function messages(): array
     {
         return [
-            'id.required'       => '活动ID 必填',
-            'id.integer'        => '活动ID 必需为整数',
-            'id.min  '          => '活动ID 不可小于1',
+            'id.required' => '活动ID 必填',
+            'id.integer' => '活动ID 必需为整数',
+            'id.min  ' => '活动ID 不可小于1',
             'union_id.required' => 'union_id 必填',
-            'level.required'    => 'level 必填',
+            'level.required' => 'level 必填',
         ];
     }
 

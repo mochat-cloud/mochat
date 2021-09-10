@@ -8,42 +8,40 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
-
 namespace MoChat\App\Corp\QueueService;
 
+use Hyperf\AsyncQueue\Annotation\AsyncQueueMessage;
+use MoChat\App\WorkContact\Event\AddContactRawEvent;
+use MoChat\App\WorkContact\Event\AddHalfContactRawEvent;
+use MoChat\App\WorkContact\Event\DeleteContactRawEvent;
+use MoChat\App\WorkContact\Event\Employee\DeleteFollowEmployeeRawEvent;
+use MoChat\App\WorkContact\Event\Tag\CreateTagRawEvent;
+use MoChat\App\WorkContact\Event\Tag\DeleteTagRawEvent;
+use MoChat\App\WorkContact\Event\Tag\ShuffleTagRawEvent;
+use MoChat\App\WorkContact\Event\Tag\UpdateContactTagRawEvent;
+use MoChat\App\WorkContact\Event\Tag\UpdateTagRawEvent;
+use MoChat\App\WorkContact\Event\TransferFailRawEvent;
+use MoChat\App\WorkContact\Event\UpdateContactRawEvent;
 use MoChat\App\WorkDepartment\Event\CreateDepartmentRawEvent;
 use MoChat\App\WorkDepartment\Event\DeleteDepartmentRawEvent;
 use MoChat\App\WorkDepartment\Event\UpdateDepartmentRawEvent;
+use MoChat\App\WorkEmployee\Event\CreateEmployeeRawEvent;
 use MoChat\App\WorkEmployee\Event\DeleteEmployeeRawEvent;
+use MoChat\App\WorkEmployee\Event\UpdateEmployeeRawEvent;
 use MoChat\App\WorkMessage\Event\MessageArchiveRawEvent;
 use MoChat\App\WorkMessage\Event\MessageNotifyRawEvent;
-use Psr\EventDispatcher\EventDispatcherInterface;
-use Hyperf\AsyncQueue\Annotation\AsyncQueueMessage;
-use MoChat\App\WorkEmployee\Event\CreateEmployeeRawEvent;
-use MoChat\App\WorkEmployee\Event\UpdateEmployeeRawEvent;
 use MoChat\App\WorkRoom\Event\CreateRoomRawEvent;
 use MoChat\App\WorkRoom\Event\DismissRoomRawEvent;
 use MoChat\App\WorkRoom\Event\UpdateRoomRawEvent;
-use MoChat\App\WorkContact\Event\AddContactRawEvent;
-use MoChat\App\WorkContact\Event\UpdateContactRawEvent;
-use MoChat\App\WorkContact\Event\AddHalfContactRawEvent;
-use MoChat\App\WorkContact\Event\Tag\CreateTagRawEvent;
-use MoChat\App\WorkContact\Event\DeleteContactRawEvent;
-use MoChat\App\WorkContact\Event\Employee\DeleteFollowEmployeeRawEvent;
-use MoChat\App\WorkContact\Event\Tag\DeleteTagRawEvent;
-use MoChat\App\WorkContact\Event\Tag\ShuffleTagRawEvent;
-use MoChat\App\WorkContact\Event\TransferFailRawEvent;
-use MoChat\App\WorkContact\Event\Tag\UpdateContactTagRawEvent;
-use MoChat\App\WorkContact\Event\Tag\UpdateTagRawEvent;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
- * 企业微信回调队列
+ * 企业微信回调队列.
  */
 class WeWorkCallback
 {
     /**
      * @AsyncQueueMessage(pool="callback")
-     * @param array $message
      */
     public function handle(array $message)
     {
@@ -86,7 +84,7 @@ class WeWorkCallback
             'event.change_contact.delete_party' => DeleteDepartmentRawEvent::class,
             'event.change_contact.update_tag' => UpdateContactTagRawEvent::class,
             'event.conversation_archive' => MessageArchiveRawEvent::class,
-            'event.msgaudit_notify' => MessageNotifyRawEvent::class
+            'event.msgaudit_notify' => MessageNotifyRawEvent::class,
         ];
     }
 }

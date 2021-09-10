@@ -14,11 +14,11 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
@@ -69,7 +69,7 @@ class UpdateEmployee extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -104,7 +104,7 @@ class UpdateEmployee extends AbstractAction
     protected function rules(): array
     {
         return [
-            'id'       => 'required',
+            'id' => 'required',
             'employee' => 'required',
         ];
     }
@@ -116,7 +116,7 @@ class UpdateEmployee extends AbstractAction
     protected function messages(): array
     {
         return [
-            'id.required'       => 'id 必传',
+            'id.required' => 'id 必传',
             'employee.required' => '店主 必传',
         ];
     }
@@ -132,7 +132,7 @@ class UpdateEmployee extends AbstractAction
         Db::beginTransaction();
         try {
             ## 创建活动
-            $id       = $this->shopCodeService->updateShopCodeById((int) $params['id'], ['employee' => json_encode($params['employee'], JSON_THROW_ON_ERROR)]);
+            $id = $this->shopCodeService->updateShopCodeById((int) $params['id'], ['employee' => json_encode($params['employee'], JSON_THROW_ON_ERROR)]);
             $employee = $params['employee'];
             $this->handleQrcode($user, $employee['wxUserId'], $id);
 

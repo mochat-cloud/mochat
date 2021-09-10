@@ -91,7 +91,7 @@ class UpdateLogic
             ## 创建活动
             foreach ($params as $key => $val) {
                 $val['room_calendar_id'] = $id;
-                $val['push_content']     = json_encode($val['push_content'], JSON_THROW_ON_ERROR);
+                $val['push_content'] = json_encode($val['push_content'], JSON_THROW_ON_ERROR);
                 if (isset($val['id']) && $val['id'] > 0) {
                     $id = $val['id'];
                     unset($val['id']);

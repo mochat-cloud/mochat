@@ -12,16 +12,16 @@ namespace MoChat\App\ChatTool\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use MoChat\App\ChatTool\Constants\Status;
 use MoChat\App\ChatTool\Contract\ChatToolContract;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Utils\Url;
 use MoChat\App\WorkAgent\Contract\WorkAgentContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 聊天栏列表.
@@ -101,12 +101,19 @@ class Index extends AbstractAction
         ## 侧边栏信息
         $chatTools = $this->chatToolService->getChatToolsByStatus(Status::STATUS_YES, ['id', 'page_name', 'page_flag']);
 
-        $domain       = Url::getSidebarBaseUrl();
+        $domain = Url::getSidebarBaseUrl();
         $newChatTools = static function ($agentId) use ($chatTools, $domain) {
             return array_map(static function ($item) use ($domain, $agentId) {
-                $item['pageUrl'] = $domain . '?' . http_build_query([
-                    'agentId'  => $agentId,
-                    'pageFlag' => $item['pageFlag'],
+                if ($item['pageFlag'] === 'customer') {
+                    $item['pageFlag'] = 'contact';
+                }
+
+                if ($item['pageFlag'] === 'mediumGroup') {
+                    $item['pageFlag'] = 'medium';
+                }
+
+                $item['pageUrl'] = $domain . "/{$item['pageFlag']}?" . http_build_query([
+                    'agentId' => $agentId,
                 ]);
                 return $item;
             }, $chatTools);
@@ -118,7 +125,7 @@ class Index extends AbstractAction
         }, $agents);
 
         return [
-            'agents'       => $newAgents,
+            'agents' => $newAgents,
             'whiteDomains' => [Url::getSidebarBaseUrl(), Url::getApiBaseUrl()],
         ];
     }

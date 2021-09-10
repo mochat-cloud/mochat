@@ -86,20 +86,20 @@ class InfoLogic
             $contactEmployees = $temp;
         }
 
-        $res      = [];
+        $res = [];
         $wayTexts = [
-            0    => '未知来源',
-            1    => '扫描二维码',
-            2    => '搜索手机号',
-            3    => '名片分享',
-            4    => '群聊',
-            5    => '手机通讯录',
-            6    => '微信联系人',
-            7    => '来自微信的添加好友申请',
-            8    => '安装第三方应用时自动添加的客服人员',
-            9    => '搜索邮箱',
-            201  => '内部成员共享',
-            202  => '管理员/负责人分配',
+            0 => '未知来源',
+            1 => '扫描二维码',
+            2 => '搜索手机号',
+            3 => '名片分享',
+            4 => '群聊',
+            5 => '手机通讯录',
+            6 => '微信联系人',
+            7 => '来自微信的添加好友申请',
+            8 => '安装第三方应用时自动添加的客服人员',
+            9 => '搜索邮箱',
+            201 => '内部成员共享',
+            202 => '管理员/负责人分配',
             1001 => '渠道活码',
             1002 => '自动拉群',
             1003 => '裂变引流',
@@ -107,8 +107,8 @@ class InfoLogic
 
         foreach ($contactEmployees as $contactEmployee) {
             $employee = $this->workEmployeeService->getWorkEmployeeByIdWithTrashed($contactEmployee['employeeId']);
-            $tags     = $this->workContactTagPivotService->getWorkContactTagPivotsByContactIdEmployeeId([$contactEmployee['contactId']], $contactEmployee['employeeId']);
-            $tagName  = [];
+            $tags = $this->workContactTagPivotService->getWorkContactTagPivotsByContactIdEmployeeId([$contactEmployee['contactId']], $contactEmployee['employeeId']);
+            $tagName = [];
             foreach ($tags as $tag) {
                 $tagName[] = $this->workContactTagService->getWorkContactTagById($tag['contactTagId'])['name'];
             }
@@ -122,20 +122,20 @@ class InfoLogic
 
             $lastMsg = $this->workMessageService->getLastMessageByEmployeeWxIdAndContactWxId($employee['wxUserId'], $contactEmployee['operUserid']);
             $lastMsg = $lastMsg ? date('Y-m-d H:i', (int) ((int) $lastMsg[0]->msg_time / 1000)) : '';
-            $res[]   = [
-                'contactId'     => $contactEmployee['contactId'],
-                'employeeId'    => $employee['id'],
-                'contactWxId'   => $contact['wxExternalUserid'],
-                'employeeWxId'  => $employee['wxUserId'],
-                'contactName'   => $contactEmployee['remark'],
-                'nickName'      => $contact['name'],
-                'corpName'      => $contact['corpName'],
-                'employeeName'  => $employee['name'],
-                'tags'          => $tagName,
+            $res[] = [
+                'contactId' => $contactEmployee['contactId'],
+                'employeeId' => $employee['id'],
+                'contactWxId' => $contact['wxExternalUserid'],
+                'employeeWxId' => $employee['wxUserId'],
+                'contactName' => $contactEmployee['remark'],
+                'nickName' => $contact['name'],
+                'corpName' => $contact['corpName'],
+                'employeeName' => $employee['name'],
+                'tags' => $tagName,
                 'transferState' => $this->workTransferLogService->getLogStateByCorpId($params['corpId'], $contact['wxExternalUserid'], $employee['wxUserId']),
-                'addTime'       => date('Y-m-d H:i', strtotime($contactEmployee['createTime'])),
-                'lastMsgTime'   => $lastMsg,
-                'addWay'        => $wayTexts[$contactEmployee['addWay']],
+                'addTime' => date('Y-m-d H:i', strtotime($contactEmployee['createTime'])),
+                'lastMsgTime' => $lastMsg,
+                'addWay' => $wayTexts[$contactEmployee['addWay']],
             ];
         }
 

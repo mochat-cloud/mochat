@@ -269,3 +269,11 @@ export function labelContactShow (params) {
     params
   })
 }
+// 群信息
+export function showRoomApi (params) {
+  return request({
+    url: '/contactMessageBatchSend/showRoom',
+    method: 'GET',
+    params
+  })
+}

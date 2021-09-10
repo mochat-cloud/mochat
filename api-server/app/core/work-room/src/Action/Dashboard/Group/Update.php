@@ -13,15 +13,15 @@ namespace MoChat\App\WorkRoom\Action\Dashboard\Group;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\WorkRoom\Contract\WorkRoomGroupContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 客户群分组管理- 更新提交.
@@ -58,7 +58,7 @@ class Update extends AbstractAction
         $this->validated($this->request->all());
         ## 接收参数
         $workRoomGroupId = $this->request->input('workRoomGroupId');
-        $params          = [
+        $params = [
             'name' => $this->request->input('workRoomGroupName'),
         ];
         ## 验证$workRoomGroupId
@@ -97,7 +97,7 @@ class Update extends AbstractAction
     protected function rules(): array
     {
         return [
-            'workRoomGroupId'   => 'required | integer| min:0 | bail',
+            'workRoomGroupId' => 'required | integer| min:0 | bail',
             'workRoomGroupName' => 'required | string | min:1 | bail',
         ];
     }
@@ -109,12 +109,12 @@ class Update extends AbstractAction
     protected function messages(): array
     {
         return [
-            'workRoomGroupId.required'   => '客户群分组ID 必填',
-            'workRoomGroupId.integer'    => '客户群分组ID 必需为整数',
-            'workRoomGroupId.min'        => '企业授信ID 不可小于1',
+            'workRoomGroupId.required' => '客户群分组ID 必填',
+            'workRoomGroupId.integer' => '客户群分组ID 必需为整数',
+            'workRoomGroupId.min' => '企业授信ID 不可小于1',
             'workRoomGroupName.required' => '分组名称 必填',
-            'workRoomGroupName.string'   => '分组名称 必需是字符串类型',
-            'workRoomGroupName.min'      => '分组名称 不可为空',
+            'workRoomGroupName.string' => '分组名称 必需是字符串类型',
+            'workRoomGroupName.min' => '分组名称 不可为空',
         ];
     }
 }

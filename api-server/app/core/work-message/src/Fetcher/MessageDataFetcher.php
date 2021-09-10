@@ -8,36 +8,35 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
-
 namespace MoChat\App\WorkMessage\Fetcher;
 
 use Hyperf\Di\Annotation\Inject;
+use MoChat\App\SyncData\Contract\DataFetcherInterface;
 use MoChat\App\WorkMessage\Contract\WorkMessageConfigContract;
 use MoChat\App\WorkMessage\Contract\WorkMessageContract;
 use MoChat\App\WorkMessage\Queue\MessageReceivedRawQueue;
 use MoChat\App\WorkMessage\Utils\MessageArchiveFactory;
 use MoChat\WeWorkFinanceSDK\WxFinanceSDK;
-use MoChat\App\SyncData\Contract\DataFetcherInterface;
 
 class MessageDataFetcher implements DataFetcherInterface
 {
     /**
-     * 每次获取消息数量
+     * 每次获取消息数量.
      */
-    const MESSAGE_LIMIT = 100;
+    public const MESSAGE_LIMIT = 100;
 
     /**
      * @var int
      */
     protected $corpId;
-    
+
     /**
      * @var WxFinanceSDK
      */
     protected $sdk;
 
     /**
-     * @Inject()
+     * @Inject
      * @var WorkMessageConfigContract
      */
     protected $messageConfigService;
@@ -48,13 +47,13 @@ class MessageDataFetcher implements DataFetcherInterface
     protected $workMessageService;
 
     /**
-     * @Inject()
+     * @Inject
      * @var MessageReceivedRawQueue
      */
     protected $messageReceivedRaw;
 
     /**
-     * @Inject()
+     * @Inject
      * @var MessageArchiveFactory
      */
     protected $messageArchiveFactory;
@@ -66,8 +65,8 @@ class MessageDataFetcher implements DataFetcherInterface
 
     public function __construct($corpId = null)
     {
-        if (!empty($corpId)) {
-            $this->init((int)$corpId);
+        if (! empty($corpId)) {
+            $this->init((int) $corpId);
         }
     }
 
@@ -77,7 +76,7 @@ class MessageDataFetcher implements DataFetcherInterface
             return static::$dataFetchers[$id];
         }
 
-        return static::$dataFetchers[$id] = new static($id);
+        return static::$dataFetchers[$id] = new MessageDataFetcher($id);
     }
 
     public function getDataSource(): array
@@ -105,7 +104,7 @@ class MessageDataFetcher implements DataFetcherInterface
 
     public function syncData(array $data)
     {
-        if (!empty($data)) {
+        if (! empty($data)) {
             $this->messageReceivedRaw->handle($this->corpId, $data);
         }
     }

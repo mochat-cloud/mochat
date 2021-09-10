@@ -42,8 +42,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'contactId',
-      'userInfo'
+      'contactId'
     ])
   },
   created () {
@@ -58,11 +57,9 @@ export default {
         this.$toast({ position: 'top', message: '请添加备注' })
         return
       }
-      const employeeId = this.userInfo.employeeId
       editWorkContactInfo({
         contactId: this.contactId,
-        remark: this.remark,
-        employeeId
+        remark: this.remark
       }).then(res => {
         this.$router.go(-1)
       })

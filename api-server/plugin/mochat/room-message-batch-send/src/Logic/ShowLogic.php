@@ -52,22 +52,38 @@ class ShowLogic
         }
 
         $roomIds = $this->roomMessageBatchSendResult->getRoomMessageBatchSendResultRoomIdsByBatchIds($batch['id']);
-        $rooms   = $this->workRoom->getWorkRoomsById(array_slice($roomIds, 0, 10), ['id', 'name']);
+        $rooms = $this->workRoom->getWorkRoomsById(array_slice($roomIds, 0, 10), ['id', 'name']);
 
         return [
-            'id'               => $batch['id'],
-            'batchTitle'       => $batch['batchTitle'],
-            'creator'          => $batch['userName'],
-            'createdAt'        => $batch['createdAt'],
-            'seedRooms'        => $rooms,
-            'content'          => $batch['content'],
-            'sendTime'         => $batch['sendTime'],
-            'sendContactTotal' => $batch['sendContactTotal'],
-            'sendRoomTotal'    => $batch['sendRoomTotal'],
-            'sendTotal'        => $batch['sendTotal'],
-            'receivedTotal'    => $batch['receivedTotal'],
-            'notSendTotal'     => $batch['notSendTotal'],
+            'id' => $batch['id'],
+            'batchTitle' => $batch['batchTitle'],
+            'creator' => $batch['userName'],
+            'createdAt' => $batch['createdAt'],
+            'seedRooms' => $rooms,
+            'content' => $this->handleData($batch['content']),
+            'sendTime' => $batch['sendTime'],
+            'sendEmployeeTotal' => $batch['sendEmployeeTotal'],
+            'sendRoomTotal' => $batch['sendRoomTotal'],
+            'sendTotal' => $batch['sendTotal'],
+            'receivedTotal' => $batch['receivedTotal'],
+            'notSendTotal' => $batch['notSendTotal'],
             'notReceivedTotal' => $batch['notReceivedTotal'],
         ];
+    }
+
+    protected function handleData($content): array
+    {
+        if (empty($content)) {
+            return $content;
+        }
+
+        foreach ($content as $key => $value) {
+            if ($value['msgType'] === 'text') {
+                continue;
+            }
+
+            $content[$key]['pic_url'] = file_full_url($value['pic_url']);
+        }
+        return $content;
     }
 }

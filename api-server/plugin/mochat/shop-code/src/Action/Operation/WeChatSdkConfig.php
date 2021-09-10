@@ -80,7 +80,7 @@ class WeChatSdkConfig extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -92,18 +92,18 @@ class WeChatSdkConfig extends AbstractAction
     {
         $params = $this->request->all();
         $this->validated($params);
-        $appId = $this->getAppId((int)$params['corpId'], 3);
-        $url   = $params['url'];
+        $appId = $this->getAppId((int) $params['corpId'], 3);
+        $url = $params['url'];
         ## EasyWeChat
         $config = config('framework.wechat_open_platform');
         ## 实例化
         $openPlatform = Factory::openPlatform($config);
         $openPlatform = rebind_app($openPlatform, $this->request);
-        $result       = $openPlatform->getAuthorizer($appId);
+        $result = $openPlatform->getAuthorizer($appId);
         if (! empty($result['authorization_info'])) {
             $officialAccount = $openPlatform->officialAccount($appId, $result['authorization_info']['authorizer_refresh_token']);
             $officialAccount = rebind_app($officialAccount, $this->request);
-            $ticket          = $officialAccount->jssdk->buildConfig(['getLocation'], false, false, true, [], $url);
+            $ticket = $officialAccount->jssdk->buildConfig(['getLocation'], false, false, true, [], $url);
 //            $officialAccount->jssdk->setUrl($url);
             return json_decode($ticket, true, 512, JSON_THROW_ON_ERROR);
         }
@@ -136,7 +136,7 @@ class WeChatSdkConfig extends AbstractAction
     protected function getAppId(int $corpId, int $type): string
     {
         $set = $this->officialAccountSetService->getOfficialAccountSetByCorpIdType($corpId, $type, ['official_account_id']);
-        if (!empty($set)) {
+        if (! empty($set)) {
             $info = $this->officialAccountService->getOfficialAccountById($set['officialAccountId'], ['appid', 'authorizer_appid']);
         } else {
             $info = $this->officialAccountService->getOfficialAccountByCorpId($corpId, ['appid', 'authorizer_appid']);

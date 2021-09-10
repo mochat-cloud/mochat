@@ -12,10 +12,10 @@ namespace MoChat\Plugin\ContactBatchAdd\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
@@ -56,12 +56,12 @@ class ImportDestroy extends AbstractAction
     {
         $params['id'] = $this->request->input('id');
 
-        $contactIds    = $this->getContactBatchAddImportIdsByRecordId($params['id']);
-        $delRecordNum  = $this->contactBatchAddImportRecordService->deleteContactBatchAddImportRecord((int) $params['id']);
+        $contactIds = $this->getContactBatchAddImportIdsByRecordId($params['id']);
+        $delRecordNum = $this->contactBatchAddImportRecordService->deleteContactBatchAddImportRecord((int) $params['id']);
         $delContactNum = $this->contactBatchAddImportService->deleteContactBatchAddImports($contactIds);
 
         return [
-            'delRecordNum'  => $delRecordNum,
+            'delRecordNum' => $delRecordNum,
             'delContactNum' => $delContactNum,
         ];
     }
@@ -87,8 +87,8 @@ class ImportDestroy extends AbstractAction
 
     protected function getContactBatchAddImportIdsByRecordId($recordId): array
     {
-        $contact    = $this->contactBatchAddImportService->getContactBatchAddImportOptionWhere([['record_id', '=', $recordId]], [], ['id']);
-        $co         = collect($contact);
+        $contact = $this->contactBatchAddImportService->getContactBatchAddImportOptionWhere([['record_id', '=', $recordId]], [], ['id']);
+        $co = collect($contact);
         $contactIds = $co->pluck('id');
         return $contactIds->toArray();
     }

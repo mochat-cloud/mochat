@@ -13,11 +13,11 @@ namespace MoChat\Plugin\RoomRemind\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
@@ -58,7 +58,7 @@ class Index extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -85,7 +85,7 @@ class Index extends AbstractAction
         $list = $this->roomRemindService->getRoomRemindByCorpId($user['corpIds'][0], $user, ['id', 'name', 'rooms', 'is_qrcode', 'is_link', 'is_miniprogram', 'is_card', 'is_keyword', 'keyword']);
 
         foreach ($list as $k => $v) {
-            $list[$k]['rooms']   = json_decode($v['rooms'], true, 512, JSON_THROW_ON_ERROR);
+            $list[$k]['rooms'] = json_decode($v['rooms'], true, 512, JSON_THROW_ON_ERROR);
             $list[$k]['keyword'] = empty($v['keyword']) ? '' : explode(',', $v['keyword']);
         }
 

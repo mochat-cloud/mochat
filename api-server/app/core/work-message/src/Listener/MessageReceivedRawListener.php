@@ -11,21 +11,21 @@ declare(strict_types=1);
 namespace MoChat\App\WorkMessage\Listener;
 
 use Hyperf\Di\Annotation\Inject;
-use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Event\Annotation\Listener;
+use Hyperf\Event\Contract\ListenerInterface;
 use MoChat\App\WorkMessage\Event\MessageReceivedRawEvent;
 use MoChat\App\WorkMessage\Logic\StoreLogic;
 use Psr\Container\ContainerInterface;
 
 /**
- * 收到原始消息
+ * 收到原始消息.
  *
  * @Listener
  */
 class MessageReceivedRawListener implements ListenerInterface
 {
     /**
-     * @Inject()
+     * @Inject
      * @var ContainerInterface
      */
     protected $container;
@@ -33,7 +33,7 @@ class MessageReceivedRawListener implements ListenerInterface
     public function listen(): array
     {
         return [
-            MessageReceivedRawEvent::class
+            MessageReceivedRawEvent::class,
         ];
     }
 
@@ -42,7 +42,7 @@ class MessageReceivedRawListener implements ListenerInterface
      */
     public function process(object $event)
     {
-        $corpId = (int)$event->corpId;
+        $corpId = (int) $event->corpId;
         $messages = $event->messages;
         $messageStoreLogic = $this->container->get(StoreLogic::class);
         $messageStoreLogic->handle($corpId, $messages);

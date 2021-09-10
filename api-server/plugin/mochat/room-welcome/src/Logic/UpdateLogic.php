@@ -54,7 +54,7 @@ class UpdateLogic
 
     public function __construct(CorpContract $corpService, RoomWelcomeContract $roomWelcomeService)
     {
-        $this->corpService        = $corpService;
+        $this->corpService = $corpService;
         $this->roomWelcomeService = $roomWelcomeService;
     }
 
@@ -84,11 +84,11 @@ class UpdateLogic
      */
     private function handleParam(array $user, array $params): array
     {
-        $info             = $this->roomWelcomeService->getRoomWelcomeById((int) $params['id']);
-        $complex          = json_encode($params['msg_complex'], JSON_THROW_ON_ERROR | JSON_FORCE_OBJECT);
-        $complex          = json_decode($complex, true, 512, JSON_THROW_ON_ERROR);
-        $msgComplex       = '';
-        $text             = '';
+        $info = $this->roomWelcomeService->getRoomWelcomeById((int) $params['id']);
+        $complex = json_encode($params['msg_complex'], JSON_THROW_ON_ERROR | JSON_FORCE_OBJECT);
+        $complex = json_decode($complex, true, 512, JSON_THROW_ON_ERROR);
+        $msgComplex = '';
+        $text = '';
         $easyWeChatParams = [];
         if (! empty($params['msg_text'])) {
             $text = str_replace('[用户昵称]', '%NICKNAME%', $params['msg_text']);
@@ -100,10 +100,10 @@ class UpdateLogic
         switch ($complex['type']) {
             case 'image':
                 if (! empty($complex['image']['pic'])) {
-                    $file                                 = $this->handlePic($user, $complex['image']['pic']);
-                    $complex['image']['pic']              = $file['pic'];
-                    $complex['image']['pic_url']          = $file['pic_url'];
-                    $easyWeChatParams['text']['content']  = $text;
+                    $file = $this->handlePic($user, $complex['image']['pic']);
+                    $complex['image']['pic'] = $file['pic'];
+                    $complex['image']['pic_url'] = $file['pic_url'];
+                    $easyWeChatParams['text']['content'] = $text;
                     $easyWeChatParams['image']['pic_url'] = $file['pic_url'];
                 }
                 $msgComplex = $complex['image'];
@@ -112,13 +112,13 @@ class UpdateLogic
                 if (! empty($complex['link']['url'])) {
                     $pic_url = '';
                     if ($complex['link']['pic']) {
-                        $file                       = $this->handlePic($user, $complex['link']['pic']);
-                        $complex['link']['pic']     = $file['pic'];
+                        $file = $this->handlePic($user, $complex['link']['pic']);
+                        $complex['link']['pic'] = $file['pic'];
                         $complex['link']['pic_url'] = $file['pic_url'];
-                        $pic_url                    = $file['pic_url'];
+                        $pic_url = $file['pic_url'];
                     }
                     $easyWeChatParams['text']['content'] = $text;
-                    $easyWeChatParams['link']            = ['title' => $complex['link']['title'], 'picurl' => $pic_url, 'desc' => $complex['link']['desc'], 'url' => $complex['link']['url']];
+                    $easyWeChatParams['link'] = ['title' => $complex['link']['title'], 'picurl' => $pic_url, 'desc' => $complex['link']['desc'], 'url' => $complex['link']['url']];
                 }
                 $msgComplex = $complex['link'];
                 break;
@@ -126,13 +126,13 @@ class UpdateLogic
                 if (! empty($complex['miniprogram']['title'])) {
                     $mediaId = '';
                     if ($complex['miniprogram']['pic']) {
-                        $file                              = $this->handlePic($user, $complex['miniprogram']['pic'], 2);
-                        $complex['miniprogram']['pic']     = $file['pic'];
+                        $file = $this->handlePic($user, $complex['miniprogram']['pic'], 2);
+                        $complex['miniprogram']['pic'] = $file['pic'];
                         $complex['miniprogram']['pic_url'] = $file['pic_url'];
-                        $mediaId                           = $file['pic_url'];
+                        $mediaId = $file['pic_url'];
                     }
                     $easyWeChatParams['text']['content'] = $text;
-                    $easyWeChatParams['miniprogram']     = ['title' => $complex['miniprogram']['title'], 'pic_media_id' => $mediaId, 'appId' => $complex['miniprogram']['appid'], 'page' => $complex['miniprogram']['page']];
+                    $easyWeChatParams['miniprogram'] = ['title' => $complex['miniprogram']['title'], 'pic_media_id' => $mediaId, 'appId' => $complex['miniprogram']['appid'], 'page' => $complex['miniprogram']['page']];
                 }
                 $msgComplex = $complex['miniprogram'];
                 break;
@@ -143,10 +143,10 @@ class UpdateLogic
             throw new CommonException(ErrorCode::INVALID_PARAMS, '修改入群欢迎语素材失败' . $template['errmsg']);
         }
         return [
-            'corp_id'      => $params['corp_id'],
-            'msg_text'     => $params['msg_text'],
+            'corp_id' => $params['corp_id'],
+            'msg_text' => $params['msg_text'],
             'complex_type' => $complex['type'],
-            'msg_complex'  => json_encode($msgComplex, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE),
+            'msg_complex' => json_encode($msgComplex, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE),
         ];
     }
 
@@ -158,8 +158,8 @@ class UpdateLogic
      */
     private function handlePic($user, $file, int $type = 1): array
     {
-        $res        = ['pic' => '', 'pic_url' => ''];
-        $file       = File::uploadBase64Image($file, 'image/roomWelcome/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg'); //将Base64图片转换为本地图片并保存
+        $res = ['pic' => '', 'pic_url' => ''];
+        $file = File::uploadBase64Image($file, 'image/roomWelcome/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg'); //将Base64图片转换为本地图片并保存
         $res['pic'] = $file;
         $localFile = File::download(file_full_url($file), $file);
         if ($type === 1) {

@@ -111,8 +111,8 @@ class MonitorMessage
             }
             ## 记录业务日志-3
             $this->logger->info(sprintf('%s [%s] %s', '会话信息监测敏感词-会话存档信息', date('Y-m-d H:i:s'), json_encode($messageList)));
-            $matchRes       = $this->matchWords($messageList, $corpWords, $wxMsg['corpId']);
-            $updateWords    = array_merge($updateWords, $matchRes['updateWords']);
+            $matchRes = $this->matchWords($messageList, $corpWords, $wxMsg['corpId']);
+            $updateWords = array_merge($updateWords, $matchRes['updateWords']);
             $createMonitors = array_merge($createMonitors, $matchRes['createMonitors']);
             ## 记录业务日志-4
             $this->logger->info(sprintf('%s [%s] %s', '会话信息监测敏感词-敏感词监控结果', date('Y-m-d H:i:s'), json_encode($createMonitors)));
@@ -135,18 +135,18 @@ class MonitorMessage
         $createMonitors = [];
         ## 获得信息发送方|接收方信息
         $participantIdArr = [];
-        $wxRoomIdArr      = [];
+        $wxRoomIdArr = [];
         foreach ($messageList as $v) {
-            is_array($v) || $v  = json_decode(json_encode($v), true);
+            is_array($v) || $v = json_decode(json_encode($v), true);
             $participantIdArr[] = $v['from'];
             if (! empty($v['wx_room_id'])) {
                 $wxRoomIdArr[] = $v['wx_room_id'];
                 continue;
             }
-            $tolist             = json_decode($v['tolist'], true);
+            $tolist = json_decode($v['tolist'], true);
             $participantIdArr[] = $tolist[0];
         }
-        $userList    = $this->getEmployeeList($corpId, array_unique($participantIdArr));
+        $userList = $this->getEmployeeList($corpId, array_unique($participantIdArr));
         $contactList = $this->getContactList($corpId, array_unique($participantIdArr));
         ## 触发场景群聊
         $roomList = $this->getRoomList(array_unique($wxRoomIdArr));
@@ -179,29 +179,29 @@ class MonitorMessage
             $tolist = json_decode($message['tolist'], true);
             if (! empty($message['wx_room_id'])) {
                 $receiverType = ReceiverType::ROOM;
-                $receiverId   = $roomList[$message['wx_room_id']]['id'];
+                $receiverId = $roomList[$message['wx_room_id']]['id'];
                 $receiverName = $roomList[$message['wx_room_id']]['name'];
             } elseif (isset($userList[$tolist[0]])) {
                 $receiverType = ReceiverType::EMPLOYEE;
-                $receiverId   = $userList[$tolist[0]]['id'];
+                $receiverId = $userList[$tolist[0]]['id'];
                 $receiverName = $userList[$tolist[0]]['name'];
             } else {
                 $receiverType = ReceiverType::CONTACT;
-                $receiverId   = isset($contactList[$tolist[0]]) ? $contactList[$tolist[0]]['id'] : 0;
+                $receiverId = isset($contactList[$tolist[0]]) ? $contactList[$tolist[0]]['id'] : 0;
                 $receiverName = isset($contactList[$tolist[0]]) ? $contactList[$tolist[0]]['name'] : $tolist[0];
             }
             $baseMonitor = [
-                'corp_id'         => $corpId,
-                'source'          => isset($userList[$message['from']]) ? Source::EMPLOYEE : Source::CONTACT,
-                'trigger_id'      => $triggerInfo['id'],
-                'trigger_name'    => $triggerInfo['name'],
-                'receiver_type'   => $receiverType,
-                'receiver_id'     => $receiverId,
-                'receiver_name'   => $receiverName,
-                'trigger_time'    => date('Y-m-d H:i:s', (int) round($message['msg_time'] / 1000)),
+                'corp_id' => $corpId,
+                'source' => isset($userList[$message['from']]) ? Source::EMPLOYEE : Source::CONTACT,
+                'trigger_id' => $triggerInfo['id'],
+                'trigger_name' => $triggerInfo['name'],
+                'receiver_type' => $receiverType,
+                'receiver_id' => $receiverId,
+                'receiver_name' => $receiverName,
+                'trigger_time' => date('Y-m-d H:i:s', (int) round($message['msg_time'] / 1000)),
                 'work_message_id' => $message['id'],
-                'chat_content'    => $this->getChatContent($corpId, $message),
-                'created_at'      => date('Y-m-d H:i:s'),
+                'chat_content' => $this->getChatContent($corpId, $message),
+                'created_at' => date('Y-m-d H:i:s'),
             ];
             foreach ($corpWords as $word) {
                 ## 监测-是否触发敏感词
@@ -209,9 +209,9 @@ class MonitorMessage
                     continue;
                 }
                 isset($updateWords[$word['id']]) || $updateWords[$word['id']] = [
-                    'id'           => $word['id'],
+                    'id' => $word['id'],
                     'employee_num' => $word['employeeNum'],
-                    'contact_num'  => $word['contactNum'],
+                    'contact_num' => $word['contactNum'],
                 ];
                 ## 触发来源
                 if (isset($userList[$message['from']])) {
@@ -219,13 +219,13 @@ class MonitorMessage
                 } else {
                     ++$updateWords[$word['id']]['contact_num'];
                 }
-                $baseMonitor['sensitive_word_id']   = $word['id'];
+                $baseMonitor['sensitive_word_id'] = $word['id'];
                 $baseMonitor['sensitive_word_name'] = $word['name'];
-                $createMonitors[]                   = $baseMonitor;
+                $createMonitors[] = $baseMonitor;
             }
         }
         return [
-            'updateWords'    => $updateWords,
+            'updateWords' => $updateWords,
             'createMonitors' => $createMonitors,
         ];
     }
@@ -287,17 +287,17 @@ class MonitorMessage
         $afterList = empty($afterList) ? [] : array_map(function ($after) {
             return json_decode(json_encode($after), true);
         }, $afterList);
-        $list            = array_merge($beforeList, [$message], $afterList);
-        $fromIdArr       = array_unique(array_column($list, 'from'));
-        $fromUserList    = $this->getEmployeeList($corpId, $fromIdArr);
+        $list = array_merge($beforeList, [$message], $afterList);
+        $fromIdArr = array_unique(array_column($list, 'from'));
+        $fromUserList = $this->getEmployeeList($corpId, $fromIdArr);
         $fromContactList = $this->getContactList($corpId, $fromIdArr);
 
         $data = array_map(function ($item) use ($message, $fromUserList, $fromContactList) {
             return [
-                'isTrigger'  => $item['id'] == $message['id'] ? 1 : 0,
-                'sender'     => $this->handleMessageSender($item, $fromUserList, $fromContactList),
-                'sendTime'   => date('Y-m-d H:i:s', (int) round($item['msg_time'] / 1000)),
-                'msgType'    => $item['msg_type'],
+                'isTrigger' => $item['id'] == $message['id'] ? 1 : 0,
+                'sender' => $this->handleMessageSender($item, $fromUserList, $fromContactList),
+                'sendTime' => date('Y-m-d H:i:s', (int) round($item['msg_time'] / 1000)),
+                'msgType' => $item['msg_type'],
                 'msgContent' => json_decode($item['content'], true),
             ];
         }, $list);

@@ -205,7 +205,7 @@ interface WorkContactRoomContract
      * @param int $status 状态
      * @return int 返回值getWorkContactRoomsByRoomIdEmployee
      */
-    public function countWorkContactRoomByRoomId(int $roomId, int $employee = 0, int $status = 0): int;
+    public function countWorkContactRoomByRoomId(int $roomId, int $employee = 0, int $status = 0, int $contactId = 0): int;
 
     /**
      * 获取群内员工.

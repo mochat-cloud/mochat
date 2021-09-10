@@ -20,20 +20,20 @@ trait UpdateTrait
         $param['options'] = json_encode($param['options'], JSON_UNESCAPED_UNICODE);
         if ($data['isSys']) {
             $data['options'] = json_encode($data['options'], JSON_UNESCAPED_UNICODE);
-            $param           = array_merge($param, $data);
+            $param = array_merge($param, $data);
         } else {
-            $pinyin        = new Pinyin();
+            $pinyin = new Pinyin();
             $param['name'] = $pinyin->permalink($param['label'], '', PINYIN_ASCII_TONE);
         }
 
         return [
-            'id'      => $param['id'],
-            'name'    => $param['name'],
-            'label'   => $param['label'],
-            'type'    => $param['type'],
+            'id' => $param['id'],
+            'name' => $param['name'],
+            'label' => $param['label'],
+            'type' => $param['type'],
             'options' => $param['options'],
-            'order'   => $param['order'],
-            'status'  => $param['status'],
+            'order' => $param['order'],
+            'status' => $param['status'],
         ];
     }
 }

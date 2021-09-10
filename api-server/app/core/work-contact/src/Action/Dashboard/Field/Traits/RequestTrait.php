@@ -24,12 +24,12 @@ trait RequestTrait
     public function attributes(): array
     {
         return [
-            'id'      => 'ID',
-            'label'   => '字段名称',
-            'type'    => '字段类型',
+            'id' => 'ID',
+            'label' => '字段名称',
+            'type' => '字段类型',
             'options' => '选项内容',
-            'order'   => '排序展示',
-            'status'  => '使用状态',
+            'order' => '排序展示',
+            'status' => '使用状态',
         ];
     }
 
@@ -40,10 +40,10 @@ trait RequestTrait
     public function scene(): array
     {
         return [
-            'store'        => ['label', 'type', 'options', 'order', 'status'],
-            'update'       => ['id', 'label', 'type', 'options', 'order', 'status'],
-            'show'         => ['id'],
-            'destroy'      => ['id'],
+            'store' => ['label', 'type', 'options', 'order', 'status'],
+            'update' => ['id', 'label', 'type', 'options', 'order', 'status'],
+            'show' => ['id'],
+            'destroy' => ['id'],
             'statusUpdate' => ['id', 'status'],
         ];
     }
@@ -54,12 +54,12 @@ trait RequestTrait
     protected function rules(): array
     {
         return [
-            'id'      => 'required|integer',
-            'label'   => 'required|max:8',
-            'type'    => 'required',
+            'id' => 'required|integer',
+            'label' => 'required|max:8',
+            'type' => 'required',
             'options' => 'array',
-            'order'   => 'integer',
-            'status'  => 'integer|in:0,1',
+            'order' => 'integer',
+            'status' => 'integer|in:0,1',
         ];
     }
 
@@ -70,8 +70,8 @@ trait RequestTrait
     {
         return [
             'status.integer' => '状态必须为数字',
-            'status.in'      => '状态必须在 0, 1中选择一个',
-            'options.array'  => ':attribute 格式错误: 必须为数组',
+            'status.in' => '状态必须在 0, 1中选择一个',
+            'options.array' => ':attribute 格式错误: 必须为数组',
         ];
     }
 
@@ -83,7 +83,7 @@ trait RequestTrait
     protected function validateExtend(array $inputs, string $scene): void
     {
         if (in_array($scene, ['store', 'update'])) {
-            $where   = isset($inputs['id']) ? [['id', '!=', $inputs['id']]] : [];
+            $where = isset($inputs['id']) ? [['id', '!=', $inputs['id']]] : [];
             $isExist = ApplicationContext::getContainer()->get(ContactFieldContract::class)->existContactFieldsByLabel(
                 $inputs['label'],
                 $where

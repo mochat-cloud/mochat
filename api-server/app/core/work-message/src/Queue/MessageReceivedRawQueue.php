@@ -11,15 +11,14 @@ declare(strict_types=1);
 namespace MoChat\App\WorkMessage\Queue;
 
 use Hyperf\AsyncQueue\Annotation\AsyncQueueMessage;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use MoChat\App\WorkMessage\Event\MessageReceivedRawEvent;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class MessageReceivedRawQueue
 {
     /**
      * @AsyncQueueMessage(pool="chat")
      * @param int $corpId 企业ID
-     * @param array $messages
      */
     public function handle(int $corpId, array $messages): void
     {

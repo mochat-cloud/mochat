@@ -13,7 +13,10 @@ namespace MoChat\App\Corp\Action\Dashboard;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Action\Dashboard\Traits\RequestTrait;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Corp\Utils\WeWorkFactory;
@@ -22,9 +25,6 @@ use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 企业微信授权- 更新提交.
@@ -45,15 +45,15 @@ class Update extends AbstractAction
 
     /**
      * @Inject
-     * @var StdoutLoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @Inject()
      * @var WeWorkFactory
      */
     protected $weWorkFactory;
+
+    /**
+     * @Inject
+     * @var StdoutLoggerInterface
+     */
+    private $logger;
 
     /**
      * @RequestMapping(path="/dashboard/corp/update", methods="put")
@@ -70,10 +70,10 @@ class Update extends AbstractAction
         ## 接收参数
         $corpId = $this->request->input('corpId');
         $params = [
-            'name'            => trim($this->request->input('corpName')),
-            'wx_corpid'       => trim($this->request->input('wxCorpId')),
+            'name' => trim($this->request->input('corpName')),
+            'wx_corpid' => trim($this->request->input('wxCorpId')),
             'employee_secret' => trim($this->request->input('employeeSecret')),
-            'contact_secret'  => trim($this->request->input('contactSecret')),
+            'contact_secret' => trim($this->request->input('contactSecret')),
         ];
         ## 验证主键ID的有效性
         $corpInfo = $this->corpService->getCorpById($corpId);

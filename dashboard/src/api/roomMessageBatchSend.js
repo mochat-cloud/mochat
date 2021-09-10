@@ -22,7 +22,7 @@ export function index (params) {
 export function remind (params) {
   return request({
     url: 'roomMessageBatchSend/remind',
-    method: 'post',
+    method: 'get',
     params: params
   })
 }
@@ -34,6 +34,16 @@ export function show (params) {
     params: params
   })
 }
+
+// 删除
+export function destroyApi (params) {
+  return request({
+    url: '/roomMessageBatchSend/destroy',
+    method: 'delete',
+    data: params
+  })
+}
+
 // 消息详情-客户群接收详情
 export function roomOwnerSendIndex (params) {
   return request({
@@ -47,6 +57,14 @@ export function roomOwnerSendIndex (params) {
 export function roomReceiveIndex (params) {
   return request({
     url: 'roomMessageBatchSend/roomReceiveIndex',
+    method: 'get',
+    params: params
+  })
+}
+// 成员下拉框
+export function department (params) {
+  return request({
+    url: '/workDepartment/index',
     method: 'get',
     params: params
   })

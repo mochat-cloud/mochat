@@ -59,12 +59,12 @@ class IndexLogic
     private function handleParams(array $params): array
     {
         $this->perPage = $params['perPage'];
-        $this->page    = $params['page'];
+        $this->page = $params['page'];
         ## 列表查询条件
         $where = [];
         if (! empty($params['name'])) {
             //$where['name'] = $params['name'];
-            $menuIds     = $this->getMenuIdsByName($params['name']);
+            $menuIds = $this->getMenuIdsByName($params['name']);
             $where['id'] = $menuIds;
         }
 
@@ -97,7 +97,7 @@ class IndexLogic
         }
 
         ## 父级部门以下的子部门id
-        $paths       = array_unique($menuIds);
+        $paths = array_unique($menuIds);
         $childrenIds = $this->menuService->getMenusByPaths($paths, ['id']);
         if (empty($childrenIds)) {
             return [];
@@ -118,8 +118,8 @@ class IndexLogic
         if (isset($params['id']) && empty($params['id'])) {
             return [
                 'page' => [
-                    'perPage'   => $this->perPage,
-                    'total'     => '0',
+                    'perPage' => $this->perPage,
+                    'total' => '0',
                     'totalPage' => '0',
                 ],
                 'list' => [],
@@ -130,8 +130,8 @@ class IndexLogic
         ## 返回数据
         $data = [
             'page' => [
-                'perPage'   => $this->perPage,
-                'total'     => '0',
+                'perPage' => $this->perPage,
+                'total' => '0',
                 'totalPage' => '0',
             ],
             'list' => [],
@@ -151,14 +151,14 @@ class IndexLogic
         $tree = $this->recursion($menu);
         //array_multisort($tree, SORT_DESC);
 
-        $total     = count($tree);
+        $total = count($tree);
         $totalPage = ceil($total / $this->perPage);
-        $offset    = ($this->page - 1) * $this->perPage;
+        $offset = ($this->page - 1) * $this->perPage;
 
         ## 分页数据
-        $data['page']['total']     = $total;
+        $data['page']['total'] = $total;
         $data['page']['totalPage'] = $totalPage;
-        $data['list']              = array_slice($tree, $offset, $this->perPage);
+        $data['list'] = array_slice($tree, $offset, $this->perPage);
 
         return $data;
     }
@@ -172,22 +172,22 @@ class IndexLogic
      */
     private function recursion(array $data, int $id = 0, string $path = '')
     {
-        $tree    = [];
+        $tree = [];
         $pathKey = 1;
         foreach ($data as $key => $val) {
             if ($val['parentId'] != $id) {
                 continue;
             }
 
-            $val['menuId']   = $val['id'];
+            $val['menuId'] = $val['id'];
             $val['menuPath'] = $val['parentId'] ? $path . '-' . $pathKey : $pathKey;
             ++$pathKey;
-            $val['menuPath']  = (string) $val['menuPath'];
+            $val['menuPath'] = (string) $val['menuPath'];
             $val['levelName'] = ! empty($val['level']) ? Level::getMessage($val['level']) : '';
 
             unset($data[$key]);
             $val['children'] = $this->recursion($data, $val['id'], $val['menuPath']);
-            $tree[]          = $val;
+            $tree[] = $val;
         }
 
         return $tree;

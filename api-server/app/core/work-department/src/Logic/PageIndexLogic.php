@@ -60,7 +60,7 @@ class PageIndexLogic
     {
         ## 分页数据
         $this->perPage = $params['perPage'];
-        $this->page    = $params['page'];
+        $this->page = $params['page'];
 
         ## 列表查询条件
         $where = [];
@@ -89,9 +89,9 @@ class PageIndexLogic
 
         ## 根据父级名称和组织名称同时搜索
         if (! empty($params['parentName']) && ! empty($params['name'])) {
-            $departIdsByName       = $this->getDepartmentByName($user['corpIds'][0], $params['name']);
+            $departIdsByName = $this->getDepartmentByName($user['corpIds'][0], $params['name']);
             $departIdsByParentName = $this->getDepartmentByName($user['corpIds'][0], $params['parentName']);
-            $departIds             = array_intersect($departIdsByName, $departIdsByParentName);
+            $departIds = array_intersect($departIdsByName, $departIdsByParentName);
             if (empty($departIds)) {
                 $where['id'] = [];
                 return $where;
@@ -150,8 +150,8 @@ class PageIndexLogic
         if (isset($params['id']) && empty($params['id'])) {
             return [
                 'page' => [
-                    'perPage'   => 10,
-                    'total'     => '0',
+                    'perPage' => 10,
+                    'total' => '0',
                     'totalPage' => '0',
                 ],
                 'list' => [],
@@ -163,8 +163,8 @@ class PageIndexLogic
         ## 返回数据
         $data = [
             'page' => [
-                'perPage'   => 10,
-                'total'     => '0',
+                'perPage' => 10,
+                'total' => '0',
                 'totalPage' => '0',
             ],
             'list' => [],
@@ -193,7 +193,7 @@ class PageIndexLogic
         $tree = [];
         foreach ($items as $k => $item) {
             $items[$k]['departmentId'] = $item['id'];
-            $items[$k]['level']        = ! empty($item['level']) ? Level::getMessage($item['level']) : '';
+            $items[$k]['level'] = ! empty($item['level']) ? Level::getMessage($item['level']) : '';
             if (isset($items[$item['parentId']])) {
                 $items[$item['parentId']]['children'][] = &$items[$k];
             } else {
@@ -212,14 +212,14 @@ class PageIndexLogic
             ++$pathId;
         }
 
-        $total     = count($tree);
+        $total = count($tree);
         $totalPage = ceil($total / $this->perPage);
-        $offset    = ($this->page - 1) * $this->perPage;
+        $offset = ($this->page - 1) * $this->perPage;
 
         ## 分页数据
-        $data['page']['total']     = $total;
+        $data['page']['total'] = $total;
         $data['page']['totalPage'] = $totalPage;
-        $data['list']              = array_slice($tree, $offset, $this->perPage);
+        $data['list'] = array_slice($tree, $offset, $this->perPage);
 
         return $data;
     }
@@ -255,21 +255,21 @@ class PageIndexLogic
      */
     private function recursion(array $data, int $id = 1, string $path = ''): array
     {
-        $tree    = [];
+        $tree = [];
         $pathKey = 1;
         foreach ($data as $key => $val) {
             if ($val['parentId'] != $id) {
                 continue;
             }
-            $val['departmentId']   = $val['id'];
+            $val['departmentId'] = $val['id'];
             $val['departmentPath'] = $val['parentId'] ? $path . '-' . $pathKey : $pathKey;
             ++$pathKey;
             $val['departmentPath'] = (string) $val['departmentPath'];
-            $val['level']          = ! empty($val['level']) ? Level::getMessage($val['level']) : '';
+            $val['level'] = ! empty($val['level']) ? Level::getMessage($val['level']) : '';
 
             unset($data[$key]);
             $val['children'] = $this->recursion($data, $val['id'], $val['departmentPath']);
-            $tree[]          = $val;
+            $tree[] = $val;
         }
 
         return $tree;

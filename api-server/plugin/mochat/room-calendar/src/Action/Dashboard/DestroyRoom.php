@@ -14,10 +14,10 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
@@ -67,7 +67,7 @@ class DestroyRoom extends AbstractAction
         ## 数据操作
         Db::beginTransaction();
         try {
-            $rooms   = $this->roomCalendarService->getRoomCalendarById((int) $params['id'], ['rooms']);
+            $rooms = $this->roomCalendarService->getRoomCalendarById((int) $params['id'], ['rooms']);
             $roomArr = json_decode($rooms['rooms'], true, 512, JSON_THROW_ON_ERROR);
             foreach ($roomArr as $key => $val) {
                 if ($val['wxChatId'] === $params['chatid']) {
@@ -95,7 +95,7 @@ class DestroyRoom extends AbstractAction
     protected function rules(): array
     {
         return [
-            'id'     => 'required | integer | bail',
+            'id' => 'required | integer | bail',
             'chatid' => 'required',
         ];
     }
@@ -107,8 +107,8 @@ class DestroyRoom extends AbstractAction
     protected function messages(): array
     {
         return [
-            'id.required'     => '活动id 必填',
-            'id.integer'      => '活动id 必须为整型',
+            'id.required' => '活动id 必填',
+            'id.integer' => '活动id 必须为整型',
             'chatid.required' => '群聊id 必填',
         ];
     }

@@ -12,11 +12,11 @@ namespace MoChat\Plugin\ContactTransfer\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Plugin\ContactTransfer\Logic\InfoLogic;
@@ -41,7 +41,7 @@ class Info extends AbstractAction
     public function __construct(InfoLogic $infoLogic, RequestInterface $request)
     {
         $this->infoLogic = $infoLogic;
-        $this->request   = $request;
+        $this->request = $request;
     }
 
     /**
@@ -49,14 +49,14 @@ class Info extends AbstractAction
      *     @Middleware(DashboardAuthMiddleware::class),
      *     @Middleware(PermissionMiddleware::class)
      * })
-     * @RequestMapping(path="/dashboard/transfer/info", methods="GET")
+     * @RequestMapping(path="/dashboard/contactTransfer/info", methods="GET")
      */
     public function handle(): array
     {
-        $params['contactName']  = $this->request->input('contactName');      //客户昵称
-        $params['employeeId']   = $this->request->input('employeeId');        //客服id
+        $params['contactName'] = $this->request->input('contactName');      //客户昵称
+        $params['employeeId'] = $this->request->input('employeeId');        //客服id
         $params['addTimeStart'] = $this->request->input('addTimeStart');    //添加起始时间
-        $params['addTimeEnd']   = $this->request->input('addTimeEnd');        //添加结束时间
+        $params['addTimeEnd'] = $this->request->input('addTimeEnd');        //添加结束时间
 
         if (! $params['contactName']) {
             $params['contactName'] = '';
@@ -71,7 +71,7 @@ class Info extends AbstractAction
             $params['addTimeEnd'] = '';
         }
 
-        $user                 = user();
+        $user = user();
         $params['employeeId'] = json_decode($params['employeeId'], true, 512, JSON_THROW_ON_ERROR);
 
         $params['corpId'] = $user['corpIds'][0];    //企业id

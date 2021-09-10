@@ -12,15 +12,15 @@ namespace MoChat\Plugin\ContactSop\Action\Sidebar;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\SidebarAuthMiddleware;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Plugin\ContactSop\Logic\GetSopTipInfoLogic;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\SidebarAuthMiddleware;
 
 /**
  * h5侧边栏提示接口.
@@ -55,7 +55,7 @@ class GetSopTipInfo extends AbstractAction
     public function __construct(GetSopTipInfoLogic $getSopTipInfoLogic, RequestInterface $request)
     {
         $this->getSopTipInfoLogic = $getSopTipInfoLogic;
-        $this->request            = $request;
+        $this->request = $request;
     }
 
     /**
@@ -67,16 +67,16 @@ class GetSopTipInfo extends AbstractAction
      */
     public function handle(): array
     {
-        $params['corpId'] = (int) $this->request->input('corpId');          //企业id
+        $params['corpId'] = (int) user()['corpId']; //企业id
         #修改
-        $employeeWxId = (int) $this->request->input('employeeWxId');   //客服WxId
-        $contactWxId  = (int) $this->request->input('contactWxId');     //客户WxId
-        $employee     = $this->workEmployeeService->getWorkEmployeeById($employeeWxId, ['wx_user_id']);
+        $employeeId = (int) user()['id'];   //客服WxId
+        $contactId = (int) $this->request->input('contactId');     //客户WxId
+        $employee = $this->workEmployeeService->getWorkEmployeeById($employeeId, ['wx_user_id']);
         if (empty($employee)) {
             return [];
         }
         $params['employeeWxId'] = $employee['wxUserId'];
-        $contact                = $this->workContactService->getWorkContactById($contactWxId, ['wx_external_userid']);
+        $contact = $this->workContactService->getWorkContactById($contactId, ['wx_external_userid']);
         if (empty($contact)) {
             return [];
         }

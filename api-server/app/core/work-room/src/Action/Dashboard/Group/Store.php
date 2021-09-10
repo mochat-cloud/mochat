@@ -13,15 +13,15 @@ namespace MoChat\App\WorkRoom\Action\Dashboard\Group;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\WorkRoom\Contract\WorkRoomGroupContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 
 /**
  * 客户群分组管理-新建客户群分组提交.
@@ -59,12 +59,12 @@ class Store extends AbstractAction
         ## 接收参数
         $params = [
             'corp_id' => $this->request->input('corpId'),
-            'name'    => $this->request->input('workRoomGroupName'),
+            'name' => $this->request->input('workRoomGroupName'),
         ];
         ## 验证客户群分组名称是否已经存在
         $groups = $this->workRoomGroupService->getWorkRoomGroupsByCorpId((int) $params['corp_id'], ['name']);
 
-        $groupNameArr                   = [];
+        $groupNameArr = [];
         empty($groups) || $groupNameArr = array_column($groups, 'name');
         if (in_array($params['name'], $groupNameArr)) {
             throw new CommonException(ErrorCode::INVALID_PARAMS, '该客户群分组名称已存在，不可重复添加');
@@ -90,7 +90,7 @@ class Store extends AbstractAction
     protected function rules(): array
     {
         return [
-            'corpId'            => 'required|integer|min:0|bail',
+            'corpId' => 'required|integer|min:0|bail',
             'workRoomGroupName' => 'required|string|min:1|bail',
         ];
     }
@@ -102,12 +102,12 @@ class Store extends AbstractAction
     protected function messages(): array
     {
         return [
-            'corpId.required'            => '企业授信ID 必填',
-            'corpId.integer'             => '企业授信ID 必需为整数',
-            'corpId.min'                 => '企业授信ID 不可小于1',
+            'corpId.required' => '企业授信ID 必填',
+            'corpId.integer' => '企业授信ID 必需为整数',
+            'corpId.min' => '企业授信ID 不可小于1',
             'workRoomGroupName.required' => '分组名称 必填',
-            'workRoomGroupName.string'   => '分组名称 必需是字符串类型',
-            'workRoomGroupName.min'      => '分组名称 不可为空',
+            'workRoomGroupName.string' => '分组名称 必需是字符串类型',
+            'workRoomGroupName.min' => '分组名称 不可为空',
         ];
     }
 }

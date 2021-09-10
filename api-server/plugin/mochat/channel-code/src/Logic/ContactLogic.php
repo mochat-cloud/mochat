@@ -72,13 +72,13 @@ class ContactLogic
     private function getContact()
     {
         //渠道码标识
-        $state          = 'channelCode-' . $this->params['channelCodeId'];
+        $state = 'channelCode-' . $this->params['channelCodeId'];
         $where['state'] = [$state];
-        $options        = [
+        $options = [
             'orderByRaw' => 'create_time desc',
-            'perPage'    => isset($this->params['perPage']) ? (int) $this->params['perPage'] : 15,
-            'page'       => isset($this->params['page']) ? (int) $this->params['page'] : 1,
-            'pageName'   => 'page',
+            'perPage' => isset($this->params['perPage']) ? (int) $this->params['perPage'] : 15,
+            'page' => isset($this->params['page']) ? (int) $this->params['page'] : 1,
+            'pageName' => 'page',
         ];
 
         $columns = [
@@ -93,8 +93,8 @@ class ContactLogic
         if (empty($info['data'])) {
             return [
                 'page' => [
-                    'perPage'   => 15,
-                    'total'     => 0,
+                    'perPage' => 15,
+                    'total' => 0,
                     'totalPage' => 0,
                 ],
                 'list' => [],
@@ -125,8 +125,8 @@ class ContactLogic
 
         return [
             'page' => [
-                'perPage'   => isset($info['per_page']) ? $info['per_page'] : 15,
-                'total'     => isset($info['total']) ? $info['total'] : 0,
+                'perPage' => isset($info['per_page']) ? $info['per_page'] : 15,
+                'total' => isset($info['total']) ? $info['total'] : 0,
                 'totalPage' => isset($info['last_page']) ? $info['last_page'] : 0,
             ],
             'list' => $info['data'],

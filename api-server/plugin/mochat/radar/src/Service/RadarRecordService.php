@@ -168,8 +168,8 @@ class RadarRecordService extends AbstractService implements RadarRecordContract
     public function getRadarRecordByCorpIdRadarIdGroupByChannelId(int $corpId, array $params): array
     {
         $starTime = empty($params['start_time']) ? '' : $params['start_time'];
-        $endTime  = empty($params['end_time']) ? '' : $params['end_time'];
-        $res      = $this->model::query()
+        $endTime = empty($params['end_time']) ? '' : $params['end_time'];
+        $res = $this->model::query()
             ->where('corp_id', $corpId)
             ->where('radar_id', (int) $params['id'])
             ->selectRaw('channel_id')
@@ -191,7 +191,7 @@ class RadarRecordService extends AbstractService implements RadarRecordContract
     public function countRadarRecordByCorpIdRadarIdChannelId(int $corpId, int $channelId, array $params): int
     {
         $starTime = empty($params['start_time']) ? '' : $params['start_time'];
-        $endTime  = empty($params['end_time']) ? '' : $params['end_time'];
+        $endTime = empty($params['end_time']) ? '' : $params['end_time'];
         return $this->model::query()
             ->where('corp_id', $corpId)
             ->where('radar_id', (int) $params['id'])
@@ -208,11 +208,11 @@ class RadarRecordService extends AbstractService implements RadarRecordContract
      */
     public function countRadarRecordByCorpIdContactIdSearch(int $corpId, int $contactId, array $params): int
     {
-        $channelId   = empty($params['channelId']) ? 0 : (int) $params['channelId'];
+        $channelId = empty($params['channelId']) ? 0 : (int) $params['channelId'];
         $contactName = empty($params['contactName']) ? '' : $params['contactName'];
-        $employeeId  = empty($params['employeeId']) ? 0 : (int) $params['employeeId'];
-        $starTime    = empty($params['start_time']) ? '' : $params['start_time'];
-        $endTime     = empty($params['end_time']) ? '' : $params['end_time'];
+        $employeeId = empty($params['employeeId']) ? 0 : (int) $params['employeeId'];
+        $starTime = empty($params['start_time']) ? '' : $params['start_time'];
+        $endTime = empty($params['end_time']) ? '' : $params['end_time'];
         return $this->model::query()
             ->where('corp_id', $corpId)
             ->where('radar_id', (int) $params['radar_id'])
@@ -237,12 +237,12 @@ class RadarRecordService extends AbstractService implements RadarRecordContract
      */
     public function getRadarRecordByCorpIdContactIdSearch(int $corpId, int $contactId, array $params, array $columns = ['*']): array
     {
-        $channelId   = empty($params['channelId']) ? 0 : (int) $params['channelId'];
+        $channelId = empty($params['channelId']) ? 0 : (int) $params['channelId'];
         $contactName = empty($params['contactName']) ? '' : $params['contactName'];
-        $employeeId  = empty($params['employeeId']) ? 0 : (int) $params['employeeId'];
-        $starTime    = empty($params['start_time']) ? '' : $params['start_time'];
-        $endTime     = empty($params['end_time']) ? '' : $params['end_time'];
-        $res         = $this->model::query()
+        $employeeId = empty($params['employeeId']) ? 0 : (int) $params['employeeId'];
+        $starTime = empty($params['start_time']) ? '' : $params['start_time'];
+        $endTime = empty($params['end_time']) ? '' : $params['end_time'];
+        $res = $this->model::query()
             ->where('corp_id', $corpId)
             ->where('radar_id', (int) $params['radar_id'])
             ->where('contact_id', $contactId)

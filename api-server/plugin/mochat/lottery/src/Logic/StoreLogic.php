@@ -81,17 +81,17 @@ class StoreLogic
     {
         ## 基本信息
         $data['lottery'] = [
-            'name'           => $params['lottery']['name'],
-            'description'    => $params['lottery']['description'],
-            'type'           => $params['lottery']['type'],
-            'time_type'      => $params['lottery']['time_type'],
-            'start_time'     => isset($params['lottery']['start_time']) ? $params['lottery']['start_time'] : '',
-            'end_time'       => isset($params['lottery']['end_time']) ? $params['lottery']['end_time'] : '',
-            'contact_tags'   => isset($params['lottery']['contact_tags']) ? json_encode($params['lottery']['contact_tags'], JSON_THROW_ON_ERROR) : '{}',
-            'tenant_id'      => isset($params['lottery']['tenant_id']) ? $params['lottery']['tenant_id'] : 0,
-            'corp_id'        => $user['corpIds'][0],
+            'name' => $params['lottery']['name'],
+            'description' => $params['lottery']['description'],
+            'type' => $params['lottery']['type'],
+            'time_type' => $params['lottery']['time_type'],
+            'start_time' => isset($params['lottery']['start_time']) ? $params['lottery']['start_time'] : '',
+            'end_time' => isset($params['lottery']['end_time']) ? $params['lottery']['end_time'] : '',
+            'contact_tags' => isset($params['lottery']['contact_tags']) ? json_encode($params['lottery']['contact_tags'], JSON_THROW_ON_ERROR) : '{}',
+            'tenant_id' => isset($params['lottery']['tenant_id']) ? $params['lottery']['tenant_id'] : 0,
+            'corp_id' => $user['corpIds'][0],
             'create_user_id' => $user['id'],
-            'created_at'     => date('Y-m-d H:i:s'),
+            'created_at' => date('Y-m-d H:i:s'),
         ];
 
         ##奖品
@@ -99,13 +99,13 @@ class StoreLogic
             $params['prize']['corp_card']['logo'] = File::uploadBase64Image($params['prize']['corp_card']['logo'], 'image/lottery/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg');
         }
         $data['prize'] = [
-            'prize_set'    => json_encode($this->prizeSet($params['prize']['prize_set']), JSON_THROW_ON_ERROR),
-            'is_show'      => $params['prize']['is_show'],
+            'prize_set' => json_encode($this->prizeSet($params['prize']['prize_set']), JSON_THROW_ON_ERROR),
+            'is_show' => $params['prize']['is_show'],
             'exchange_set' => json_encode($this->exchangeSet($params['prize']['exchange_set']), JSON_THROW_ON_ERROR),
-            'draw_set'     => json_encode($params['prize']['draw_set'], JSON_THROW_ON_ERROR),
-            'win_set'      => json_encode($params['prize']['win_set'], JSON_THROW_ON_ERROR),
-            'corp_card'    => isset($params['prize']['corp_card']) ? json_encode($params['prize']['corp_card'], JSON_THROW_ON_ERROR) : '{}',
-            'created_at'   => date('Y-m-d H:i:s'),
+            'draw_set' => json_encode($params['prize']['draw_set'], JSON_THROW_ON_ERROR),
+            'win_set' => json_encode($params['prize']['win_set'], JSON_THROW_ON_ERROR),
+            'corp_card' => isset($params['prize']['corp_card']) ? json_encode($params['prize']['corp_card'], JSON_THROW_ON_ERROR) : '{}',
+            'created_at' => date('Y-m-d H:i:s'),
         ];
         return $data;
     }
@@ -145,7 +145,7 @@ class StoreLogic
         Db::beginTransaction();
         try {
             ## 创建活动
-            $id                            = $this->lotteryService->createLottery($params['lottery']);
+            $id = $this->lotteryService->createLottery($params['lottery']);
             $params['prize']['lottery_id'] = $id;
             $this->lotteryPrizeService->createLotteryPrize($params['prize']);
 

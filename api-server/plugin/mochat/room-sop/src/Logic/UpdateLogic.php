@@ -135,7 +135,7 @@ class UpdateLogic
 
         $data = [
             'corp_id' => $params['corpId'],
-            'name'    => $params['name'],
+            'name' => $params['name'],
             'setting' => $params['setting'],
         ];
 

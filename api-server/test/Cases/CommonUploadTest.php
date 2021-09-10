@@ -42,9 +42,9 @@ class CommonUploadTest extends HttpTestCase
         $reqData = [
             'headers' => $headers,
         ];
-        empty($data['form_params']) || $reqData              = $data['form_params'];
+        empty($data['form_params']) || $reqData = $data['form_params'];
         empty($data['multipart']) || $reqData['multipart'][] = [
-            'name'     => $data['multipart']['name'],
+            'name' => $data['multipart']['name'],
             'contents' => fopen($data['multipart']['file'], 'rb'),
             'filename' => basename($data['multipart']['file']),
         ];

@@ -10,13 +10,13 @@ declare(strict_types=1);
  */
 namespace HyperfTest\Logic\WeWork;
 
-use MoChat\App\WorkContact\Contract\WorkContactContract;
-use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
-use MoChat\App\Corp\Logic\WxApp;
-use MoChat\App\WorkEmployee\Logic\WeWork\WxAvatarVerifyLogic;
 use Hyperf\Di\Container;
 use Hyperf\Utils\ApplicationContext;
 use HyperfTest\Stub\WeWork\ApplicationStub;
+use MoChat\App\Corp\Logic\WxApp;
+use MoChat\App\WorkContact\Contract\WorkContactContract;
+use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
+use MoChat\App\WorkEmployee\Logic\WeWork\WxAvatarVerifyLogic;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -42,7 +42,7 @@ class WxAvatarVerifyLogicTest extends TestCase
             $logic->handle(1, 'contact');
             $res = true;
         } catch (\Exception $e) {
-            $res      = false;
+            $res = false;
             $falseMsg = $e->getMessage();
         }
 
@@ -96,15 +96,15 @@ class WxAvatarVerifyLogicTest extends TestCase
      */
     protected static function fakeEmployeeList(array $args): array
     {
-        $page                            = 1;
+        $page = 1;
         isset($args[2]['page']) && $page = $args[2]['page'];
         if ($page === 1) {
             return [
                 'data' => [
                     [
-                        'id'          => 1,
-                        'wxUserId'    => 'aDaYu',
-                        'avatar'      => 'mochat/employee/xxx.png',
+                        'id' => 1,
+                        'wxUserId' => 'aDaYu',
+                        'avatar' => 'mochat/employee/xxx.png',
                         'thumbAvatar' => 'mochat/employee/xxx_thumb.png',
                     ],
                 ],
@@ -114,9 +114,9 @@ class WxAvatarVerifyLogicTest extends TestCase
             return [
                 'data' => [
                     [
-                        'id'          => 2,
-                        'wxUserId'    => 'yyy',
-                        'avatar'      => 'mochat/employee/yyy.png',
+                        'id' => 2,
+                        'wxUserId' => 'yyy',
+                        'avatar' => 'mochat/employee/yyy.png',
                         'thumbAvatar' => 'mochat/employee/yyy_thumb.png',
                     ],
                 ],
@@ -135,7 +135,7 @@ class WxAvatarVerifyLogicTest extends TestCase
      */
     protected static function fakeContactList(array $args): array
     {
-        $page                            = 1;
+        $page = 1;
         isset($args[2]['page']) && $page = $args[2]['page'];
         if ($page === 1) {
             return [

@@ -8,11 +8,10 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
-
 namespace MoChat\App\WorkEmployee\Event;
 
 /**
- * 删除成员事件
+ * 删除成员事件.
  */
 class DeleteEmployeeRawEvent
 {

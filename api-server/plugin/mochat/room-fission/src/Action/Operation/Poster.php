@@ -100,7 +100,7 @@ class Poster extends AbstractAction
 
     public function __construct(RequestInterface $request, ContainerInterface $container)
     {
-        $this->request   = $request;
+        $this->request = $request;
         $this->container = $container;
     }
 
@@ -128,12 +128,12 @@ class Poster extends AbstractAction
             return ['type' => 1, 'room' => $room, 'poster' => []];
         }
         ## 客户已入群-返回海报
-        $poster              = $this->roomFissionPosterService->getRoomFissionPosterByFissionId((int) $params['fission_id'], ['fission_id', 'cover_pic', 'avatar_show', 'nickname_show', 'nickname_color', 'qrcode_w', 'qrcode_h', 'qrcode_x', 'qrcode_y']);
-        $poster['coverPic']  = file_full_url($poster['coverPic']);
+        $poster = $this->roomFissionPosterService->getRoomFissionPosterByFissionId((int) $params['fission_id'], ['fission_id', 'cover_pic', 'avatar_show', 'nickname_show', 'nickname_color', 'qrcode_w', 'qrcode_h', 'qrcode_x', 'qrcode_y']);
+        $poster['coverPic'] = file_full_url($poster['coverPic']);
         $poster['qrCodeUrl'] = Url::getAuthRedirectUrl(8, $params['fission_id'], [
-                'parent_union_id' => $params['union_id'],
-                'wx_user_id' => '',
-            ]);
+            'parent_union_id' => $params['union_id'],
+            'wx_user_id' => '',
+        ]);
 
         $this->createRoomFissionContact($params, (int) $room['id']);
         return ['type' => 2, 'room' => [], 'poster' => $poster];
@@ -148,9 +148,9 @@ class Poster extends AbstractAction
     {
         return [
             'fission_id' => 'required',
-            'union_id'   => 'required',
-            'nickname'   => 'required',
-            'avatar'     => 'required',
+            'union_id' => 'required',
+            'nickname' => 'required',
+            'avatar' => 'required',
         ];
     }
 
@@ -162,9 +162,9 @@ class Poster extends AbstractAction
     {
         return [
             'fission_id.required' => 'fission_id 必传',
-            'union_id.required'   => 'union_id 必传',
-            'nickname.required'   => 'nickname 必传',
-            'avatar.required'     => 'avatar 必传',
+            'union_id.required' => 'union_id 必传',
+            'nickname.required' => 'nickname 必传',
+            'avatar.required' => 'avatar 必传',
         ];
     }
 
@@ -176,12 +176,12 @@ class Poster extends AbstractAction
     {
         ## 群聊
         $rooms = $this->roomFissionRoomService->getRoomFissionRoomByFissionId((int) $params['fission_id'], ['room_qrcode', 'room', 'room_max']);
-        $room  = [];
+        $room = [];
         foreach ($rooms as $k => $v) {
-            $roomArr   = json_decode($v['room'], true, 512, JSON_THROW_ON_ERROR);
+            $roomArr = json_decode($v['room'], true, 512, JSON_THROW_ON_ERROR);
             $personNum = $this->workContactRoomService->countWorkContactRoomByRoomId((int) $roomArr['id'], 0, 1);
             if ((int) $v['roomMax'] > $personNum) {
-                $room               = $roomArr;
+                $room = $roomArr;
                 $room['roomQrcode'] = $v['roomQrcode'];
                 break;
             }
@@ -196,20 +196,20 @@ class Poster extends AbstractAction
     {
         $contactRecord = $this->roomFissionContactService->getRoomFissionContactByRoomIdUnionIdFissionID($roomId, $params['union_id'], (int) $params['fission_id'], ['id']);
         if (empty($contactRecord)) {
-            $fission     = $this->roomFissionService->getRoomFissionById((int) $params['fission_id'], ['corp_id']);
-            $contact     = $this->workContactService->getWorkContactByCorpIdUnionId($fission['corpId'], $params['union_id'], ['id', 'wx_external_userid']);
+            $fission = $this->roomFissionService->getRoomFissionById((int) $params['fission_id'], ['corp_id']);
+            $contact = $this->workContactService->getWorkContactByCorpIdUnionId($fission['corpId'], $params['union_id'], ['id', 'wx_external_userid']);
             $contactData = [
-                'fission_id'       => $params['fission_id'],
-                'union_id'         => $params['union_id'],
-                'nickname'         => $params['nickname'],
-                'avatar'           => File::uploadUrlImage($params['avatar'], 'image/fission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg'),
-                'parent_union_id'  => $params['parentUnionId'],
-                'level'            => empty($params['parentUnionId']) ? 1 : 2,
-                'contact_id'       => empty($contact) ? 0 : $contact['id'],
-                'employee'         => $params['wxUserId'],
-                'is_new'           => 0,
+                'fission_id' => $params['fission_id'],
+                'union_id' => $params['union_id'],
+                'nickname' => $params['nickname'],
+                'avatar' => File::uploadUrlImage($params['avatar'], 'image/fission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg'),
+                'parent_union_id' => $params['parentUnionId'],
+                'level' => empty($params['parentUnionId']) ? 1 : 2,
+                'contact_id' => empty($contact) ? 0 : $contact['id'],
+                'employee' => $params['wxUserId'],
+                'is_new' => 0,
                 'external_user_id' => empty($contact) ? '' : $contact['wxExternalUserid'],
-                'room_id'          => $roomId,
+                'room_id' => $roomId,
             ];
             ## 数据操作
             Db::beginTransaction();

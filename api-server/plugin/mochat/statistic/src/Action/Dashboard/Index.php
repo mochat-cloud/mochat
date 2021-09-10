@@ -12,11 +12,11 @@ namespace MoChat\Plugin\Statistic\Action\Dashboard;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Plugin\Statistic\Logic\IndexLogic;
@@ -41,7 +41,7 @@ class Index extends AbstractAction
     public function __construct(IndexLogic $indexLogic, RequestInterface $request)
     {
         $this->indexLogic = $indexLogic;
-        $this->request    = $request;
+        $this->request = $request;
     }
 
     /**
@@ -49,27 +49,27 @@ class Index extends AbstractAction
      *     @Middleware(DashboardAuthMiddleware::class),
      *     @Middleware(PermissionMiddleware::class)
      * })
-     * @RequestMapping(path="/dashboard/count/index", methods="GET")
+     * @RequestMapping(path="/dashboard/statistic/index", methods="GET")
      */
     public function handle(): array
     {
-        $params['startTime']  = $this->request->input('startTime');
-        $params['endTime']    = $this->request->input('endTime');
+        $params['startTime'] = $this->request->input('startTime');
+        $params['endTime'] = $this->request->input('endTime');
         $params['employeeId'] = $this->request->input('employeeId');
-        $params['mode']       = $this->request->input('mode');
+        $params['mode'] = $this->request->input('mode');
 
-        $todayData     = $this->indexLogic->todayData();
+        $todayData = $this->indexLogic->todayData();
         $timerDataTemp = $this->indexLogic->anyTimeOrEmployeesData($params);
 
         $timerData = [];
 
         foreach ($timerDataTemp as $date => $timerDatum) {
             $timerData[] = [
-                'date'  => $date,
+                'date' => $date,
                 'total' => $timerDatum['total'],
-                'add'   => $timerDatum['add'],
-                'loss'  => $timerDatum['loss'],
-                'net'   => $timerDatum['net'],
+                'add' => $timerDatum['add'],
+                'loss' => $timerDatum['loss'],
+                'net' => $timerDatum['net'],
             ];
         }
 
@@ -95,7 +95,7 @@ class Index extends AbstractAction
         return [
             'today' => $todayData,
             'table' => $result,
-            'any'   => $timerData,
+            'any' => $timerData,
         ];
     }
 }

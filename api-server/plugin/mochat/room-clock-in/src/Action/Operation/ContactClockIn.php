@@ -103,14 +103,14 @@ class ContactClockIn extends AbstractAction
         WorkContactContract $workContactService,
         WorkContactEmployeeContract $workContactEmployeeService
     ) {
-        $this->request                     = $request;
-        $this->clockInService              = $clockInService;
-        $this->clockInContactService       = $clockInContactService;
-        $this->workEmployeeService         = $workEmployeeService;
+        $this->request = $request;
+        $this->clockInService = $clockInService;
+        $this->clockInContactService = $clockInContactService;
+        $this->workEmployeeService = $workEmployeeService;
         $this->clockInContactRecordService = $clockInContactRecordService;
-        $this->corpService                 = $corpService;
-        $this->workContactService          = $workContactService;
-        $this->workContactEmployeeService  = $workContactEmployeeService;
+        $this->corpService = $corpService;
+        $this->workContactService = $workContactService;
+        $this->workContactEmployeeService = $workContactEmployeeService;
     }
 
     /**
@@ -150,7 +150,7 @@ class ContactClockIn extends AbstractAction
     protected function rules(): array
     {
         return [
-            'id'       => 'required | integer | min:0 | bail',
+            'id' => 'required | integer | min:0 | bail',
             'union_id' => 'required',
         ];
     }
@@ -162,9 +162,9 @@ class ContactClockIn extends AbstractAction
     protected function messages(): array
     {
         return [
-            'id.required'       => '活动ID 必填',
-            'id.integer'        => '活动ID 必需为整数',
-            'id.min  '          => '活动ID 不可小于1',
+            'id.required' => '活动ID 必填',
+            'id.integer' => '活动ID 必需为整数',
+            'id.min  ' => '活动ID 不可小于1',
             'union_id.required' => 'union_id必填',
         ];
     }
@@ -174,10 +174,10 @@ class ContactClockIn extends AbstractAction
      */
     private function handleData(array $params, array $clockIn, array $contact, array $last): array
     {
-        $tasks     = json_decode($clockIn['tasks'], true, 512, JSON_THROW_ON_ERROR);
+        $tasks = json_decode($clockIn['tasks'], true, 512, JSON_THROW_ON_ERROR);
         $lastTasks = array_pop($tasks);
         $taskCount = $lastTasks['count'];
-        $status    = 0;
+        $status = 0;
         if ($clockIn['type'] === 1 && $contact['seriesDay'] + 1 >= $taskCount) {
             $status = 1;
         }
@@ -186,10 +186,10 @@ class ContactClockIn extends AbstractAction
         }
         $data = [
             'clock_in_id' => (int) $params['id'],
-            'contact_id'  => $contact['id'],
-            'day'         => date('Y-m-d H:i:s'),
-            'type'        => $clockIn['type'],
-            'created_at'  => date('Y-m-d H:i:s'),
+            'contact_id' => $contact['id'],
+            'day' => date('Y-m-d H:i:s'),
+            'type' => $clockIn['type'],
+            'created_at' => date('Y-m-d H:i:s'),
         ];
         ## 数据操作
         Db::beginTransaction();
@@ -201,8 +201,8 @@ class ContactClockIn extends AbstractAction
             $differDay = 0;
             if ($clockIn['type'] === 1) {
                 if (! empty($last)) {
-                    $lastDay   = strtotime(date('Y-m-d', strtotime($last['day'])));
-                    $today     = strtotime(date('Y-m-d', time()));
+                    $lastDay = strtotime(date('Y-m-d', strtotime($last['day'])));
+                    $today = strtotime(date('Y-m-d', time()));
                     $differDay = round(($today - $lastDay) / 3600 / 24);
                 }
                 if (empty($last) || $differDay !== 1) {
@@ -231,13 +231,13 @@ class ContactClockIn extends AbstractAction
             throw new CommonException(ErrorCode::SERVER_ERROR, $e->getMessage()); //'客户创建失败'
         }
         $dayCount = 0;
-        $status   = 0;
+        $status = 0;
         foreach (json_decode($clockIn['tasks'], true, 512, JSON_THROW_ON_ERROR) as $key => $val) {
             ## 连续打卡
             if ($clockIn['type'] === 1) {
                 if ((int) $val['count'] === $contact['seriesDay'] + 1) {
                     $dayCount = (int) $val['count'];
-                    $status   = 1;
+                    $status = 1;
                     break;
                 }
                 if ((int) $val['count'] > $contact['seriesDay'] + 1) {
@@ -249,7 +249,7 @@ class ContactClockIn extends AbstractAction
             if ($clockIn['type'] === 2) {
                 if ((int) $val['count'] === $contact['totalDay'] + 1) {
                     $dayCount = (int) $val['count'];
-                    $status   = 1;
+                    $status = 1;
                     break;
                 }
                 if ((int) $val['count'] > $contact['totalDay'] + 1) {
@@ -278,15 +278,15 @@ class ContactClockIn extends AbstractAction
                     ## 客户id
                     $data['contactId'] = $contact_id;
                     ## 员工id
-                    $contactEmployee    = $this->workContactEmployeeService->getWorkContactEmployeeByCorpIdContactId($contact_id, (int) $clockIn['corpId'], ['employee_id']);
+                    $contactEmployee = $this->workContactEmployeeService->getWorkContactEmployeeByCorpIdContactId($contact_id, (int) $clockIn['corpId'], ['employee_id']);
                     $data['employeeId'] = $contactEmployee['employeeId'];
                     ## 客户
-                    $contact                         = $this->workContactService->getWorkContactById($contact_id, ['wx_external_userid']);
+                    $contact = $this->workContactService->getWorkContactById($contact_id, ['wx_external_userid']);
                     $data['contactWxExternalUserid'] = $contact['wxExternalUserid'];
                     ## 员工
-                    $employee                 = $this->workEmployeeService->getWorkEmployeeById($contactEmployee['employeeId'], ['wx_user_id']);
+                    $employee = $this->workEmployeeService->getWorkEmployeeById($contactEmployee['employeeId'], ['wx_user_id']);
                     $data['employeeWxUserId'] = $employee['wxUserId'];
-                    $data['corpId']           = $clockIn['corpId'];
+                    $data['corpId'] = $clockIn['corpId'];
                     $this->autoTag($data);
                     $contactTag = empty($contactClockTags) ? [] : json_decode($contactClockTags, true, 512, JSON_THROW_ON_ERROR);
                     foreach ($item['tags'] as $item_tag) {

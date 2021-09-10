@@ -66,6 +66,8 @@
               <a-time-picker
                 v-model="form.day.last"
                 format="HH:mm"
+                style="width: 115px;"
+                valueFormat="HH:mm"
               />
             </div>
             提醒发送
@@ -97,7 +99,7 @@
                 <textarea placeholder="请输入文字" v-model="v.value"></textarea>
               </div>
               <div class="content-img mt16" v-if="v.type === 'image'">
-                <m-upload :def="false" text="请上传图片" v-model="v.value"/>
+                <m-upload :def="false" text="请上传图片" v-model="v.value" :ref="`uploadImg${i}`"/>
               </div>
             </div>
           </div>
@@ -124,6 +126,7 @@
 </template>
 
 <script>
+// eslint-disable-next-line no-unused-vars
 import moment from 'moment'
 
 export default {
@@ -168,19 +171,14 @@ export default {
       }
 
       if (this.sendTimeCurrent === '0') {
-        console.log(form.hour.first)
-        console.log(form.hour.last)
         if (form.hour.first == 0 && form.hour.last == 0) {
           this.$message.error('提醒时间不能同时为0')
-
           return false
         }
       }
-
       if (this.sendTimeCurrent === '1') {
         if (!form.day.first || !form.day.last) {
           this.$message.error('提醒发送时间未填写')
-
           return false
         }
       }
@@ -188,11 +186,9 @@ export default {
       for (const v of this.list) {
         if (!v.value) {
           this.$message.error('发送内容为空')
-
           return false
         }
       }
-
       const params = {
         name: form.name,
         time: {
@@ -201,14 +197,12 @@ export default {
         },
         content: this.list
       }
-
       if (this.sendTimeCurrent === '0') {
         params.time.data = form.hour
       } else {
         params.time.data = form.day
         params.time.data.last = moment(params.time.data.last).format('h:mm')
       }
-
       if (this.type === 'add') {
         this.$emit('change', params)
       } else {
@@ -217,7 +211,6 @@ export default {
           index: this.editIndex
         })
       }
-
       this.hide()
     },
 
@@ -251,18 +244,21 @@ export default {
       this.type = 'edit'
       this.editIndex = index
       this.modalShow = true
-
       this.sendTimeCurrent = data.time.type
-
       if (data.time.type === '0') {
         this.form.hour = data.time.data
       } else {
         this.form.day = data.time.data
       }
-
       this.form.name = data.name
-
       this.list = data.content
+      setTimeout(() => {
+        this.list.forEach((item, index) => {
+          if (item.type == 'image') {
+            this.$refs[`uploadImg${index}`][0].setUrl(item.value)
+          }
+        })
+      }, 200)
     },
 
     show () {

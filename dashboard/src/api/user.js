@@ -71,3 +71,11 @@ export function selectRole (params) {
     params: params
   })
 }
+// 重置密码
+export function passwordResetApi (params) {
+  return request({
+    url: '/user/passwordReset',
+    method: 'put',
+    data: params
+  })
+}

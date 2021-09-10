@@ -30,7 +30,7 @@ trait DepartmentTrait
             $this->getDepartmentRelation($parentDepartment[$department['wxParentid']], $parentDepartment, $path, $level);
         }
         return [
-            'path'  => substr($path, 0, -1),
+            'path' => substr($path, 0, -1),
             'level' => $level,
         ];
     }

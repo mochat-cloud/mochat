@@ -12,13 +12,12 @@ namespace MoChat\Plugin\RoomSop\Action\Sidebar;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
-use Hyperf\HttpServer\Contract\RequestInterface;
+use MoChat\App\Common\Middleware\SidebarAuthMiddleware;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Plugin\RoomSop\Logic\GetSopInfoLogic;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\SidebarAuthMiddleware;
 
 /**
  * h5弹窗接口.
@@ -27,21 +26,10 @@ use MoChat\App\Common\Middleware\SidebarAuthMiddleware;
 class GetSopInfo extends AbstractAction
 {
     /**
+     * @Inject
      * @var GetSopInfoLogic
      */
     protected $getSopInfo;
-
-    /**
-     * @Inject
-     * @var RequestInterface
-     */
-    protected $request;
-
-    public function __construct(GetSopInfoLogic $getSopInfo, RequestInterface $request)
-    {
-        $this->getSopInfo = $getSopInfo;
-        $this->request    = $request;
-    }
 
     /**
      * 规则详情.

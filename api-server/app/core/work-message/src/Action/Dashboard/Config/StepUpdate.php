@@ -13,10 +13,10 @@ namespace MoChat\App\WorkMessage\Action\Dashboard\Config;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
-use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkMessage\Action\Dashboard\Config\Traits\RequestTrait;
 use MoChat\App\WorkMessage\Contract\WorkMessageConfigContract;
@@ -61,14 +61,14 @@ class StepUpdate extends AbstractAction
             ++$params['chatApplyStatus'];
             ## 数据格式处理
             $params['chatWhitelistIp'] = json_encode($params['chatWhitelistIp'], JSON_UNESCAPED_UNICODE);
-            $params['chatRsaKey']      = json_encode($params['chatRsaKey'], JSON_UNESCAPED_UNICODE);
+            $params['chatRsaKey'] = json_encode($params['chatRsaKey'], JSON_UNESCAPED_UNICODE);
         } else {
             throw new CommonException(ErrorCode::INVALID_PARAMS, '申请进度错误');
         }
 
         ## 修改动作
         $messageConfigService = $this->container->get(WorkMessageConfigContract::class);
-        $id                   = $messageConfigService->getWorkMessageConfigByCorpId(user('corpIds')[0], ['id'])['id'];
+        $id = $messageConfigService->getWorkMessageConfigByCorpId(user('corpIds')[0], ['id'])['id'];
         $messageConfigService->updateWorkMessageConfigById($id, $params);
 
         return [];
