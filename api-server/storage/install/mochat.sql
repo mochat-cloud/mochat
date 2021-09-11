@@ -975,11 +975,11 @@ CREATE TABLE IF NOT EXISTS `mc_corp_day_data`  (
  `add_into_room_num` int(10) NOT NULL DEFAULT 0 COMMENT '新增入群数',
  `loss_contact_num` int(10) NOT NULL DEFAULT 0 COMMENT '流失客户数',
  `quit_room_num` int(10) NOT NULL DEFAULT 0 COMMENT '退群数',
- `date` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT '日期',
- `created_at` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
- `updated_at` timestamp(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0),
+ `date` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '日期',
+ `created_at` timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+ `updated_at` timestamp NULL on update CURRENT_TIMESTAMP,
  PRIMARY KEY (`id`)
-) COMMENT = '企业日数据';
+) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT = '企业日数据';
 
 CREATE TABLE IF NOT EXISTS `mc_auto_tag`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -999,7 +999,7 @@ CREATE TABLE IF NOT EXISTS `mc_auto_tag`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '自动打标签-基本信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '自动打标签-基本信息表';
 
 CREATE TABLE IF NOT EXISTS `mc_auto_tag_record`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1018,7 +1018,7 @@ CREATE TABLE IF NOT EXISTS `mc_auto_tag_record`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '自动打标签-记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '自动打标签-记录表';
 
 CREATE TABLE IF NOT EXISTS `mc_room_clock_in`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1041,7 +1041,7 @@ CREATE TABLE IF NOT EXISTS `mc_room_clock_in`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群打卡-基本信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群打卡-基本信息表';
 
 CREATE TABLE IF NOT EXISTS `mc_room_clock_in_contact`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1061,7 +1061,7 @@ CREATE TABLE IF NOT EXISTS `mc_room_clock_in_contact`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群打卡-客户表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群打卡-客户表';
 
 CREATE TABLE IF NOT EXISTS `mc_room_clock_in_contact_record`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1073,7 +1073,7 @@ CREATE TABLE IF NOT EXISTS `mc_room_clock_in_contact_record`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群打卡-客户打卡记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群打卡-客户打卡记录表';
 
 CREATE TABLE IF NOT EXISTS `mc_lottery`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1091,7 +1091,7 @@ CREATE TABLE IF NOT EXISTS `mc_lottery`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '抽奖活动-基本信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '抽奖活动-基本信息表';
 
 CREATE TABLE IF NOT EXISTS `mc_lottery_contact`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1113,7 +1113,7 @@ CREATE TABLE IF NOT EXISTS `mc_lottery_contact`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '抽奖活动--客户表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '抽奖活动--客户表';
 
 CREATE TABLE IF NOT EXISTS `mc_lottery_contact_record`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1130,7 +1130,7 @@ CREATE TABLE IF NOT EXISTS `mc_lottery_contact_record`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '抽奖活动-客户参与记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '抽奖活动-客户参与记录表';
 
 CREATE TABLE IF NOT EXISTS `mc_lottery_prize`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1145,7 +1145,7 @@ CREATE TABLE IF NOT EXISTS `mc_lottery_prize`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '抽奖活动-奖品信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '抽奖活动-奖品信息表';
 
 CREATE TABLE IF NOT EXISTS `mc_official_account`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1184,7 +1184,7 @@ CREATE TABLE IF NOT EXISTS `mc_official_account`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '公众号授权表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '公众号授权表';
 
 CREATE TABLE IF NOT EXISTS `mc_official_account_set`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1197,7 +1197,7 @@ CREATE TABLE IF NOT EXISTS `mc_official_account_set`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '公众号设置表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '公众号设置表';
 
 CREATE TABLE IF NOT EXISTS `mc_radar`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1224,7 +1224,7 @@ CREATE TABLE IF NOT EXISTS `mc_radar`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '互动雷达-基本信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '互动雷达-基本信息表';
 
 CREATE TABLE IF NOT EXISTS `mc_radar_channel`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1236,7 +1236,7 @@ CREATE TABLE IF NOT EXISTS `mc_radar_channel`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '互动雷达-渠道信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '互动雷达-渠道信息表';
 
 CREATE TABLE IF NOT EXISTS `mc_radar_channel_link`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1254,7 +1254,7 @@ CREATE TABLE IF NOT EXISTS `mc_radar_channel_link`  (
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `Un_INDEX`(`radar_id`, `channel_id`, `corp_id`, `employee_id`) USING BTREE COMMENT '唯一索引'
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '互动雷达-渠道链接信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '互动雷达-渠道链接信息表';
 
 CREATE TABLE IF NOT EXISTS `mc_radar_record`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1272,7 +1272,7 @@ CREATE TABLE IF NOT EXISTS `mc_radar_record`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '互动雷达-客户表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '互动雷达-客户表';
 
 CREATE TABLE IF NOT EXISTS `mc_room_calendar`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1286,7 +1286,7 @@ CREATE TABLE IF NOT EXISTS `mc_room_calendar`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群日历-基本信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群日历-基本信息表';
 
 CREATE TABLE IF NOT EXISTS `mc_room_calendar_push`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1300,7 +1300,7 @@ CREATE TABLE IF NOT EXISTS `mc_room_calendar_push`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群日历-推送信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群日历-推送信息表';
 
 CREATE TABLE IF NOT EXISTS `mc_room_calendar_record`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1312,7 +1312,7 @@ CREATE TABLE IF NOT EXISTS `mc_room_calendar_record`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB  CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群日历-推送信息记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB  CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群日历-推送信息记录表';
 
 CREATE TABLE IF NOT EXISTS `mc_room_fission`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1332,7 +1332,7 @@ CREATE TABLE IF NOT EXISTS `mc_room_fission`  (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群裂变-基础信息主表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群裂变-基础信息主表';
 
 CREATE TABLE IF NOT EXISTS `mc_room_fission_contact`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1357,7 +1357,7 @@ CREATE TABLE IF NOT EXISTS `mc_room_fission_contact`  (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群裂变-客户参与' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群裂变-客户参与';
 
 CREATE TABLE IF NOT EXISTS `mc_room_fission_invite`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1374,7 +1374,7 @@ CREATE TABLE IF NOT EXISTS `mc_room_fission_invite`  (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群裂变-邀请客户参与' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群裂变-邀请客户参与';
 
 CREATE TABLE IF NOT EXISTS `mc_room_fission_poster`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1391,7 +1391,7 @@ CREATE TABLE IF NOT EXISTS `mc_room_fission_poster`  (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群裂变-海报' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群裂变-海报';
 
 CREATE TABLE IF NOT EXISTS `mc_room_fission_room`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1404,7 +1404,7 @@ CREATE TABLE IF NOT EXISTS `mc_room_fission_room`  (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群裂变-群聊' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群裂变-群聊';
 
 CREATE TABLE IF NOT EXISTS `mc_room_fission_welcome`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1419,7 +1419,7 @@ CREATE TABLE IF NOT EXISTS `mc_room_fission_welcome`  (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群裂变-欢迎语' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群裂变-欢迎语';
 
 CREATE TABLE IF NOT EXISTS `mc_room_infinite`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1439,7 +1439,7 @@ CREATE TABLE IF NOT EXISTS `mc_room_infinite`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '无限拉群-基本信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '无限拉群-基本信息表';
 
 CREATE TABLE IF NOT EXISTS `mc_room_quality`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1458,7 +1458,7 @@ CREATE TABLE IF NOT EXISTS `mc_room_quality`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群聊质检-基本信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群聊质检-基本信息表';
 
 CREATE TABLE IF NOT EXISTS `mc_room_quality_record`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1471,7 +1471,7 @@ CREATE TABLE IF NOT EXISTS `mc_room_quality_record`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群聊质检-提醒记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '群聊质检-提醒记录表';
 
 CREATE TABLE IF NOT EXISTS `mc_room_remind`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1491,7 +1491,7 @@ CREATE TABLE IF NOT EXISTS `mc_room_remind`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '客户群提醒-基本信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '客户群提醒-基本信息表';
 
 CREATE TABLE IF NOT EXISTS `mc_room_remind_record`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1506,7 +1506,7 @@ CREATE TABLE IF NOT EXISTS `mc_room_remind_record`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '客户群提醒-提醒记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '客户群提醒-提醒记录表';
 
 CREATE TABLE IF NOT EXISTS `mc_room_tag_pull`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1525,7 +1525,7 @@ CREATE TABLE IF NOT EXISTS `mc_room_tag_pull`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '标签建群-基本信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '标签建群-基本信息表';
 
 CREATE TABLE IF NOT EXISTS `mc_room_tag_pull_contact`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1542,7 +1542,7 @@ CREATE TABLE IF NOT EXISTS `mc_room_tag_pull_contact`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '标签建群-客户表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '标签建群-客户表';
 
 CREATE TABLE IF NOT EXISTS `mc_shop_code`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1567,7 +1567,7 @@ CREATE TABLE IF NOT EXISTS `mc_shop_code`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '门店活码-基本信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '门店活码-基本信息表';
 
 CREATE TABLE IF NOT EXISTS `mc_shop_code_page`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1584,7 +1584,7 @@ CREATE TABLE IF NOT EXISTS `mc_shop_code_page`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '门店活码-页面设置表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '门店活码-页面设置表';
 
 CREATE TABLE IF NOT EXISTS `mc_shop_code_record`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1595,7 +1595,7 @@ CREATE TABLE IF NOT EXISTS `mc_shop_code_record`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '门店活码-页面点击记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '门店活码-页面点击记录表';
 
 CREATE TABLE IF NOT EXISTS `mc_work_fission`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1619,7 +1619,7 @@ CREATE TABLE IF NOT EXISTS `mc_work_fission`  (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '裂变-基础信息主表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '裂变-基础信息主表';
 
 CREATE TABLE IF NOT EXISTS `mc_work_fission_contact`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1642,7 +1642,7 @@ CREATE TABLE IF NOT EXISTS `mc_work_fission_contact`  (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '裂变-客户参与' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '裂变-客户参与';
 
 
 CREATE TABLE IF NOT EXISTS `mc_work_fission_invite`  (
@@ -1658,7 +1658,7 @@ CREATE TABLE IF NOT EXISTS `mc_work_fission_invite`  (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '裂变-邀请客户参与' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '裂变-邀请客户参与';
 
 CREATE TABLE IF NOT EXISTS `mc_work_fission_poster`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1683,7 +1683,7 @@ CREATE TABLE IF NOT EXISTS `mc_work_fission_poster`  (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '裂变-海报' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '裂变-海报';
 
 CREATE TABLE IF NOT EXISTS `mc_work_fission_push`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1697,7 +1697,7 @@ CREATE TABLE IF NOT EXISTS `mc_work_fission_push`  (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '裂变-推送' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '裂变-推送';
 
 CREATE TABLE IF NOT EXISTS `mc_work_fission_welcome`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1711,7 +1711,7 @@ CREATE TABLE IF NOT EXISTS `mc_work_fission_welcome`  (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '裂变-欢迎语' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '裂变-欢迎语';
 
 CREATE TABLE IF NOT EXISTS `mc_work_message_id`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1722,7 +1722,7 @@ CREATE TABLE IF NOT EXISTS `mc_work_message_id`  (
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '会话内容查询记录' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '会话内容查询记录';
 
 CREATE TABLE IF NOT EXISTS `mc_contact_sop`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1747,7 +1747,7 @@ CREATE TABLE IF NOT EXISTS `mc_contact_sop_log`  (
   `task` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '触发的规则json',
   `created_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `mc_room_sop`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1760,7 +1760,7 @@ CREATE TABLE IF NOT EXISTS `mc_room_sop`  (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `mc_room_sop_log`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1774,7 +1774,7 @@ CREATE TABLE IF NOT EXISTS `mc_room_sop_log`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `mc_work_transfer_log`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1825,7 +1825,7 @@ CREATE TABLE IF NOT EXISTS `mc_contact_batch_add_allot` (
   `operate_id` int(11) NOT NULL DEFAULT '0' COMMENT '操作人ID（如果有）',
   `created_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `employee_id_type_index` (`employee_id`,`type`) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT '统计索引'
+  KEY `employee_id_type_index` (`employee_id`,`type`) COMMENT '统计索引'
 ) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='批量新增客户分配记录表';
 
 CREATE TABLE IF NOT EXISTS `mc_contact_batch_add_config` (
@@ -1852,7 +1852,7 @@ CREATE TABLE IF NOT EXISTS `mc_contact_batch_add_import` (
   `phone` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '客户手机号',
   `upload_at` timestamp NULL DEFAULT NULL COMMENT '导入时间',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '添加状态 0待分配 1待添加 2待通过 3已添加',
-  `add_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '添加时间',
+  `add_at` timestamp NULL DEFAULT NULL COMMENT '添加时间',
   `employee_id` int(11) NOT NULL DEFAULT '0' COMMENT '分配员工',
   `allot_num` int(11) NOT NULL DEFAULT '0' COMMENT '分配次数',
   `remark` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '备注',
@@ -1861,7 +1861,7 @@ CREATE TABLE IF NOT EXISTS `mc_contact_batch_add_import` (
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `employee_id,status_index` (`employee_id`,`status`) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT '统计索引'
+  KEY `employee_id,status_index` (`employee_id`,`status`) COMMENT '统计索引'
 ) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='批量新增客户账号表';
 
 CREATE TABLE IF NOT EXISTS `mc_contact_batch_add_import_record` (

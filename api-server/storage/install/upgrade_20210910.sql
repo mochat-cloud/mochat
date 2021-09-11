@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `mc_contact_batch_add_import` (
   `phone` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '客户手机号',
   `upload_at` timestamp NULL DEFAULT NULL COMMENT '导入时间',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '添加状态 0待分配 1待添加 2待通过 3已添加',
-  `add_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '添加时间',
+  `add_at` timestamp NULL DEFAULT NULL COMMENT '添加时间',
   `employee_id` int(11) NOT NULL DEFAULT '0' COMMENT '分配员工',
   `allot_num` int(11) NOT NULL DEFAULT '0' COMMENT '分配次数',
   `remark` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '备注',
