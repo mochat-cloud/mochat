@@ -21,7 +21,7 @@ router.beforeEach(async (to, from, next) => {
       next({ path: '/login', query: { agentId: agentId, target: to.fullPath } })
     } else {
       if (to.matched.some(record => record.meta.initConfig)) {
-        await initConfig(to, from, next)
+        // await initConfig(to, from, next)
       }
       next()
     }

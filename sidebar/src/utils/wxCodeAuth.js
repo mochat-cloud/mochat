@@ -1,5 +1,7 @@
 import { getJssdkConfig } from '@/api/wxconfig'
 import { Toast } from 'vant'
+import { getCookie, getQuery } from '@/utils/index'
+import store from '@/store'
 
 const wx = window.wx
 // 获取微信注入参数
@@ -17,7 +19,7 @@ async function getConfigParam (uriPath, agentId) {
     console.log(e)
   }
 }
-const jsApiList = ['getCurExternalContact', 'sendChatMessage', 'getContext', 'openUserProfile', 'getCurExternalChat', 'openExistedChatWithMsg']
+const jsApiList = ['getCurExternalContact', 'sendChatMessage', 'getContext', 'openUserProfile', 'getCurExternalChat', 'openExistedChatWithMsg', 'navigateToAddCustomer']
 // wx.config
 export function wxConfig (uriPath) {
   return new Promise((resolve, reject) => {
@@ -74,39 +76,73 @@ export function agentConfig (uriPath, agentId) {
     })
   })
 }
-export function getContext () {
+
+export async function initAgentConfig () {
+  if (store.getters.initAgentConfig) {
+    return
+  }
+
+  let agentId = getQuery('agentId')
+
+  if (!agentId) {
+    agentId = getCookie('agentId')
+  }
+
+  if (!agentId) {
+    return
+  }
+
+  // 从企业微信3.0.24及以后版本（可通过企业微信UA判断版本号），无须先调用wx.config，可直接wx.agentConfig.
+  // await wxConfig(fullPath)
+  const url = window.location.href.split('#')[0]
+  await agentConfig(encodeURIComponent(url), agentId)
+  store.commit('SET_INIT_AGENT_CONFIG', true)
+}
+
+export async function getContext (retry) {
+  await initAgentConfig()
   return new Promise((resolve, reject) => {
     wx.invoke('getContext', {
-    }, function (res) {
-      if (res.err_msg == 'getContext:ok') {
+    }, async function (res) {
+      if (res.err_msg === 'getContext:ok') {
         const entry = res.entry // 返回进入H5页面的入口类型，目前有normal、contact_profile、single_chat_tools、group_chat_tools
         resolve(entry)
       } else {
-      // 错误处理
-        reject(res.err_msg)
+        if (retry !== true) {
+          store.commit('SET_INIT_AGENT_CONFIG', false)
+          resolve(await getContext(true))
+        } else {
+          // 错误处理
+          reject(res.err_msg)
+        }
       }
     })
   })
 }
 // 获取当前对话客户微信userId
-export function getCurExternalContact () {
+export async function getCurExternalContact (retry) {
+  await initAgentConfig()
   return new Promise((resolve, reject) => {
     wx.invoke('getCurExternalContact', {
-    }, function (res) {
-      if (res.err_msg == 'getCurExternalContact:ok') {
+    }, async function (res) {
+      if (res.err_msg === 'getCurExternalContact:ok') {
         const userId = res.userId // 返回当前外部联系人userId
         // commit('SET_WX_USER_ID', userId)
         resolve(userId)
       } else {
-        // Toast({ position: 'top', message: res.err_msg })
-        // 错误处理
-        reject(res.err_msg)
+        if (retry !== true) {
+          store.commit('SET_INIT_AGENT_CONFIG', false)
+          resolve(await getCurExternalContact(true))
+        } else {
+          // 错误处理
+          reject(res.err_msg)
+        }
       }
     })
   })
 }
 
-export function sendChatMessage (type, content) {
+export async function sendChatMessage (type, content, retry) {
   // 1 文本 2 图片 3 图文 5 视频 7文件
   let param
   switch (type) {
@@ -149,63 +185,84 @@ export function sendChatMessage (type, content) {
       }
       break
   }
+  await initAgentConfig()
   return new Promise((resolve, reject) => {
-    wx.invoke('sendChatMessage', param, function (res) {
-      if (res.err_msg == 'sendChatMessage:ok') {
+    wx.invoke('sendChatMessage', param, async function (res) {
+      if (res.err_msg === 'sendChatMessage:ok') {
         // 发送成功
         resolve()
       } else {
-        Toast({ position: 'top', message: res.err_msg })
-        reject(res.err_msg)
+        if (retry !== true) {
+          store.commit('SET_INIT_AGENT_CONFIG', false)
+          resolve(await sendChatMessage(type, content, true))
+        } else {
+          Toast({ position: 'top', message: res.err_msg })
+          reject(res.err_msg)
+        }
       }
     })
   })
 }
 // getCurExternalChat
-export function openUserProfile (type, userid) {
+export async function openUserProfile (type, userid, retry) {
   const params = {
     type,
     userid
   }
+  await initAgentConfig()
   return new Promise((resolve, reject) => {
-    wx.invoke('openUserProfile', params, function (res) {
-      if (res.err_msg == 'openUserProfile:ok') {
+    wx.invoke('openUserProfile', params, async function (res) {
+      if (res.err_msg === 'openUserProfile:ok') {
         // const userId = res.userId // 返回当前外部联系人userId
         // resolve(userId)
       } else {
-        Toast({ position: 'top', message: res.err_msg })
-        // 错误处理
-        reject(res.err_msg)
+        if (retry !== true) {
+          store.commit('SET_INIT_AGENT_CONFIG', false)
+          await openUserProfile(type, userid, true)
+        } else {
+          Toast({ position: 'top', message: res.err_msg })
+          // 错误处理
+          reject(res.err_msg)
+        }
       }
     })
   })
 }
 // 获取当前客户群的群ID
-export function getCurExternalChat () {
+export async function getCurExternalChat (retry) {
+  await initAgentConfig()
   return new Promise((resolve, reject) => {
-    wx.invoke('getCurExternalChat', {}, function (res) {
-      if (res.err_msg == 'getCurExternalChat:ok') {
+    wx.invoke('getCurExternalChat', {}, async function (res) {
+      if (res.err_msg === 'getCurExternalChat:ok') {
         const chatId = res.chatId // 返回当前外部联系人userId
         resolve(chatId)
       } else {
-
+        if (retry !== true) {
+          store.commit('SET_INIT_AGENT_CONFIG', false)
+          resolve(await getCurExternalChat(true))
+        }
       }
     })
   })
 }
 // 打开当前群聊
-export function openExistedChatWithMsg (chatId) {
+export async function openExistedChatWithMsg (chatId, retry) {
+  await initAgentConfig()
   const params = {
     chatId
   }
   return new Promise((resolve, reject) => {
-    wx.invoke('openExistedChatWithMsg', params, function (res) {
-      if (res.err_msg == 'openExistedChatWithMsg:ok') {
-        console.log('打开群聊sfidjrfe')
+    wx.invoke('openExistedChatWithMsg', params, async function (res) {
+      if (res.err_msg === 'openExistedChatWithMsg:ok') {
       } else {
-        Toast({ position: 'top', message: res.errmsg })
-        // 错误处理
-        reject(res.errmsg)
+        if (retry !== true) {
+          store.commit('SET_INIT_AGENT_CONFIG', false)
+          resolve(await openExistedChatWithMsg(chatId, true))
+        } else {
+          Toast({ position: 'top', message: res.errmsg })
+          // 错误处理
+          reject(res.errmsg)
+        }
       }
     })
   })
@@ -226,7 +283,8 @@ export function openExistedChatWithMsg (chatId) {
 // }
 
 // 进入添加客户界面
-export function navigateToAddCustomer () {
+export async function navigateToAddCustomer () {
+  await initAgentConfig()
   return new Promise((resolve, reject) => {
     wx.invoke('navigateToAddCustomer',
       {},
