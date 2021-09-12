@@ -331,12 +331,12 @@ export default {
       const ary = this.list.filter(item => {
         return item.checked
       })
-      ary.forEach(item => {
+      ary.forEach(async item => {
         if (this.type == 1) {
-          sendChatMessage(this.type, item.content?.content || '')
+          await sendChatMessage(this.type, item.content?.content || '')
         } else if (this.type == 3) {
           // gitee 武伟鹏(wvpyym) 修复发送链接
-          sendChatMessage(3, {
+          await sendChatMessage(3, {
             link: item.content.imageLink,
             title: item.content.title,
             desc: item.content.description,
@@ -348,11 +348,11 @@ export default {
           if (item.mediaId === '') {
             mediaIdUpdate({
               mediumId: item.id
-            }).then(res => {
-              sendChatMessage(this.type, res.data.mediaId)
+            }).then(async res => {
+              await sendChatMessage(this.type, res.data.mediaId)
             })
           } else {
-            sendChatMessage(this.type, item.mediaId)
+            await sendChatMessage(this.type, item.mediaId)
           }
         }
       })

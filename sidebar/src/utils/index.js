@@ -1,6 +1,5 @@
 import { Toast } from 'vant'
 import store from '@/store'
-import { agentConfig } from '@/utils/wxCodeAuth'
 
 // 设置 cookie
 export function setCookie (name, value, time = 7200) {
@@ -228,31 +227,9 @@ export function navShow (to) {
   store.commit('SET_NAV_SHOW', show)
 }
 
-export async function initConfig (to, from, next) {
-  if (store.getters.initAgentConfig) {
-    return
-  }
-
-  if (to.path === '/') {
-    return
-  }
-
-  let agentId = from.query.agentId
-
-  if (!agentId) {
-    agentId = getCookie('agentId')
-  }
-
-  if (!agentId) {
-    return
-  }
-
-  let fullPath = from.fullPath
-  if (from.fullPath === '/') {
-    fullPath = to.fullPath
-  }
-  // 从企业微信3.0.24及以后版本（可通过企业微信UA判断版本号），无须先调用wx.config，可直接wx.agentConfig.
-  // await wxConfig(fullPath)
-  await agentConfig(fullPath, agentId)
-  store.commit('SET_INIT_AGENT_CONFIG', true)
+export function getQuery (name) {
+  const reg = new RegExp(`(^|&)?` + name + `=([^&]*)(&|$)`, `i`)
+  const r = window.location.href.substr(1).match(reg)
+  if (r != null) return unescape(r[2])
+  return null
 }

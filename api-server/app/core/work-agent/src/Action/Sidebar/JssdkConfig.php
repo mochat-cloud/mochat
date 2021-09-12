@@ -102,8 +102,7 @@ class JssdkConfig extends AbstractAction
     {
         $uriPath = $this->request->query('uriPath', '');
         $this->jssdk = $this->weWorkClient->app($this->wxConfig)->jssdk;
-        $sidebarBaseUrl = Url::getSidebarBaseUrl();
-        $this->jssdk->setUrl($sidebarBaseUrl . $uriPath);
+        $this->jssdk->setUrl(urldecode($uriPath));
         $this->isDebug = in_array(env('APP_ENV'), ['dev', 'test']);
     }
 

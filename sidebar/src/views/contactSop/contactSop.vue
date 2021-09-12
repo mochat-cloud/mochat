@@ -93,9 +93,9 @@ export default {
         this.contactSopData = res.data
       })
     },
-    followUpBtn () {
+    async followUpBtn () {
       const userid = this.contactSopData.contact.wxExternalUserid
-      openUserProfile(2, userid)
+      await openUserProfile(2, userid)
     },
     // 复制
     copyLink (value) {

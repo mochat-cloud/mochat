@@ -102,8 +102,8 @@ export default {
       })
     },
     //  打开群聊
-    openGroup () {
-      openExistedChatWithMsg(this.sopInfoData.room.wxChatId, '')
+    async openGroup () {
+      await openExistedChatWithMsg(this.sopInfoData.room.wxChatId, '')
     }
   }
 }

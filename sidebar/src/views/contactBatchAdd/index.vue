@@ -93,13 +93,13 @@ export default {
   },
   methods: {
     // 复制按钮
-    copyBtn (item) {
+    async copyBtn (item) {
       const inputElement = this.$refs.copyInput
       inputElement.value = item.phone
       inputElement.select()
       document.execCommand('Copy')
       Toast('复制成功')
-      this.navigateToAddContact()
+      await this.navigateToAddContact()
     },
     // 获取表格数据
     getTableData () {
@@ -111,8 +111,8 @@ export default {
     switchGroup () {
       this.getTableData()
     },
-    navigateToAddContact () {
-      navigateToAddCustomer()
+    async navigateToAddContact () {
+      await navigateToAddCustomer()
     }
   }
 }
