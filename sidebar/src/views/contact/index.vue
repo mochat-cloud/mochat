@@ -207,9 +207,10 @@ export default {
     }
   },
   async created () {
+    const agentId = this.$route.query.agentId
     const entry = await getContext()
     if (entry === 'group_chat_tools') {
-      this.$router.push({ path: '/room' })
+      this.$router.push({ path: '/room', query: { agentId } })
       return
     }
 
