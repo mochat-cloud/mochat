@@ -217,5 +217,23 @@ interface WorkContactContract
      * @param string $welcomeCode 发送欢迎语的凭证
      * @param array $content 欢迎语内容
      */
-    public function sendWelcome($corpId, array $contact, string $welcomeCode, array $content): bool;
+    public function sendWelcome($corpId, array $contact, string $welcomeCode, array $content);
+
+    /**
+     * 获取发送欢迎语状态 1-已发送 0-未发送
+     *
+     * @param int $contactId
+     *
+     * @return int
+     */
+    public function getWelcomeStatus(int $contactId): int;
+
+    /**
+     * 设置发送欢迎语状态 1-已发送 0-未发送
+     *
+     * @param int $contactId
+     *
+     * @return int
+     */
+    public function setWelcomeStatus(int $contactId, int $status): bool;
 }

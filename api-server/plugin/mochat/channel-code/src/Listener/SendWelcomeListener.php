@@ -10,12 +10,13 @@ declare(strict_types=1);
  */
 namespace MoChat\Plugin\ChannelCode\Listener;
 
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 use MoChat\App\Medium\Contract\MediumContract;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
-use MoChat\App\WorkContact\Event\AddContactEvent;
+use MoChat\App\WorkContact\Event\ContactWelcomeEvent;
 use MoChat\Plugin\ChannelCode\Constants\Status as ChannelCodeStatus;
 use MoChat\Plugin\ChannelCode\Constants\WelcomeType;
 use MoChat\Plugin\ChannelCode\Contract\ChannelCodeContract;
@@ -23,7 +24,7 @@ use MoChat\Plugin\ChannelCode\Contract\ChannelCodeContract;
 /**
  * 发送欢迎语监听.
  *
- * @Listener
+ * @Listener(priority=10)
  */
 class SendWelcomeListener implements ListenerInterface
 {
@@ -46,15 +47,21 @@ class SendWelcomeListener implements ListenerInterface
      */
     private $mediumService;
 
+    /**
+     * @Inject()
+     * @var StdoutLoggerInterface
+     */
+    private $logger;
+
     public function listen(): array
     {
         return [
-            AddContactEvent::class,
+            ContactWelcomeEvent::class,
         ];
     }
 
     /**
-     * @param AddContactEvent $event
+     * @param ContactWelcomeEvent $event
      */
     public function process(object $event)
     {
@@ -68,8 +75,11 @@ class SendWelcomeListener implements ListenerInterface
         // 获取欢迎语
         $welcomeContent = $this->getWelcome($contact);
         if (empty($welcomeContent)) {
+            $this->logger->debug(sprintf('[渠道活码]客户欢迎语未发送，获取欢迎语为空，客户id: %s', (string) $contact['id']));
             return;
         }
+
+        $this->logger->debug(sprintf('[渠道活码]客户欢迎语匹配成功，即将发送，客户id: %s', (string) $contact['id']));
 
         // 发送欢迎语
         $this->workContactService->sendWelcome((int) $contact['corpId'], $contact, $contact['welcomeCode'], $welcomeContent);
@@ -126,16 +136,24 @@ class SendWelcomeListener implements ListenerInterface
             return $data;
         }
 
-        // 欢迎语
-        if (! empty($channelCode['welcomeMessage'])) {
-            $welcomeMessage = json_decode($channelCode['welcomeMessage'], true);
-            if ($welcomeMessage['scanCodePush'] == ChannelCodeStatus::OPEN && ! empty($welcomeMessage['messageDetail'])) {
-                $data['content'] = $this->handleMessageDetail($welcomeMessage['messageDetail']);
-            }
+        // 欢迎语为空也不发送
+        if (empty($channelCode['welcomeMessage'])) {
+            return $data;
         }
-        if (isset($data['content']['mediumId'])) {
-            $data['content']['medium'] = $this->getMedium((int) $data['content']['mediumId']);
-            unset($data['content']['mediumId']);
+
+        $welcomeMessage = json_decode($channelCode['welcomeMessage'], true);
+        if ($welcomeMessage['scanCodePush'] == ChannelCodeStatus::CLOSE || empty($welcomeMessage['messageDetail'])) {
+            return $data;
+        }
+
+        $data = $this->handleMessageDetail($welcomeMessage['messageDetail']);
+
+        if (isset($data['mediumId']) && ! empty($data['mediumId'])) {
+            $medium = $this->getMedium((int) $data['mediumId']);
+            if (! empty($medium)) {
+                $data['medium'] = $medium;
+            }
+            unset($data['mediumId']);
         }
 
         return $data;

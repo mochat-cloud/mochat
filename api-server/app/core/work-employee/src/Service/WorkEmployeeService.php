@@ -323,7 +323,7 @@ class WorkEmployeeService extends AbstractService implements WorkEmployeeContrac
             ->where('corp_id', $corpId)
             ->where(function ($query) use ($nameStr) {
                 $query->where('name', 'LIKE', $nameStr)
-                    ->orWhere('nick_name', 'LIKE', $nameStr);
+                    ->orWhere('alias', 'LIKE', $nameStr);
             })
             ->limit($limit)
             ->get($columns);

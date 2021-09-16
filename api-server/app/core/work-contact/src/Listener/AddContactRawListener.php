@@ -74,7 +74,7 @@ class AddContactRawListener implements ListenerInterface
         }
 
         $syncLogic = make(SyncContactByEmployeeLogic::class);
-        [$contactId, $isNewContact, $employee] = $syncLogic->handle($message['ToUserName'], $message['ExternalUserID'], $message['UserID']);
+        [$contactId, $isNewContact, $employee] = $syncLogic->handle($message['ToUserName'], $message['UserID'], $message['ExternalUserID'], $message);
 
         if ($contactId === 0) {
             return;

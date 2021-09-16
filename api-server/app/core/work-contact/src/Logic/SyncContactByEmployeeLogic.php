@@ -20,8 +20,10 @@ use MoChat\App\WorkContact\Constants\Event;
 use MoChat\App\WorkContact\Contract\ContactEmployeeTrackContract;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\App\WorkContact\Contract\WorkContactEmployeeContract;
+use MoChat\App\WorkContact\Event\ContactWelcomeEvent;
 use MoChat\App\WorkContact\Logic\Tag\SyncTagByContactLogic;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
  * 根据员工同步客户.
@@ -78,11 +80,20 @@ class SyncContactByEmployeeLogic
     private $syncTagByContactLogic;
 
     /**
+     * @Inject()
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    /**
      * @param int|string $corpId 企业授权ID
      * @param int|string $employeeId 跟进员工wxid
      * @param string $contactWxExternalUserId 客户wxid
+     * @param array $message
+     *
+     * @return array
      */
-    public function handle($corpId, $employeeId, string $contactWxExternalUserId): array
+    public function handle($corpId, $employeeId, string $contactWxExternalUserId, array $message): array
     {
         $data = [0, 0, []];
         $checkRes = $this->checkSyncData($corpId, $employeeId);
@@ -104,11 +115,20 @@ class SyncContactByEmployeeLogic
                 return [$contactId, $isNewContact, $employee];
             }
 
+            // 更早的触发发送欢迎语，因为有效期只有20秒
+            $state = isset($message['State']) ? $message['State'] : '';
+            $welcomeCode = isset($message['WelcomeCode']) ? $message['WelcomeCode'] : '';
+            $this->triggerContactWelcomeEvent($contactId, $employeeId, (string) $state, $isNewContact, $welcomeCode);
+
             // 创建客户员工关系
             $this->createContactEmployee($corpId, $contactId, $employeeId, $employee['name'], $followEmployee);
-            $this->syncTagByContactLogic->handle($corpId, $contactId, $employeeId, $followEmployee['tags']);
+
+            if (isset($followEmployee['tags']) && ! empty($followEmployee['tags'])) {
+                $this->syncTagByContactLogic->handle($corpId, $contactId, $employeeId, $followEmployee['tags']);
+            }
+
             Db::commit();
-            return [$contactId, $isNewContact];
+            return [$contactId, $isNewContact, $employee];
         } catch (\Throwable $e) {
             Db::rollBack();
             // 记录错误日志
@@ -154,8 +174,8 @@ class SyncContactByEmployeeLogic
         // 查询当前公司是否存在此客户
         $contact = $this->workContactService->getWorkContactByCorpIdWxExternalUserId($corpId, $contactWxExternalUserId, ['id']);
 
-        if (empty($contact)) {
-            return [0, (int) $contact['id'], $followEmployee];
+        if (! empty($contact)) {
+            return [(int) $contact['id'], 0, $followEmployee];
         }
 
         $wxContactRes = $this->weWorkFactory->getContactApp($corpId)->external_contact->get($contactWxExternalUserId);
@@ -168,7 +188,7 @@ class SyncContactByEmployeeLogic
         $wxContact = $wxContactRes['external_contact'];
         $isNewContact = 1;
         $contactId = (int) $this->createContact($corpId, $wxContact);
-        $followEmployee = $this->getFollowEmployee($wxContact['follow_user'], $employeeWxUserId);
+        $followEmployee = $this->getFollowEmployee($wxContactRes['follow_user'], $employeeWxUserId);
 
         return [$contactId, $isNewContact, $followEmployee];
     }
@@ -265,5 +285,29 @@ class SyncContactByEmployeeLogic
         ];
         // 记录日志
         $this->contactEmployeeTrackService->createContactEmployeeTrack($contactEmployeeTrackData);
+    }
+
+    private function triggerContactWelcomeEvent(
+        int $contactId,
+        int $employeeId,
+        string $state,
+        int $isNewContact,
+        string $welcomeCode
+    )
+    {
+        $contact = $this->workContactService->getWorkContactById($contactId);
+
+        if (empty($contact)) {
+            return;
+        }
+
+        $contact['employeeId'] = $employeeId;
+        $contact['state'] = $state;
+        $contact['isNew'] = $isNewContact;
+        $contact['welcomeCode'] = $welcomeCode;
+
+        go(function () use ($contact) {
+            $this->eventDispatcher->dispatch(new ContactWelcomeEvent($contact));
+        });
     }
 }

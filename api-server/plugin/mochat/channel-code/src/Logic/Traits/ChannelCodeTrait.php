@@ -10,41 +10,46 @@ declare(strict_types=1);
  */
 namespace MoChat\Plugin\ChannelCode\Logic\Traits;
 
+use MoChat\App\Corp\Utils\WeWorkFactory;
 use MoChat\App\WorkContact\Contract\WorkContactEmployeeContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
+use MoChat\Framework\Constants\ErrorCode;
+use MoChat\Framework\Exception\CommonException;
 use MoChat\Plugin\ChannelCode\Constants\AutoAddFriend;
 use MoChat\Plugin\ChannelCode\Constants\Status;
-use MoChat\Plugin\ChannelCode\QueueService\QrCodeUpdateApply;
+use MoChat\Plugin\ChannelCode\Contract\ChannelCodeContract;
 
 trait ChannelCodeTrait
 {
     /**
      * 更新渠道码二维码
-     * @param $drainageEmployee
-     * @param $autoAddFriend
-     * @param $corpId
-     * @param $channelCodeId
-     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @param array $drainageEmployee
+     * @param int $autoAddFriend
+     * @param int $corpId
+     * @param int $channelCodeId
+     * @param string $wxConfigId
      */
     public function handleQrCode(array $drainageEmployee, int $autoAddFriend, int $corpId, int $channelCodeId, string $wxConfigId = '')
     {
-        //处理引流成员设置 获取满足条件的员工id
+        // 处理引流成员设置 获取满足条件的员工id
         $employeeIds = $this->handelEmployee($drainageEmployee);
-        if (! empty($employeeIds)) {
-            //获取成员微信id
-            $employeeWxUserId = $this->getEmployee($employeeIds);
-            if (! empty($employeeWxUserId)) {
-                ## 生成-配置客户联系「联系我」方式-二维码
-                $skipVerify = $autoAddFriend == AutoAddFriend::OPEN ? true : false;
-                (new QrCodeUpdateApply())->handle(
-                    $corpId,
-                    $channelCodeId,
-                    $employeeWxUserId,
-                    $skipVerify,
-                    $wxConfigId
-                );
-            }
+        if (empty($employeeIds)) {
+            return;
+        }
+
+        //获取成员微信id
+        $employeeWxUserId = $this->getEmployee($employeeIds);
+        if (empty($employeeWxUserId)) {
+            return;
+        }
+
+        // 生成-配置客户联系「联系我」方式-二维码
+        $skipVerify = $autoAddFriend == AutoAddFriend::OPEN ? true : false;
+
+        if (empty($wxConfigId)) {
+            $this->createQrCode($corpId, $channelCodeId, $employeeWxUserId, $skipVerify);
+        } else {
+            $this->updateQrCode($corpId, $channelCodeId, $employeeWxUserId, $skipVerify, $wxConfigId);
         }
     }
 
@@ -165,5 +170,65 @@ trait ChannelCodeTrait
         }
 
         return array_column($res, null, 'employee_id');
+    }
+
+    private function createQrCode(int $corpId, int $channelCodeId, array $wxUserId, bool $skipVerify)
+    {
+        $config = [
+            'skip_verify' => $skipVerify,
+            'state' => 'channelCode-' . (string)$channelCodeId,
+            'user' => $wxUserId,
+        ];
+
+        $weWorkContactApp = make(WeWorkFactory::class)->getContactApp($corpId);
+        $channelCodeService = make(ChannelCodeContract::class);
+        $qrCodeRes = $weWorkContactApp->contact_way->create(2, 2, $config);
+        if ($qrCodeRes['errcode'] !== 0) {
+            $channelCodeService->deleteChannelCode($channelCodeId);
+            throw new CommonException(ErrorCode::INVALID_PARAMS, sprintf('创建二维码失败，错误信息：%s', $this->getErrMsg($qrCodeRes)));
+        }
+
+        $channelCodeService->updateChannelCodeById($channelCodeId, [
+            'qrcode_url' => $qrCodeRes['qr_code'],
+            'wx_config_id' => $qrCodeRes['config_id']
+        ]);
+    }
+
+    private function updateQrCode(int $corpId, int $channelCodeId, array $wxUserId, bool $skipVerify, string $wxConfigId)
+    {
+        $config = [
+            'skip_verify' => $skipVerify,
+            'state' => 'channelCode-' . (string)$channelCodeId,
+            'user' => $wxUserId,
+        ];
+
+        $weWorkContactApp = make(WeWorkFactory::class)->getContactApp($corpId);
+        $qrCodeRes = $weWorkContactApp->contact_way->update($wxConfigId, $config);
+        if ($qrCodeRes['errcode'] !== 0) {
+            throw new CommonException(ErrorCode::INVALID_PARAMS, sprintf('请求微信服务器更新二维码失败，错误信息：%s', $this->getErrMsg($qrCodeRes)));
+        }
+    }
+
+    /**
+     * 获取错误
+     *
+     * @param array $res
+     * @return string
+     */
+    private function getErrMsg(array $res)
+    {
+        switch ((int) $res['errcode']) {
+            case 40098:
+                $errMsg = '选择成员中含有未实名认证的';
+                break;
+            case 84074:
+                $errMsg = '选择成员中含有没有外部联系人权限的';
+                break;
+            default:
+                $errMsg = $res['errmsg'];
+                break;
+        }
+
+        return $errMsg;
     }
 }

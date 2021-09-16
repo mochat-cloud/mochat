@@ -20,7 +20,7 @@
     </div>
     <!-- 备注 -->
     <div class="remark">
-      <van-cell class="cell" is-link to="/contact/remark" >
+      <van-cell class="cell" @click="addRemark" >
         <template #title>
           <span class="title">备注</span>
           <span type="name">{{ infoDetail.remark }}</span>
@@ -35,7 +35,7 @@
       </div>
     </div>
     <div class="tag-wrapper">
-      <van-cell class="cell" is-link to="/contact/settingTag" >
+      <van-cell class="cell" @click="setTag">
         <template #title>
           <div class="title">标签</div>
           <div type="name">
@@ -207,9 +207,10 @@ export default {
     }
   },
   async created () {
+    const agentId = this.$route.query.agentId
     const entry = await getContext()
     if (entry === 'group_chat_tools') {
-      this.$router.push({ path: '/room' })
+      this.$router.push({ path: '/room', query: { agentId } })
       return
     }
 
@@ -261,10 +262,13 @@ export default {
       })
     },
     editDetail () {
-      this.$router.push({ path: '/contact/editDetail' })
+      this.$router.push({ path: '/contact/editDetail', query: { agentId: this.$route.query.agentId } })
     },
     addRemark () {
-
+      this.$router.push({ path: '/contact/remark', query: { agentId: this.$route.query.agentId } })
+    },
+    setTag () {
+      this.$router.push({ path: '/contact/settingTag', query: { agentId: this.$route.query.agentId } })
     },
     recordOnLoad () {
 

@@ -43,9 +43,6 @@ class Store extends AbstractAction
      *     @Middleware(DashboardAuthMiddleware::class),
      *     @Middleware(PermissionMiddleware::class)
      * })
-     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \League\Flysystem\FileExistsException
      * @return array 返回数组
      */
     public function handle(): array
