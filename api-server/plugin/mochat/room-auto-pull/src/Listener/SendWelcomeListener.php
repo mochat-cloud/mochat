@@ -10,6 +10,7 @@ declare(strict_types=1);
  */
 namespace MoChat\Plugin\RoomAutoPull\Listener;
 
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
@@ -17,7 +18,7 @@ use MoChat\App\Medium\Constants\Type as MediumType;
 use MoChat\App\WorkContact\Constants\Room\Status;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\App\WorkContact\Contract\WorkContactRoomContract;
-use MoChat\App\WorkContact\Event\AddContactEvent;
+use MoChat\App\WorkContact\Event\ContactWelcomeEvent;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\App\WorkRoom\Contract\WorkRoomContract;
 use MoChat\Plugin\RoomAutoPull\Contract\WorkRoomAutoPullContract;
@@ -25,7 +26,7 @@ use MoChat\Plugin\RoomAutoPull\Contract\WorkRoomAutoPullContract;
 /**
  * 发送欢迎语监听.
  *
- * @Listener
+ * @Listener(priority=10)
  */
 class SendWelcomeListener implements ListenerInterface
 {
@@ -59,15 +60,21 @@ class SendWelcomeListener implements ListenerInterface
      */
     protected $workContactRoomService;
 
+    /**
+     * @Inject()
+     * @var StdoutLoggerInterface
+     */
+    private $logger;
+
     public function listen(): array
     {
         return [
-            AddContactEvent::class,
+            ContactWelcomeEvent::class,
         ];
     }
 
     /**
-     * @param AddContactEvent $event
+     * @param ContactWelcomeEvent $event
      */
     public function process(object $event)
     {
@@ -81,8 +88,11 @@ class SendWelcomeListener implements ListenerInterface
         // 获取欢迎语
         $welcomeContent = $this->getWelcome($contact);
         if (empty($welcomeContent)) {
+            $this->logger->debug(sprintf('[自动拉群]客户欢迎语未发送，获取欢迎语为空，客户id: %s', (string) $contact['id']));
             return;
         }
+
+        $this->logger->debug(sprintf('[自动拉群]客户欢迎语匹配成功，即将发送，客户id: %s', (string) $contact['id']));
 
         // 发送欢迎语
         $this->workContactService->sendWelcome((int) $contact['corpId'], $contact, $contact['welcomeCode'], $welcomeContent);

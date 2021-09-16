@@ -13,8 +13,6 @@ namespace MoChat\App\WorkContact\Model;
 use Hyperf\Database\Model\Concerns\CamelCase;
 use Hyperf\Database\Model\SoftDeletes;
 use MoChat\Framework\Model\AbstractModel;
-use Hyperf\ModelCache\Cacheable;
-use Hyperf\ModelCache\CacheableInterface;
 
 /**
  * @property int $id
@@ -36,11 +34,10 @@ use Hyperf\ModelCache\CacheableInterface;
  * @property \Carbon\Carbon $updatedAt
  * @property string $deletedAt
  */
-class WorkContact extends AbstractModel implements CacheableInterface
+class WorkContact extends AbstractModel
 {
     use CamelCase;
     use SoftDeletes;
-    use Cacheable;
 
     /**
      * The table associated with the model.

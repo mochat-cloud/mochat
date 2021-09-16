@@ -10,20 +10,21 @@ declare(strict_types=1);
  */
 namespace MoChat\Plugin\Greeting\Listener;
 
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 use MoChat\App\Medium\Contract\MediumContract;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
-use MoChat\App\WorkContact\Event\AddContactEvent;
-use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
+use MoChat\App\WorkContact\Event\ContactWelcomeEvent;
 use MoChat\Plugin\Greeting\Constants\RangeType;
 use MoChat\Plugin\Greeting\Contract\GreetingContract;
 
 /**
  * 添加企业客户事件.
+ * 通用欢迎语执行优先级低一些，保障最后执行
  *
- * @Listener
+ * @Listener(priority=1)
  */
 class SendWelcomeListener implements ListenerInterface
 {
@@ -31,13 +32,7 @@ class SendWelcomeListener implements ListenerInterface
      * @Inject
      * @var WorkContactContract
      */
-    protected $workContactService;
-
-    /**
-     * @Inject
-     * @var WorkEmployeeContract
-     */
-    protected $workEmployeeService;
+    private $workContactService;
 
     /**
      * @Inject
@@ -51,15 +46,21 @@ class SendWelcomeListener implements ListenerInterface
      */
     private $mediumService;
 
+    /**
+     * @Inject()
+     * @var StdoutLoggerInterface
+     */
+    private $logger;
+
     public function listen(): array
     {
         return [
-            AddContactEvent::class,
+            ContactWelcomeEvent::class,
         ];
     }
 
     /**
-     * @param AddContactEvent $event
+     * @param ContactWelcomeEvent $event
      */
     public function process(object $event)
     {
@@ -71,10 +72,13 @@ class SendWelcomeListener implements ListenerInterface
         }
 
         // 获取欢迎语
-        $welcomeContent = $this->getWelcome($contact['employeeId'], (int) $contact['corpId']);
+        $welcomeContent = $this->getWelcome($contact);
         if (empty($welcomeContent)) {
+            $this->logger->debug(sprintf('[基础]客户欢迎语未发送，获取欢迎语为空，客户id: %s', (string) $contact['id']));
             return;
         }
+
+        $this->logger->debug(sprintf('[基础]客户欢迎语匹配成功，即将发送，客户id: %s', (string) $contact['id']));
 
         // 发送欢迎语
         $this->workContactService->sendWelcome((int) $contact['corpId'], $contact, $contact['welcomeCode'], $welcomeContent);
@@ -87,7 +91,9 @@ class SendWelcomeListener implements ListenerInterface
      */
     private function isNeedSendWelcome(array $contact)
     {
-        if (isset($contact['state']) && ! empty($contact['state'])) {
+        // 已经发送过不再发送
+        // 其他欢迎语可能会未设置或是不生效，也需要由通用欢迎语发送
+        if ($this->workContactService->getWelcomeStatus((int) $contact['id']) === 1) {
             return false;
         }
 
@@ -103,7 +109,7 @@ class SendWelcomeListener implements ListenerInterface
      *
      * @param array $contact 客户
      *
-     * @return array[]
+     * @return array
      */
     private function getWelcome(array $contact): array
     {
@@ -143,9 +149,6 @@ class SendWelcomeListener implements ListenerInterface
             $data['medium'] = $this->getMedium((int) $data['mediumId']);
             unset($data['mediumId']);
         }
-//        $params       = ['contactWxExternalUserid' => $externalUserID, 'wxUserId' => $wxUserId, 'corpId' => (int) $corpId];
-//        $autoTag      = $this->autoTagLogic->getAutoTag($params);
-//        $data['tags'] = $autoTag['tags'];
         return $data;
     }
 

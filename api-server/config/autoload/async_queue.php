@@ -45,6 +45,17 @@ return [
             'limit' => 2,
         ],
     ],
+    'welcome' => [
+        'driver' => \Hyperf\AsyncQueue\Driver\RedisDriver::class,
+        'channel' => 'welcome.queue',
+        'timeout' => 2,
+        'retry_seconds' => 5,
+        'handle_timeout' => 60,
+        'processes' => 1,
+        'concurrent' => [
+            'limit' => 10,
+        ],
+    ],
     'room' => [
         'driver' => \Hyperf\AsyncQueue\Driver\RedisDriver::class,
         'channel' => 'room.queue',

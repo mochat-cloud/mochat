@@ -8,6 +8,7 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
+
 namespace MoChat\App\WorkContact\Service;
 
 use Hyperf\Database\Model\Builder;
@@ -20,6 +21,7 @@ use MoChat\App\WorkContact\QueueService\SendWelcome;
 use MoChat\App\WorkEmployee\Model\WorkEmployee;
 use MoChat\Framework\Service\AbstractService;
 use MoChat\Plugin\ShopCode\Model\ShopCode;
+use Psr\SimpleCache\CacheInterface;
 
 class WorkContactService extends AbstractService implements WorkContactContract
 {
@@ -368,7 +370,7 @@ class WorkContactService extends AbstractService implements WorkContactContract
         $endTime = '';
         $tagIds = '';
         if ($isAll === 1) {
-            $gender = isset($params['gender']) ? (int) $params['gender'] : '';
+            $gender = isset($params['gender']) ? (int)$params['gender'] : '';
             $starTime = isset($params['start_time']) ? $params['start_time'] : '';
             $endTime = isset($params['end_time']) ? $params['end_time'] : '';
             $tagIds = isset($params['tag_ids']) ? $params['tag_ids'] : '';
@@ -381,13 +383,13 @@ class WorkContactService extends AbstractService implements WorkContactContract
             ->when(is_numeric($gender), function (Builder $query) use ($gender) {
                 return $query->where('work_contact.gender', '=', $gender);
             })
-            ->when(! empty($starTime), function (Builder $query) use ($starTime) {
+            ->when(!empty($starTime), function (Builder $query) use ($starTime) {
                 return $query->where('work_contact.created_at', '>', "'" . $starTime . "'");
             })
-            ->when(! empty($endTime), function (Builder $query) use ($endTime) {
+            ->when(!empty($endTime), function (Builder $query) use ($endTime) {
                 return $query->where('work_contact.created_at', '<', "'" . $endTime . "'");
             })
-            ->when(! empty($tagIds), function (Builder $query) use ($tagIds) {
+            ->when(!empty($tagIds), function (Builder $query) use ($tagIds) {
                 return $query->whereIn('ctp.contact_tag_id', $tagIds);
             })
             ->distinct()
@@ -412,7 +414,7 @@ class WorkContactService extends AbstractService implements WorkContactContract
         $endTime = '';
         $tagIds = '';
         if ($isAll === 1) {
-            $gender = (isset($params['gender']) && $params['gender'] !== '') ? (int) $params['gender'] : '';
+            $gender = (isset($params['gender']) && $params['gender'] !== '') ? (int)$params['gender'] : '';
             $starTime = isset($params['start_time']) ? $params['start_time'] : '';
             $endTime = isset($params['end_time']) ? $params['end_time'] : '';
             $tagIds = isset($params['tag_ids']) ? $params['tag_ids'] : '';
@@ -427,13 +429,13 @@ class WorkContactService extends AbstractService implements WorkContactContract
             ->when(is_numeric($gender), function (Builder $query) use ($gender) {
                 return $query->where('work_contact.gender', '=', $gender);
             })
-            ->when(! empty($starTime), function (Builder $query) use ($starTime) {
+            ->when(!empty($starTime), function (Builder $query) use ($starTime) {
                 return $query->where('work_contact.created_at', '>', "'" . $starTime . "'");
             })
-            ->when(! empty($endTime), function (Builder $query) use ($endTime) {
+            ->when(!empty($endTime), function (Builder $query) use ($endTime) {
                 return $query->where('work_contact.created_at', '<', "'" . $endTime . "'");
             })
-            ->when(! empty($tagIds), function (Builder $query) use ($tagIds) {
+            ->when(!empty($tagIds), function (Builder $query) use ($tagIds) {
                 return $query->whereIn('ctp.contact_tag_id', $tagIds);
             })
             ->distinct()
@@ -457,14 +459,14 @@ class WorkContactService extends AbstractService implements WorkContactContract
      */
     public function countWorkContactsBySearch(int $corpId, array $params): int
     {
-        $isAll = (int) $params['is_all'];
+        $isAll = (int)$params['is_all'];
         $employeeIds = $params['employees'];
         $gender = '';
         $starTime = '';
         $endTime = '';
         $tagIds = '';
         if ($isAll === 1) {
-            $gender = (isset($params['gender']) && $params['gender'] !== '') ? (int) $params['gender'] : '';
+            $gender = (isset($params['gender']) && $params['gender'] !== '') ? (int)$params['gender'] : '';
             $starTime = isset($params['start_time']) ? $params['start_time'] : '';
             $endTime = isset($params['end_time']) ? $params['end_time'] : '';
             $tagIds = isset($params['tag_ids']) ? $params['tag_ids'] : '';
@@ -479,13 +481,13 @@ class WorkContactService extends AbstractService implements WorkContactContract
             ->when(is_numeric($gender), function (Builder $query) use ($gender) {
                 return $query->where('work_contact.gender', '=', $gender);
             })
-            ->when(! empty($starTime), function (Builder $query) use ($starTime) {
+            ->when(!empty($starTime), function (Builder $query) use ($starTime) {
                 return $query->where('work_contact.created_at', '>', "'" . $starTime . "'");
             })
-            ->when(! empty($endTime), function (Builder $query) use ($endTime) {
+            ->when(!empty($endTime), function (Builder $query) use ($endTime) {
                 return $query->where('work_contact.created_at', '<', "'" . $endTime . "'");
             })
-            ->when(! empty($tagIds), function (Builder $query) use ($tagIds) {
+            ->when(!empty($tagIds), function (Builder $query) use ($tagIds) {
                 return $query->whereIn('ctp.contact_tag_id', $tagIds);
             })
             ->distinct()
@@ -502,7 +504,7 @@ class WorkContactService extends AbstractService implements WorkContactContract
             ->where('work_contact.corp_id', $corpId)
             ->where('ce.status', $status)
             ->whereIn('ce.state', $state)
-            ->when(! empty($day), function (Builder $query) use ($day) {
+            ->when(!empty($day), function (Builder $query) use ($day) {
                 return $query->where('work_contact.created_at', '>', "'" . $day . "'");
             })
             ->distinct()
@@ -528,26 +530,26 @@ class WorkContactService extends AbstractService implements WorkContactContract
             ->join(ShopCode::query()->getModel()->getTable() . ' as sc', 'e.id', 'sc.employee->id')
             ->where('work_contact.corp_id', $corpId)
             ->whereIn('ce.state', $state)
-            ->when(! empty($contactName), function (Builder $query) use ($contactName) {
+            ->when(!empty($contactName), function (Builder $query) use ($contactName) {
                 return $query->where('work_contact.name', 'like', '%' . $contactName . '%');
             })
             ->when(is_numeric($employeeId), function (Builder $query) use ($employeeId) {
                 return $query->where('sc.employee->id', '=', $employeeId);
             })
-            ->when(! empty($starTime), function (Builder $query) use ($starTime, $endTime) {
+            ->when(!empty($starTime), function (Builder $query) use ($starTime, $endTime) {
                 return $query->whereBetween('work_contact.created_at', [$starTime, $endTime]);
             })
-            ->when(! empty($shopName), function (Builder $query) use ($shopName) {
+            ->when(!empty($shopName), function (Builder $query) use ($shopName) {
                 return $query->where('sc.name', 'like', '%' . $shopName . '%');
             })
             ->when(is_numeric($status), function (Builder $query) use ($status) {
                 return $query->where('ce.status', '=', $status);
             })
-            ->when(! empty($province), function (Builder $query) use ($province, $city) {
+            ->when(!empty($province), function (Builder $query) use ($province, $city) {
                 return $query->where([['sc.province', '=', $province], ['sc.city', '=', $city]]);
             })
             ->distinct()
-            ->paginate((int) $params['perPage'], [
+            ->paginate((int)$params['perPage'], [
                 'work_contact.id as contactId',
                 'work_contact.name as contactName',
                 'work_contact.avatar',
@@ -558,7 +560,7 @@ class WorkContactService extends AbstractService implements WorkContactContract
                 'sc.province',
                 'sc.address',
                 'sc.city',
-            ], 'page', (int) $params['page']);
+            ], 'page', (int)$params['page']);
         $res || $res = collect([]);
 
         if ($res === null) {
@@ -576,8 +578,36 @@ class WorkContactService extends AbstractService implements WorkContactContract
      * @param string $welcomeCode 发送欢迎语的凭证
      * @param array $content 欢迎语内容
      */
-    public function sendWelcome($corpId, array $contact, string $welcomeCode, array $content): bool
+    public function sendWelcome($corpId, array $contact, string $welcomeCode, array $content)
     {
-        return make(SendWelcome::class)->handle($corpId, $contact, $welcomeCode, $content);
+        $this->setWelcomeStatus((int)$contact['id'], 1);
+        make(SendWelcome::class)->handle($corpId, $contact, $welcomeCode, $content);
+    }
+
+    /**
+     * 获取发送欢迎语状态 1-已发送 0-未发送
+     *
+     * @param int $contactId
+     *
+     * @return int
+     */
+    public function getWelcomeStatus(int $contactId): int
+    {
+        $cache = make(CacheInterface::class);
+        $result = $cache->get(sprintf('contact:welcome_status:%s', (string)$contactId));
+        return $result ? (int)$result : 0;
+    }
+
+    /**
+     * 设置发送欢迎语状态 1-已发送 0-未发送
+     *
+     * @param int $contactId
+     *
+     * @return bool
+     */
+    public function setWelcomeStatus(int $contactId, int $status): bool
+    {
+        $cache = make(CacheInterface::class);
+        return $cache->set(sprintf('contact:welcome_status:%s', (string)$contactId), $status, 60);
     }
 }
