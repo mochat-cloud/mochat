@@ -242,7 +242,7 @@ class SyncContactByEmployeeLogic
         // 查询当前用户与客户是否存在关联信息
         $workContactEmployee = $this->workContactEmployeeService->findWorkContactEmployeeByOtherIds($employeeId, $contactId, ['id']);
 
-        if (empty($workContactEmployee)) {
+        if (! empty($workContactEmployee)) {
             return;
         }
 
