@@ -60,7 +60,10 @@ class RoomIndex extends AbstractAction
         // 组织查询条件
         $where = [];
         empty($params['name']) || $where['name'] = $params['name'];
-        ! is_numeric($params['roomGroupId']) || $where['room_group_id'] = $params['roomGroupId'];
+
+        if (is_numeric($params['roomGroupId']) && $params['roomGroupId'] > 0) {
+            $where['room_group_id'] = $params['roomGroupId'];
+        }
 
         //查询总群聊数
         $total = $this->room->countWorkRoomByCorpIds(user()['corpIds']);
