@@ -34,7 +34,9 @@ class SidebarAuthMiddleware extends AuthMiddleware
 
             $request = Context::override(ServerRequestInterface::class, function (ServerRequestInterface $request) use ($user) {
                 $userInfo = $user->toArray();
+                // TODO 暂时兼容处理，需要优化 Logic 层不允许直接使用 user() 函数
                 $userInfo['corpIds'] = [$userInfo['corpId']];
+                $userInfo['workEmployeeId'] = $userInfo['id'];
                 return $request->withAttribute('user', $userInfo);
             });
         }
