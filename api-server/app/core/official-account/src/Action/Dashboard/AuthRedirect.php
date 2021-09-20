@@ -77,7 +77,11 @@ class AuthRedirect extends AbstractAction
             $authorizationInfo['authorizer_refresh_token'],
         );
         $officialAccount = rebind_app($officialAccount, $this->request);
-        $officialAccount->account->create();
+        $res = $officialAccount->account->get();
+        // 如果未绑定过开放平台账号时才自动创建并绑定
+        if ($res['errcode'] === 89002) {
+            $officialAccount->account->create();
+        }
     }
 
     /**
