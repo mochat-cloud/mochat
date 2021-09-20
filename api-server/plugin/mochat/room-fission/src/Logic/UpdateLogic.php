@@ -65,26 +65,9 @@ class UpdateLogic
      */
     private $logger;
 
-    public function __construct(
-        StdoutLoggerInterface $logger,
-        RoomFissionContract $roomFissionService,
-        RoomFissionPosterContract $roomFissionPosterService,
-        RoomFissionWelcomeContract $roomFissionWelcomeService,
-        RoomFissionRoomContract $roomFissionRoomService,
-        RoomFissionInviteContract $roomFissionInviteService
-    ) {
-        $this->logger = $logger;
-        $this->roomFissionService = $roomFissionService;
-        $this->roomFissionPosterService = $roomFissionPosterService;
-        $this->roomFissionWelcomeService = $roomFissionWelcomeService;
-        $this->roomFissionRoomService = $roomFissionRoomService;
-        $this->roomFissionInviteService = $roomFissionInviteService;
-    }
-
     /**
      * @param array $user 登录用户信息
      * @param array $params 请求参数
-     * @throws \JsonException|\League\Flysystem\FileExistsException
      * @return array 响应数组
      */
     public function handle(array $user, array $params): array
@@ -101,7 +84,6 @@ class UpdateLogic
      * 处理参数.
      * @param array $user 用户信息
      * @param array $params 接受参数
-     * @throws \JsonException|\League\Flysystem\FileExistsException
      * @return array 响应数组
      */
     private function handleParam(array $user, array $params): array
