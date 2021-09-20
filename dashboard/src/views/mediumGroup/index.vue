@@ -620,7 +620,7 @@
                   @successDefine="uploadSuccessV"
                   :file-type="4"></vpload>
                 <div v-if="uploadDefine" style="color: red">上传成功</div>
-                <div>(上传文件大小不超过20MB，支持DOC、DOCX、XLS、XLSX、CSV、PPT、PPTX、TXT、PDF及Xmind格式。)</div>
+                <div>(上传文件大小不超过20MB，支持DOC、DOCX、XLS、XLSX、CSV、PPT、PPTX、TXT、PDF、ZIP、RAR及Xmind格式。)</div>
               </a-form-item>
             </a-form>
             <template slot="footer">

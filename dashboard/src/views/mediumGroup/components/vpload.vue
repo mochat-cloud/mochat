@@ -30,7 +30,7 @@ export default {
         ['jpg', 'png', 'jpeg'],
         ['mp3', 'amr'],
         ['mp4'],
-        ['doc', 'docx', 'xls', 'xlsx', 'csv', 'ppt', 'pptx', 'txt', 'pdf', 'Xmind']
+        ['doc', 'docx', 'xls', 'xlsx', 'csv', 'ppt', 'pptx', 'txt', 'pdf', 'Xmind', 'zip', 'rar']
       ],
       uploadApi: process.env.VUE_APP_API_BASE_URL + '/dashboard/common/upload'
     }
@@ -65,6 +65,7 @@ export default {
       const fileType = file.type.split('/')[0]
       const file2M = file.size / 1024 / 1024 < 2
       const file10M = file.size / 1024 / 1024 < 10
+      const file20M = file.size / 1024 / 1024 < 20
       let ary = []
       if (this.fileType instanceof Array) {
         this.fileType.map(item => {
@@ -78,6 +79,13 @@ export default {
         this.$message.error(`您只能上传以下类型： ${ary.join(',')}`)
         return false
       }
+      if (this.fileType === 4) {
+        if (!file20M) {
+          this.$message.error('上传文件过大')
+        }
+        return flag && file20M
+      }
+
       if (fileType === 'video') {
         if (!file10M) {
           this.$message.error('上传文件过大')
