@@ -6,7 +6,7 @@ import index from '../views/index/index'
 import workFissionIndex from '../views/workFission/index'
 import speed from '../views/workFission/speed'
 //抽奖活动
-import lotteryIndex from '../views/lottery/lotteryIndex'
+import lotteryIndex from '../views/lottery/index'
 import explain from "@/views/lottery/explain";
 //群打卡
 import roomClockIndex from "@/views/roomClockIn/index";

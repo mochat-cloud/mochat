@@ -9,7 +9,7 @@
             </div>
             <div class="content">
                 <div class="box">
-                    32312
+                    {{ lottery.description }}
                 </div>
             </div>
             <div class="time">
@@ -17,8 +17,11 @@
                     抽奖活动时间
                 </p>
                 <div class="bottom">
-                    <div class="box">
-
+                    <div class="box" v-if="lottery.timeType===1">
+                        永久有效
+                    </div>
+                    <div class="box" v-else>
+                        {{ lottery.startTime }} - {{ lottery.endTime }}
                     </div>
                 </div>
             </div>
@@ -30,11 +33,13 @@
 export default {
     data() {
         return {
-            modalShow: false
+            modalShow: false,
+            lottery: {}
         }
     },
     methods: {
-        show() {
+        show(lottery) {
+            this.lottery = lottery
             this.modalShow = true
         }
     }
