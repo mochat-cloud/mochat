@@ -75,15 +75,15 @@ export function setclientTags (params) {
 // 客户标签列表  page：页码必传   perPage：每页显示条数必传
 export function clientTagsReceive (params) {
   return request({
-    url: 'workContactTag/contactTagList',
+    url: '/workContactTag/contactTagList',
     method: 'get',
     params: params
   })
 }
 // 详细打卡天数
-export function roomClockInDays (params) {
+export function dayDetail (params) {
   return request({
-    url: '/roomClockIn/roomClockInDays',
+    url: '/roomClockIn/dayDetail',
     method: 'get',
     params: params
   })

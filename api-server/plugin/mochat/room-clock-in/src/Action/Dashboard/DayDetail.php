@@ -32,7 +32,7 @@ use MoChat\Plugin\RoomClockIn\Contract\ClockInContract;
  * Class Show.
  * @Controller
  */
-class ClockInDays extends AbstractAction
+class DayDetail extends AbstractAction
 {
     use ValidateSceneTrait;
 
@@ -81,7 +81,7 @@ class ClockInDays extends AbstractAction
     }
 
     /**
-     * @RequestMapping(path="/dashboard/roomClockIn/clockInDays", methods="get")
+     * @RequestMapping(path="/dashboard/roomClockIn/dayDetail", methods="get")
      * @Middlewares({
      *     @Middleware(DashboardAuthMiddleware::class),
      *     @Middleware(PermissionMiddleware::class)

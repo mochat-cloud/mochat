@@ -184,7 +184,7 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { detailsList, clientDetails, roomClockInDays, batchContactTagsApi } from '@/api/roomClockIn'
+import { detailsList, clientDetails, dayDetail, batchContactTagsApi } from '@/api/roomClockIn'
 import addlableIndex from '@/components/addlabel/index'
 import { Calendar } from 'ant-design-vue'
 export default {
@@ -352,7 +352,7 @@ export default {
     },
     // 查看行详情
     seeTableRow (obj) {
-      roomClockInDays({
+      dayDetail({
         id: this.activityId,
         contact_id: obj.id
       }).then((res) => {
