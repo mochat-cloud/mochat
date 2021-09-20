@@ -12,7 +12,7 @@
             </div>
         </div>
         <div class="explain">
-            <span @click="$refs.explain.show()">活动说明</span>
+            <span @click="$refs.explain.show(clientData.lottery)">活动说明</span>
         </div>
         <div class="lottery-draw">
             <div class="lottery-box">

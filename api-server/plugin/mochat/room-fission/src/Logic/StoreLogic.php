@@ -69,26 +69,9 @@ class StoreLogic
      */
     protected $logger;
 
-    public function __construct(
-        StdoutLoggerInterface $logger,
-        RoomFissionContract $roomFissionService,
-        RoomFissionPosterContract $roomFissionPosterService,
-        RoomFissionWelcomeContract $roomFissionWelcomeService,
-        RoomFissionRoomContract $roomFissionRoomService,
-        RoomFissionInviteContract $roomFissionInviteService
-    ) {
-        $this->logger = $logger;
-        $this->roomFissionService = $roomFissionService;
-        $this->roomFissionPosterService = $roomFissionPosterService;
-        $this->roomFissionWelcomeService = $roomFissionWelcomeService;
-        $this->roomFissionRoomService = $roomFissionRoomService;
-        $this->roomFissionInviteService = $roomFissionInviteService;
-    }
-
     /**
      * @param array $user 登录用户信息
      * @param array $params 请求参数
-     * @throws \JsonException|\League\Flysystem\FileExistsException
      * @return array 响应数组
      */
     public function handle(array $user, array $params): array
@@ -96,7 +79,7 @@ class StoreLogic
         ## 处理参数
         $params = $this->handleParam($user, $params);
         ## 创建活动
-        $id = $this->createRoomFission($params);
+        $id = $this->createRoomFission((int) $user['corpIds'][0], $params);
 
         return [$id];
     }
@@ -105,7 +88,6 @@ class StoreLogic
      * 处理参数.
      * @param array $user 用户信息
      * @param array $params 接受参数
-     * @throws \JsonException|\League\Flysystem\FileExistsException
      * @return array 响应数组
      */
     private function handleParam(array $user, array $params): array
@@ -129,21 +111,13 @@ class StoreLogic
         if (! empty($params['welcome']['link_pic'])) {
             $params['welcome']['link_pic'] = File::uploadBase64Image($params['welcome']['link_pic'], 'image/roomFission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg');
         }
-        ##EasyWeChat上传图片
-        if (empty($params['welcome']['link_pic'])) {
-            $wxUrl = ['url' => ''];
-        } else {
-            $localFile = File::download(file_full_url($params['welcome']['link_pic']), $params['welcome']['link_pic']);
-            $wxUrl = $this->wxApp($user['corpIds'][0], 'contact')->media->uploadImg($localFile);
-        }
-        $templateId = $this->handleWelcome($user['corpIds'][0], $params['welcome'], $wxUrl['url']);
+
         $data['welcome'] = [
             'text' => $params['welcome']['text'],
             'link_title' => $params['welcome']['link_title'],
             'link_desc' => $params['welcome']['link_desc'],
             'link_pic' => $params['welcome']['link_pic'],
-            'link_wx_url' => $wxUrl['url'],
-            'template_id' => $templateId,
+            'link_wx_url' => $params['welcome']['link_pic'],
             'create_user_id' => $user['id'],
             'created_at' => date('Y-m-d H:i:s'),
         ];
@@ -187,7 +161,7 @@ class StoreLogic
      * @param array $params 参数
      * @return int 响应数值
      */
-    private function createRoomFission(array $params): int
+    private function createRoomFission($corpId, array $params): int
     {
         ## 数据操作
         Db::beginTransaction();
@@ -199,6 +173,8 @@ class StoreLogic
             $this->roomFissionPosterService->createRoomFissionPoster($params['poster']);
             ## 欢迎语
             $params['welcome']['fission_id'] = $id;
+            $templateId = $this->handleWelcome($corpId, (int) $id, $params['welcome']);
+            $params['welcome']['template_id'] = $templateId;
             $this->roomFissionWelcomeService->createRoomFissionWelcome($params['welcome']);
             ## 群聊
             foreach ($params['rooms'] as $k => $v) {
@@ -221,16 +197,31 @@ class StoreLogic
     }
 
     /**
-     * @throws \EasyWeChat\Kernel\Exceptions\InvalidArgumentException
-     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * 处理欢迎语
+     *
+     * @param int $corpId
+     * @param int $fissionId
+     * @param array $welcome
+     * @return string
      */
-    private function handleWelcome(int $corpId, array $welcome, string $pic_url): string
+    private function handleWelcome(int $corpId, int $fissionId, array $welcome): string
     {
-        $url = Url::getAuthRedirectUrl(8, $corpId, ['parent_union_id' => '', 'wx_user_id' => '']);
+        $url = Url::getAuthRedirectUrl(8, $fissionId, ['parent_union_id' => '', 'wx_user_id' => '']);
         $easyWeChatParams['text']['content'] = $welcome['text'];
-        $easyWeChatParams['link'] = ['title' => $welcome['link_title'], 'picurl' => $pic_url, 'desc' => $welcome['link_desc'], 'url' => $url];
-        ##EasyWeChat添加入群欢迎语素材
+        $easyWeChatParams['link'] = [
+            'title' => $welcome['link_title'],
+            'url' => $url
+        ];
+
+        if (isset($welcome['link_pic']) && !empty($welcome['link_pic'])) {
+            $easyWeChatParams['link']['picurl'] = $welcome['link_pic'];
+        }
+
+        if (isset($welcome['desc']) && !empty($welcome['desc'])) {
+            $easyWeChatParams['link']['desc'] = $welcome['desc'];
+        }
+
+        ## EasyWeChat添加入群欢迎语素材
         $template = $this->wxApp($corpId, 'contact')->external_contact_message_template->create($easyWeChatParams);
         if ($template['errcode'] !== 0) {
             throw new CommonException(ErrorCode::INVALID_PARAMS, '添加入群欢迎语素材失败' . $template['errmsg']);

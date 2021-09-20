@@ -11,7 +11,7 @@
             </div>
         </div>
         <div class="bg">
-            <span @click="$refs.roomClockInExplain.show()">活动说明</span>
+            <span @click="$refs.roomClockInExplain.show(clientclockIn.description)">活动说明</span>
         </div>
         <div class="days-box-top">
             <div class="customer-profile">
@@ -88,145 +88,145 @@
 </template>
 
 <script>
-    import 'moment/locale/zh-cn';
-    import roomClockInExplain from "@/views/roomClockIn/roomClockInExplain";
-    import success from "@/views/roomClockIn/success";
-    import {
-        contactDataApi,
-        clockInRankingApi,
-        contactClockInApi,
-        receiveApi,
-        openUserInfoApi
-    } from "@/api/roomClockIn";
+import 'moment/locale/zh-cn';
+import roomClockInExplain from "@/views/roomClockIn/explain";
+import success from "@/views/roomClockIn/success";
+import {
+    contactDataApi,
+    clockInRankingApi,
+    contactClockInApi,
+    receiveApi,
+    openUserInfoApi
+} from "@/api/roomClockIn";
 
-    export default {
-        components: {
-            roomClockInExplain,
-            success
+export default {
+    components: {
+        roomClockInExplain,
+        success
+    },
+    data() {
+        return {
+            table: {
+                col: [
+                    {
+                        dataIndex: 'ranking',
+                        title: '名次'
+                    },
+                    {
+                        dataIndex: 'nickname',
+                        title: '昵称',
+                        scopedSlots: {customRender: 'nickname'}
+                    },
+                    {
+                        dataIndex: 'day_count',
+                        title: '打卡天数'
+                    }
+                ],
+                data: []
+            },
+            clockShow: false,
+            daysShow: true,
+            //用户微信信息
+            weChatUserNews: {},
+            //  客户打卡信息
+            clientclockIn: {},
+            //排行榜
+            ranklist: {},
+            //  未签到的天数
+            noSignIn: []
+        }
+    },
+    created() {
+        this.id = this.$route.query.id;
+        this.getOpenUserInfo();
+    },
+    methods: {
+        getOpenUserInfo() {
+            let that = this;
+            openUserInfoApi({
+                id: that.id
+            }).then((res) => {
+                if (res.data.openid === undefined) {
+                    let redirectUrl = '/auth/roomClockIn?id=' + that.id + '&target=' + encodeURIComponent(that.url);
+                    that.$redirectAuth(redirectUrl);
+                }
+
+                this.weChatUserNews = res.data;
+                //  获取客户数据
+                this.getClinentData()
+                //  获取排行榜数据
+                this.getRankList()
+            });
         },
-        data() {
-            return {
-                table: {
-                    col: [
-                        {
-                            dataIndex: 'ranking',
-                            title: '名次'
-                        },
-                        {
-                            dataIndex: 'nickname',
-                            title: '昵称',
-                            scopedSlots: {customRender: 'nickname'}
-                        },
-                        {
-                            dataIndex: 'day_count',
-                            title: '打卡天数'
-                        }
-                    ],
-                    data: []
-                },
-                clockShow: false,
-                daysShow: true,
-                //用户微信信息
-                weChatUserNews: {},
-                //  客户打卡信息
-                clientclockIn: {},
-                //排行榜
-                ranklist: {},
-                //  未签到的天数
-                noSignIn: []
+        getDateCellRender(value) {
+            let month = value._d.getMonth()
+            let selectMonth = this.clientclockIn.day_detail[month]
+            if (selectMonth.indexOf(value.format('YYYY-MM-DD')) == -1) {
+                return false
+            } else {
+                return true
             }
         },
-        created() {
-            this.id = this.$route.query.id;
-            this.getOpenUserInfo();
+        //  打卡签到
+        getClock() {
+            let params = {
+                id: this.id,
+                union_id: this.weChatUserNews.unionid
+            }
+            contactClockInApi(params).then((res) => {
+                //  刷新排行榜
+                this.$refs.success.getNews(0, res.data, this.clientclockIn.employee_qrcode)
+                this.getRankList()
+                this.getClinentData()
+            })
         },
-        methods: {
-            getOpenUserInfo() {
-                let that = this;
-                openUserInfoApi({
-                    id: that.id
-                }).then((res) => {
-                    if (res.data.openid === undefined) {
-                        let redirectUrl = '/auth/roomClockIn?id=' + that.id + '&target=' + encodeURIComponent(that.url);
-                        that.$redirectAuth(redirectUrl);
-                    }
-
-                    this.weChatUserNews = res.data;
-                    //  获取客户数据
-                    this.getClinentData()
-                    //  获取排行榜数据
-                    this.getRankList()
-                });
-            },
-            getDateCellRender(value) {
-                let month = value._d.getMonth()
-                let selectMonth = this.clientclockIn.day_detail[month]
-                if (selectMonth.indexOf(value.format('YYYY-MM-DD')) == -1) {
-                    return false
-                } else {
-                    return true
-                }
-            },
-            //  打卡签到
-            getClock() {
-                let params = {
-                    id: this.id,
-                    union_id: this.weChatUserNews.unionid
-                }
-                contactClockInApi(params).then((res) => {
-                    //  刷新排行榜
-                    this.$refs.success.getNews(0, res.data, this.clientclockIn.employee_qrcode)
-                    this.getRankList()
-                    this.getClinentData()
-                })
-            },
-            //  查看任务完成详情
-            lookDetails(item, index) {
-                if (item.task_status == 1 && item.receive_status == 0) {
-                    receiveApi({
-                        id: this.id,
-                        union_id: this.weChatUserNews.unionid,
-                        level: index + 1
-                    }).then((res) => {
-                        this.$message.success('奖励领取成功');
-                    })
-                }
-                if (item.task_status == 1) {
-                    let puchData = {
-                        day_count: item.count
-                    }
-                    this.$refs.success.getNews(1, puchData, this.clientclockIn.employee_qrcode)
-                }
-            },
-            //  获取客户数据
-            getClinentData() {
-                let params = {
+        //  查看任务完成详情
+        lookDetails(item, index) {
+            if (item.task_status == 1 && item.receive_status == 0) {
+                receiveApi({
                     id: this.id,
                     union_id: this.weChatUserNews.unionid,
-                    nickname: this.weChatUserNews.nickname,
-                    avatar: this.weChatUserNews.headimgurl,
-                    city: this.weChatUserNews.city
-                }
-                contactDataApi(params).then((res) => {
-                    document.title = "群打卡"
-                    this.clientclockIn = res.data
-                    this.currentMonth()
-                    //  处理筛选未签到日期
-                })
-            },
-            //  获取排行榜数据
-            getRankList() {
-                let params = {
-                    id: this.id,
-                    union_id: this.weChatUserNews.unionid
-                }
-                clockInRankingApi(params).then((res) => {
-                    this.ranklist = res.data
-                    this.table.data = this.ranklist.contact_list
+                    level: index + 1
+                }).then((res) => {
+                    this.$message.success('奖励领取成功');
                 })
             }
+            if (item.task_status == 1) {
+                let puchData = {
+                    day_count: item.count
+                }
+                this.$refs.success.getNews(1, puchData, this.clientclockIn.employee_qrcode)
+            }
+        },
+        //  获取客户数据
+        getClinentData() {
+            let params = {
+                id: this.id,
+                union_id: this.weChatUserNews.unionid,
+                nickname: this.weChatUserNews.nickname,
+                avatar: this.weChatUserNews.headimgurl,
+                city: this.weChatUserNews.city
+            }
+            contactDataApi(params).then((res) => {
+                document.title = "群打卡"
+                this.clientclockIn = res.data
+                this.currentMonth()
+                //  处理筛选未签到日期
+            })
+        },
+        //  获取排行榜数据
+        getRankList() {
+            let params = {
+                id: this.id,
+                union_id: this.weChatUserNews.unionid
+            }
+            clockInRankingApi(params).then((res) => {
+                this.ranklist = res.data
+                this.table.data = this.ranklist.contact_list
+            })
         }
     }
+}
 </script>
 
 <style scoped lang="scss">

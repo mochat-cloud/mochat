@@ -78,6 +78,7 @@ class MediaIdUpdate extends AbstractAction
         $uploadFile = json_decode($medium['content'], true);
         $mediaType = self::wxMediaType($medium['type']);
         $path = isset($uploadFile[$mediaType . 'Path']) ? $uploadFile[$mediaType . 'Path'] : '';
+        $filename = isset($uploadFile[$mediaType . 'Name']) ? $uploadFile[$mediaType . 'Name'] : '';
         if (empty($path)) {
             return [
                 'mediaId' => $medium['mediaId'],
@@ -93,7 +94,7 @@ class MediaIdUpdate extends AbstractAction
         try {
             // TODO 语音转换amr
             $corpId = user()['corpId'];
-            $mediaId = $this->media->upload($corpId, $mediaType, $path);
+            $mediaId = $this->media->upload($corpId, $mediaType, $path, $filename);
             $dbData = [
                 'id' => $medium['id'],
                 'media_id' => $mediaId,

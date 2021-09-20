@@ -87,28 +87,8 @@ class StoreLogic
     protected $workRoomService;
 
     /**
-     * @var RequestInterface
-     */
-    protected $request;
-
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
-
-    public function __construct(RequestInterface $request, ContainerInterface $container)
-    {
-        $this->request = $request;
-        $this->container = $container;
-    }
-
-    /**
      * @param array $user 登录用户信息
      * @param array $params 请求参数
-     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \JsonException
-     * @throws \EasyWeChat\Kernel\Exceptions\InvalidArgumentException
      * @return array 响应数组
      */
     public function handle(array $user, array $params): array
@@ -123,11 +103,6 @@ class StoreLogic
      * 处理参数.
      * @param array $user 用户信息
      * @param array $params 接受参数
-     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \JsonException
-     * @throws \League\Flysystem\FileExistsException
-     * @throws \EasyWeChat\Kernel\Exceptions\InvalidArgumentException
      * @return array 响应数组
      */
     private function handleParam(array $user, array $params): array
@@ -153,7 +128,6 @@ class StoreLogic
 
     /**
      * 群二维码上传微信素材库.
-     * @throws \League\Flysystem\FileExistsException
      */
     private function handleRooms(array $user, array $rooms): array
     {
@@ -172,9 +146,6 @@ class StoreLogic
 
     /**
      * 发送消息.
-     * @throws \EasyWeChat\Kernel\Exceptions\InvalidArgumentException
-     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     private function sendMsg(array $user, array $rooms, string $text, array $employees, array $chooseContact, int $filter_contact): array
     {

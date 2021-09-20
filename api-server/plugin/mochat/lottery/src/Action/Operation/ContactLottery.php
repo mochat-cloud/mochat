@@ -197,14 +197,14 @@ class ContactLottery extends AbstractAction
     /**
      * @throws \JsonException
      */
-    private function handleDraw(string $win_name, array $params, array $contact, array $prize, array $lottery): array
+    private function handleDraw(string $winName, array $params, array $contact, array $prize, array $lottery): array
     {
         ## 抽奖信息
         $data = [
             'lottery_id' => $params['id'],
             'contact_id' => $contact['id'],
             'prize_id' => 1,
-            'prize_name' => $win_name,
+            'prize_name' => $winName,
             'receive_qr' => '',
             'receive_type' => 0,
             'receive_code' => '',
@@ -231,31 +231,31 @@ class ContactLottery extends AbstractAction
         }
 
         ## 奖项总数  中奖数量
-        if ($win_name !== '谢谢参与') {
+        if ($winName !== '谢谢参与') {
             $prizeNum = 0;
             foreach (json_decode($prize['prizeSet'], true, 512, JSON_THROW_ON_ERROR) as $key => $val) {
-                if ($val['name'] === $win_name) {
+                if ($val['name'] === $winName) {
                     $prizeNum = $val['num'];
                     $data['prize_id'] = $val['id'];
                     break;
                 }
             }
-            $totalNum = $this->lotteryContactRecordService->countLotteryContactRecordByLotteryIdPrizeName((int) $params['id'], $win_name);
+            $totalNum = $this->lotteryContactRecordService->countLotteryContactRecordByLotteryIdPrizeName((int) $params['id'], $winName);
             if ($totalNum >= $prizeNum) {
                 $data['prize_id'] = 1;
                 $data['prize_name'] = '谢谢参与';
-                $win_name = '谢谢参与';
+                $winName = '谢谢参与';
                 $this->createLotteryContactRecord($data, $contact['id'], $contactData);
                 throw new CommonException(ErrorCode::INVALID_PARAMS, '很抱歉，您所抽中的奖项已经中完！');
             }
 
             foreach (json_decode($prize['exchangeSet'], true, 512, JSON_THROW_ON_ERROR) as $key => $val) {
-                if ($val['name'] === $win_name) {
+                if ($val['name'] === $winName) {
                     $data['receive_type'] = $val['type'];
                     $data['receive_qr'] = $val['employee_qr'];
                     if ($val['type'] === 2) {
-                        $winCode = $this->lotteryContactRecordService->countLotteryContactRecordReceiveCodeByLotteryIdPrizeName((int) $params['id'], $win_name, ['receive_code']);
-                        $winCode = array_column($winCode, 'receive_code');
+                        $winCode = $this->lotteryContactRecordService->countLotteryContactRecordReceiveCodeByLotteryIdPrizeName((int) $params['id'], $winName, ['receive_code']);
+                        $winCode = array_column($winCode, 'receiveCode');
                         $result = array_merge(array_diff($val['exchange_code'], $winCode));
                         $data['receive_code'] = $result[0];
                     }
@@ -276,7 +276,7 @@ class ContactLottery extends AbstractAction
                 }
             }
             $contactData['win_num'] = $contact['winNum'] + 1;
-            $this->send($contact, $lottery, $params, $win_name);
+            $this->send($contact, $lottery, $params, $winName);
         }
         $this->createLotteryContactRecord($data, $contact['id'], $contactData);
         return ['prize_name' => $data['prize_name'], 'receive_qr' => file_full_url($data['receive_qr']), 'receive_code' => $data['receive_code']];
@@ -393,7 +393,7 @@ class ContactLottery extends AbstractAction
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \JsonException
      */
-    private function send(array $contact, array $lottery, array $params, string $win_name)
+    private function send(array $contact, array $lottery, array $params, string $winName)
     {
         $this->logger->error(sprintf('%s [%s] %s', '活动', date('Y-m-d H:i:s'), 'sds'));
         $employee = $this->workEmployeeService->getWorkEmployeesById(explode(',', $contact['employeeIds']), ['wx_user_id']);
@@ -402,7 +402,7 @@ class ContactLottery extends AbstractAction
         if (empty($touser)) {
             return;
         }
-        $content = "【抽奖活动】\n客户昵称：{$params['nickname']}\n活动名称：{$lottery['name']}\n客户行为：客户抽中了奖品:{$win_name}\n<a href='#'>点击查看客户详情 </a>";
+        $content = "【抽奖活动】\n客户昵称：{$params['nickname']}\n活动名称：{$lottery['name']}\n客户行为：客户抽中了奖品:{$winName}\n<a href='#'>点击查看客户详情 </a>";
         $messageRemind = make(MessageRemind::class);
         $messageRemind->sendToEmployee((int) $lottery['corpId'], $touser, 'text', $content);
     }

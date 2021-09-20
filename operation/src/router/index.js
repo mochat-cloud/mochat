@@ -6,12 +6,10 @@ import index from '../views/index/index'
 import workFissionIndex from '../views/workFission/index'
 import speed from '../views/workFission/speed'
 //抽奖活动
-import lotteryIndex from '../views/lottery/lotteryIndex'
+import lotteryIndex from '../views/lottery/index'
 import explain from "@/views/lottery/explain";
 //群打卡
-import success from "@/views/roomClockIn/success";
-import roomClockIndex from "@/views/roomClockIn/roomClockIndex";
-import roomClockInExplain from "@/views/roomClockIn/roomClockInExplain"
+import roomClockIndex from "@/views/roomClockIn/index";
 //门店活码
 import shopCodeIndex from "@/views/shopCode/shopCodeIndex";
 //群裂变
@@ -63,13 +61,6 @@ const routes = [
     name: '/roomClockIn',
     component: roomClockIndex
   },
-
-  //群打卡——规则说明
-  {
-    path: '/roomClockInExplain',
-    component: roomClockInExplain
-  },
-
   //门店活码
   {
     path: '/shopCode',

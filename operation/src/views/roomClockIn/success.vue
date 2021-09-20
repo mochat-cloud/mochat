@@ -18,7 +18,6 @@
     </div>
 </template>
 <script>
-import {userInfo, contactDataApi,clockInRankingApi,contactClockInApi} from "@/api/roomClockIn";
 export default {
     data() {
         return {

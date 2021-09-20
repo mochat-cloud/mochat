@@ -4,11 +4,11 @@
         <div class="lottery-box">
             <div class="end">×</div>
             <div class="top">
-                <p>抽奖说明</p>
+                <p>活动说明</p>
             </div>
             <div class="content">
                 <div class="box">
-                    32312
+                    {{ description }}
                 </div>
             </div>
         </div>
@@ -18,11 +18,13 @@
 export default {
     data() {
         return {
-            modalShow: false
+            modalShow: false,
+            description: ''
         }
     },
     methods: {
-        show() {
+        show(description) {
+            this.description = description
             this.modalShow = true
         },
         hide() {

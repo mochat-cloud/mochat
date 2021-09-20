@@ -52,7 +52,7 @@ class Media
      * @param int|string $corpId 企业id
      * @param string $path 上传路径
      *
-     * @throws \Throwable
+     * @return string
      */
     public function uploadImage($corpId, string $path): string
     {
@@ -65,7 +65,7 @@ class Media
      * @param int|string $corpId 企业id
      * @param string $path 上传路径
      *
-     * @throws \Throwable
+     * @return string
      */
     public function uploadVoice($corpId, string $path): string
     {
@@ -78,7 +78,7 @@ class Media
      * @param int|string $corpId 企业id
      * @param string $path 上传路径
      *
-     * @throws \Throwable
+     * @return string
      */
     public function uploadVideo($corpId, string $path): string
     {
@@ -90,12 +90,13 @@ class Media
      *
      * @param int|string $corpId 企业id
      * @param string $path 上传路径
+     * @param string $filename 文件名
      *
-     * @throws \Throwable
+     * @return string
      */
-    public function uploadFile($corpId, string $path): string
+    public function uploadFile($corpId, string $path, string $filename = ''): string
     {
-        return $this->upload($corpId, 'file', $path);
+        return $this->upload($corpId, 'file', $path, $filename);
     }
 
     /**
@@ -104,12 +105,13 @@ class Media
      * @param int|string $corpId 企业id
      * @param string $type 上传类型
      * @param string $path 上传路径
+     * @param string $filename 文件名
      *
-     * @throws \Throwable
+     * @return string
      */
-    public function upload($corpId, string $type, string $path): string
+    public function upload($corpId, string $type, string $path, string $filename = ''): string
     {
-        $mediaId = $this->cache->get($this->getCacheKey($corpId, $path));
+        $mediaId = $this->cache->get($this->getCacheKey($corpId, $path, $filename));
         if (! empty($mediaId)) {
             return $mediaId;
         }
@@ -120,11 +122,17 @@ class Media
             $fileContent = $this->filesystem->read($path);
             $tempFile = tempnam(sys_get_temp_dir(), 'Media');
             file_put_contents($tempFile, $fileContent, FILE_USE_INCLUDE_PATH);
-            $wxMediaRes = $mediaService->upload($type, $tempFile);
+
+            $form = [];
+            if (! empty($filename)) {
+                $form['filename'] = $filename;
+            }
+
+            $wxMediaRes = $mediaService->upload($type, $tempFile, $form);
             if ($wxMediaRes['errcode'] != 0) {
                 throw new CommonException(ErrorCode::INVALID_PARAMS, sprintf('请求数据：%s 响应结果：%s', $path, json_encode($wxMediaRes)));
             }
-            $this->cache->set($this->getCacheKey($corpId, $path), $wxMediaRes['media_id'], 60 * 60 * 24 * 3 - 300);
+            $this->cache->set($this->getCacheKey($corpId, $path, $filename), $wxMediaRes['media_id'], 60 * 60 * 24 * 3 - 300);
             return $wxMediaRes['media_id'];
         } catch (\Throwable $e) {
             ## 记录错误日志
@@ -136,8 +144,8 @@ class Media
         }
     }
 
-    protected function getCacheKey($corpId, string $path)
+    protected function getCacheKey($corpId, string $path, string $filename = '')
     {
-        return sprintf('mochat:mediaId:%s:%s', (string) $corpId, md5($path));
+        return sprintf('mochat:mediaId:%s:%s', (string) $corpId, md5($path . $filename));
     }
 }
