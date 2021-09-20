@@ -42,11 +42,6 @@ class ContactData extends AbstractAction
     use AutoContactTag;
 
     /**
-     * @var RequestInterface
-     */
-    protected $request;
-
-    /**
      * @Inject
      * @var ClockInContract
      */
@@ -94,29 +89,8 @@ class ContactData extends AbstractAction
      */
     private $logger;
 
-    public function __construct(
-        \Hyperf\HttpServer\Contract\RequestInterface $request,
-        ClockInContract $clockInService,
-        ClockInContactContract $clockInContactService,
-        WorkEmployeeContract $workEmployeeService,
-        ClockInContactRecordContract $clockInContactRecordService,
-        CorpContract $corpService,
-        WorkContactContract $workContactService,
-        WorkContactEmployeeContract $workContactEmployeeService
-    ) {
-        $this->request = $request;
-        $this->clockInService = $clockInService;
-        $this->clockInContactService = $clockInContactService;
-        $this->workEmployeeService = $workEmployeeService;
-        $this->clockInContactRecordService = $clockInContactRecordService;
-        $this->corpService = $corpService;
-        $this->workContactService = $workContactService;
-        $this->workContactEmployeeService = $workContactEmployeeService;
-    }
-
     /**
      * @RequestMapping(path="/operation/roomClockIn/contactData", methods="get")
-     * @throws \JsonException
      * @return array 返回数组
      */
     public function handle(): array
@@ -126,7 +100,7 @@ class ContactData extends AbstractAction
         ## 接收参数
         $params = $this->request->all();
         ## 查询数据
-        return $this->handleDate($params);
+        return $this->handleData($params);
     }
 
     /**
@@ -162,11 +136,12 @@ class ContactData extends AbstractAction
 
     /**
      * @param $params
-     * @throws \JsonException
+     * 
+     * @return array
      */
-    private function handleDate($params): array
+    private function handleData($params): array
     {
-        $clockIn = $this->clockInService->getClockInById((int) $params['id'], ['name', 'corp_id', 'type', 'tasks', 'employee_qrcode', 'corp_card_status', 'corp_card']);
+        $clockIn = $this->clockInService->getClockInById((int) $params['id'], ['name', 'corp_id', 'type', 'tasks', 'employee_qrcode', 'corp_card_status', 'corp_card', 'description']);
         $contact = $this->clockInContactService->getClockInContactByClockInIdUnionId((int) $params['id'], $params['union_id'], ['id', 'total_day', 'series_day', 'receive_level']);
         $corpInfo = $clockIn['corpCardStatus'] === 1 ? json_decode($clockIn['corpCard'], true, 512, JSON_THROW_ON_ERROR) : '';
         if (! empty($corpInfo)) {
@@ -174,6 +149,7 @@ class ContactData extends AbstractAction
         }
         $data = [
             'name' => $clockIn['name'],
+            'description' => $clockIn['description'],
             'corp_card_status' => $clockIn['corpCardStatus'],
             'corp_info' => $corpInfo,
             'type' => $clockIn['type'],
