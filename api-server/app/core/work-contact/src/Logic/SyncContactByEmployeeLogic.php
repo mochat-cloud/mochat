@@ -246,6 +246,7 @@ class SyncContactByEmployeeLogic
             return;
         }
 
+        $addWay = isset($followEmployee['add_way']) ? $followEmployee['add_way'] : 0;
         // 组织客户与企业用户关联表信息
         $createContractEmployeeData = [
             'employee_id' => $employeeId,
@@ -254,7 +255,7 @@ class SyncContactByEmployeeLogic
             'description' => isset($followEmployee['description']) ? $followEmployee['description'] : '',
             'remark_corp_name' => isset($followEmployee['remark_corp_name']) ? $followEmployee['remark_corp_name'] : '',
             'remark_mobiles' => isset($followEmployee['remark_mobiles']) ? json_encode($followEmployee['remark_mobiles']) : json_encode([]),
-            'add_way' => isset($followEmployee['add_way']) ? $followEmployee['add_way'] : 0,
+            'add_way' => $addWay,
             'oper_userid' => isset($followEmployee['oper_userid']) ? $followEmployee['oper_userid'] : '',
             'state' => isset($followEmployee['state']) ? $followEmployee['state'] : '',
             'corp_id' => $corpId,
@@ -265,7 +266,7 @@ class SyncContactByEmployeeLogic
         ];
         $this->workContactEmployeeService->createWorkContactEmployee($createContractEmployeeData);
 
-        $this->createContactTrack($corpId, $contactId, $employeeId, $employeeName, $followEmployee['add_way']);
+        $this->createContactTrack($corpId, $contactId, $employeeId, $employeeName, $addWay);
     }
 
     /**
