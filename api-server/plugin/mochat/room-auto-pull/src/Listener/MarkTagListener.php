@@ -83,7 +83,7 @@ class MarkTagListener implements ListenerInterface
             return false;
         }
 
-        $stateArr = explode('-', $contact['State']);
+        $stateArr = explode('-', $contact['state']);
         if ($stateArr[0] !== $this->getStateName()) {
             return false;
         }
