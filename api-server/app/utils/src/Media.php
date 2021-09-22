@@ -13,7 +13,6 @@ namespace MoChat\App\Utils;
 
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
-use MoChat\App\Corp\Logic\AppTrait;
 use MoChat\App\Corp\Utils\WeWorkFactory;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
@@ -21,8 +20,6 @@ use Psr\SimpleCache\CacheInterface;
 
 class Media
 {
-    use AppTrait;
-
     /**
      * @Inject
      * @var \League\Flysystem\Filesystem
@@ -127,7 +124,7 @@ class Media
                 $form['filename'] = $filename;
             }
 
-            $wxMediaRes = $this->httpUpload($corpId, $type, $tempFile, $form)
+            $wxMediaRes = $this->httpUpload($corpId, $type, $tempFile, $form);
             if ($wxMediaRes['errcode'] != 0) {
                 throw new CommonException(ErrorCode::INVALID_PARAMS, sprintf('请求数据：%s 响应结果：%s', $path, json_encode($wxMediaRes)));
             }
@@ -158,7 +155,7 @@ class Media
      *
      * @return array
      */
-    private function httpUpload($corpId, string $type, string $path, array $form)
+    private function httpUpload($corpId, string $type, string $path, array $form): array
     {
         $weWorkUserApp = $this->weWorkFactory->getUserApp($corpId);
 
