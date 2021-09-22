@@ -72,15 +72,20 @@ class AuthRedirect extends AbstractAction
      */
     protected function officialAccountBindOpenPlatform(array $authorizationInfo)
     {
-        $officialAccount = $this->openPlatform->officialAccount(
-            $authorizationInfo['authorizer_appid'],
-            $authorizationInfo['authorizer_refresh_token'],
-        );
-        $officialAccount = rebind_app($officialAccount, $this->request);
-        $res = $officialAccount->account->getBinding();
-        // 如果未绑定过开放平台账号时才自动创建并绑定
-        if ($res['errcode'] === 89002) {
-            $officialAccount->account->create();
+        try {
+            $officialAccount = $this->openPlatform->officialAccount(
+                $authorizationInfo['authorizer_appid'],
+                $authorizationInfo['authorizer_refresh_token'],
+                );
+            $officialAccount = rebind_app($officialAccount, $this->request);
+            $res = $officialAccount->account->getBinding();
+            // 如果未绑定过开放平台账号时才自动创建并绑定
+            if ($res['errcode'] === 89002) {
+                $officialAccount->account->create();
+            }
+        } catch (\Throwable $e) {
+            $this->logger->error(sprintf('自动绑定开放平台失败，错误信息：%s', $e->getMessage()));
+            $this->logger->error($e->getTraceAsString());
         }
     }
 
