@@ -10,12 +10,14 @@ declare(strict_types=1);
  */
 namespace MoChat\Plugin\AutoTag\Listener;
 
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Utils\Codec\Json;
 use MoChat\App\WorkContact\Contract\WorkContactTagContract;
 use MoChat\App\WorkContact\Event\AddContactEvent;
+use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\Plugin\AutoTag\Contract\AutoTagContract;
 use MoChat\Plugin\AutoTag\Contract\AutoTagRecordContract;
 use MoChat\Plugin\AutoTag\Service\AutoTagRecordService;
@@ -49,6 +51,16 @@ class MarkTagListener implements ListenerInterface
      */
     private $autoTagRecordService;
 
+    /**
+     * @var WorkEmployeeContract
+     */
+    private $workEmployeeService;
+
+    /**
+     * @var StdoutLoggerInterface
+     */
+    private $logger;
+
     public function listen(): array
     {
         return [
@@ -61,24 +73,33 @@ class MarkTagListener implements ListenerInterface
      */
     public function process(object $event)
     {
-        $contact = $event->message;
-        $this->autoTagService = $this->container->get(AutoTagContract::class);
-        $this->workContactTagService = $this->container->get(WorkContactTagContract::class);
-        $this->autoTagRecordService = $this->container->get(AutoTagRecordContract::class);
+        try {
+            $contact = $event->message;
+            $this->autoTagService = $this->container->get(AutoTagContract::class);
+            $this->workContactTagService = $this->container->get(WorkContactTagContract::class);
+            $this->autoTagRecordService = $this->container->get(AutoTagRecordContract::class);
+            $this->workEmployeeService = $this->container->get(WorkEmployeeContract::class);
+            $this->logger = $this->container->get(StdoutLoggerInterface::class);
 
-        // 判断是否需要打标签
-        if (! $this->isNeedMarkTag($contact)) {
-            return;
+            // 判断是否需要打标签
+            if (! $this->isNeedMarkTag($contact)) {
+                return;
+            }
+
+            // 获取打标签规则
+            $tagIds = $this->getMarkTagRule($contact);
+            if (empty($tagIds)) {
+                $this->logger->debug(sprintf('[自动打标签]客户打标签未执行，获取打标签规则为空，客户id: %s', (string) $contact['id']));
+                return;
+            }
+
+            // 打标签
+            $this->logger->debug(sprintf('[自动打标签]客户打标签匹配成功，即将执行，客户id: %s', (string) $contact['id']));
+            $this->workContactTagService->markTags((int) $contact['corpId'], (int) $contact['id'], (int) $contact['employeeId'], $tagIds);
+        } catch (\Throwable $e) {
+            $this->logger->error(sprintf('[自动打标签]客户打标签失败，错误信息: %s', $e->getMessage()));
+            $this->logger->error($e->getTraceAsString());
         }
-
-        // 获取打标签规则
-        $tagIds = $this->getMarkTagRule($contact);
-        if (empty($tagIds)) {
-            return;
-        }
-
-        // 打标签
-        $this->workContactTagService->markTags((int) $contact['corpId'], (int) $contact['id'], (int) $contact['employeeId'], $tagIds);
     }
 
     /**
@@ -95,6 +116,8 @@ class MarkTagListener implements ListenerInterface
      * 获取打标签规则.
      *
      * @param array $contact 客户
+     *
+     * @return array
      */
     private function getMarkTagRule(array $contact): array
     {
@@ -106,10 +129,12 @@ class MarkTagListener implements ListenerInterface
             return $data;
         }
 
+        $employee = $this->workEmployeeService->getWorkEmployeeById((int) $contact['employeeId'], ['wx_user_id']);
+
         // 客户标签
         $tagIds = [];
         foreach ($autoTag as $item) {
-            if (! $this->hasCurrentEmployee($contact['employeeId'], $item['employees'])) {
+            if (! $this->hasCurrentEmployee($employee['wxUserId'], $item['employees'])) {
                 continue;
             }
 
@@ -125,16 +150,7 @@ class MarkTagListener implements ListenerInterface
             return $data;
         }
 
-        $tagList = $this->workContactTagService->getWorkContactTagsById($tagIds, ['wx_contact_tag_id']);
-
-        if (empty($tagList)) {
-            return $data;
-        }
-
-        $data = array_merge($data, array_column($tagList, 'wxContactTagId'));
-        empty($data) || $data = array_merge(array_unique($data));
-
-        return $data;
+        return $tagIds;
     }
 
     /**
@@ -143,17 +159,16 @@ class MarkTagListener implements ListenerInterface
      *
      * @return bool
      */
-    private function hasCurrentEmployee(int $employeeId, string $employees)
+    private function hasCurrentEmployee(string $employeeId, string $employees)
     {
-        $employees = Json::decode($employees);
-
         if (empty($employees)) {
             return false;
         }
 
-        $employees = array_map(function ($employee) {
-            return (int) $employee;
-        }, $employees);
+        $employees = explode(',', $employees);
+        if (empty($employees)) {
+            return false;
+        }
 
         return in_array($employeeId, $employees);
     }

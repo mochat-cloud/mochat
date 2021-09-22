@@ -240,7 +240,7 @@ class InviteData extends AbstractAction
      */
     private function getEmployee(string $wxUserId): string
     {
-        $info = $this->workEmployeeService->getWorkEmployeeByWxUserId($wxUserId);
+        $info = $this->workEmployeeService->getWorkEmployeeByWxUserIdCorpId($wxUserId, (int) user()['corpIds'][0]);
         return $info['name'] ?? '未知';
     }
 }

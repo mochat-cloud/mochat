@@ -55,9 +55,10 @@ interface WorkContactContract
      * 修改单条 - 根据ID.
      * @param int $id id
      * @param array $data 修改数据
+     * @param bool $withTrashed 是否包含软删除
      * @return int 修改条数
      */
-    public function updateWorkContactById(int $id, array $data): int;
+    public function updateWorkContactById(int $id, array $data, bool $withTrashed = false): int;
 
     /**
      * 修改多条
@@ -135,9 +136,10 @@ interface WorkContactContract
      * @param int $corpId 公司授信ID
      * @param string $wxExternalUserId 微信外部联系人ID
      * @param array $columns 查询字段
+     * @param bool $withTrashed 是否包含软删除
      * @return array 响应数组
      */
-    public function getWorkContactByCorpIdWxExternalUserId(int $corpId, $wxExternalUserId, array $columns = ['*']): array;
+    public function getWorkContactByCorpIdWxExternalUserId(int $corpId, $wxExternalUserId, array $columns = ['*'], bool $withTrashed = false): array;
 
     /**
      * @param int $corpId 公司授信ID

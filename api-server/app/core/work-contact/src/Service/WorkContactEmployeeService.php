@@ -85,11 +85,18 @@ class WorkContactEmployeeService extends AbstractService implements WorkContactE
      * 修改单条 - 根据ID.
      * @param int $id id
      * @param array $data 修改数据
+     * @param bool $withTrashed 是否包含软删除
      * @return int 修改条数
      */
-    public function updateWorkContactEmployeeById(int $id, array $data): int
+    public function updateWorkContactEmployeeById(int $id, array $data, bool $withTrashed = false): int
     {
-        return $this->model->updateOneById($id, $data);
+        $newData = $this->model->columnsFormat($data, true, true);
+        $query = $this->model::query();
+        if ($withTrashed) {
+            $query = $query->withTrashed();
+        }
+
+        return $query->where('id', $id)->update($newData);
     }
 
     /**
@@ -117,14 +124,21 @@ class WorkContactEmployeeService extends AbstractService implements WorkContactE
      * @param int $employeeId ID
      * @param int $contactId ID
      * @param array|string[] $columns 查询字段
+     * @param bool $withTrashed 是否包含软删除
      * @return array 数组
      */
-    public function findWorkContactEmployeeByOtherIds($employeeId, $contactId, array $columns = ['*']): array
+    public function findWorkContactEmployeeByOtherIds($employeeId, $contactId, array $columns = ['*'], bool $withTrashed = false): array
     {
-        $res = $this->model::query()
-            ->where('employee_id', $employeeId)
+        $query = $this->model::query();
+
+        if ($withTrashed) {
+            $query = $query->withTrashed();
+        }
+
+        $res = $query->where('employee_id', $employeeId)
             ->where('contact_id', $contactId)
             ->first($columns);
+
         if (empty($res)) {
             return [];
         }

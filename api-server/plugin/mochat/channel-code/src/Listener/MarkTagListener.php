@@ -10,6 +10,7 @@ declare(strict_types=1);
  */
 namespace MoChat\Plugin\ChannelCode\Listener;
 
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
@@ -41,6 +42,11 @@ class MarkTagListener implements ListenerInterface
      */
     private $workContactTagService;
 
+    /**
+     * @var StdoutLoggerInterface
+     */
+    private $logger;
+
     public function listen(): array
     {
         return [
@@ -53,23 +59,31 @@ class MarkTagListener implements ListenerInterface
      */
     public function process(object $event)
     {
-        $contact = $event->message;
-        $this->channelCodeService = $this->container->get(ChannelCodeContract::class);
-        $this->workContactTagService = $this->container->get(WorkContactTagContract::class);
+        try {
+            $contact = $event->message;
+            $this->channelCodeService = $this->container->get(ChannelCodeContract::class);
+            $this->workContactTagService = $this->container->get(WorkContactTagContract::class);
+            $this->logger = $this->container->get(StdoutLoggerInterface::class);
 
-        // 判断是否需要打标签
-        if (! $this->isNeedMarkTag($contact)) {
-            return;
+            // 判断是否需要打标签
+            if (!$this->isNeedMarkTag($contact)) {
+                return;
+            }
+
+            // 获取打标签规则
+            $tagIds = $this->getMarkTagRule($contact);
+            if (empty($tagIds)) {
+                $this->logger->debug(sprintf('[渠道活码]客户打标签未执行，获取打标签规则为空，客户id: %s', (string) $contact['id']));
+                return;
+            }
+
+            // 打标签
+            $this->logger->debug(sprintf('[渠道活码]客户打标签匹配成功，即将执行，客户id: %s', (string) $contact['id']));
+            $this->workContactTagService->markTags((int)$contact['corpId'], (int)$contact['id'], (int)$contact['employeeId'], $tagIds);
+        } catch (\Throwable $e) {
+            $this->logger->error(sprintf('[渠道活码]客户打标签失败，错误信息: %s', $e->getMessage()));
+            $this->logger->error($e->getTraceAsString());
         }
-
-        // 获取打标签规则
-        $tagIds = $this->getMarkTagRule($contact);
-        if (empty($tagIds)) {
-            return;
-        }
-
-        // 打标签
-        $this->workContactTagService->markTags((int) $contact['corpId'], (int) $contact['id'], (int) $contact['employeeId'], $tagIds);
     }
 
     /**
@@ -122,9 +136,7 @@ class MarkTagListener implements ListenerInterface
         }
 
         $tagIds = array_filter(json_decode($channelCode['tags'], true));
-        $tagList = $this->workContactTagService->getWorkContactTagsById($tagIds, ['id', 'wx_contact_tag_id']);
-        empty($tagList) || $data = array_column($tagList, 'wxContactTagId');
 
-        return $data;
+        return $tagIds;
     }
 }

@@ -34,36 +34,40 @@ class MarkTags
      */
     public function handle(int $corpId, int $contactId, int $employeeId, array $tagIds)
     {
-        if (empty($tagIds)) {
-            return;
+        try {
+            if (empty($tagIds)) {
+                return;
+            }
+
+            $employeeService = make(WorkEmployeeContract::class);
+            $contactService = make(WorkContactContract::class);
+            $logger = make(StdoutLoggerInterface::class);
+
+            $contact = $contactService->getWorkContactById($contactId, ['wx_external_userid']);
+            if (empty($contact)) {
+                $logger->error(sprintf('打标签失败，找不到客户信息，客户id: %s', (string) $contactId));
+            }
+
+            $employee = $employeeService->getWorkEmployeeById($employeeId, ['wx_user_id']);
+            if (empty($employee)) {
+                $logger->error(sprintf('打标签失败，找不到员工信息，员工id: %s', (string) $employeeId));
+            }
+
+            $tagIds = $this->filterTagIds($contactId, $employeeId, $tagIds);
+            if (empty($tagIds)) {
+                return;
+            }
+
+            $this->createWorkContactTagPivots($contactId, $employeeId, $tagIds);
+
+            $tagInfo = $this->getWorkContactTag($tagIds);
+            $this->markTagsToWorkServer($corpId, $contact['wxExternalUserid'], $employee['wxUserId'], $tagInfo['wxTagIds']);
+            $this->recordContactTrack($corpId, $contactId, $employeeId, $tagInfo['tagNames']);
+            $logger->debug(sprintf('客户打标签执行成功，客户id: %s', (string) $contactId));
+        } catch (\Throwable $e) {
+            $logger->error(sprintf('客户打标签执行失败，客户id: %s，错误信息: %s', (string) $contactId, $e->getMessage()));
+            $logger->error($e->getTraceAsString());
         }
-
-        $employeeService = make(WorkEmployeeContract::class);
-        $contactService = make(WorkContactContract::class);
-        $logger = make(StdoutLoggerInterface::class);
-
-        $contact = $contactService->getWorkContactById($contactId, ['wx_external_userid']);
-        if (empty($contact)) {
-            $logger->error(sprintf('打标签失败，找不到客户信息，客户id: %s', (string) $contactId));
-        }
-
-        $employee = $employeeService->getWorkEmployeeById($employeeId, ['wx_user_id']);
-        if (empty($employee)) {
-            $logger->error(sprintf('打标签失败，找不到员工信息，员工id: %s', (string) $employeeId));
-        }
-
-        $tagIds = $this->filterTagIds($contactId, $employeeId, $tagIds);
-        if (empty($tagIds)) {
-            return;
-        }
-
-        $this->createWorkContactTagPivots($contactId, $employeeId, $tagIds);
-
-        $tagInfo = $this->getWorkContactTag($tagIds);
-
-        $this->markTagsToWorkServer($corpId, $contact['wxExternalUserid'], $employee['wxUserId'], $tagInfo['wxTagIds']);
-
-        $this->recordContactTrack($corpId, $contactId, $employeeId, $tagInfo['tagNames']);
     }
 
     /**
@@ -98,11 +102,13 @@ class MarkTags
     {
         $workContactTagPivotService = make(WorkContactTagPivotContract::class);
         $data = [];
+
         foreach ($tagIds as $val) {
             $data[] = [
                 'contact_id' => $contactId,
                 'employee_id' => $employeeId,
                 'contact_tag_id' => $val,
+                'type' => 1,
             ];
         }
 
@@ -117,10 +123,10 @@ class MarkTags
      *
      * @param $corpId
      * @param string $contactWxExternalUserId
-     * @param array $employeeWxUserId
+     * @param string $employeeWxUserId
      * @param array $tagIds
      */
-    private function markTagsToWorkServer($corpId, string $contactWxExternalUserId, array $employeeWxUserId, array $tagIds)
+    private function markTagsToWorkServer($corpId, string $contactWxExternalUserId, string $employeeWxUserId, array $tagIds)
     {
         if (empty($tagIds)) {
             return;

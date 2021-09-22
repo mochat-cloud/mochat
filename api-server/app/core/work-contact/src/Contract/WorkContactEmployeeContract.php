@@ -61,9 +61,10 @@ interface WorkContactEmployeeContract
      * 修改单条 - 根据ID.
      * @param int $id id
      * @param array $data 修改数据
+     * @param bool $withTrashed 是否包含软删除
      * @return int 修改条数
      */
-    public function updateWorkContactEmployeeById(int $id, array $data): int;
+    public function updateWorkContactEmployeeById(int $id, array $data, bool $withTrashed = false): int;
 
     /**
      * 删除 - 单条
@@ -84,9 +85,10 @@ interface WorkContactEmployeeContract
      * @param int $employeeId ID
      * @param int $contactId ID
      * @param array|string[] $columns 查询字段
+     * @param bool $withTrashed 是否包含软删除
      * @return array 数组
      */
-    public function findWorkContactEmployeeByOtherIds($employeeId, $contactId, array $columns = ['*']): array;
+    public function findWorkContactEmployeeByOtherIds($employeeId, $contactId, array $columns = ['*'], bool $withTrashed = false): array;
 
     /**
      * 查询多条 - 根据员工id和客户id.

@@ -59,4 +59,9 @@ class WorkContact extends AbstractModel
      * @var array
      */
     protected $casts = ['id' => 'integer', 'corp_id' => 'integer', 'follow_up_status' => 'integer', 'type' => 'integer', 'gender' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+
+    public static function newModel($attributes = [])
+    {
+        return new static($attributes);
+    }
 }

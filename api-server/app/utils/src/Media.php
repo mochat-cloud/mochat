@@ -126,7 +126,7 @@ class Media
 
             $wxMediaRes = $this->httpUpload($corpId, $type, $tempFile, $form);
             if ($wxMediaRes['errcode'] != 0) {
-                throw new CommonException(ErrorCode::INVALID_PARAMS, sprintf('请求数据：%s 响应结果：%s', $path, json_encode($wxMediaRes)));
+                throw new CommonException(ErrorCode::INVALID_PARAMS, sprintf('请求数据：%s 响应结果：%s', $tempFile, json_encode($wxMediaRes)));
             }
             $this->cache->set($this->getCacheKey($corpId, $path, $filename), $wxMediaRes['media_id'], 60 * 60 * 24 * 3 - 300);
             return $wxMediaRes['media_id'];
@@ -189,7 +189,7 @@ class Media
         }
 
         return $weWorkUserApp->media->request(
-            'cgi-bin/media/uploadimg',
+            'cgi-bin/media/upload',
             'POST',
             ['query' => $query, 'multipart' => $multipart, 'connect_timeout' => 180, 'timeout' => 180, 'read_timeout' => 180]
         );
