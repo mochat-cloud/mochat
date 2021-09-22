@@ -8,6 +8,7 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
+
 namespace MoChat\App\Utils;
 
 use Hyperf\Contract\StdoutLoggerInterface;
@@ -117,8 +118,6 @@ class Media
         }
 
         try {
-            $weWorkUserApp = $this->weWorkFactory->getUserApp($corpId);
-            $mediaService = $weWorkUserApp->media;
             $fileContent = $this->filesystem->read($path);
             $tempFile = tempnam(sys_get_temp_dir(), 'Media');
             file_put_contents($tempFile, $fileContent, FILE_USE_INCLUDE_PATH);
@@ -128,7 +127,7 @@ class Media
                 $form['filename'] = $filename;
             }
 
-            $wxMediaRes = $mediaService->upload($type, $tempFile, $form);
+            $wxMediaRes = $this->httpUpload($corpId, $type, $tempFile, $form)
             if ($wxMediaRes['errcode'] != 0) {
                 throw new CommonException(ErrorCode::INVALID_PARAMS, sprintf('请求数据：%s 响应结果：%s', $path, json_encode($wxMediaRes)));
             }
@@ -146,6 +145,56 @@ class Media
 
     protected function getCacheKey($corpId, string $path, string $filename = '')
     {
-        return sprintf('mochat:mediaId:%s:%s', (string) $corpId, md5($path . $filename));
+        return sprintf('mochat:mediaId:%s:%s', (string)$corpId, md5($path . $filename));
+    }
+
+    /**
+     * 重写上传，增加大文件超时时长
+     *
+     * @param int|string $corpId
+     * @param string $type
+     * @param string $path
+     * @param array $form
+     *
+     * @return array
+     */
+    private function httpUpload($corpId, string $type, string $path, array $form)
+    {
+        $weWorkUserApp = $this->weWorkFactory->getUserApp($corpId);
+
+        $multipart = [];
+        $headers = [];
+
+        if (isset($form['filename'])) {
+            $headers = [
+                'Content-Disposition' => 'form-data; name="media"; filename="' . $form['filename'] . '"'
+            ];
+        }
+
+        $query = [
+            'type' => $type
+        ];
+
+        $files = [
+            'media' => $path,
+        ];
+
+        foreach ($files as $name => $path) {
+            $multipart[] = [
+                'name' => $name,
+                'contents' => fopen($path, 'r'),
+                'headers' => $headers
+            ];
+        }
+
+        foreach ($form as $name => $contents) {
+            $multipart[] = compact('name', 'contents');
+        }
+
+        return $weWorkUserApp->media->request(
+            'cgi-bin/media/uploadimg',
+            'POST',
+            ['query' => $query, 'multipart' => $multipart, 'connect_timeout' => 180, 'timeout' => 180, 'read_timeout' => 180]
+        );
     }
 }
