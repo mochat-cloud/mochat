@@ -65,23 +65,27 @@ class UpdateContactRawListener implements ListenerInterface
         $contactId = 0;
         $employeeId = 0;
         $corpId = 0;
-        //查询客户id
-        $contactInfo = make(WorkContactContract::class)->getWorkContactByWxExternalUserId($message['ExternalUserID'], ['id']);
-        if (! empty($contactInfo)) {
-            $contactId = $contactInfo['id'];
-        }
-
-        //查询员工id
-        $employeeInfo = make(WorkEmployeeContract::class)->getWorkEmployeeByWxUserId($message['UserID'], ['id']);
-        if (! empty($employeeInfo)) {
-            $employeeId = $employeeInfo['id'];
-        }
 
         //查询企业id
         $corpInfo = make(CorpContract::class)->getCorpsByWxCorpId($message['ToUserName'], ['id']);
-        if (! empty($corpInfo)) {
-            $corpId = $corpInfo['id'];
+        if (empty($corpInfo)) {
+            return;
         }
+        $corpId = (int) $corpInfo['id'];
+
+        //查询客户id
+        $contactInfo = make(WorkContactContract::class)->getWorkContactByWxExternalUserId($message['ExternalUserID'], ['id']);
+        if (empty($contactInfo)) {
+            return;
+        }
+        $contactId = (int) $contactInfo['id'];
+
+        //查询员工id
+        $employeeInfo = make(WorkEmployeeContract::class)->getWorkEmployeeByWxUserIdCorpId($message['UserID'], $corpId, ['id']);
+        if (empty($employeeInfo)) {
+            return;
+        }
+        $employeeId = (int) $employeeInfo['id'];
 
         if ($contactId == 0 || $employeeId == 0 || $corpId == 0) {
             return;

@@ -88,11 +88,18 @@ class WorkContactService extends AbstractService implements WorkContactContract
      * 修改单条 - 根据ID.
      * @param int $id id
      * @param array $data 修改数据
+     * @param bool $withTrashed 是否包含软删除
      * @return int 修改条数
      */
-    public function updateWorkContactById(int $id, array $data): int
+    public function updateWorkContactById(int $id, array $data, bool $withTrashed = false): int
     {
-        return $this->model->updateOneById($id, $data);
+        $newData = $this->model->columnsFormat($data, true, true);
+        $query = $this->model::newModel();
+        if ($withTrashed) {
+            $query = $query->withTrashed();
+        }
+
+        return $query->where('id', $id)->update($newData);
     }
 
     /**
@@ -246,12 +253,18 @@ class WorkContactService extends AbstractService implements WorkContactContract
      * @param int $corpId 公司授信ID
      * @param string $wxExternalUserId 微信外部联系人ID
      * @param array $columns 查询字段
+     * @param bool $withTrashed 是否包含软删除
      * @return array 响应数组
      */
-    public function getWorkContactByCorpIdWxExternalUserId(int $corpId, $wxExternalUserId, array $columns = ['*']): array
+    public function getWorkContactByCorpIdWxExternalUserId(int $corpId, $wxExternalUserId, array $columns = ['*'], bool $withTrashed = false): array
     {
-        $data = $this->model::query()
-            ->where('corp_id', $corpId)
+        $query = $this->model::query();
+
+        if ($withTrashed) {
+            $query = $query->withTrashed();
+        }
+
+        $data = $query->where('corp_id', $corpId)
             ->where('wx_external_userid', $wxExternalUserId)
             ->first($columns);
 

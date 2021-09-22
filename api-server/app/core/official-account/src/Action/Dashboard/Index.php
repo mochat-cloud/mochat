@@ -111,7 +111,7 @@ class Index extends AbstractAction
                 'created_at' => date('Y-m-d H:i:s'),
             ];
             $this->officialAccountSetService->createOfficialAccountSet($data);
-            $officialAccount['avatar'] = file_full_url($officialAccount['avatar']);
+            $officialAccount['avatar'] = file_full_url((string) $officialAccount['avatar']);
             return $officialAccount;
         }
         return [];

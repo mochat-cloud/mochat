@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace MoChat\App\WorkContact\Logic;
 
 use Hyperf\Di\Annotation\Inject;
+use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\App\WorkContact\Contract\WorkContactEmployeeContract;
 use MoChat\App\WorkContact\Contract\WorkContactTagPivotContract;
@@ -32,6 +33,12 @@ class DestroyCallBackLogic
      * @var WorkContactContract
      */
     private $contact;
+
+    /**
+     * @Inject()
+     * @var CorpContract
+     */
+    private $corpService;
 
     /**
      * 员工表.
@@ -65,22 +72,22 @@ class DestroyCallBackLogic
      */
     public function handle(array $wxResponse, $status): void
     {
-        //如果没有员工微信id和客户微信id
+        // 如果没有员工微信id和客户微信id
         if (! isset($wxResponse['UserID'], $wxResponse['ExternalUserID'])) {
             return;
         }
 
-        //查询客户id,查询员工id
-        [$contactId,$employeeId] = $this->employeeAndContactData($wxResponse['UserID'], $wxResponse['ExternalUserID']);
-        if ($contactId === 0 && $employeeId === 0) {
+        // 查询客户id,查询员工id
+        [$contactId, $employeeId] = $this->employeeAndContactData($wxResponse['ToUserName'], $wxResponse['UserID'], $wxResponse['ExternalUserID']);
+        if ($contactId === 0 || $employeeId === 0) {
             return;
         }
 
-        //查询是否有该员工与客户的对应关系，如果有，删除
+        // 查询是否有该员工与客户的对应关系，如果有，删除
         $contactEmployee = $this->contactEmployee->getWorkContactEmployeeByOtherId($employeeId, $contactId, ['id']);
 
         if (! empty($contactEmployee)) {
-            //更新status为删除
+            // 更新status为删除
             $data['status'] = $status;
             $updateRes = $this->contactEmployee->updateWorkContactEmployeeById((int) $contactEmployee['id'], $data);
             if (! $updateRes) {
@@ -93,7 +100,7 @@ class DestroyCallBackLogic
             }
         }
 
-        //查询员工对客户打的标签
+        // 查询员工对客户打的标签
         $tag = $this->contactTagPivot->getWorkContactTagPivotsByOtherId($contactId, $employeeId, ['id']);
         if (! empty($tag)) {
             $ids = array_column($tag, 'id');
@@ -103,6 +110,12 @@ class DestroyCallBackLogic
                 throw new CommonException(ErrorCode::SERVER_ERROR, '删除企业客户标签回调失败');
             }
         }
+
+        // 无跟进员工时，真正删除客户
+        $contactEmployees = $this->contactEmployee->getWorkContactEmployeesByContactId($contactId, ['id']);
+        if (empty($contactEmployees)) {
+            $this->contact->deleteWorkContact($contactId);
+        }
     }
 
     /**
@@ -111,7 +124,7 @@ class DestroyCallBackLogic
      * @param string $wxContactUserId ...
      * @return array ...
      */
-    protected function employeeAndContactData(string $wxUserId, string $wxContactUserId): array
+    protected function employeeAndContactData(string $wxCorpId, string $wxUserId, string $wxContactUserId): array
     {
         $contactId = 0;
         $employeeId = 0;
@@ -121,7 +134,14 @@ class DestroyCallBackLogic
             ## 任务宝-裂变用户处理
             $this->handleFission($contactInfo['unionid']);
         }
-        $employeeInfo = $this->employee->getWorkEmployeeByWxUserId($wxUserId, ['id']);
+
+        $corp = $this->corpService->getCorpByWxCorpId($wxCorpId, ['id']);
+
+        if (empty($corp)) {
+            return [$contactId, $employeeId];
+        }
+
+        $employeeInfo = $this->employee->getWorkEmployeeByWxUserIdCorpId($wxUserId, (int) $corp['id'], ['id']);
         if (! empty($employeeInfo)) {
             $employeeId = $employeeInfo['id'];
         }
@@ -130,17 +150,20 @@ class DestroyCallBackLogic
     }
 
     /**
+     * // TODO 需调整为事件处理
      * 任务宝-裂变用户处理.
-     * @param $unionid
+     * @param string $unionId
+     *
+     * @return array
      */
-    protected function handleFission($unionid): array
+    protected function handleFission($unionId): array
     {
-        $fission_contact = $this->workFissionContact->getWorkFissionContactByUnionId($unionid, ['id', 'contact_superior_user_parent']);
-        if (! empty($fission_contact)) {
-            $this->workFissionContact->updateWorkFissionContactById((int) $fission_contact['id'], ['loss' => 1]);
-            if ($fission_contact['contactSuperiorUserParent'] > 0) {
-                $parent = $this->workFissionContact->getWorkFissionContactById((int) $fission_contact['contactSuperiorUserParent'], ['id', 'invite_count']);
-                $this->workFissionContact->updateWorkFissionContactById((int) $fission_contact['contactSuperiorUserParent'], ['invite_count' => $parent['inviteCount'] - 1]);
+        $fissionContact = $this->workFissionContact->getWorkFissionContactByUnionId($unionId, ['id', 'contact_superior_user_parent']);
+        if (! empty($fissionContact)) {
+            $this->workFissionContact->updateWorkFissionContactById((int) $fissionContact['id'], ['loss' => 1]);
+            if ($fissionContact['contactSuperiorUserParent'] > 0) {
+                $parent = $this->workFissionContact->getWorkFissionContactById((int) $fissionContact['contactSuperiorUserParent'], ['id', 'invite_count']);
+                $this->workFissionContact->updateWorkFissionContactById((int) $fissionContact['contactSuperiorUserParent'], ['invite_count' => $parent['inviteCount'] - 1]);
             }
         }
         return [];

@@ -243,7 +243,7 @@ class Index extends AbstractAction
             empty($contact['avatar']) || $data['avatar'] = file_full_url($contact['avatar']);
         } else {
             ## 员工
-            $employee = $this->employeeService->getWorkEmployeeByWxUserId($item['from'], ['id', 'name', 'thumb_avatar']);
+            $employee = $this->employeeService->getWorkEmployeeByWxUserIdCorpId($item['from'], (int) user()['corpIds'][0], ['id', 'name', 'thumb_avatar']);
             if (empty($employee)) {
                 return $data;
             }

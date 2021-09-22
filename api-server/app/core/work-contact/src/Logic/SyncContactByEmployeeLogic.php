@@ -171,24 +171,12 @@ class SyncContactByEmployeeLogic
     private function getContact(int $corpId, string $contactWxExternalUserId, string $employeeWxUserId)
     {
         $followEmployee = [];
-        // 查询当前公司是否存在此客户
-        $contact = $this->workContactService->getWorkContactByCorpIdWxExternalUserId($corpId, $contactWxExternalUserId, ['id']);
 
-        if (! empty($contact)) {
-            return [(int) $contact['id'], 0, $followEmployee];
+        [$contactId, $isNewContact, $wxContactRes] = $this->createContact($corpId, $contactWxExternalUserId);
+
+        if ($contactId !== 0) {
+            $followEmployee = $this->getFollowEmployee($wxContactRes['follow_user'], $employeeWxUserId);
         }
-
-        $wxContactRes = $this->weWorkFactory->getContactApp($corpId)->external_contact->get($contactWxExternalUserId);
-
-        if ($wxContactRes['errcode'] !== 0) {
-            $this->logger->error(sprintf('%s [%s] 请求数据：%s 响应结果：%s', '请求企业微信客户群详情错误', date('Y-m-d H:i:s'), $contactWxExternalUserId, json_encode($wxContactRes)));
-            return [0, 0, $followEmployee];
-        }
-
-        $wxContact = $wxContactRes['external_contact'];
-        $isNewContact = 1;
-        $contactId = (int) $this->createContact($corpId, $wxContact);
-        $followEmployee = $this->getFollowEmployee($wxContactRes['follow_user'], $employeeWxUserId);
 
         return [$contactId, $isNewContact, $followEmployee];
     }
@@ -196,11 +184,25 @@ class SyncContactByEmployeeLogic
     /**
      * 创建客户.
      *
-     * @return int
+     * @return array
      */
-    private function createContact(int $corpId, array $wxContact)
+    private function createContact(int $corpId, string $contactWxExternalUserId): array
     {
-        $createContractData = [
+        $contactId = 0;
+        $isNewContact = 0;
+
+        // 查询当前公司是否存在此客户
+        $contact = $this->workContactService->getWorkContactByCorpIdWxExternalUserId($corpId, $contactWxExternalUserId, ['id', 'deleted_at'], true);
+
+        $wxContactRes = $this->weWorkFactory->getContactApp($corpId)->external_contact->get($contactWxExternalUserId);
+
+        if ($wxContactRes['errcode'] !== 0) {
+            $this->logger->error(sprintf('%s [%s] 请求数据：%s 响应结果：%s', '请求企业微信客户群详情错误', date('Y-m-d H:i:s'), $contactWxExternalUserId, json_encode($wxContactRes)));
+            return [$contactId, $isNewContact, $wxContactRes];
+        }
+
+        $wxContact = $wxContactRes['external_contact'];
+        $contractData = [
             'corp_id' => $corpId,
             'wx_external_userid' => $wxContact['external_userid'],
             'name' => $wxContact['name'],
@@ -213,11 +215,27 @@ class SyncContactByEmployeeLogic
             'corp_full_name' => isset($wxContact['corp_full_name']) ? $wxContact['corp_full_name'] : '',
             'external_profile' => isset($wxContact['external_profile']) ? json_encode($wxContact['external_profile']) : json_encode([]),
             'business_no' => isset($wxContact['business_no']) ? $wxContact['business_no'] : '',
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s'),
         ];
 
-        return $this->workContactService->createWorkContact($createContractData);
+        // 无结果则创建
+        if (empty($contact)) {
+            $createContractData = $contractData;
+            $createContractData['created_at'] = date('Y-m-d H:i:s');
+            $contactId =  $this->workContactService->createWorkContact($createContractData);
+            $isNewContact = 1;
+        } else {
+            $updateContractData = $contractData;
+            $updateContractData['updated_at'] = date('Y-m-d H:i:s');
+            $updateContractData['deleted_at'] = null;
+            $contactId = (int) $contact['id'];
+            $this->workContactService->updateWorkContactById($contactId, $updateContractData, true);
+        }
+
+        if (! empty($contact) && ! empty($contact['deletedAt'])) {
+            $isNewContact = 1;
+        }
+
+        return [$contactId, $isNewContact, $wxContactRes];
     }
 
     /**
@@ -239,16 +257,16 @@ class SyncContactByEmployeeLogic
      */
     private function createContactEmployee(int $corpId, int $contactId, int $employeeId, string $employeeName, array $followEmployee)
     {
-        // 查询当前用户与客户是否存在关联信息
-        $workContactEmployee = $this->workContactEmployeeService->findWorkContactEmployeeByOtherIds($employeeId, $contactId, ['id']);
-
-        if (! empty($workContactEmployee)) {
+        if (empty($followEmployee)) {
             return;
         }
 
+        // 查询当前用户与客户是否存在关联信息
+        $workContactEmployee = $this->workContactEmployeeService->findWorkContactEmployeeByOtherIds($employeeId, $contactId, ['id', 'deleted_at'], true);
+
         $addWay = isset($followEmployee['add_way']) ? $followEmployee['add_way'] : 0;
         // 组织客户与企业用户关联表信息
-        $createContractEmployeeData = [
+        $contractEmployeeData = [
             'employee_id' => $employeeId,
             'contact_id' => $contactId,
             'remark' => isset($followEmployee['remark']) ? $followEmployee['remark'] : '',
@@ -260,13 +278,23 @@ class SyncContactByEmployeeLogic
             'state' => isset($followEmployee['state']) ? $followEmployee['state'] : '',
             'corp_id' => $corpId,
             'status' => 1, // 正常
-            'create_time' => isset($followEmployee['createtime']) ? date('Y-m-d H:i:', $followEmployee['createtime']) : '',
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s'),
+            'create_time' => isset($followEmployee['createtime']) ? date('Y-m-d H:i:s', $followEmployee['createtime']) : '',
         ];
-        $this->workContactEmployeeService->createWorkContactEmployee($createContractEmployeeData);
 
-        $this->createContactTrack($corpId, $contactId, $employeeId, $employeeName, $addWay);
+        if (empty($workContactEmployee)) {
+            $createContractEmployeeData = $contractEmployeeData;
+            $createContractEmployeeData['created_at'] =  date('Y-m-d H:i:s');
+            $this->workContactEmployeeService->createWorkContactEmployee($createContractEmployeeData);
+        } else {
+            $updateContractEmployeeData = $contractEmployeeData;
+            $updateContractEmployeeData['updated_at'] =  date('Y-m-d H:i:s');
+            $updateContractEmployeeData['deleted_at'] = null;
+            $this->workContactEmployeeService->updateWorkContactEmployeeById((int) $workContactEmployee['id'], $updateContractEmployeeData, true);
+        }
+
+        if (empty($workContactEmployee) || ! empty($workContactEmployee['deletedAt'])) {
+            $this->createContactTrack($corpId, $contactId, $employeeId, $employeeName, $addWay);
+        }
     }
 
     /**

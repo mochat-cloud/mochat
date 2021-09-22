@@ -163,36 +163,39 @@ class StoreLogic
             }
             $start = 0;
             for ($i = 0; $i <= 100; ++$i) {
-                if (isset($rooms[$i])) {
-                    $sendContact = array_slice($contact, $start, $rooms[$i]['num']);
-                    if (empty($sendContact)) {
-                        break;
-                    }
-                    $roomContact = $this->workContactRoomService->getWorkContactRoomsByRoomIdContact((int) $rooms[$i]['id'], ['contact_id']);
-                    foreach ($sendContact as $k => $v) {
-                        if (in_array($v['id'], array_column($roomContact, 'contactId'), true)) {
-                            $sendContact[$k]['is_join_room'] = 1;
-                            ## 已在群聊中的客户将不会收到邀请
-                            if ($filter_contact === 1) {
-                                unset($sendContact[$k]);
-                            }
+                if (! isset($rooms[$i]) || ! isset($rooms[$i]['num'])) {
+                    continue;
+                }
+
+                $sendContact = array_slice($contact, $start, $rooms[$i]['num']);
+                if (empty($sendContact)) {
+                    break;
+                }
+
+                $roomContact = $this->workContactRoomService->getWorkContactRoomsByRoomIdContact((int) $rooms[$i]['id'], ['contact_id']);
+                foreach ($sendContact as $k => $v) {
+                    if (in_array($v['id'], array_column($roomContact, 'contactId'), true)) {
+                        $sendContact[$k]['is_join_room'] = 1;
+                        ## 已在群聊中的客户将不会收到邀请
+                        if ($filter_contact === 1) {
+                            unset($sendContact[$k]);
                         }
                     }
-                    $easyWeChatParams['text']['content'] = $text;
-                    $easyWeChatParams['image'] = ['pic_url' => $rooms[$i]['wx_image']];
-                    $easyWeChatParams['external_userid'] = array_unique(array_column($contact, 'wxExternalUserid'));
-                    $easyWeChatParams['sender'] = $employee['wxUserId'];
-                    $res = $wx->submit($easyWeChatParams);
-                    if ($res['errcode'] !== 0) {
-                        throw new CommonException(ErrorCode::INVALID_PARAMS, '发送失败');
-                    }
-                    $sendRes[] = [
-                        'wxUserId' => $employee['wxUserId'],
-                        'tid' => $res['msgid'],
-                        'status' => 0,
-                    ];
-                    $start += $rooms[$i]['num'];
                 }
+                $easyWeChatParams['text']['content'] = $text;
+                $easyWeChatParams['image'] = ['pic_url' => $rooms[$i]['wx_image']];
+                $easyWeChatParams['external_userid'] = array_unique(array_column($contact, 'wxExternalUserid'));
+                $easyWeChatParams['sender'] = $employee['wxUserId'];
+                $res = $wx->submit($easyWeChatParams);
+                if ($res['errcode'] !== 0) {
+                    throw new CommonException(ErrorCode::INVALID_PARAMS, '发送失败');
+                }
+                $sendRes[] = [
+                    'wxUserId' => $employee['wxUserId'],
+                    'tid' => $res['msgid'],
+                    'status' => 0,
+                ];
+                $start += $rooms[$i]['num'];
             }
         }
 
@@ -221,26 +224,29 @@ class StoreLogic
                     continue;
                 }
                 for ($i = 0; $i <= 100; ++$i) {
-                    if (isset($rooms[$i])) {
-                        $sendContact = array_slice($contact, $start, $rooms[$i]['num']);
-                        if (empty($sendContact)) {
-                            break;
-                        }
-                        $roomContact = $this->workContactRoomService->getWorkContactRoomsByRoomIdContact((int) $rooms[$i]['id'], ['contact_id']);
-                        foreach ($sendContact as $k => $v) {
-                            $sendContact[$k]['room_tag_pull_id'] = $id;
-                            $sendContact[$k]['room_id'] = $rooms[$i]['id'];
-                            $sendContact[$k]['is_join_room'] = 0;
-                            if (in_array($v['contactId'], array_column($roomContact, 'contactId'), true)) {
-                                $sendContact[$k]['is_join_room'] = 1;
-                                if ($params['filter_contact'] === 1) {
-                                    unset($sendContact[$k]);
-                                }
+                    if (! isset($rooms[$i]) || ! isset($rooms[$i]['num'])) {
+                        continue;
+                    }
+
+                    $sendContact = array_slice($contact, $start, $rooms[$i]['num']);
+                    if (empty($sendContact)) {
+                        break;
+                    }
+
+                    $roomContact = $this->workContactRoomService->getWorkContactRoomsByRoomIdContact((int) $rooms[$i]['id'], ['contact_id']);
+                    foreach ($sendContact as $k => $v) {
+                        $sendContact[$k]['room_tag_pull_id'] = $id;
+                        $sendContact[$k]['room_id'] = $rooms[$i]['id'];
+                        $sendContact[$k]['is_join_room'] = 0;
+                        if (in_array($v['contactId'], array_column($roomContact, 'contactId'), true)) {
+                            $sendContact[$k]['is_join_room'] = 1;
+                            if ($params['filter_contact'] === 1) {
+                                unset($sendContact[$k]);
                             }
                         }
-                        $this->roomTagPullContactService->createRoomTagPullContacts($sendContact);
-                        $start += $rooms[$i]['num'];
                     }
+                    $this->roomTagPullContactService->createRoomTagPullContacts($sendContact);
+                    $start += $rooms[$i]['num'];
                 }
             }
 

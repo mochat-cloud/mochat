@@ -92,12 +92,17 @@ class AddContactRawListener implements ListenerInterface
     private function triggerAddContactEvent(int $contactId, int $employeeId, string $state, int $isNewContact, string $welcomeCode)
     {
         $contact = $this->workContactService->getWorkContactById($contactId);
-        if (! empty($contact)) {
-            $contact['employeeId'] = $employeeId;
-            $contact['state'] = $state;
-            $contact['isNew'] = $isNewContact;
-            $contact['welcomeCode'] = $welcomeCode;
-            $this->eventDispatcher->dispatch(new AddContactEvent($contact));
+        if (empty($contact)) {
+            return;
         }
+
+        $contact['employeeId'] = $employeeId;
+        $contact['state'] = $state;
+        $contact['isNew'] = $isNewContact;
+        $contact['welcomeCode'] = $welcomeCode;
+
+        go(function () use ($contact) {
+            $this->eventDispatcher->dispatch(new AddContactEvent($contact));
+        });
     }
 }

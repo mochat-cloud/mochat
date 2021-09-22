@@ -95,7 +95,7 @@ class RoomLogic
 
         $res = [];
         foreach ($userIdFilter as $userWxId) {
-            $employee = $this->workEmployeeService->getWorkEmployeeByWxUserId($userWxId);
+            $employee = $this->workEmployeeService->getWorkEmployeeByWxUserIdCorpId($userWxId, (int) $params['corpId']);
             $roomList = $this->workRoomService->getWorkRoomsByCorpIdOwnerIds($params['corpId'], [
                 'employees' => [$employee['id']],
                 'name' => $params['roomName'],
