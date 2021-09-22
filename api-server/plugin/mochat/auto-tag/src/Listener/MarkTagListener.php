@@ -72,13 +72,13 @@ class MarkTagListener implements ListenerInterface
         }
 
         // 获取打标签规则
-        $tags = $this->getMarkTagRule($contact);
-        if (empty($tags)) {
+        $tagIds = $this->getMarkTagRule($contact);
+        if (empty($tagIds)) {
             return;
         }
 
         // 打标签
-        $this->workContactTagService->markTags((int) $contact['corpId'], $contact, $tags);
+        $this->workContactTagService->markTags((int) $contact['corpId'], (int) $contact['id'], (int) $contact['employeeId'], $tagIds);
     }
 
     /**

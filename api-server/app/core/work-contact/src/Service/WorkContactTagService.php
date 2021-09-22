@@ -12,6 +12,7 @@ namespace MoChat\App\WorkContact\Service;
 
 use MoChat\App\WorkContact\Contract\WorkContactTagContract;
 use MoChat\App\WorkContact\Model\WorkContactTag;
+use MoChat\App\WorkContact\QueueService\Tag\MarkTags;
 use MoChat\Framework\Service\AbstractService;
 
 class WorkContactTagService extends AbstractService implements WorkContactTagContract
@@ -353,14 +354,15 @@ class WorkContactTagService extends AbstractService implements WorkContactTagCon
     }
 
     /**
-     * 给客户打标签.
+     * 给客户打标签
      *
-     * @param int|string $corpId 企业id
-     * @param array $contact 客户信息
-     * @param array $tags 要打的标签
+     * @param int $corpId
+     * @param int $contactId
+     * @param int $employeeId
+     * @param array $tagIds
      */
-    public function markTags($corpId, array $contact, array $tags): bool
+    public function markTags(int $corpId, int $contactId, int $employeeId, array $tagIds)
     {
-        // TODO 完善打标签
+        make(MarkTags::class)->handle($corpId, $contactId, $employeeId, $tagIds);
     }
 }
