@@ -109,7 +109,7 @@ class SyncContactByEmployeeLogic
             $employee = $checkRes[1];
             $employeeId = (int) $employee['id'];
             $employeeWxUserId = $employee['wxUserId'];
-            [$contactId, $isNewContact, $followEmployee] = $this->getContact($corpId, $contactWxExternalUserId, $employeeWxUserId);
+            [$contactId, $isNewContact, $followEmployee] = $this->getContact($corpId, $contactWxExternalUserId, $employeeWxUserId, $employeeId);
 
             if ($contactId === 0) {
                 return [$contactId, $isNewContact, $employee];
@@ -168,14 +168,19 @@ class SyncContactByEmployeeLogic
      *
      * @return array
      */
-    private function getContact(int $corpId, string $contactWxExternalUserId, string $employeeWxUserId)
+    private function getContact(int $corpId, string $contactWxExternalUserId, string $employeeWxUserId, int $employeeId)
     {
         $followEmployee = [];
         // 查询当前公司是否存在此客户
         $contact = $this->workContactService->getWorkContactByCorpIdWxExternalUserId($corpId, $contactWxExternalUserId, ['id']);
 
         if (! empty($contact)) {
-            return [(int) $contact['id'], 0, $followEmployee];
+            // 查询当前用户与客户是否存在关联信息
+            $workContactEmployee = $this->workContactEmployeeService->findWorkContactEmployeeByOtherIds($employeeId, (int) $contact['id'], ['id']);
+
+            if (! empty($workContactEmployee)) {
+                return [(int) $contact['id'], 0, $followEmployee];
+            }
         }
 
         $wxContactRes = $this->weWorkFactory->getContactApp($corpId)->external_contact->get($contactWxExternalUserId);
@@ -185,11 +190,10 @@ class SyncContactByEmployeeLogic
             return [0, 0, $followEmployee];
         }
 
+        $followEmployee = $this->getFollowEmployee($wxContactRes['follow_user'], $employeeWxUserId);
         $wxContact = $wxContactRes['external_contact'];
         $isNewContact = 1;
         $contactId = (int) $this->createContact($corpId, $wxContact);
-        $followEmployee = $this->getFollowEmployee($wxContactRes['follow_user'], $employeeWxUserId);
-
         return [$contactId, $isNewContact, $followEmployee];
     }
 
@@ -239,10 +243,7 @@ class SyncContactByEmployeeLogic
      */
     private function createContactEmployee(int $corpId, int $contactId, int $employeeId, string $employeeName, array $followEmployee)
     {
-        // 查询当前用户与客户是否存在关联信息
-        $workContactEmployee = $this->workContactEmployeeService->findWorkContactEmployeeByOtherIds($employeeId, $contactId, ['id']);
-
-        if (! empty($workContactEmployee)) {
+        if (empty($followEmployee)) {
             return;
         }
 
@@ -260,7 +261,7 @@ class SyncContactByEmployeeLogic
             'state' => isset($followEmployee['state']) ? $followEmployee['state'] : '',
             'corp_id' => $corpId,
             'status' => 1, // 正常
-            'create_time' => isset($followEmployee['createtime']) ? date('Y-m-d H:i:', $followEmployee['createtime']) : '',
+            'create_time' => isset($followEmployee['createtime']) ? date('Y-m-d H:i:s', $followEmployee['createtime']) : '',
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
         ];
