@@ -57,9 +57,9 @@ class AuthRedirect extends AbstractAction
         $params = $this->request->all();
         $this->config = config('framework.wechat_open_platform');
 
-        ## 使用授权码获取授权信息
+        // 使用授权码获取授权信息
         $res = $this->queryAuth($params);
-        ## 获取授权方的帐号基本信息
+        // 获取授权方的帐号基本信息
         if ($res['id'] > 0) {
             $this->authorizerInfo($res);
         }
@@ -95,7 +95,7 @@ class AuthRedirect extends AbstractAction
      */
     private function queryAuth($params): array
     {
-        ## EasyWeChat
+        // EasyWeChat
         $this->openPlatform = Factory::openPlatform($this->config);
         $this->openPlatform = rebind_app($this->openPlatform, $this->request);
         $result = $this->openPlatform->handleAuthorize($params['auth_code']);
@@ -112,7 +112,7 @@ class AuthRedirect extends AbstractAction
                 'corp_id' => (int) $params['corp_id'],
             ];
             $authorizerAppid = $res['authorizer_appid'];
-            ## 数据操作
+            // 数据操作
             Db::beginTransaction();
             try {
                 $info = $this->officialAccountService->getOfficialAccountByAppIdAuthorizerAppidCorpId($this->config['app_id'], $res['authorizer_appid'], (int) $params['corp_id'], ['id']);
@@ -146,23 +146,23 @@ class AuthRedirect extends AbstractAction
         }
         $result = $this->openPlatform->getAuthorizer($authorizer['authorizer_appid']);
         if (! empty($result['authorizer_info'])) {
-            $res = $result['authorizer_info'];
-            $data = [
-                'nickname' => $res['nick_name'],
-                'head_img' => $res['head_img'],
-                'avatar' => File::uploadUrlImage($res['head_img'], 'contact/avatar/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg'),
-                'service_type_info' => $res['service_type_info']['id'],
-                'verify_type_info' => $res['verify_type_info']['id'],
-                'user_name' => $res['user_name'],
-                'principal_name	' => $res['principal_name'],
-                'alias' => isset($res['alias']) ? $res['alias'] : '',
-                'business_info' => json_encode($res['business_info'], JSON_THROW_ON_ERROR),
-                'qrcode_url' => $res['qrcode_url'],
-                'local_qrcode_url' => File::uploadUrlImage($res['qrcode_url'], 'contact/avatar/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg'),
-            ];
-            ## 数据操作
+            // 数据操作
             Db::beginTransaction();
             try {
+                $res = $result['authorizer_info'];
+                $data = [
+                    'nickname' => isset($res['nick_name']) ? $res['nick_name'] : '',
+                    'head_img' => isset($res['head_img']) ? $res['head_img'] : '',
+                    'avatar' => isset($res['head_img']) ? $res['head_img'] : '',
+                    'service_type_info' => isset($res['service_type_info']['id']) ? $res['service_type_info']['id'] : 0,
+                    'verify_type_info' => isset($res['verify_type_info']['id']) ? $res['verify_type_info']['id'] : 0,
+                    'user_name' => isset($res['user_name']) ? $res['user_name'] : '',
+                    'principal_name	' => isset($res['principal_name']) ? $res['principal_name'] : '',
+                    'alias' => isset($res['alias']) ? $res['alias'] : '',
+                    'business_info' => isset($res['business_info']) ? json_encode($res['business_info'], JSON_THROW_ON_ERROR) : null,
+                    'qrcode_url' => isset($res['qrcode_url']) ? $res['qrcode_url'] : '',
+                    'local_qrcode_url' => '',
+                ];
                 $this->officialAccountService->updateOfficialAccountById($authorizer['id'], $data);
                 Db::commit();
             } catch (\Throwable $e) {
