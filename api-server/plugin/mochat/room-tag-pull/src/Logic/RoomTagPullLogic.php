@@ -84,7 +84,12 @@ class RoomTagPullLogic
                 continue;
             }
             foreach (json_decode($wxTid['wxTid'], true, 512, JSON_THROW_ON_ERROR) as $tid) {
-                $res = $app->getGroupSendResult($tid['tid'], $tid['wxUserId']);
+                $res = $app->httpPostJson('cgi-bin/externalcontact/get_groupmsg_send_result', [
+                    'msgid' => $tid['tid'],
+                    'userId' => $tid['wxUserId'],
+                    'limit' => 500,
+                    'cursor' => '',
+                ]);
                 $result = $res['data'];
                 if ($result['errcode'] !== 0 || empty($result['send_list'])) {
                     continue;
@@ -114,7 +119,11 @@ class RoomTagPullLogic
                 if ($tid['status'] === 1) {
                     continue;
                 }
-                $res = $app->getGroupTask($tid['tid']);
+                $res = $app->httpPostJson('cgi-bin/externalcontact/get_groupmsg_task', [
+                    'msgid' => $tid['tid'],
+                    'limit' => 500,
+                    'cursor' => '',
+                ]);
                 $result = $res['data'];
                 if ($result['errcode'] !== 0 || empty($result['task_list'])) {
                     continue;
