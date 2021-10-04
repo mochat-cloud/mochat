@@ -93,6 +93,9 @@ class Index extends AbstractAction
         $set = $this->officialAccountSetService->getOfficialAccountSetByCorpIdType($user['corpIds'][0], (int) $param['type'], ['official_account_id']);
         if (! empty($set)) {
             $info = $this->officialAccountService->getOfficialAccountById($set['officialAccountId'], ['id', 'nickname', 'avatar']);
+            if (empty($info)) {
+                return [];
+            }
             $info['avatar'] = ! empty($info['avatar']) ? file_full_url($info['avatar']) : '';
             return $info;
         }
