@@ -39,7 +39,7 @@ class EmployeeStatisticApply
     protected $cache;
 
     /**
-     * @AsyncQueueMessage(pool="employee").
+     * @AsyncQueueMessage(pool="employee")
      */
     public function handle(): void
     {

@@ -98,8 +98,18 @@ trait AuthTrait
         $type = $this->getType();
         $set = $this->officialAccountSetService->getOfficialAccountSetByCorpIdType($corpId, $type, ['official_account_id']);
         if (! empty($set)) {
-            return $this->officialAccountService->getOfficialAccountById($set['officialAccountId'], ['id', 'appid', 'authorizer_appid']);
+            $info = $this->officialAccountService->getOfficialAccountById($set['officialAccountId'], ['id', 'appid', 'authorizer_appid']);
+            // 配置的公众号未找到时，获取默认的
+            if (! empty($info)) {
+                return $info;
+            }
         }
-        return $this->officialAccountService->getOfficialAccountByCorpId($corpId, ['id', 'appid', 'authorizer_appid']);
+
+        $info = $this->officialAccountService->getOfficialAccountByCorpId($corpId, ['id', 'appid', 'authorizer_appid']);
+
+        if (empty($info)) {
+            throw new CommonException(ErrorCode::INVALID_PARAMS, '公众号配置错误或不存在');
+        }
+        return $info;
     }
 }
