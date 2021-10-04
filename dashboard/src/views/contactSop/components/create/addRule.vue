@@ -177,7 +177,7 @@ export default {
         }
       }
       if (this.sendTimeCurrent === '1') {
-        if (!form.day.first || !form.day.last) {
+        if (form.day.first < 0 || !form.day.last) {
           this.$message.error('提醒发送时间未填写')
           return false
         }
@@ -201,7 +201,6 @@ export default {
         params.time.data = form.hour
       } else {
         params.time.data = form.day
-        params.time.data.last = moment(params.time.data.last).format('h:mm')
       }
       if (this.type === 'add') {
         this.$emit('change', params)
