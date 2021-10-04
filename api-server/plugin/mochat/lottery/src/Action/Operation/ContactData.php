@@ -212,7 +212,7 @@ class ContactData extends AbstractAction
         if (!empty($lotteryContact)) {
             $winList = $this->lotteryContactRecordService->getLotteryContactRecordByLotteryIdContactId((int)$params['id'], $lotteryContact['id'], ['id', 'prize_name', 'receive_qr', 'receive_code', 'receive_status', 'created_at']);
             foreach ($winList as $key => $val) {
-                $winList[$key]['receiveQr'] = file_full_url($val['receiveQr']);
+                $winList[$key]['receiveQr'] = file_full_url((string) $val['receiveQr']);
             }
         }
         return $winList;
@@ -221,11 +221,11 @@ class ContactData extends AbstractAction
     /**
      * 实时展示已中奖客户记录.
      */
-    private function message(int $is_show, int $lottery_id): array
+    private function message(int $isShow, int $lotteryId): array
     {
         $message = [];
-        if ($is_show === 1) {
-            $record = $this->lotteryContactRecordService->getLotteryContactRecordByLotteryId((int)$lottery_id, ['contact_id', 'prize_name']);
+        if ($isShow === 1) {
+            $record = $this->lotteryContactRecordService->getLotteryContactRecordByLotteryId((int)$lotteryId, ['contact_id', 'prize_name']);
             if (!empty($record)) {
                 $message['prize_name'] = $record['prizeName'];
                 $contact = $this->lotteryContactService->getLotteryContactById((int)$record['contactId'], ['nickname', 'avatar']);
