@@ -83,21 +83,22 @@ class AddContactListener implements ListenerInterface
 
         foreach ($rightList as $item) {
             $taskList = json_decode($item['setting'], true, 512, JSON_THROW_ON_ERROR);
+            $currentTime = time();
+            $currentDayZeroTime = strtotime(date('Y-m-d') . ' 00:00:00');
             foreach ($taskList as $task) {
                 $delay = 0;
                 if ((int) $task['time']['type'] === 0) {
-                    //1时 30分
+                    // 1时 30分
                     $delay += (int) $task['time']['data']['first'] * 3600;
                     $delay += (int) $task['time']['data']['last'] * 60;
                 } else {
-                    //1天 11:30
-                    $delay += (int) $task['time']['data']['first'] * 86400;
-                    $tempTime = explode(':', $task['time']['data']['last']);
-                    $delay += (int) $tempTime[0] * 3600 + (int) $tempTime[1] * 60;
-                    $delay += (int) $task['time']['data']['last'] * 60;
+                    // 1天 11:30
+                    $delayDate = date('Y-m-d', $currentDayZeroTime + (int) $task['time']['data']['first'] * 86400);
+                    $delayTime = strtotime($delayDate . ' ' .  $task['time']['data']['last'] . ':00');
+                    $delay = $delayTime - $currentTime;
                 }
 
-                //添加触发记录
+                // 添加触发记录
                 $sopLogId = $this->contactSopLogService->createContactSopLog([
                     'corp_id' => $contact['corpId'],
                     'contact_sop_id' => $item['id'],
