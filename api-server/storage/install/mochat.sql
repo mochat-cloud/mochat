@@ -1952,7 +1952,7 @@ CREATE TABLE IF NOT EXISTS `mc_room_message_batch_send` (
   `definite_time` timestamp NULL DEFAULT NULL COMMENT '定时发送时间',
   `send_time` timestamp NULL DEFAULT NULL COMMENT '发送时间',
   `send_room_total` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '发送成员数量',
-  `send_contact_total` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '发送客户数量',
+  `send_employee_total` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '发送客户数量',
   `send_total` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '已发送数量',
   `not_send_total` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '未发送数量',
   `received_total` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '已送达数量',

@@ -1,0 +1,1 @@
+ALTER TABLE `mc_room_message_batch_send` CHANGE COLUMN `send_contact_total` `send_employee_total` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '发送员工数量' AFTER `send_room_total`;
