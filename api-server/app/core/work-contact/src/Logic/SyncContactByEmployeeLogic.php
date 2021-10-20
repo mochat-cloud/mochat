@@ -112,6 +112,7 @@ class SyncContactByEmployeeLogic
             [$contactId, $isNewContact, $followEmployee] = $this->getContact($corpId, $contactWxExternalUserId, $employeeWxUserId);
 
             if ($contactId === 0) {
+                Db::rollBack();
                 return [$contactId, $isNewContact, $employee];
             }
 
