@@ -28,7 +28,7 @@ return [
         '/weWork/callback',
         '/dashboard/corp/weWorkCallback',
         '/',
-        '/dashboard/{wxVerifyTxt}',
+        '/{wxVerifyTxt}',
         '/dashboard/officialAccount/authEventCallback',
         '/dashboard/{appId}/officialAccount/messageEventCallback',
         '/operation/officialAccount/authRedirect',

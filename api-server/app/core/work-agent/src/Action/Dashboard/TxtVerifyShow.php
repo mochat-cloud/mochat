@@ -20,7 +20,7 @@ use MoChat\Framework\Action\AbstractAction;
 class TxtVerifyShow extends AbstractAction
 {
     /**
-     * @RequestMapping(path="/dashboard/{wxVerifyTxt:WW_verify_[0-9a-zA-Z]{16}\.txt$}", methods="GET")
+     * @RequestMapping(path="/{wxVerifyTxt:WW_verify_[0-9a-zA-Z]{16}\.txt$}", methods="GET")
      * @return null|string ...
      */
     public function handle(): ?string
