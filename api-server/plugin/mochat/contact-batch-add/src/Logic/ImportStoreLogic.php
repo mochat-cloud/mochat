@@ -170,6 +170,10 @@ class ImportStoreLogic
         $workAgentService = make(WorkAgentContract::class);
         $agent = $workAgentService->getWorkAgentRemindByCorpId((int) $corpId, ['id']);
 
+        if (empty($agent)) {
+            throw new CommonException(ErrorCode::SERVER_ERROR, '未配置自建应用信息，无法发送提醒！');
+        }
+
         foreach ($list as $item) {
             $employee = $this->workEmployee->getWorkEmployeeById($item['employeeId']);
             $url = Url::getSidebarBaseUrl() . '/contactBatchAdd?agentId=' . $agent['id'] . '&batchId=' . $recordId;
