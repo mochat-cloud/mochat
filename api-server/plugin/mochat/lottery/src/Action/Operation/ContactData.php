@@ -118,7 +118,7 @@ class ContactData extends AbstractAction
         // 接收参数
         $params = $this->request->all();
         // 查询数据
-        return $this->handleDate($params);
+        return $this->handleData($params);
     }
 
     /**
@@ -158,17 +158,17 @@ class ContactData extends AbstractAction
      * @param $params
      * @throws \JsonException
      */
-    private function handleDate($params): array
+    private function handleData($params): array
     {
         $lottery = $this->lotteryService->getLotteryById((int)$params['id'], ['name', 'description', 'corp_id', 'time_type', 'start_time', 'end_time', 'contact_tags']);
         $prize = $this->lotteryPrizeService->getLotteryPrizeByLotteryId((int)$params['id'], ['corp_card', 'prize_set', 'is_show', 'draw_set', 'exchange_set']);
         // 企业名片
         $corp = json_decode($prize['corpCard'], true, 512, JSON_THROW_ON_ERROR);
-        $corp['logo'] = file_full_url($corp['logo']);
+        $corp['logo'] = ! empty($corp['logo']) ? file_full_url((string) $corp['logo']) : '';
         // 奖项设置
         $prizeSet = json_decode($prize['prizeSet'], true, 512, JSON_THROW_ON_ERROR);
         foreach ($prizeSet as $key => $val) {
-            $prizeSet[$key]['image'] = str_contains($val['image'], 'http') ? $val['image'] : file_full_url($val['image']);
+            $prizeSet[$key]['image'] = str_contains($val['image'], 'http') ? $val['image'] : file_full_url((string) $val['image']);
             unset($prizeSet[$key]['num'], $prizeSet[$key]['rate']);
         }
         $prize['prizeSet'] = $prizeSet;

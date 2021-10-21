@@ -45,11 +45,19 @@ class WorkContactService extends AbstractService implements WorkContactContract
      * 查询多条 - 根据ID.
      * @param array $ids ID
      * @param array|string[] $columns 查询字段
+     * @param bool $withTrashed 是否包含软删除
      * @return array 数组
      */
-    public function getWorkContactsById(array $ids, array $columns = ['*']): array
+    public function getWorkContactsById(array $ids, array $columns = ['*'], bool $withTrashed = false): array
     {
-        return $this->model->getAllById($ids, $columns);
+        $query = $this->model::newModel();
+        if ($withTrashed) {
+            $query = $query->withTrashed();
+        }
+
+        $data = $query->find($ids, $columns);
+        $data || $data = collect([]);
+        return $data->toArray();
     }
 
     /**

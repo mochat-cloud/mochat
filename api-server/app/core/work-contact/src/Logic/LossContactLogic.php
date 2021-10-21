@@ -286,7 +286,7 @@ class LossContactLogic
      */
     private function getContact($contactIds)
     {
-        $contact = $this->contact->getWorkContactsById($contactIds, ['id', 'name', 'avatar']);
+        $contact = $this->contact->getWorkContactsById($contactIds, ['id', 'name', 'avatar'], true);
         if (empty($contact)) {
             return [];
         }

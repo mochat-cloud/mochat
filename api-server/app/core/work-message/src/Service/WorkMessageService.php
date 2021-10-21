@@ -46,6 +46,11 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
         $this->query = Db::table($this->model->getTable());
     }
 
+    protected function newQuery()
+    {
+        return Db::table($this->model->getTable());
+    }
+
     /**
      * 查询单条 - 根据ID.
      * @param int $id ID
@@ -54,7 +59,7 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
      */
     public function getWorkMessageById(int $id, array $columns = ['*']): array
     {
-        $data = $this->query->find($id, $columns);
+        $data = $this->newQuery()->find($id, $columns);
         $data || $data = collect([]);
         return $data->toArray();
     }
@@ -67,7 +72,7 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
      */
     public function getWorkMessagesById(array $ids, array $columns = ['*']): array
     {
-        $data = $this->query->whereIn('id', $ids)->get($columns);
+        $data = $this->newQuery()->whereIn('id', $ids)->get($columns);
         $data || $data = collect([]);
         return $data->toArray();
     }
@@ -102,7 +107,7 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
     public function createWorkMessage(array $data): int
     {
         $newData = $this->model->columnsFormat($data, true, true);
-        return $this->query->insertGetId($newData);
+        return $this->newQuery()->insertGetId($newData);
     }
 
     /**
@@ -115,7 +120,7 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
         $newData = array_map(function ($item) {
             return $this->model->columnsFormat($item, true, true);
         }, $data);
-        return $this->query->insert($newData);
+        return $this->newQuery()->insert($newData);
     }
 
     /**
@@ -127,7 +132,7 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
     public function updateWorkMessageById(int $id, array $data): int
     {
         $newData = $this->model->columnsFormat($data, true, true);
-        return $this->query->where('id', $id)->update($newData);
+        return $this->newQuery()->where('id', $id)->update($newData);
     }
 
     /**
@@ -137,7 +142,7 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
      */
     public function deleteWorkMessage(int $id): int
     {
-        return (int) $this->query->where('id', $id)->delete();
+        return (int) $this->newQuery()->where('id', $id)->delete();
     }
 
     /**
@@ -147,7 +152,7 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
      */
     public function deleteWorkMessages(array $ids): int
     {
-        return (int) $this->query->whereIn('id', $ids)->delete();
+        return (int) $this->newQuery()->whereIn('id', $ids)->delete();
     }
 
     /**
@@ -155,7 +160,7 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
      */
     public function getWorkMessagesLast(string $from, array $toIds, int $toType = 0, array $columns = ['*']): array
     {
-        $subQuery = Db::table($this->model->getTable())->where('from', $from)->where('tolist_type', $toType);
+        $subQuery = $this->newQuery()->where('from', $from)->where('tolist_type', $toType);
         if ($toType !== 2) {
             $subQuery->where(function ($query) use ($toIds) {
                 foreach ($toIds as $key => $toId) {
@@ -184,7 +189,7 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
      */
     public function getWorkMessageIndexEndSeq(): int
     {
-        return (int) $this->query->orderBy('msg_time', 'desc')->limit(1)->value('seq');
+        return (int) $this->newQuery()->orderBy('msg_time', 'desc')->limit(1)->value('seq');
     }
 
     /**
@@ -195,7 +200,7 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
      */
     public function getWorkMessagesByMsgId(array $msgIds, array $columns = ['*']): array
     {
-        $data = $this->query
+        $data = $this->newQuery()
             ->whereIn('msg_id', $msgIds)
             ->get($columns);
 
@@ -216,7 +221,7 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
      */
     public function getWorkMessagesRangeByCorpId(int $corpId, string $from, string $tolist, int $messageId, string $operator, int $limit, string $order, array $columns = ['*']): array
     {
-        $data = $this->query
+        $data = $this->newQuery()
             ->where('corp_id', $corpId)
             ->where('id', $operator, $messageId)
             ->whereRaw("((`from` = ? AND `tolist`->'$[0]' = ?) OR (`from` = ? AND `tolist`->'$[0]' = ?))", [$from, $tolist, $tolist, $from])
@@ -240,7 +245,7 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
      */
     public function getWorkMessagesRangeByCorpIdWxRoomId(int $corpId, string $wxRoomId, int $messageId, string $operator, int $limit, string $order, array $columns = ['*']): array
     {
-        $data = $this->query
+        $data = $this->newQuery()
             ->where('corp_id', $corpId)
             ->where('id', $operator, $messageId)
             ->where('wx_room_id', $wxRoomId)
@@ -258,7 +263,7 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
      */
     public function getWorkMessagesByMsgIdActionFrom(array $msgIds, array $columns = ['*']): array
     {
-        $data = $this->query
+        $data = $this->newQuery()
             ->whereIn('msg_id', $msgIds)
             ->where('action', 0)
             ->where('from', 'like', 'wm%')
@@ -275,7 +280,7 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
      */
     public function getWorkMessagesByCorpIdActionFrom(int $corpId, string $from, string $start_time, array $columns = ['*']): array
     {
-        $data = $this->query
+        $data = $this->newQuery()
             ->where('corp_id', $corpId)
             ->where('action', 0)
             ->where('from', $from)
@@ -293,7 +298,7 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
      */
     public function getWorkMessageMaxId(): int
     {
-        return (int) $this->query->orderBy('id', 'desc')->limit(1)->value('id');
+        return (int) $this->newQuery()->orderBy('id', 'desc')->limit(1)->value('id');
     }
 
     /**
@@ -301,7 +306,7 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
      */
     public function getWorkMessageByCorpIdRoomIdMsgType(int $corpId, array $roomIds, int $msgType, array $between_id, array $columns = ['*']): array
     {
-        $data = $this->query
+        $data = $this->newQuery()
             ->whereBetween('id', $between_id)
             ->where('corp_id', $corpId)
             ->where('from', 'like', 'wm%')
@@ -319,7 +324,7 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
      */
     public function getWorkMessageByCorpIdRoomIdMsgTypeKeyword(int $corpId, array $roomIds, int $msgType, string $keyword, array $between_id, array $columns = ['*']): array
     {
-        $data = $this->query
+        $data = $this->newQuery()
             ->whereBetween('id', $between_id)
             ->where('corp_id', $corpId)
             ->where('from', 'like', 'wm%')
@@ -335,7 +340,7 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
 
     public function getLastMessageByEmployeeWxIdAndContactWxId(string $employeeWxId, string $contactWxId)
     {
-        $data = $this->query
+        $data = $this->newQuery()
             ->where('tolist_type', 1)
             ->where('action', 0)
             ->where('from', $employeeWxId)
@@ -353,7 +358,7 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
      */
     public function getWorkMessagesRangeByIdCorpIdWxRoomIdMsgTime(int $corpId, int $roomId, array $columns = ['*']): array
     {
-        $data = $this->query
+        $data = $this->newQuery()
             ->whereRaw('action = 0')
             ->whereRaw('corp_id = ?', [$corpId])
             ->whereRaw('room_id = ?', [$roomId])
@@ -375,7 +380,7 @@ class WorkMessageService extends AbstractService implements WorkMessageContract
         if ($seq = $this->cache->get(sprintf('mochat:messageLastSeq:%d', $corpId))) {
             return (int) $seq;
         }
-        return (int) $this->query->where('corp_id', $corpId)->orderBy('msg_time', 'desc')->limit(1)->value('seq');
+        return (int) $this->newQuery()->where('corp_id', $corpId)->orderBy('msg_time', 'desc')->limit(1)->value('seq');
     }
 
     /**
