@@ -24,9 +24,10 @@ interface WorkContactContract
      * 查询多条 - 根据ID.
      * @param array $ids ID
      * @param array|string[] $columns 查询字段
+     * @param bool $withTrashed 是否包含软删除
      * @return array 数组
      */
-    public function getWorkContactsById(array $ids, array $columns = ['*']): array;
+    public function getWorkContactsById(array $ids, array $columns = ['*'], bool $withTrashed = false): array;
 
     /**
      * 多条分页.
