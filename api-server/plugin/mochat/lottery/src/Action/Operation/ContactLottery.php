@@ -257,7 +257,7 @@ class ContactLottery extends AbstractAction
                         $winCode = $this->lotteryContactRecordService->countLotteryContactRecordReceiveCodeByLotteryIdPrizeName((int) $params['id'], $winName, ['receive_code']);
                         $winCode = array_column($winCode, 'receiveCode');
                         $result = array_merge(array_diff($val['exchange_code'], $winCode));
-                        $data['receive_code'] = $result[0];
+                        $data['receive_code'] = sizeof($result) > 0 ? $result[0] : '';
                     }
                     break;
                 }
