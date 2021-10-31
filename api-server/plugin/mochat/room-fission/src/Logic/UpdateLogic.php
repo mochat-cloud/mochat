@@ -36,31 +36,31 @@ class UpdateLogic
     protected $roomFissionService;
 
     /**
-     * 海报.
+     * @Inject()
      * @var RoomFissionPosterContract
      */
     protected $roomFissionPosterService;
 
     /**
-     * 欢迎语.
+     * @Inject()
      * @var RoomFissionWelcomeContract
      */
     protected $roomFissionWelcomeService;
 
     /**
-     * 群聊.
+     * @Inject()
      * @var RoomFissionRoomContract
      */
     protected $roomFissionRoomService;
 
     /**
-     * 邀请用户.
+     * @Inject()
      * @var RoomFissionInviteContract
      */
     protected $roomFissionInviteService;
 
     /**
-     * @Inject
+     * @Inject()
      * @var StdoutLoggerInterface
      */
     private $logger;

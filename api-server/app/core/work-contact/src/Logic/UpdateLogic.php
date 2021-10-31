@@ -106,7 +106,7 @@ class UpdateLogic
         //修改备注
         if (isset($this->params['remark'])) {
             //查询有没有员工跟该客户的对应关系
-            $contactEmployee = $this->contactEmployee->getWorkContactEmployeeByOtherId($this->params['employeeId'], $this->params['contactId']);
+            $contactEmployee = $this->contactEmployee->getWorkContactEmployeeByOtherId((int) $this->params['employeeId'], $this->params['contactId']);
             if (empty($contactEmployee)) {
                 return [];
             }
@@ -126,7 +126,7 @@ class UpdateLogic
         //修改描述
         if (isset($this->params['description'])) {
             //查询有没有员工跟该客户的对应关系
-            $contactEmployee = $this->contactEmployee->getWorkContactEmployeeByOtherId($this->params['employeeId'], $this->params['contactId']);
+            $contactEmployee = $this->contactEmployee->getWorkContactEmployeeByOtherId((int) $this->params['employeeId'], $this->params['contactId']);
             if (empty($contactEmployee)) {
                 return [];
             }

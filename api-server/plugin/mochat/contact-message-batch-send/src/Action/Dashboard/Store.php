@@ -107,7 +107,7 @@ class Store extends AbstractAction
                     if (empty($item['content'])) {
                         throw new CommonException(ErrorCode::INVALID_PARAMS, '文字消息类型不能为空');
                     }
-                    if (strlen($item['content']) > 400) {
+                    if (strlen($item['content']) > 4000) {
                         throw new CommonException(ErrorCode::INVALID_PARAMS, '消息文本内容长度超过限制');
                     }
                     break;
@@ -123,7 +123,7 @@ class Store extends AbstractAction
                     if (empty($item['url'])) {
                         throw new CommonException(ErrorCode::INVALID_PARAMS, '链接链接不能为空');
                     }
-                    if (! empty($item['desc']) && strlen($item['desc']) > 250) {
+                    if (! empty($item['desc']) && strlen($item['desc']) > 512) {
                         throw new CommonException(ErrorCode::INVALID_PARAMS, '链接描述长度超过限制');
                     }
                     break;
