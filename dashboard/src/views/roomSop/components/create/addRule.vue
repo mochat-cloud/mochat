@@ -169,15 +169,14 @@ export default {
       }
 
       if (this.sendTimeCurrent === '0') {
-        if (!form.hour.first || !form.hour.last) {
-          this.$message.error('提醒发送时间未填写')
-
+        if (form.hour.first == 0 && form.hour.last == 0) {
+          this.$message.error('提醒时间不能同时为0')
           return false
         }
       }
 
       if (this.sendTimeCurrent === '1') {
-        if (!form.day.first || !form.day.last) {
+        if (!form.day.first < 0 || !form.day.last) {
           this.$message.error('提醒发送时间未填写')
 
           return false
