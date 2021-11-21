@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @contact  group@mo.chat
  * @license  https://github.com/mochat-cloud/mochat/blob/master/LICENSE
  */
-return [
+$framework = [
     // 接口URL
     'api_base_url' => env('API_BASE_URL', 'http://127.0.0.1:9501'),
     // 后台URL
@@ -100,4 +100,22 @@ return [
             ],
         ],
     ],
+
+    'proxy' => [
+        'enable' => env('PROXY_ENABLE', false),
+        'http' => env('HTTP_PROXY', ''),
+        'https' => env('HTTPS_PROXY', ''),
+    ],
 ];
+
+if ($framework['proxy']['enable']) {
+    $framework['wework']['config']['http'] = [
+        'proxy' => $framework['proxy']['http'],
+    ];
+
+    $framework['wechat_open_platform']['http'] = [
+        'proxy' => $framework['proxy']['http'],
+    ];
+}
+
+return $framework;
