@@ -38,13 +38,36 @@ class MessageArchiveFactory
     {
         $corp = $this->getCorpInfo($corpId);
         $rsa = json_decode($corp['config']['chatRsaKey'], true);
+
+        $options = [];
+        $proxy = config('framework.proxy');
+
+        if ($proxy['enable']) {
+            $proxyArr = explode('@', $proxy['http_proxy']);
+            if (count($proxyArr) == 2) {
+                $password = str_replace('http://', '', $proxyArr[0]);
+                $httpProxy = str_replace($password, '', $proxy['http_proxy']);
+            } else {
+                $password = '';
+                $httpProxy = $proxy['http_proxy'];
+            }
+
+            $options = [
+                'proxy' => $httpProxy,
+            ];
+
+            if (! empty($password)) {
+                $options['paswd'] = $password;
+            }
+        }
+
         return WxFinanceSDK::init([
             'corpid' => $corp['wxCorpid'],
             'secret' => $corp['config']['chatSecret'],
             'private_keys' => [
                 $rsa['version'] => $rsa['privateKey'],
             ],
-        ]);
+        ], $options);
     }
 
     public function get(int $corpId): WxFinanceSDK
