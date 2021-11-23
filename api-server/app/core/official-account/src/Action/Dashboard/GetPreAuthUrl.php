@@ -126,13 +126,21 @@ class GetPreAuthUrl extends AbstractAction
     {
         $options = [];
         $client = $this->clientFactory->create($options);
-        $response = $client->post(self::API_START_PUSH_TICKET, ['json' => [
-            'component_appid' => $this->config['app_id'],
-            'component_secret' => $this->config['secret'],
-        ]]);
+
+        $options = [
+            'json' => [
+                'component_appid' => $this->config['app_id'],
+                'component_secret' => $this->config['secret'],
+            ],
+        ];
+        $proxy = config('framework.proxy');
+        if ($proxy['enable']) {
+            $options['proxy'] = $proxy['http'];
+        }
+
+        $response = $client->post(self::API_START_PUSH_TICKET, $options);
         if ($response->getStatusCode() === 200) {
             $content = Json::decode($response->getBody()->getContents());
-            dump($content);
             return $content['errcode'] == 0;
         }
 
