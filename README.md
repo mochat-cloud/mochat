@@ -269,7 +269,7 @@ dashboard 和 sidebar 项目结构类似
 
 ### 联系作者加入群
 
-![输入图片说明](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/contact-qr3.png "mochat微信.png")
+![输入图片说明](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/contact-qr-git.png "mochat微信.png")
 
 ### 部分演示图，持续更新
 
