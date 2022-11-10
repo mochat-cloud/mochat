@@ -61,6 +61,7 @@ class SyncLogic
         }
         foreach ($corpData as $corpId => $cdv) {
             $wxDepartment = $this->client->provider('user')->app($cdv)->department->list();
+            dump($wxDepartment);
             if (empty($wxDepartment['errcode']) && $wxDepartment['department']) {
                 //获取部门ID
                 $department = $this->getDepartmentIds($corpId);
