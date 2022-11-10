@@ -118,7 +118,6 @@ class SyncLogic
             }
             //成员基础信息
             $employeeData = $this->getEmployeeData($corpId);
-            dump($employeeData);
             //成员部门关系
             $employeeDepartment = $this->getEmployeeDepartment($employeeData['employee'], $employeeData['wxEmployee']);
             //处理部门关系数据
@@ -128,6 +127,7 @@ class SyncLogic
             foreach ($departments as $key => $value) {
                 //企业微信端用户信息
                 $userList = $this->client->provider('user')->app($cdv)->user->getDetailedDepartmentUsers($value['wxDepartmentId']);
+                dump($userList);
                 if (! empty($userList['errcode']) || empty($userList['userlist'])) {
                     continue;
                 }
