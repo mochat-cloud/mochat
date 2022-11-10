@@ -113,12 +113,12 @@ class SyncLogic
             $employeeData = $departments = $userList = $employeeDepartment = $employee = [];
             //公司下的所有部门
             $departments = $this->getDepartmentIds($corpId);
-            dump($departments);
             if (empty($departments)) {
                 continue;
             }
             //成员基础信息
             $employeeData = $this->getEmployeeData($corpId);
+            dump($employeeData);
             //成员部门关系
             $employeeDepartment = $this->getEmployeeDepartment($employeeData['employee'], $employeeData['wxEmployee']);
             //处理部门关系数据
