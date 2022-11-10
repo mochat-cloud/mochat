@@ -133,7 +133,6 @@ class SyncLogic
                 // 处理员工子账户信息
                 $this->createEmployeeAccount($corpId, $userList['userlist'], $departments);
 
-                dump('1231231');
                 $this->handleSyncData(
                     $corpId,
                     $userList,
@@ -273,13 +272,13 @@ class SyncLogic
                         'corp_id' => $corpId,
                         'name' => $user['name'],
                         'mobile' => isset($user['mobile']) ? $user['mobile'] : '',
-                        'position' => $user['position'],
-                        'gender' => $user['gender'],
-                        'email' => $user['email'],
-                        'avatar' => $user['avatar'],
-                        'thumb_avatar' => $user['thumb_avatar'],
-                        'telephone' => $user['telephone'],
-                        'alias' => $user['alias'],
+                        'position' => $user['position']??"",
+                        'gender' => $user['gender']??0,
+                        'email' => $user['email']??"",
+                        'avatar' => $user['avatar']??"",
+                        'thumb_avatar' => $user['thumb_avatar']??"",
+                        'telephone' => $user['telephone']??"",
+                        'alias' => $user['alias']??"",
                         'extattr' => ! empty($user['extattr']) ? json_encode($user['extattr']) : json_encode([]),
                         'status' => $user['status'],
                         'qr_code' => $user['qr_code'],
