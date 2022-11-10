@@ -54,7 +54,6 @@ class SyncLogic
         $this->client = make(WeWork::class);
         $this->workDepartmentService = make(WorkDepartmentContract::class);
         $corpData = $this->getCorpData($corpIds);
-        dump($corpData);
         if (empty($corpData)) {
             $this->logger->error('WorkDepartmentSynLogic->handle同步部门corp不能为空');
             return [];
