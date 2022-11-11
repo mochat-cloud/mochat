@@ -232,15 +232,17 @@ class SyncLogic
                         $updateEmployeeDepartment[$ev['employeeDepartmentId']] = $ev['employeeDepartmentId'];
                     }
                     //更新头像
-                    if ($ev['avatar'] != $user['avatar'] && empty($updateEmployee[$ev['id']])) {
-                        $updateEmployee[$ev['id']] = [
-                            'id' => $ev['id'],
-                            //                            'avatar' => $this->addFileQueueData($user['avatar'], 'avatar', $fileQueueData),
-                            //                            'thumb_avatar' => $this->addFileQueueData($user['thumb_avatar'], 'thumb_avatar', $fileQueueData),
-                            // 修改为存储原地址
-                            'avatar' => $user['avatar'],
-                            'thumb_avatar' => $user['thumb_avatar'],
-                        ];
+                    if(isset($user['avatar'])) {
+                        if ($ev['avatar'] != $user['avatar'] && empty($updateEmployee[$ev['id']])) {
+                            $updateEmployee[$ev['id']] = [
+                                'id' => $ev['id'],
+                                //                            'avatar' => $this->addFileQueueData($user['avatar'], 'avatar', $fileQueueData),
+                                //                            'thumb_avatar' => $this->addFileQueueData($user['thumb_avatar'], 'thumb_avatar', $fileQueueData),
+                                // 修改为存储原地址
+                                'avatar' => $user['avatar'],
+                                'thumb_avatar' => $user['thumb_avatar'],
+                            ];
+                        }
                     }
                 }
                 foreach ($user['department'] as $dk => $dv) {
