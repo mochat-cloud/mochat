@@ -526,7 +526,7 @@ class WorkContactService extends AbstractService implements WorkContactContract
             ->where('ce.status', $status)
             ->whereIn('ce.state', $state)
             ->when(!empty($day), function (Builder $query) use ($day) {
-                return $query->where('work_contact.created_at', '>', "'" . $day . "'");
+                return $query->where('work_contact.created_at', '>', $day);
             })
             ->distinct()
             ->count('work_contact.id');

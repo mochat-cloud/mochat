@@ -127,7 +127,7 @@ class ShopCodeRecordService extends AbstractService implements ShopCodeRecordCon
             ->where('corp_id', $corpId)
             ->where('type', $type)
             ->when(! empty($day), function (Builder $query) use ($day) {
-                return $query->where('created_at', '>', "'" . $day . "'");
+                return $query->where('created_at', '>', $day);
             })
             ->count('id');
     }
