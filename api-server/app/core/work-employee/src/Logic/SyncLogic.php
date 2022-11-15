@@ -225,7 +225,7 @@ class SyncLogic
         foreach ($userList['userlist'] as $k => $user) {
             $userIds[$user['userid']] = $user['userid'];
             //判断是否增加过成员（是:判断是否添加过成员部门关系 否:添加成员）
-            if (! empty($employee[$user['userid']])) {
+            if (! empty($employee[$user['userid']])) {dump($employee[$user['userid']]);
                 foreach ($employee[$user['userid']] as $ek => $ev) {
                     //删掉成员绑定的部门关系
                     if (! empty($user['department']) && ! in_array($ek, $user['department']) && ! empty($ek)) {
