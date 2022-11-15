@@ -14,7 +14,7 @@ return (new PhpCsFixer\Config())
         '@PSR2' => true,
         '@Symfony' => true,
         '@DoctrineAnnotation' => true,
-        '@PhpCsFixer' => true,
+        '@PhpCsFixer' => false,
         'header_comment' => [
             'comment_type' => 'PHPDoc',
             'header' => $header,
