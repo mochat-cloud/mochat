@@ -46,8 +46,8 @@
           <a-form-model-item label="企业ID：" prop="wxCorpId">
             <a-input v-model="wechatDetail.wxCorpId" :maxLength="18" placeholder="输入企业微信ID"/>
           </a-form-model-item>
-          <a-form-model-item label="通讯录管理secret：" prop="employeeSecret">
-            <a-input v-model="wechatDetail.employeeSecret" :maxLength="43" placeholder="输入企业通讯录管理secret"/>
+          <a-form-model-item label="自建应用secret：" prop="employeeSecret">
+            <a-input v-model="wechatDetail.employeeSecret" :maxLength="43" placeholder="输入自建应用secret"/>
           </a-form-model-item>
           <a-form-model-item label="外部联系人管理secret：" prop="contactSecret">
             <a-input v-model="wechatDetail.contactSecret" :maxLength="43" placeholder="输入外部联系人管理secret"/>
