@@ -12,10 +12,6 @@
       </template>
       <div class="content">
         <div class="left-content">
-          <div class="tips">
-            没有想要添加的成员？
-            <a href="#">添加成员教程</a>
-          </div>
           <div class="search">
             <a-input-search placeholder="请输入成员昵称" @search="search"/>
           </div>
