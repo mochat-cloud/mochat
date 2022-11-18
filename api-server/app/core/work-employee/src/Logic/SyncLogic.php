@@ -225,7 +225,7 @@ class SyncLogic
         foreach ($userList['userlist'] as $k => $user) {
             $userIds[$user['userid']] = $user['userid'];
             //判断是否增加过成员（是:判断是否添加过成员部门关系 否:添加成员）
-            if (! empty($employee[$user['userid']])) {
+            if (! empty($employee[$user['userid']])) {dump($employee[$user['userid']]);
                 foreach ($employee[$user['userid']] as $ek => $ev) {
                     //删掉成员绑定的部门关系
                     if (! empty($user['department']) && ! in_array($ek, $user['department']) && ! empty($ek)) {
@@ -243,6 +243,10 @@ class SyncLogic
                                 'thumb_avatar' => $user['thumb_avatar'],
                             ];
                         }
+                    }
+                    if($ev['status'] != $user['status']){
+                        $updateEmployee[$ev['id']]['id'] = $ev['id'];
+                        $updateEmployee[$ev['id']]['status'] = $user['status'];
                     }
                 }
                 foreach ($user['department'] as $dk => $dv) {
@@ -275,11 +279,11 @@ class SyncLogic
                         'name' => $user['name'],
                         'mobile' => isset($user['mobile']) ? $user['mobile'] : '',
                         'position' => $user['position']??"",
-                        'gender' => $user['gender']??0,
+                        'gender' => isset($user['gender'])?$user['gender']:0,
                         'email' => $user['email']??"",
-                        'avatar' => $user['avatar']??"",
-                        'thumb_avatar' => $user['thumb_avatar']??"",
-                        'telephone' => $user['telephone']??"",
+                        'avatar' => isset($user['avatar'])?$user['avatar']:"",
+                        'thumb_avatar' => isset($user['thumb_avatar'])?$user['thumb_avatar']:"",
+                        'telephone' => isset($user['telephone'])?$user['telephone']:"",
                         'alias' => $user['alias']??"",
                         'extattr' => ! empty($user['extattr']) ? json_encode($user['extattr']) : json_encode([]),
                         'status' => $user['status'],
@@ -351,7 +355,7 @@ class SyncLogic
     {
         $returnData = $wxEmployeeData = [];
         //公司成员信息
-        $employeeData = $this->workEmployeeService->getWorkEmployeesByCorpId($corpId, ['id', 'wx_user_id', 'avatar', 'thumb_avatar']);
+        $employeeData = $this->workEmployeeService->getWorkEmployeesByCorpId($corpId, ['id', 'wx_user_id', 'avatar', 'thumb_avatar','status']);
         if (empty($employeeData)) {
             return ['employee' => $returnData, 'wxEmployee' => $wxEmployeeData];
         }
@@ -364,6 +368,7 @@ class SyncLogic
                 'wxDepartmentId' => 0,
                 'avatar' => $ev['avatar'],
                 'thumbAvatar' => $ev['thumbAvatar'],
+                'status' => $ev['status'],
             ];
         }
         return ['employee' => $returnData, 'wxEmployee' => $wxEmployeeData];
@@ -397,6 +402,7 @@ class SyncLogic
                 'wxDepartmentId' => 0,
                 'avatar' => $employeeData[$edv['employeeId']]['avatar'],
                 'thumbAvatar' => $employeeData[$edv['employeeId']]['thumbAvatar'],
+                'status' => $employeeData[$edv['employeeId']]['status'],
             ];
         }
         foreach ($employeeData as $wek => $wev) {
