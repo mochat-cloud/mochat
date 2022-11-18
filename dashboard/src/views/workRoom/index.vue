@@ -27,9 +27,16 @@
             </a-row>
             <a-row>
               <a-col :span="12">
-                <a-form-item
+                <!-- <a-form-item
                   label="选择群主：">
                   <a-button icon="down" class="choose-btn" @click="choosePeople"></a-button>
+                </a-form-item> -->
+                <a-form-item label="选择群主：">
+                  <a-select v-model="workRoomOwnerId" mode="multiple" placeholder="选择群主">
+                    <a-select-option v-for="(item,index) in employeeData" :key="index" :value="item.employeeId">
+                      {{ item.name }}
+                    </a-select-option>
+                  </a-select>
                 </a-form-item>
               </a-col>
               <a-col :span="12">
@@ -223,7 +230,7 @@
 <script>
 import moment from 'moment'
 import { mapGetters } from 'vuex'
-import { workRoomGroupList, createGroup, deleteGroup, updateGroup, workRoomList, synList, batchUpdate, workContactRoom } from '@/api/workRoom'
+import { workRoomGroupList, createGroup, deleteGroup, updateGroup, workRoomList, synList, batchUpdate, workContactRoom, departmentList } from '@/api/workRoom'
 import Department from '@/components/department'
 const columns = [
   {
@@ -294,6 +301,8 @@ export default {
   },
   data () {
     return {
+      // 群主
+      employeeData: [],
       columns: columns,
       // 群成员
       memberClumns: memberClumns,
@@ -390,9 +399,17 @@ export default {
     setTimeout(() => {
       this.getGroupList()
       this.getTableData()
+      //  获部门成员列表
+      this.getEmployeeList()
     }, time)
   },
   methods: {
+    getEmployeeList () {
+      departmentList().then((res) => {
+        console.log(res)
+        this.employeeData = res.data.employee
+      })
+    },
     // 获取分组列表
     async getGroupList () {
       const params = {
