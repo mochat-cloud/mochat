@@ -38,7 +38,7 @@
       <a-modal
         :width="640"
         :visible="visible"
-        @cancel="() => {this.visible = false}">
+        @cancel="() => {this.visible = false,this.$refs.ruleForm.resetFields()}">
         <a-form-model ref="ruleForm" :model="wechatDetail" :rules="rules" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
           <a-form-model-item label="企业名称：" prop="corpName">
             <a-input v-model="wechatDetail.corpName" placeholder="输入企业微信企业名称"/>
@@ -46,7 +46,7 @@
           <a-form-model-item label="企业ID：" prop="wxCorpId">
             <a-input v-model="wechatDetail.wxCorpId" :maxLength="18" placeholder="输入企业微信ID"/>
           </a-form-model-item>
-          <a-form-model-item label="通讯录管理secret：" prop="employeeSecret">
+          <a-form-model-item label="应用secret：" prop="employeeSecret">
             <a-input v-model="wechatDetail.employeeSecret" :maxLength="43" placeholder="输入企业通讯录管理secret"/>
           </a-form-model-item>
           <a-form-model-item label="外部联系人管理secret：" prop="contactSecret">
@@ -57,7 +57,7 @@
           <a-button @click="saveConfig" :loading="btnLoading" key="submit" type="primary">
             保存配置
           </a-button>
-          <a-button key="back" @click="() => {this.visible = false} ">
+          <a-button key="back" @click="() => {this.visible = false,this.$refs.ruleForm.resetFields()} ">
             关闭
           </a-button>
         </template>
