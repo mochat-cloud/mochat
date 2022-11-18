@@ -32,7 +32,7 @@
                   <a-button icon="down" class="choose-btn" @click="choosePeople"></a-button>
                 </a-form-item> -->
                 <a-form-item label="选择群主：">
-                  <a-select v-model="workRoomOwnerId" mode="multiple" placeholder="选择群主">
+                  <a-select v-model="workRoomOwnerId" mode="multiple" placeholder="选择群主" :filter-option="filterOption">
                     <a-select-option v-for="(item,index) in employeeData" :key="index" :value="item.employeeId">
                       {{ item.name }}
                     </a-select-option>
@@ -409,6 +409,11 @@ export default {
         console.log(res)
         this.employeeData = res.data.employee
       })
+    },
+    filterOption (input, option) {
+      return (
+        option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      )
     },
     // 获取分组列表
     async getGroupList () {
