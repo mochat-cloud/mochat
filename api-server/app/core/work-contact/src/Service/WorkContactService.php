@@ -405,10 +405,10 @@ class WorkContactService extends AbstractService implements WorkContactContract
                 return $query->where('work_contact.gender', '=', $gender);
             })
             ->when(!empty($starTime), function (Builder $query) use ($starTime) {
-                return $query->where('work_contact.created_at', '>', "'" . $starTime . "'");
+                return $query->where('work_contact.created_at', '>', $starTime);
             })
             ->when(!empty($endTime), function (Builder $query) use ($endTime) {
-                return $query->where('work_contact.created_at', '<', "'" . $endTime . "'");
+                return $query->where('work_contact.created_at', '<',  $endTime);
             })
             ->when(!empty($tagIds), function (Builder $query) use ($tagIds) {
                 return $query->whereIn('ctp.contact_tag_id', $tagIds);
@@ -451,10 +451,10 @@ class WorkContactService extends AbstractService implements WorkContactContract
                 return $query->where('work_contact.gender', '=', $gender);
             })
             ->when(!empty($starTime), function (Builder $query) use ($starTime) {
-                return $query->where('work_contact.created_at', '>', "'" . $starTime . "'");
+                return $query->where('work_contact.created_at', '>', $starTime);
             })
             ->when(!empty($endTime), function (Builder $query) use ($endTime) {
-                return $query->where('work_contact.created_at', '<', "'" . $endTime . "'");
+                return $query->where('work_contact.created_at', '<',  $endTime );
             })
             ->when(!empty($tagIds), function (Builder $query) use ($tagIds) {
                 return $query->whereIn('ctp.contact_tag_id', $tagIds);

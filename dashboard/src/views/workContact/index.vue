@@ -78,9 +78,16 @@
             </a-form-item>
           </a-col>
           <a-col :lg="8">
-            <a-form-item
+            <!-- <a-form-item
               label="部门成员：">
               <a-input placeholder="部门成员" @click="() => { this.choosePeopleShow = true }"></a-input>
+            </a-form-item> -->
+            <a-form-item label="选择群主：">
+              <a-select v-model="workRoomOwnerId" mode="multiple" placeholder="选择群主" :filter-option="filterOption" @change="employeeChange">
+                <a-select-option v-for="(item,index) in employeeData" :key="index" :value="item.employeeId">
+                  {{ item.name }}
+                </a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
           <a-col :lg="8">
@@ -165,9 +172,9 @@
           <div slot="news" slot-scope="text, record">
             <div class="news">
               <img :src="record.avatar"/>
-              <sapn class="name">
+              <span class="name">
                 {{ record.name }}
-              </sapn>
+              </span>
             </div>
           </div>
           <div slot="businessNo" slot-scope="text, record">
@@ -197,6 +204,7 @@
 
 <script>
 import { workContactList, groupChatList, customersSource, UserPortraitList, synContact } from '@/api/workContact'
+import { departmentList } from '@/api/workRoom'
 import department from './components/department'
 export default {
   components: {
@@ -204,6 +212,10 @@ export default {
   },
   data () {
     return {
+      // 群主
+      employeeData: [],
+      // 所选群主id
+      workRoomOwnerId: [],
       groupChatModal: false,
       screenData: {
         gender: 3,
@@ -347,8 +359,21 @@ export default {
     this.getGroupChatList()
     this.getCustomersSource()
     this.getUserPortraitList()
+
+    this.getEmployeeList()
   },
   methods: {
+    getEmployeeList () {
+      departmentList().then((res) => {
+        console.log(res)
+        this.employeeData = res.data.employee
+      })
+    },
+    filterOption (input, option) {
+      return (
+        option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      )
+    },
     getTableData () {
       const params = {
         keyWords: this.screenData.keyWords,
@@ -368,9 +393,9 @@ export default {
         perPage: this.pagination.pageSize
       }
       workContactList(params).then(res => {
-        this.roomIdList = []
-        this.employeeIdList = ''
-        this.employees = []
+        // this.roomIdList = []
+        // this.employeeIdList = ''
+        // this.employees = []
         this.tableData = res.data.list
         this.pagination.total = res.data.page.total
       })
@@ -446,6 +471,9 @@ export default {
       })
       this.employeeIdList = arr.join(',')
     },
+    employeeChange (value) {
+      this.employeeIdList = value.join(',')
+    },
     // 同步客户
     getSynContact () {
       synContact().then(res => {
@@ -468,6 +496,7 @@ export default {
       this.searchKey = ''
       this.roomIdList = []
       this.groupSearch = ''
+      this.workRoomOwnerId = []
     },
     searchEmp (data) {
       if (data.length === 0) {

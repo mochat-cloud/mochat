@@ -393,7 +393,7 @@
                       <span v-else>门店</span>
                     </span>
                     <a-divider type="vertical" />
-                    <span>
+                    <span @click="cutPageType" style="cursor: pointer;">
                       <a-icon type="redo" />更新数据
                     </span>
                   </div>
