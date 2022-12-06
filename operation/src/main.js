@@ -13,9 +13,11 @@ import './plugins/utils'
 
 Vue.config.productionTip = false
 
-// router.beforeEach((to, from, next) => {
-//   // alert(123)
-// })
+router.beforeEach((to, from, next) => {
+  // alert(123)
+  // console.log(to, from)
+  next()
+})
 
 new Vue({
   router,
