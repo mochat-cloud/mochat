@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 use Hyperf\Watcher\Driver\ScanFileDriver;
 
-$dir = ['app', 'config'];
+$dir = ['app', 'plugin', 'config'];
 
 return [
     'driver' => ScanFileDriver::class,
