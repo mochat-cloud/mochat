@@ -50,7 +50,6 @@ class Update extends AbstractAction
         $params['groupId'] = $this->request->input('groupId');
         $params['name'] = $this->request->input('name');
         $params['isUpdate'] = $this->request->input('isUpdate');
-        dump($params);
 
         //验证参数
         $this->validated($params);
