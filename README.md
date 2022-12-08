@@ -62,10 +62,6 @@ MoChat 的诞生离不开社区其他优秀的开源项目，在此特别鸣谢�
 [![Vant](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/Vant-mini.png)](https://vant-contrib.gitee.io/vant/#/zh-CN/)
 [![Ant](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/Antdv-mini.png)](https://antdv.com)
 
-### 插件开发服务商推荐
-推荐仅代表官方认可服务商有能力开发 MoChat 相关插件，不对相关交易作任何担保与承诺，请自行承担交易风险。
-
-[![中锐](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/plugin-dev-zr.png)](https://project.api.zonrn.cn/)
 
 ### 环境部署
 #### 准备工作

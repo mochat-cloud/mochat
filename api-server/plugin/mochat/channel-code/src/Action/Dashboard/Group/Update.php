@@ -54,6 +54,10 @@ class Update extends AbstractAction
         //验证参数
         $this->validated($params);
 
+        if ($params['groupId'] == 0) {
+            throw new CommonException(ErrorCode::SERVER_ERROR, '【未分组】不能修改');
+        }
+
         //查询是否已存在相同分组名称
         $info = $this->channelCodeGroup
             ->getChannelCodeGroupsByName($params['name']);
