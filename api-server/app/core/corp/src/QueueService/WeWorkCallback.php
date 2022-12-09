@@ -50,7 +50,7 @@ class WeWorkCallback
         isset($message['Event']) && $wxEventPathArr['Event'] = $message['Event'];
         isset($message['ChangeType']) && $wxEventPathArr['EventType'] = $message['ChangeType'];
         isset($message['EventKey']) && $wxEventPathArr['EventType'] = $message['EventKey'];
-
+dump($message);
         $wxEventPathStr = implode('.', $wxEventPathArr);
         $events = $this->getEvents();
         if (isset($events[$wxEventPathStr])) {
