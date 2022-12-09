@@ -50,7 +50,7 @@
         </div>
       </div>
       <div class="confirm">
-        <a-button @click="modalShow = false">取消</a-button>
+        <a-button @click="cancel">取消</a-button>
         <a-button type="primary" @click="go">确定</a-button>
       </div>
     </a-modal>
@@ -71,6 +71,12 @@ export default {
     }
   },
   methods: {
+    cancel () {
+      this.modalShow = false
+      if (this.$parent.cancelChange) {
+        this.$parent.cancelChange()
+      }
+    },
     setSelect (data, currentData = {}) {
       this.selectedMembers = []
       data.forEach((item, index) => {
@@ -115,6 +121,9 @@ export default {
     go () {
       this.hide()
       this.$emit('change', this.selectedMembers)
+      if (this.$parent.confirmChange) {
+        this.$parent.confirmChange()
+      }
     },
     getData (key = '', fn = null) {
       department({
