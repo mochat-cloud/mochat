@@ -10,8 +10,13 @@
               <div class="content">
                 <span>{{ weChatContactNum }}</span>
                 <div>
-                  <span>总微信客户数</span>
-                  <img :src="require('@/assets/systemHomePage/search-icon.png')" alt="">
+                  <a-tooltip>
+                    <template slot="title">
+                      企业客户总数
+                    </template>
+                    <span>总微信客户数</span>
+                    <img :src="require('@/assets/systemHomePage/search-icon.png')" alt="">
+                  </a-tooltip>
                 </div>
               </div>
             </div>
@@ -20,8 +25,13 @@
               <div class="content">
                 <span>{{ weChatRoomNum }}</span>
                 <div>
-                  <span>总微信群数</span>
-                  <img :src="require('@/assets/systemHomePage/search-icon.png')" alt="">
+                  <a-tooltip>
+                    <template slot="title">
+                      企业群聊总数
+                    </template>
+                    <span>总微信群数</span>
+                    <img :src="require('@/assets/systemHomePage/search-icon.png')" alt="">
+                  </a-tooltip>
                 </div>
               </div>
             </div>
@@ -30,8 +40,13 @@
               <div class="content">
                 <span>{{ roomMemberNum }}</span>
                 <div>
-                  <span>总群成员数</span>
-                  <img :src="require('@/assets/systemHomePage/search-icon.png')" alt="">
+                  <a-tooltip>
+                    <template slot="title">
+                      企业群聊内客户总数
+                    </template>
+                    <span>总群成员数</span>
+                    <img :src="require('@/assets/systemHomePage/search-icon.png')" alt="">
+                  </a-tooltip>
                 </div>
               </div>
             </div>
@@ -40,15 +55,20 @@
               <div class="content">
                 <span>{{ corpMemberNum }}</span>
                 <div>
-                  <span>总企业成员数</span>
-                  <img :src="require('@/assets/systemHomePage/search-icon.png')" alt="">
+                  <a-tooltip>
+                    <template slot="title">
+                      企业员工总数
+                    </template>
+                    <span>总企业成员数</span>
+                    <img :src="require('@/assets/systemHomePage/search-icon.png')" alt="">
+                  </a-tooltip>
                 </div>
               </div>
             </div>
           </div>
         </div>
         <div class="chart-box">
-          <p>实施概况<span>更新时间：{{ updateTime }}</span></p>
+          <p>实时概况<span>更新时间：{{ updateTime }}</span></p>
           <div class="chart-data">
             <div>
               <span class="title">新增客户数</span>
@@ -351,6 +371,8 @@ export default {
         this.$router.push('/channelCode/index')
       } else if (type == 'three') {
         this.$router.push('/workRoom/index')
+      } else if (type == 'one') {
+        this.$router.push('/contactMessageBatchSend/index')
       }
     },
     getLineChat () {
