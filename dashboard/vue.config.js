@@ -34,12 +34,12 @@ const assetsCDN = {
   //   '//cdn.jsdelivr.net/npm/vuex@3.1.1/dist/vuex.min.js',
   //   '//cdn.jsdelivr.net/npm/axios@0.19.0/dist/axios.min.js'
   // ],
-  js: [
-    'https://startupscrmmochat.duoduoker.com/cdn/vue@2.6.10distvue.min.js',
-    'https://startupscrmmochat.duoduoker.com/cdn/vue-router@3.1.3distvue-router.min.js',
-    'https://startupscrmmochat.duoduoker.com/cdn/vuex@3.1.1distvuex.min.js',
-    'https://startupscrmmochat.duoduoker.com/cdn/axios@0.19.0distaxios.min.js'
-  ],
+  // js: [
+  //   'https://startupscrmmochat.duoduoker.com/cdn/vue@2.6.10distvue.min.js',
+  //   'https://startupscrmmochat.duoduoker.com/cdn/vue-router@3.1.3distvue-router.min.js',
+  //   'https://startupscrmmochat.duoduoker.com/cdn/vuex@3.1.1distvuex.min.js',
+  //   'https://startupscrmmochat.duoduoker.com/cdn/axios@0.19.0distaxios.min.js'
+  // ],
   dll: ['/dll/antDesignVue.dll.js', '/dll/echarts.dll.js', '/dll/vueCropper.dll.js', '/dll/corejs.dll.js', '/dll/vueContainerQuery.dll.js']
 }
 
