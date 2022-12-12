@@ -89,6 +89,8 @@ class EmployeeStoreHandler extends AbstractEventHandler
             $this->logger->error('EmployeeStoreHandler->process同步新增成员corp不能为空');
             return 'success';
         }
+        //异步通知只返回UserID和Department, 其他信息调取接口获取
+        $this->getUserInfo((int)$corpIds[0]);
         //成员基础信息
         $createEmployeeData = $this->createEmployeeData($corpIds);
         if (empty($createEmployeeData)) {
@@ -319,5 +321,30 @@ class EmployeeStoreHandler extends AbstractEventHandler
             return ['avatar' => $this->message['Avatar'], 'thumbAvatar' => $thumbAvatar];
         }
         return ['avatar' => '', 'thumbAvatar' => ''];
+    }
+
+    /**
+     * 获取用户信息
+     * @param int $corpId
+     */
+    protected function getUserInfo(int $corpId)
+    {
+        $userInfo = $this->client->provider('user')->app($corpId)->user->get($this->message['UserID']);
+        $this->logger->info($this->message['UserID'] . '用户信息' . json_encode($userInfo, JSON_UNESCAPED_UNICODE));
+        if ($userInfo['errcode'] == 0) {
+            $this->message['Avatar'] = $userInfo['avatar'] ?? '';
+            $this->message['Order'] = $userInfo['order'] ?? [];
+            $this->message['IsLeaderInDept'] = $userInfo['is_leader_in_dept'] ?? [];
+            $this->message['MainDepartment'] = $userInfo['main_department'] ?? '';
+            $this->message['Address'] = $userInfo['address'] ?? '';
+            $this->message['Status'] = $userInfo['status'] ?? '';
+            $this->message['ExtAttr'] = $userInfo['extattr'] ?? '';
+            $this->message['Alias'] = $userInfo['alias'] ?? '';
+            $this->message['Email'] = $userInfo['email'] ?? '';
+            $this->message['Gender'] = $userInfo['gender'] ?? '';
+            $this->message['Position'] = $userInfo['position'] ?? '';
+            $this->message['Mobile'] = $userInfo['mobile'] ?? '';
+            $this->message['Name'] = $userInfo['name'] ?? '';
+        }
     }
 }
