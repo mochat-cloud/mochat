@@ -98,6 +98,7 @@ class EmployeeStoreHandler extends AbstractEventHandler
         //获取成员和部门关系数据
         $employeeDepartmentData = $this->getEmployeeDepartmentData($corpIds);
         //成员主部门
+        $createEmployeeData['main_department_id'] = 0;
         if (! empty($this->message['MainDepartment']) && ! empty($employeeDepartmentData['department'])) {
             $createEmployeeData['main_department_id'] = ! empty($employeeDepartmentData['department'][$this->message['MainDepartment']]) ? $employeeDepartmentData['department'][$this->message['MainDepartment']] : 0;
         }
