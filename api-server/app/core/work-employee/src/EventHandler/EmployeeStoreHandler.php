@@ -83,6 +83,7 @@ class EmployeeStoreHandler extends AbstractEventHandler
         $this->workDepartmentService = make(WorkDepartmentContract::class);
         $this->workEmployeeDepartmentService = make(WorkEmployeeDepartmentContract::class);
         $this->authManager = make(AuthManager::class);
+        $this->client = make(WeWork::class);
         //获取公司corpId
         $corpIds = $this->getCorpId();
         if (empty($corpIds)) {
@@ -269,7 +270,6 @@ class EmployeeStoreHandler extends AbstractEventHandler
      */
     protected function getContactAuth(string $wxUserId)
     {
-        $this->client = make(WeWork::class);
         //配置联系权限
         $followUser = $this->client->provider('externalContact')->app()->external_contact->getFollowUsers();
         if (empty($followUser['errcode']) && ! empty($followUser['follow_user'])) {
