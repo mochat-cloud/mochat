@@ -79,6 +79,7 @@ class SyncLogic
     public function handle(array $corpIds): bool
     {
         $this->logger = make(StdoutLoggerInterface::class);
+        $this->logger->info('成员同步开始');
         if (empty($corpIds)) {
             $this->logger->error('WorkEmployeeSyncLogic->handle同步创建成员corp不能为空');
             return true;
@@ -93,6 +94,7 @@ class SyncLogic
         $this->dealEmployee($corpIds);
         //同步时间
         $this->getSysTime($corpIds);
+        $this->logger->info('成员同步结束');
         return true;
     }
 
@@ -124,9 +126,11 @@ class SyncLogic
             $employeeDepartmentData = $this->handleEmployeeDepartment($employeeDepartment, $departments);
             //组装数据
             $employee = $this->handleDepartment($employeeDepartmentData);
+            $this->logger->info('员工' . json_encode($employee));
             foreach ($departments as $key => $value) {
                 //企业微信端用户信息
                 $userList = $this->client->provider('user')->app($cdv)->user->getDetailedDepartmentUsers($value['wxDepartmentId']);
+                $this->logger->info($value['wxDepartmentId'] . '成员列表' . json_encode($userList));
                 if (! empty($userList['errcode']) || empty($userList['userlist'])) {
                     continue;
                 }

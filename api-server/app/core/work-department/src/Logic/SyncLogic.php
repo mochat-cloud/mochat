@@ -62,9 +62,11 @@ class SyncLogic
         $this->logger->info(json_encode($corpData));
         foreach ($corpData as $corpId => $cdv) {
             $wxDepartment = $this->client->provider('user')->app($cdv)->department->list();
+            $this->logger->info('部门列表' . json_encode($wxDepartment));
             if (empty($wxDepartment['errcode']) && $wxDepartment['department']) {
                 //获取部门ID
                 $department = $this->getDepartmentIds($corpId);
+                $this->logger->info('部门id' . json_encode($department));
                 foreach ($wxDepartment['department'] as $key => $value) {
                     if (empty($department[$value['id']])) {
                         $createData[] = [
