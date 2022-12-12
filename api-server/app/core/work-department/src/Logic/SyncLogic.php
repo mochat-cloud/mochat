@@ -47,7 +47,6 @@ class SyncLogic
     public function handle(array $corpIds): array
     {
         $this->logger = make(StdoutLoggerInterface::class);
-        $this->logger->info('同步部门开始');
         if (empty($corpIds)) {
             $this->logger->error('WorkDepartmentSynLogic->handle同步部门corpId不能为空');
             return [];
@@ -59,14 +58,11 @@ class SyncLogic
             $this->logger->error('WorkDepartmentSynLogic->handle同步部门corp不能为空');
             return [];
         }
-        $this->logger->info(json_encode($corpData));
         foreach ($corpData as $corpId => $cdv) {
             $wxDepartment = $this->client->provider('user')->app($cdv)->department->list();
-            $this->logger->info('部门列表' . json_encode($wxDepartment));
             if (empty($wxDepartment['errcode']) && $wxDepartment['department']) {
                 //获取部门ID
                 $department = $this->getDepartmentIds($corpId);
-                $this->logger->info('部门id' . json_encode($department));
                 foreach ($wxDepartment['department'] as $key => $value) {
                     if (empty($department[$value['id']])) {
                         $createData[] = [
@@ -103,7 +99,6 @@ class SyncLogic
             }
             unset($wxDepartment, $createChunkData, $createData, $result, $parentDepartment, $updateData);
         }
-        $this->logger->info('同步部门结束');
         return [];
     }
 
