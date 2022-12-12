@@ -329,7 +329,11 @@ class EmployeeStoreHandler extends AbstractEventHandler
      */
     protected function getUserInfo(int $corpId)
     {
-        $userInfo = $this->client->provider('user')->app($corpId)->user->get($this->message['UserID']);
+        $corp = $this->corpService->getCorpById($corpId, ['wx_corpid', 'employee_secret']);
+        $userInfo = $this->client->provider('user')->app([
+            'corp_id' => $corp['wxCorpid'],
+            'secret' => $corp['employeeSecret'],
+        ])->user->get($this->message['UserID']);
         $this->logger->info($this->message['UserID'] . '用户信息' . json_encode($userInfo, JSON_UNESCAPED_UNICODE));
         if ($userInfo['errcode'] == 0) {
             $this->message['Avatar'] = $userInfo['avatar'] ?? '';
