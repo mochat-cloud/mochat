@@ -1072,6 +1072,7 @@ export default {
       storeApi(e).then((res) => {
         this.$message.success('创建成功')
         this.getStoreTable(this.askStoreData)
+        this.getcityData()
       })
     },
     // 下载二维码
