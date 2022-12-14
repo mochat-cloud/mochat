@@ -99,17 +99,12 @@ class WxSyncLogic
 
     /**
      * @Inject
-     * @var ContainerInterface
-     */
-    protected $container;
-
-    /**
-     * @Inject
      * @var StdoutLoggerInterface
      */
     private $logger;
 
     /**
+     * @Inject
      * @var EventDispatcherInterface
      */
     private $eventDispatcher;
@@ -121,7 +116,6 @@ class WxSyncLogic
      */
     public function handle(array $wxRoomList, int $corpId = 0, int $isSingle = 0)
     {
-        $this->eventDispatcher = $this->container->get(EventDispatcherInterface::class);
         $this->logger->error('客户群回调开始' . date('Y-m-d H:i:s'));
         ## 获取系统中当前企业所有客户群聊列表
         $roomList = $this->getRoomList($wxRoomList, $corpId, $isSingle);
