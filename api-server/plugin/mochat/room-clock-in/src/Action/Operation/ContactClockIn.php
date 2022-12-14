@@ -19,6 +19,7 @@ use Hyperf\HttpServer\Contract\RequestInterface;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\App\WorkContact\Contract\WorkContactEmployeeContract;
+use MoChat\App\WorkContact\Logic\UnionidConvertToExternalUseridLogic;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
@@ -128,6 +129,15 @@ class ContactClockIn extends AbstractAction
         $clockIn = $this->clockInService->getClockInById((int) $params['id'], ['id', 'type', 'time_type', 'start_time', 'end_time', 'tasks']);
         ## 客户打卡信息
         $contact = $this->clockInContactService->getClockInContactByClockInIdUnionId((int) $params['id'], $params['union_id'], ['id', 'contact_id', 'contact_clock_tags', 'total_day', 'series_day']);
+        //兼容, 使用wxExternalUserid再查询一次
+        if (!$contact['contactId']) {
+            $params['corpId'] = $clockIn['corpId'];
+            $wxExternalUserid = $this->exchangeUnionidToExternalUserid($params, 1);
+            if ($wxExternalUserid) {
+                $contactInfo = $this->workContactService->getWorkContactByWxExternalUserId($wxExternalUserid, ['id', 'wx_external_userid']);
+                $contact['contactId'] = $contactInfo['id'];
+            }
+        }
 
         if (! empty($this->clockInContactRecordService->getClockInContactRecordByClockInIdContactId((int) $params['id'], $contact['id'], ['id']))) {
             throw new CommonException(ErrorCode::INVALID_PARAMS, '打卡成功');
@@ -297,5 +307,21 @@ class ContactClockIn extends AbstractAction
                 }
             }
         }
+    }
+
+    /**
+     * 用unionid转换external_userid
+     * @param array $params
+     * @param int $subjectType
+     * @return string
+     * @throws \JsonException
+     */
+    private function exchangeUnionidToExternalUserid(array $params, int $subjectType = 0): string
+    {
+        $unionid = !empty($params['union_id']) ? $params['union_id'] : '';
+        $openid = !empty($params['openid']) ? $params['openid'] : '';
+        $corpId = $params['corpId'];
+        $convertLogic = $this->container->get(UnionidConvertToExternalUseridLogic::class);
+        return $convertLogic->handle($corpId, $unionid, $openid, $subjectType);
     }
 }
