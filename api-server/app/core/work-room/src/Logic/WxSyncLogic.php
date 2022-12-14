@@ -408,74 +408,15 @@ class WxSyncLogic
     }
 
     /**
-     * 自动打标签-客户入群行为打标签.
-     * @param $contactRoomCreateData
-     * @throws \JsonException
+     * 事件分发
+     * @param int $corpId
+     * @param array $roomCreateData
+     * @param array $roomUpdateData
+     * @param array $deleteRoomIdArr
+     * @param array $contactRoomCreateData
+     * @param array $contactRoomUpdateData
+     * @param array $deleteContactRoomIdArr
      */
-    private function autoTagRoom($contactRoomCreateData): array
-    {
-        $this->logger->error('客户入群行为打标签' . date('Y-m-d H:i:s'));
-        $auto_tag = $this->autoTagService->getAutoTagByTypeOnOff(2, 1, ['id', 'tag_rule', 'corp_id']);
-        if (empty($auto_tag)) {
-            return [];
-        }
-        foreach ($auto_tag as $auto) {
-            ## 2 客户入群群聊id
-            foreach ($contactRoomCreateData as $item) {
-                // 客户0跳出循环
-                $contact_id = (int) $item['contact_id'];
-                if ($contact_id === 0) {
-                    continue;
-                }
-                foreach (json_decode($auto['tagRule'], true, 512, JSON_THROW_ON_ERROR) as $key => $tagRule) {
-                    $room_ids = array_column($tagRule['rooms'], 'id');
-                    $tags = $tagRule['tags'];
-                    // 空标签跳出循环
-                    if (empty($tags)) {
-                        continue;
-                    }
-                    if (in_array((int) $item['room_id'], $room_ids, true)) {
-                        $data = ['contactId' => 0, 'employeeId' => 0, 'tagArr' => array_column($tags, 'tagid'), 'employeeWxUserId' => '', 'contactWxExternalUserid' => ''];
-                        ## 客户id
-                        $data['contactId'] = $contact_id;
-                        ## 员工id
-                        $contact_employee = $this->workContactEmployeeService->getWorkContactEmployeeByCorpIdContactId($contact_id, $auto['corpId'], ['employee_id']);
-                        $data['employeeId'] = $contact_employee['employeeId'];
-                        ## 客户
-                        $contact = $this->workContactService->getWorkContactById($contact_id, ['wx_external_userid']);
-                        $data['contactWxExternalUserid'] = $contact['wxExternalUserid'];
-                        ## 员工
-                        $employee = $this->workEmployeeService->getWorkEmployeeById($contact_employee['employeeId'], ['wx_user_id']);
-                        $data['employeeWxUserId'] = $employee['wxUserId'];
-                        $data['corpId'] = $auto['corpId'];
-                        $this->autoTag($data);
-                        ## 数据库操作
-                        $record = $this->autoTagRecordService->getAutoTagRecordByCorpIdWxExternalUseridAutoTagId($auto['corpId'], $data['contactWxExternalUserid'], $auto['id'], $key + 1, ['id', 'trigger_count']);
-                        $trigger_count = empty($record) ? 1 : $record['triggerCount'] + 1;
-                        $createMonitors = [
-                            'auto_tag_id' => $auto['id'],
-                            'contact_id' => $contact_id,
-                            'tag_rule_id' => $key + 1,
-                            'wx_external_userid' => $data['contactWxExternalUserid'],
-                            'employee_id' => $data['employeeId'],
-                            'tags' => json_encode(array_column($tags, 'tagname'), JSON_THROW_ON_ERROR),
-                            'corp_id' => $auto['corpId'],
-                            'trigger_count' => $trigger_count,
-                            'status' => 1,
-                            'created_at' => date('Y-m-d H:i:s'),
-                        ];
-                        if (empty($record)) {
-                            $this->autoTagRecordService->createAutoTagRecord($createMonitors);
-                        } else {
-                            $this->autoTagRecordService->updateAutoTagRecordById($record['id'], $createMonitors);
-                        }
-                    }
-                }
-            }
-        }
-        return [];
-    }
-
     private function triggerRoomEvent(
         int $corpId,
         array $roomCreateData,
