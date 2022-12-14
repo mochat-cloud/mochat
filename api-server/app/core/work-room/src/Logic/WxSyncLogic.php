@@ -20,11 +20,19 @@ use MoChat\App\WorkContact\Contract\WorkContactEmployeeContract;
 use MoChat\App\WorkContact\Contract\WorkContactRoomContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\App\WorkRoom\Contract\WorkRoomContract;
+use MoChat\App\WorkRoom\Event\CreateRoomEvent;
+use MoChat\App\WorkRoom\Event\CreateRoomMemberEvent;
+use MoChat\App\WorkRoom\Event\DeleteRoomMemberEvent;
+use MoChat\App\WorkRoom\Event\DismissRoomEvent;
+use MoChat\App\WorkRoom\Event\UpdateRoomEvent;
+use MoChat\App\WorkRoom\Event\UpdateRoomMemberEvent;
 use MoChat\Plugin\AutoTag\Action\Dashboard\Traits\AutoContactTag;
 use MoChat\Plugin\AutoTag\Contract\AutoTagContract;
 use MoChat\Plugin\AutoTag\Contract\AutoTagRecordContract;
 use MoChat\Plugin\RoomFission\Contract\RoomFissionContactContract;
 use MoChat\Plugin\RoomFission\Contract\RoomFissionContract;
+use Psr\Container\ContainerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
  * 客户群管理-微信客户群数据同步.
@@ -91,9 +99,20 @@ class WxSyncLogic
 
     /**
      * @Inject
+     * @var ContainerInterface
+     */
+    protected $container;
+
+    /**
+     * @Inject
      * @var StdoutLoggerInterface
      */
     private $logger;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
 
     /**
      * @param array $wxRoomList 微信客户群聊列表信息
@@ -102,6 +121,7 @@ class WxSyncLogic
      */
     public function handle(array $wxRoomList, int $corpId = 0, int $isSingle = 0)
     {
+        $this->eventDispatcher = $this->container->get(EventDispatcherInterface::class);
         $this->logger->error('客户群回调开始' . date('Y-m-d H:i:s'));
         ## 获取系统中当前企业所有客户群聊列表
         $roomList = $this->getRoomList($wxRoomList, $corpId, $isSingle);
@@ -213,6 +233,16 @@ class WxSyncLogic
         $deleteRoomIdArr = array_merge($deleteRoomIdArr, array_column($roomList['roomList'], 'id'));
         ## 数据入库
         $this->dataIntoDb($roomCreateData, $roomUpdateData, $deleteRoomIdArr, $contactRoomCreateData, $contactRoomUpdateData, $deleteContactRoomIdArr);
+        //事件分发
+        $this->triggerRoomEvent(
+            (int) $corpId,
+            $roomCreateData,
+            $roomUpdateData,
+            $deleteRoomIdArr,
+            $contactRoomCreateData,
+            $contactRoomUpdateData,
+            $deleteContactRoomIdArr
+        );
     }
 
     /**
@@ -297,8 +327,6 @@ class WxSyncLogic
                 $this->workContactRoomService->createWorkContactRooms($contactRoomCreateData);
                 ## 群裂变数据处理
                 $this->createRoomFission($contactRoomCreateData);
-                ## 自动打标签处理
-                $this->autoTagRoom($contactRoomCreateData);
             }
             ## 客户成员-更新数据
             empty($contactRoomUpdateData) || $this->workContactRoomService->batchUpdateByIds($contactRoomUpdateData);
@@ -452,5 +480,69 @@ class WxSyncLogic
             }
         }
         return [];
+    }
+
+    private function triggerRoomEvent(
+        int $corpId,
+        array $roomCreateData,
+        array $roomUpdateData,
+        array $deleteRoomIdArr,
+        array $contactRoomCreateData,
+        array $contactRoomUpdateData,
+        array $deleteContactRoomIdArr
+    ) {
+        if (! empty($roomCreateData)) {
+            go(function () use ($corpId, $roomCreateData) {
+                $this->eventDispatcher->dispatch(new CreateRoomEvent([
+                    'corpId' => $corpId,
+                    'rooms' => $roomCreateData,
+                ]));
+            });
+        }
+
+        if (! empty($roomUpdateData)) {
+            go(function () use ($corpId, $roomUpdateData) {
+                $this->eventDispatcher->dispatch(new UpdateRoomEvent([
+                    'corpId' => $corpId,
+                    'rooms' => $roomUpdateData,
+                ]));
+            });
+        }
+
+        if (! empty($deleteRoomIdArr)) {
+            go(function () use ($corpId, $deleteRoomIdArr) {
+                $this->eventDispatcher->dispatch(new DismissRoomEvent([
+                    'corpId' => $corpId,
+                    'rooms' => $deleteRoomIdArr,
+                ]));
+            });
+        }
+
+        if (! empty($contactRoomCreateData)) {
+            go(function () use ($corpId, $contactRoomCreateData) {
+                $this->eventDispatcher->dispatch(new CreateRoomMemberEvent([
+                    'corpId' => $corpId,
+                    'rooms' => $contactRoomCreateData,
+                ]));
+            });
+        }
+
+        if (! empty($contactRoomUpdateData)) {
+            go(function () use ($corpId, $contactRoomUpdateData) {
+                $this->eventDispatcher->dispatch(new UpdateRoomMemberEvent([
+                    'corpId' => $corpId,
+                    'rooms' => $contactRoomUpdateData,
+                ]));
+            });
+        }
+
+        if (! empty($deleteContactRoomIdArr)) {
+            go(function () use ($corpId, $deleteContactRoomIdArr) {
+                $this->eventDispatcher->dispatch(new DeleteRoomMemberEvent([
+                    'corpId' => $corpId,
+                    'rooms' => $deleteContactRoomIdArr,
+                ]));
+            });
+        }
     }
 }
