@@ -126,7 +126,7 @@ class ContactClockIn extends AbstractAction
         $this->validated($params);
 
         ## 打卡验证
-        $clockIn = $this->clockInService->getClockInById((int) $params['id'], ['id', 'type', 'time_type', 'start_time', 'end_time', 'tasks']);
+        $clockIn = $this->clockInService->getClockInById((int) $params['id'], ['id', 'type', 'time_type', 'start_time', 'end_time', 'tasks', 'corp_id']);
         ## 客户打卡信息
         $contact = $this->clockInContactService->getClockInContactByClockInIdUnionId((int) $params['id'], $params['union_id'], ['id', 'contact_id', 'contact_clock_tags', 'total_day', 'series_day']);
         //兼容, 使用wxExternalUserid再查询一次
