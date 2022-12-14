@@ -83,12 +83,15 @@ class EmployeeStoreHandler extends AbstractEventHandler
         $this->workDepartmentService = make(WorkDepartmentContract::class);
         $this->workEmployeeDepartmentService = make(WorkEmployeeDepartmentContract::class);
         $this->authManager = make(AuthManager::class);
+        $this->client = make(WeWork::class);
         //获取公司corpId
         $corpIds = $this->getCorpId();
         if (empty($corpIds)) {
             $this->logger->error('EmployeeStoreHandler->process同步新增成员corp不能为空');
             return 'success';
         }
+        //异步通知只返回UserID和Department, 其他信息调取接口获取
+        $this->getUserInfo((int)$corpIds[0]);
         //成员基础信息
         $createEmployeeData = $this->createEmployeeData($corpIds);
         if (empty($createEmployeeData)) {
@@ -98,6 +101,7 @@ class EmployeeStoreHandler extends AbstractEventHandler
         //获取成员和部门关系数据
         $employeeDepartmentData = $this->getEmployeeDepartmentData($corpIds);
         //成员主部门
+        $createEmployeeData['main_department_id'] = 0;
         if (! empty($this->message['MainDepartment']) && ! empty($employeeDepartmentData['department'])) {
             $createEmployeeData['main_department_id'] = ! empty($employeeDepartmentData['department'][$this->message['MainDepartment']]) ? $employeeDepartmentData['department'][$this->message['MainDepartment']] : 0;
         }
@@ -266,7 +270,6 @@ class EmployeeStoreHandler extends AbstractEventHandler
      */
     protected function getContactAuth(string $wxUserId)
     {
-        $this->client = make(WeWork::class);
         //配置联系权限
         $followUser = $this->client->provider('externalContact')->app()->external_contact->getFollowUsers();
         if (empty($followUser['errcode']) && ! empty($followUser['follow_user'])) {
@@ -318,5 +321,34 @@ class EmployeeStoreHandler extends AbstractEventHandler
             return ['avatar' => $this->message['Avatar'], 'thumbAvatar' => $thumbAvatar];
         }
         return ['avatar' => '', 'thumbAvatar' => ''];
+    }
+
+    /**
+     * 获取用户信息
+     * @param int $corpId
+     */
+    protected function getUserInfo(int $corpId)
+    {
+        $corp = $this->corpService->getCorpById($corpId, ['wx_corpid', 'employee_secret']);
+        $userInfo = $this->client->provider('user')->app([
+            'corp_id' => $corp['wxCorpid'],
+            'secret' => $corp['employeeSecret'],
+        ])->user->get($this->message['UserID']);
+        $this->logger->info($this->message['UserID'] . '用户信息' . json_encode($userInfo, JSON_UNESCAPED_UNICODE));
+        if ($userInfo['errcode'] == 0) {
+            $this->message['Avatar'] = $userInfo['avatar'] ?? '';
+            $this->message['Order'] = $userInfo['order'] ?? [];
+            $this->message['IsLeaderInDept'] = $userInfo['is_leader_in_dept'] ?? [];
+            $this->message['MainDepartment'] = $userInfo['main_department'] ?? '';
+            $this->message['Address'] = $userInfo['address'] ?? '';
+            $this->message['Status'] = $userInfo['status'] ?? '';
+            $this->message['ExtAttr'] = $userInfo['extattr'] ?? '';
+            $this->message['Alias'] = $userInfo['alias'] ?? '';
+            $this->message['Email'] = $userInfo['email'] ?? '';
+            $this->message['Gender'] = $userInfo['gender'] ?? '';
+            $this->message['Position'] = $userInfo['position'] ?? '';
+            $this->message['Mobile'] = $userInfo['mobile'] ?? '';
+            $this->message['Name'] = $userInfo['name'] ?? '';
+        }
     }
 }
