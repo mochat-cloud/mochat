@@ -20,11 +20,19 @@ use MoChat\App\WorkContact\Contract\WorkContactEmployeeContract;
 use MoChat\App\WorkContact\Contract\WorkContactRoomContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\App\WorkRoom\Contract\WorkRoomContract;
+use MoChat\App\WorkRoom\Event\CreateRoomEvent;
+use MoChat\App\WorkRoom\Event\CreateRoomMemberEvent;
+use MoChat\App\WorkRoom\Event\DeleteRoomMemberEvent;
+use MoChat\App\WorkRoom\Event\DismissRoomEvent;
+use MoChat\App\WorkRoom\Event\UpdateRoomEvent;
+use MoChat\App\WorkRoom\Event\UpdateRoomMemberEvent;
 use MoChat\Plugin\AutoTag\Action\Dashboard\Traits\AutoContactTag;
 use MoChat\Plugin\AutoTag\Contract\AutoTagContract;
 use MoChat\Plugin\AutoTag\Contract\AutoTagRecordContract;
 use MoChat\Plugin\RoomFission\Contract\RoomFissionContactContract;
 use MoChat\Plugin\RoomFission\Contract\RoomFissionContract;
+use Psr\Container\ContainerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
  * 客户群管理-微信客户群数据同步.
@@ -94,6 +102,12 @@ class WxSyncLogic
      * @var StdoutLoggerInterface
      */
     private $logger;
+
+    /**
+     * @Inject
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
 
     /**
      * @param array $wxRoomList 微信客户群聊列表信息
@@ -213,6 +227,16 @@ class WxSyncLogic
         $deleteRoomIdArr = array_merge($deleteRoomIdArr, array_column($roomList['roomList'], 'id'));
         ## 数据入库
         $this->dataIntoDb($roomCreateData, $roomUpdateData, $deleteRoomIdArr, $contactRoomCreateData, $contactRoomUpdateData, $deleteContactRoomIdArr);
+        //事件分发
+        $this->triggerRoomEvent(
+            (int) $corpId,
+            $roomCreateData,
+            $roomUpdateData,
+            $deleteRoomIdArr,
+            $contactRoomCreateData,
+            $contactRoomUpdateData,
+            $deleteContactRoomIdArr
+        );
     }
 
     /**
@@ -297,8 +321,6 @@ class WxSyncLogic
                 $this->workContactRoomService->createWorkContactRooms($contactRoomCreateData);
                 ## 群裂变数据处理
                 $this->createRoomFission($contactRoomCreateData);
-                ## 自动打标签处理
-                $this->autoTagRoom($contactRoomCreateData);
             }
             ## 客户成员-更新数据
             empty($contactRoomUpdateData) || $this->workContactRoomService->batchUpdateByIds($contactRoomUpdateData);
@@ -386,71 +408,76 @@ class WxSyncLogic
     }
 
     /**
-     * 自动打标签-客户入群行为打标签.
-     * @param $contactRoomCreateData
-     * @throws \JsonException
+     * 事件分发
+     * @param int $corpId
+     * @param array $roomCreateData
+     * @param array $roomUpdateData
+     * @param array $deleteRoomIdArr
+     * @param array $contactRoomCreateData
+     * @param array $contactRoomUpdateData
+     * @param array $deleteContactRoomIdArr
      */
-    private function autoTagRoom($contactRoomCreateData): array
-    {
-        $this->logger->error('客户入群行为打标签' . date('Y-m-d H:i:s'));
-        $auto_tag = $this->autoTagService->getAutoTagByTypeOnOff(2, 1, ['id', 'tag_rule', 'corp_id']);
-        if (empty($auto_tag)) {
-            return [];
+    private function triggerRoomEvent(
+        int $corpId,
+        array $roomCreateData,
+        array $roomUpdateData,
+        array $deleteRoomIdArr,
+        array $contactRoomCreateData,
+        array $contactRoomUpdateData,
+        array $deleteContactRoomIdArr
+    ) {
+        if (! empty($roomCreateData)) {
+            go(function () use ($corpId, $roomCreateData) {
+                $this->eventDispatcher->dispatch(new CreateRoomEvent([
+                    'corpId' => $corpId,
+                    'rooms' => $roomCreateData,
+                ]));
+            });
         }
-        foreach ($auto_tag as $auto) {
-            ## 2 客户入群群聊id
-            foreach ($contactRoomCreateData as $item) {
-                // 客户0跳出循环
-                $contact_id = (int) $item['contact_id'];
-                if ($contact_id === 0) {
-                    continue;
-                }
-                foreach (json_decode($auto['tagRule'], true, 512, JSON_THROW_ON_ERROR) as $key => $tagRule) {
-                    $room_ids = array_column($tagRule['rooms'], 'id');
-                    $tags = $tagRule['tags'];
-                    // 空标签跳出循环
-                    if (empty($tags)) {
-                        continue;
-                    }
-                    if (in_array((int) $item['room_id'], $room_ids, true)) {
-                        $data = ['contactId' => 0, 'employeeId' => 0, 'tagArr' => array_column($tags, 'tagid'), 'employeeWxUserId' => '', 'contactWxExternalUserid' => ''];
-                        ## 客户id
-                        $data['contactId'] = $contact_id;
-                        ## 员工id
-                        $contact_employee = $this->workContactEmployeeService->getWorkContactEmployeeByCorpIdContactId($contact_id, $auto['corpId'], ['employee_id']);
-                        $data['employeeId'] = $contact_employee['employeeId'];
-                        ## 客户
-                        $contact = $this->workContactService->getWorkContactById($contact_id, ['wx_external_userid']);
-                        $data['contactWxExternalUserid'] = $contact['wxExternalUserid'];
-                        ## 员工
-                        $employee = $this->workEmployeeService->getWorkEmployeeById($contact_employee['employeeId'], ['wx_user_id']);
-                        $data['employeeWxUserId'] = $employee['wxUserId'];
-                        $data['corpId'] = $auto['corpId'];
-                        $this->autoTag($data);
-                        ## 数据库操作
-                        $record = $this->autoTagRecordService->getAutoTagRecordByCorpIdWxExternalUseridAutoTagId($auto['corpId'], $data['contactWxExternalUserid'], $auto['id'], $key + 1, ['id', 'trigger_count']);
-                        $trigger_count = empty($record) ? 1 : $record['triggerCount'] + 1;
-                        $createMonitors = [
-                            'auto_tag_id' => $auto['id'],
-                            'contact_id' => $contact_id,
-                            'tag_rule_id' => $key + 1,
-                            'wx_external_userid' => $data['contactWxExternalUserid'],
-                            'employee_id' => $data['employeeId'],
-                            'tags' => json_encode(array_column($tags, 'tagname'), JSON_THROW_ON_ERROR),
-                            'corp_id' => $auto['corpId'],
-                            'trigger_count' => $trigger_count,
-                            'status' => 1,
-                            'created_at' => date('Y-m-d H:i:s'),
-                        ];
-                        if (empty($record)) {
-                            $this->autoTagRecordService->createAutoTagRecord($createMonitors);
-                        } else {
-                            $this->autoTagRecordService->updateAutoTagRecordById($record['id'], $createMonitors);
-                        }
-                    }
-                }
-            }
+
+        if (! empty($roomUpdateData)) {
+            go(function () use ($corpId, $roomUpdateData) {
+                $this->eventDispatcher->dispatch(new UpdateRoomEvent([
+                    'corpId' => $corpId,
+                    'rooms' => $roomUpdateData,
+                ]));
+            });
         }
-        return [];
+
+        if (! empty($deleteRoomIdArr)) {
+            go(function () use ($corpId, $deleteRoomIdArr) {
+                $this->eventDispatcher->dispatch(new DismissRoomEvent([
+                    'corpId' => $corpId,
+                    'rooms' => $deleteRoomIdArr,
+                ]));
+            });
+        }
+
+        if (! empty($contactRoomCreateData)) {
+            go(function () use ($corpId, $contactRoomCreateData) {
+                $this->eventDispatcher->dispatch(new CreateRoomMemberEvent([
+                    'corpId' => $corpId,
+                    'rooms' => $contactRoomCreateData,
+                ]));
+            });
+        }
+
+        if (! empty($contactRoomUpdateData)) {
+            go(function () use ($corpId, $contactRoomUpdateData) {
+                $this->eventDispatcher->dispatch(new UpdateRoomMemberEvent([
+                    'corpId' => $corpId,
+                    'rooms' => $contactRoomUpdateData,
+                ]));
+            });
+        }
+
+        if (! empty($deleteContactRoomIdArr)) {
+            go(function () use ($corpId, $deleteContactRoomIdArr) {
+                $this->eventDispatcher->dispatch(new DeleteRoomMemberEvent([
+                    'corpId' => $corpId,
+                    'rooms' => $deleteContactRoomIdArr,
+                ]));
+            });
+        }
     }
 }
