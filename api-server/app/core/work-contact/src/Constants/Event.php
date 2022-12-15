@@ -59,4 +59,9 @@ class Event extends AbstractConstants
      * @Message("待办事项")
      */
     public const TODO = 8;
+
+    /**
+     * @Message("互动雷达")
+     */
+    public const RADAR = 11;
 }
