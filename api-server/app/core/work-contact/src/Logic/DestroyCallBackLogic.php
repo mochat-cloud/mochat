@@ -132,7 +132,7 @@ class DestroyCallBackLogic
     {
         $contactId = 0;
         $employeeId = 0;
-        $contactInfo = $this->contact->getWorkContactByWxExternalUserId($wxContactUserId, ['id', 'unionid']);
+        $contactInfo = $this->contact->getWorkContactByWxExternalUserId($wxContactUserId, ['id', 'unionid', 'name']);
         if (! empty($contactInfo)) {
             $contactId = $contactInfo['id'];
             ## 任务宝-裂变用户处理
