@@ -65,10 +65,12 @@ trait AutoContactTag
     protected function autoTag($params): void
     {
         $this->params = $params;
+        $this->logger->info(json_encode($params));
         $tagIds = $this->params['tagArr'];
         $addWxTag = [];
         ## 查询员工对客户所打标签
         $contactTagPivot = $this->workContactTagPivotService->getWorkContactTagPivotsByOtherId($this->params['contactId'], $this->params['employeeId'], ['contact_tag_id']);
+        $this->logger->info(json_encode($contactTagPivot));
         ## 若客户已有标签
         if (! empty($contactTagPivot)) {
             ## 已有标签id
@@ -78,6 +80,7 @@ trait AutoContactTag
             ## 本次修改的标签id与已有标签id取差集 则为本次需要添加的标签
             $tagIds = array_diff($currentTagIds, $alreadyTagIds);
         }
+        $this->logger->info(json_encode($tagIds));
 
         ## 标签不为空
         if (! empty($tagIds)) {
@@ -92,6 +95,7 @@ trait AutoContactTag
 
             ## 查询标签信息
             $tagInfo = $this->getWorkContactTag($tagIds);
+            $this->logger->info(json_encode($tagInfo));
             ## 需要同步添加的微信标签
             $addWxTag = $tagInfo['wxTagIds'];
             ## 标签名称
