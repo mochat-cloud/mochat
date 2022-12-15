@@ -171,7 +171,8 @@ export default {
         getClock() {
             let params = {
                 id: this.id,
-                union_id: this.weChatUserNews.unionid
+                union_id: this.weChatUserNews.unionid,
+                openid: this.weChatUserNews.openid
             }
             contactClockInApi(params).then((res) => {
                 //  刷新排行榜
@@ -205,7 +206,8 @@ export default {
                 union_id: this.weChatUserNews.unionid,
                 nickname: this.weChatUserNews.nickname,
                 avatar: this.weChatUserNews.headimgurl,
-                city: this.weChatUserNews.city
+                city: this.weChatUserNews.city,
+                openid: this.weChatUserNews.openid
             }
             contactDataApi(params).then((res) => {
                 document.title = "群打卡"
