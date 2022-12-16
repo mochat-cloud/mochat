@@ -214,7 +214,7 @@ class MarkTagListener implements ListenerInterface
             }
 
             $tagRuleId = $tagKey + 1;
-            $this->createAutoTagRecord($contact, $autoTagId, $tagRuleId, $tagIds);
+            $this->createAutoTagRecord($contact, $autoTagId, $tagRuleId, $currentTagIds);
 
             $tagIds = array_merge($tagIds, $currentTagIds);
         }
