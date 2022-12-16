@@ -21,6 +21,7 @@ use MoChat\App\WorkAgent\Contract\WorkAgentContract;
 use MoChat\App\WorkAgent\QueueService\MessageRemind;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\App\WorkContact\Contract\WorkContactEmployeeContract;
+use MoChat\App\WorkContact\Logic\UnionidConvertToExternalUseridLogic;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
@@ -158,6 +159,15 @@ class ContactLottery extends AbstractAction
         $lottery = $this->lotteryService->getLotteryById((int) $params['id'], ['name', 'time_type', 'start_time', 'end_time', 'corp_id', 'contact_tags']);
         $prize = $this->lotteryPrizeService->getLotteryPrizeByLotteryId((int) $params['id'], ['prize_set', 'is_show', 'draw_set', 'exchange_set', 'win_set']);
         $contact = $this->lotteryContactService->getLotteryContactByLotteryIdUnionId((int) $params['id'], $params['union_id'], ['id', 'contact_id', 'grade', 'contact_tags', 'draw_num', 'win_num', 'employee_ids']);
+        //兼容, 使用wxExternalUserid再查询一次
+        if (!$contact['contactId']) {
+            $params['corpId'] = $lottery['corpId'];
+            $wxExternalUserid = $this->exchangeUnionidToExternalUserid($params, 1);
+            if ($wxExternalUserid) {
+                $contactInfo = $this->workContactService->getWorkContactByWxExternalUserId($wxExternalUserid, ['id', 'wx_external_userid']);
+                $contact['contactId'] = $contactInfo['id'];
+            }
+        }
         $contactCount = $this->lotteryContactRecordService->countLotteryContactRecordByLotteryIdContactId((int) $params['id'], (int) $contact['id']);
 
         ## 时间限制
@@ -405,5 +415,21 @@ class ContactLottery extends AbstractAction
         $content = "【抽奖活动】\n客户昵称：{$params['nickname']}\n活动名称：{$lottery['name']}\n客户行为：客户抽中了奖品:{$winName}\n<a href='#'>点击查看客户详情 </a>";
         $messageRemind = make(MessageRemind::class);
         $messageRemind->sendToEmployee((int) $lottery['corpId'], $touser, 'text', $content);
+    }
+
+    /**
+     * 用unionid转换external_userid
+     * @param array $params
+     * @param int $subjectType
+     * @return string
+     * @throws \JsonException
+     */
+    private function exchangeUnionidToExternalUserid(array $params, int $subjectType = 0): string
+    {
+        $unionid = !empty($params['union_id']) ? $params['union_id'] : '';
+        $openid = !empty($params['openid']) ? $params['openid'] : '';
+        $corpId = $params['corpId'];
+        $convertLogic = $this->container->get(UnionidConvertToExternalUseridLogic::class);
+        return $convertLogic->handle($corpId, $unionid, $openid, $subjectType);
     }
 }
