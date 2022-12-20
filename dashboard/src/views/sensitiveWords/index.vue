@@ -305,6 +305,7 @@ export default {
         this.sensitiveWordsData = {}
         this.getTableData()
       })
+      this.btnLoading = false
     },
     // 新建分组
     addGroup () {

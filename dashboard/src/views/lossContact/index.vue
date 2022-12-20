@@ -1,7 +1,7 @@
 <template>
   <div class="loss-customers">
     <a-card>
-      <a-button v-permission="'/lossContact/index@choose'" @click="() => { this.choosePeopleShow = true }">选择部门成员</a-button>
+      <a-button v-permission="'/lossContact/index@choose'" @click="selectMemberShow">选择部门成员</a-button>
       <a-modal
         title="选择企业成员"
         :maskClosable="false"
@@ -9,10 +9,10 @@
         :visible="choosePeopleShow"
         @cancel="() => {this.choosePeopleShow = false; this.employees = []; this.employeeIdList = ''}"
       >
-        <Department v-if="choosePeopleShow" :isChecked="employees" :memberKey="employees" @change="peopleChange"></Department>
+        <!-- <Department v-if="choosePeopleShow" :isChecked="employees" :memberKey="employees" @change="peopleChange"></Department> -->
         <template slot="footer">
-          <a-button @click="() => { this.choosePeopleShow = false; this.employees = []; this.employeeIdList = '' }">取消</a-button>
-          <a-button type="primary" @click="() => { this.choosePeopleShow = false; this.getTableData(); this.employeeIdList = '';this.employees = [];}">确定</a-button>
+          <a-button @click="cancelChange">取消</a-button>
+          <a-button type="primary" @click="confirmChange">确定</a-button>
         </template>
       </a-modal>
       <div class="table-wrapper">
@@ -36,15 +36,18 @@
         </a-table>
       </div>
     </a-card>
+    <selectMember ref="selectMember" @change="peopleChange"></selectMember>
   </div>
 </template>
 
 <script>
 import { getLossContactList } from '@/api/lossContact'
 import Department from '@/components/department'
+import selectMember from '@/components/Select/member'
 export default {
   components: {
-    Department
+    Department,
+    selectMember
   },
   data () {
     return {
@@ -95,6 +98,20 @@ export default {
     this.getTableData()
   },
   methods: {
+    cancelChange () {
+      this.choosePeopleShow = false
+      this.employees = []
+      this.employeeIdList = ''
+    },
+    confirmChange () {
+      this.choosePeopleShow = false
+      this.getTableData()
+      this.employeeIdList = ''
+      this.employees = []
+    },
+    selectMemberShow () {
+      this.$refs.selectMember.setSelect(this.employees)
+    },
     getTableData () {
       const params = {
         employeeId: this.employeeIdList,
@@ -112,10 +129,18 @@ export default {
       this.getTableData()
     },
     // 成员选择
-    peopleChange (data) {
+    // peopleChange (data) {
+    //   const arr = []
+    //   data.map(item => {
+    //     arr.push(item.employeeId)
+    //   })
+    //   this.employeeIdList = arr.join(',')
+    // }
+    peopleChange (e) {
+      this.employees = e
       const arr = []
-      data.map(item => {
-        arr.push(item.employeeId)
+      this.employees.map(i => {
+        arr.push(i.employeeId)
       })
       this.employeeIdList = arr.join(',')
     }

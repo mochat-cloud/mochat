@@ -162,7 +162,7 @@ class AddContactListener implements ListenerInterface
             }
 
             ## 任务宝-裂变用户上级信息
-            $inviteCount = $parent['inviteCount']++;
+            $inviteCount = $parent['inviteCount']+1;
             $fission = $this->workFissionService->getWorkFissionById((int) $parent['fissionId'], ['service_employees', 'tasks', 'end_time', 'new_friend']);
             if (! ($fission['newFriend'] === 1 && $new === 0)) {
                 $inviteCount = $parent['inviteCount'];

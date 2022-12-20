@@ -71,9 +71,6 @@ class UpdateLogic
         foreach ($push as $key => $val) {
             foreach ($val['push_content'] as $k => $v) {
                 $push[$key]['push_content'][$k]['created_at'] = date('Y-m-d H:i:s');
-                if ($v['type'] == 'image') {
-                    $push[$key]['push_content'][$k]['pic'] = File::uploadBase64Image($v['pic'], 'image/roomCalendar/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg');
-                }
             }
         }
         return $push;

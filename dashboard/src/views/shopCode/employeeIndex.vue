@@ -393,7 +393,7 @@
                       <span v-else>门店</span>
                     </span>
                     <a-divider type="vertical" />
-                    <span>
+                    <span @click="cutPageType" style="cursor: pointer;">
                       <a-icon type="redo" />更新数据
                     </span>
                   </div>
@@ -1072,6 +1072,7 @@ export default {
       storeApi(e).then((res) => {
         this.$message.success('创建成功')
         this.getStoreTable(this.askStoreData)
+        this.getcityData()
       })
     },
     // 下载二维码

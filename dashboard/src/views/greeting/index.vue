@@ -31,7 +31,7 @@
                 <h4>{{ record.mediumContent.title }}</h4>
                 <div>
                   <span v-if="record.mediumContent.description">{{ record.mediumContent.description }}</span>
-                  <img :src="record.mediumContent.imagePath" alt="">
+                  <img :src="record.mediumContent.imageFullPath" alt="">
                 </div>
               </div>
             </div>
