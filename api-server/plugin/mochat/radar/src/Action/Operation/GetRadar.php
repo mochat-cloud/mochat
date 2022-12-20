@@ -15,16 +15,21 @@ use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use Hyperf\Utils\Codec\Json;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Corp\Logic\AppTrait;
 use MoChat\App\WorkAgent\Contract\WorkAgentContract;
 use MoChat\App\WorkAgent\QueueService\MessageRemind;
+use MoChat\App\WorkContact\Constants\Event;
+use MoChat\App\WorkContact\Contract\ContactEmployeeTrackContract;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\App\WorkContact\Contract\WorkContactEmployeeContract;
+use MoChat\App\WorkContact\Logic\UnionidConvertToExternalUseridLogic;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
 use MoChat\Plugin\AutoTag\Action\Dashboard\Traits\AutoContactTag;
+use MoChat\Plugin\ContactTrack\Constants\EventName;
 use MoChat\Plugin\Radar\Contract\RadarChannelContract;
 use MoChat\Plugin\Radar\Contract\RadarChannelLinkContract;
 use MoChat\Plugin\Radar\Contract\RadarContract;
@@ -108,6 +113,13 @@ class GetRadar extends AbstractAction
     private $workAgentService;
 
     /**
+     * 通讯录 - 客户 - 轨迹互动.
+     * @Inject
+     * @var ContactEmployeeTrackContract
+     */
+    private $contactEmployeeTrackService;
+
+    /**
      * @Inject
      * @var StdoutLoggerInterface
      */
@@ -131,6 +143,7 @@ class GetRadar extends AbstractAction
             'radar_id' => (int) $this->request->input('radar_id'),
             'link_id' => (int) $this->request->input('target_id'),
             'employee_id' => (int) $this->request->input('staff_id'),
+            'openid' => $this->request->input('openid'),
         ];
 
         ## 数据统计
@@ -189,6 +202,13 @@ class GetRadar extends AbstractAction
         $contactId = empty($info) ? 0 : $info[0]['contactId'];
         if ($contactId === 0) {
             $contact = $this->workContactService->getWorkContactByCorpIdUnionId($radar['corpId'], $params['union_id'], ['id']);
+            // 兼容union获取不到用户信息情况
+            if(empty($contact) && !empty($params['openid'])){
+                $wxExternalUserid = $this->exchangeUnionidToExternalUserid(['union_id' => $params['union_id'], 'openid' => $params['openid'], 'corpId' => $radar['corpId']], 1);
+                if ($wxExternalUserid) {
+                    $contact = $this->workContactService->getWorkContactByWxExternalUserId($wxExternalUserid, ['id', 'wx_external_userid']);
+                }
+            }
             $contactId = empty($contact) ? 0 : $contact['id'];
         }
         ## 员工
@@ -220,6 +240,11 @@ class GetRadar extends AbstractAction
         ## 行为通知
         if ($radar['actionNotice'] === 1) {
             $this->actionNotice($radar['corpId'], $employee['wxUserId'], $content);
+        }
+        // 动态通知、雷达连接
+        if ($radar['dynamicNotice'] === 1) {
+            $info = "【雷达文章】\n「{$params['nickname']}」打开了「{$employee['name']}」在「自建渠道-{$channel['name']}」里发送的互动雷达「{$radar['title']}」\n客户昵称:{$params['nickname']}\n客户类型:微信客户";
+            $this->dynamicNotice((int)$radar['corpId'], (int)$contactId, (int)$params['employeeId'], $info);
         }
         ## 返回数据处理
         if ($radar['type'] === 3) {
@@ -262,5 +287,48 @@ class GetRadar extends AbstractAction
         $data['employeeWxUserId'] = $employee['wxUserId'];
         $data['corpId'] = $corpId;
         $this->autoTag($data);
+    }
+
+    /**
+     * 动态通知
+     * @param int $corpId
+     * @param int $contactId
+     * @param int $employeeId
+     * @param String $content
+     */
+    private function dynamicNotice(int $corpId, int $contactId, int $employeeId, String $content)
+    {
+        $jsonContact = [
+            'title' => "互动雷达",
+            'content' => $content,
+        ];
+        // 创建客户事件
+        $contactEmployeeTrackData = [
+            'employee_id' => $employeeId,
+            'contact_id' => $contactId,
+            'event' => Event::RADAR,
+            'content' => Json::encode($jsonContact),
+            'corp_id' => $corpId,
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
+        ];
+        // 记录日志
+        $this->contactEmployeeTrackService->createContactEmployeeTrack($contactEmployeeTrackData);
+    }
+
+    /**
+     * 用unionid转换external_userid
+     * @param array $params
+     * @param int $subjectType
+     * @return string
+     * @throws \JsonException
+     */
+    private function exchangeUnionidToExternalUserid(array $params, int $subjectType = 0): string
+    {
+        $unionid = !empty($params['union_id']) ? $params['union_id'] : '';
+        $openid = !empty($params['openid']) ? $params['openid'] : '';
+        $corpId = $params['corpId'];
+        $convertLogic = $this->container->get(UnionidConvertToExternalUseridLogic::class);
+        return $convertLogic->handle($corpId, $unionid, $openid, $subjectType);
     }
 }

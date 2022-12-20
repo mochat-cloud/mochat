@@ -169,7 +169,8 @@
                     nickname: this.weChatUserNews.nickname,
                     avatar: this.weChatUserNews.headimgurl,
                     city: this.weChatUserNews.city,
-                    source: this.source
+                    source: this.source,
+                    openid: this.weChatUserNews.openid
                 }
                 contactDataApi(params).then((res) => {
                     document.title = res.data.lottery.name

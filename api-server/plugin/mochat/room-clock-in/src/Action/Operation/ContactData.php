@@ -20,6 +20,7 @@ use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Utils\File;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\App\WorkContact\Contract\WorkContactEmployeeContract;
+use MoChat\App\WorkContact\Logic\UnionidConvertToExternalUseridLogic;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
@@ -219,7 +220,7 @@ class ContactData extends AbstractAction
      */
     private function createClockInContact(array $params, int $corpId): array
     {
-        $contactEmployee = $this->getContactEmployee($params['union_id'], $corpId);
+        $contactEmployee = $this->getContactEmployee($params['union_id'], $corpId, $params['openid']);
 
         $data = [
             'clock_in_id' => (int) $params['id'],
@@ -286,9 +287,16 @@ class ContactData extends AbstractAction
      * @param $union_id
      * @param $corpId
      */
-    private function getContactEmployee($union_id, $corpId): array
+    private function getContactEmployee($union_id, $corpId, $openid = ''): array
     {
         $contact = $this->workContactService->getWorkContactByCorpIdUnionId((int) $corpId, $union_id, ['id']);
+        if(!$contact && !empty($openid)){
+            $wxExternalUserid = $this->exchangeUnionidToExternalUserid(['union_id' => $union_id, 'openid' => $openid, 'corpId' => $corpId], 1);
+            if ($wxExternalUserid) {
+                $contact = $this->workContactService->getWorkContactByWxExternalUserId($wxExternalUserid, ['id', 'wx_external_userid']);
+            }
+        }
+
         $contactEmployee = empty($contact) ? '' : $this->workContactEmployeeService->getWorkContactEmployeesByContactId((int) $contact['id'], ['employee_id']);
         $employee = empty($contactEmployee) ? '' : array_column($contactEmployee, 'employeeId');
         $employeeIds = empty($employee) ? '' : implode(',', $employee);
@@ -296,5 +304,21 @@ class ContactData extends AbstractAction
             'contact_id' => empty($contact) ? 0 : $contact['id'],
             'employee_ids' => $employeeIds,
         ];
+    }
+
+    /**
+     * 用unionid转换external_userid
+     * @param array $params
+     * @param int $subjectType
+     * @return string
+     * @throws \JsonException
+     */
+    private function exchangeUnionidToExternalUserid(array $params, int $subjectType = 0): string
+    {
+        $unionid = !empty($params['union_id']) ? $params['union_id'] : '';
+        $openid = !empty($params['openid']) ? $params['openid'] : '';
+        $corpId = $params['corpId'];
+        $convertLogic = $this->container->get(UnionidConvertToExternalUseridLogic::class);
+        return $convertLogic->handle($corpId, $unionid, $openid, $subjectType);
     }
 }

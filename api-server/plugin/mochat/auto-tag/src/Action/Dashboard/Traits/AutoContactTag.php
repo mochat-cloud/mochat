@@ -92,6 +92,7 @@ trait AutoContactTag
 
             ## 查询标签信息
             $tagInfo = $this->getWorkContactTag($tagIds);
+            $this->logger->info(json_encode($tagInfo));
             ## 需要同步添加的微信标签
             $addWxTag = $tagInfo['wxTagIds'];
             ## 标签名称
