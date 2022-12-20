@@ -4,6 +4,7 @@ function resolve (dir) {
   return path.join(__dirname, dir)// path.join(__dirname)设置绝对路径
 }
 const vueConfig = {
+  publicPath:process.env.BASE_URL ? process.env.BASE_URL : '/',
   css: {
     loaderOptions: {
       less: {

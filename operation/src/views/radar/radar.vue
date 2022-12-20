@@ -88,7 +88,8 @@
                     target_type: this.target_type,
                     radar_id: this.radar_id,
                     target_id: this.target_id,
-                    staff_id: this.staff_id
+                    staff_id: this.staff_id,
+                    openid: this.weChatUserNews.openid
                 }
                 getRadarApi(params).then((res) => {
                     if (this.target_type == 1) {
