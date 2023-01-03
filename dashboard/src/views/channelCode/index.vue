@@ -362,6 +362,10 @@ export default {
         this.$message.error('请选择分组')
         return
       }
+      if (this.editGroupData.groupId == 0) {
+        this.$message.error('不能修改该分组')
+        return
+      }
       if (reg.test(name)) {
         this.$message.error('请输入正确的分组名称')
         return
