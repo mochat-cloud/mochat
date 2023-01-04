@@ -1,3 +1,3 @@
 module.exports = {
-    publicPath: "./"
+    publicPath: process.env.BASE_URL ? process.env.BASE_URL : '/',
 }
