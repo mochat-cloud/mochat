@@ -363,7 +363,7 @@ export default {
         return
       }
       if (this.editGroupData.groupId == 0) {
-        this.$message.error('不能修改该分组')
+        this.$message.error('不能修改【未分组】')
         return
       }
       if (reg.test(name)) {
