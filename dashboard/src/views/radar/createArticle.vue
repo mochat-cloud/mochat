@@ -19,7 +19,7 @@
             </div>
           </div>
           <div class="add_title" v-if="formAskData.article_type==1">
-            <div class="tips">粘贴公众号文章链接，自动提取文章内容转化为雷达文章，追踪客户阅读和分享行为<a href="">如何提取公众号文章？</a></div>
+            <div class="tips">粘贴公众号文章链接，自动提取文章内容转化为雷达文章，追踪客户阅读和分享行为</div>
             <div><a-textarea placeholder="请在此粘贴公众号文章链接" :rows="4" v-model="textFieldlink" /></div>
             <a-button type="primary" style="margin-top: 15px;" @click="createArticle">生成雷达文章</a-button>
           </div>
