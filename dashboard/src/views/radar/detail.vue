@@ -66,13 +66,6 @@
     </a-card>
     <a-card class="mb16" title="数据详情">
       <div class="filter">
-        <div class="mb16">
-          <span>筛选：</span>
-          <a-radio-group
-            :options="radio.chart.options"
-            v-model="radio.chart.current"
-          />
-        </div>
         <div class="mb32">
           <span>时间筛选：</span>
           <a-range-picker @change="channelTimeScreen"/>
@@ -101,14 +94,6 @@
     <a-card>
       <a-tabs v-model="showpanel" :animated="false">
         <a-tab-pane :key="0" tab="客户数据">
-          <!--          筛选-->
-          <div class="mb16">
-            <span>筛选：</span>
-            <a-radio-group
-              :options="radio.customer.options"
-              v-model="radio.customer.current"
-            />
-          </div>
           <div class="mb16">
             <!--          搜索-->
             <div class="filter-form">
@@ -196,13 +181,6 @@
           </div>
         </a-tab-pane>
         <a-tab-pane :key="1" tab="渠道数据">
-          <div class="mb16">
-            <span>筛选：</span>
-            <a-radio-group
-              :options="radio.channel.options"
-              v-model="radio.channel.current"
-            />
-          </div>
           <div class="mb16">
             <div class="filter-form">
               <div class="item">
