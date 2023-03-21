@@ -263,12 +263,7 @@ export const routeList = {
     component: () => import(/* webpackChunkName: "corp" */ '@/views/corpData/index'),
     meta: { title: '系统首页' }
   },
-  '/greeting/userSearch': {
-    path: '/greeting/userSearch',
-    name: 'userSearch',
-    component: () => import(/* webpackChunkName: "chat-tool" */ '@/views/greeting/userSearch'),
-    meta: { title: '用户搜索添加' }
-  },
+
   // 入群欢迎语
   '/roomWelcome/index': {
     path: '/roomWelcome/index',
@@ -506,25 +501,7 @@ export const routeList = {
     component: () => import(/* webpackChunkName: "room-clock-in" */ '@/views/roomClockIn/show'),
     meta: { title: '详情' }
   },
-  // 门店活码
-  '/shopCode/employeeIndex': {
-    path: '/shopCode/employeeIndex',
-    name: '/shopCodeEmployeeIndex',
-    component: () => import(/* webpackChunkName: "shop-code" */ '@/views/shopCode/employeeIndex'),
-    meta: { title: '扫码添加店主' }
-  },
-  '/shopCode/roomIndex': {
-    path: '/shopCode/roomIndex',
-    name: '/shopCodeRoomIndex',
-    component: () => import(/* webpackChunkName: "shop-code" */ '@/views/shopCode/roomIndex'),
-    meta: { title: '扫码添加店主' }
-  },
-  '/shopCode/cityIndex': {
-    path: '/shopCode/cityIndex',
-    name: '/shopCodeCityIndex',
-    component: () => import(/* webpackChunkName: "shop-code" */ '@/views/shopCode/cityIndex'),
-    meta: { title: '扫码添加店主' }
-  },
+
   // 抽奖活动
   '/lottery/index': {
     path: '/lottery/index',
@@ -673,41 +650,7 @@ export const routeList = {
     component: () => import(/* webpackChunkName: "room-message-batch-send" */ '@/views/roomMessageBatchSend/show'),
     meta: { title: '群发详情' }
   },
-  // 批量加好友
-  '/contactBatchAdd/index': {
-    path: '/contactBatchAdd/index',
-    name: '/contactBatchAdd/index',
-    component: () => import(/* webpackChunkName: "contact-batch-add" */ '@/views/contactBatchAdd/index'),
-    meta: { title: '客户列表' }
-  },
-  '/contactBatchAdd/importIndex': {
-    path: '/contactBatchAdd/importIndex',
-    name: '/contactBatchAdd/importIndex',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "contact-batch-add" */ '@/views/contactBatchAdd/importIndex'),
-    meta: { title: '导入记录列表' }
-  },
-  '/contactBatchAdd/importShow': {
-    path: '/contactBatchAdd/importShow',
-    name: '/contactBatchAdd/importShow',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "contact-batch-add" */ '@/views/contactBatchAdd/importShow'),
-    meta: { title: '导入记录详情' }
-  },
-  '/contactBatchAdd/dataShow': {
-    path: '/contactBatchAdd/dataShow',
-    name: '/contactBatchAdd/dataShow',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "contact-batch-add" */ '@/views/contactBatchAdd/dataShow'),
-    meta: { title: '数据统计' }
-  },
-  '/contactBatchAdd/dataStatistic': {
-    path: '/contactBatchAdd/dataStatistic',
-    name: '/contactBatchAdd/dataStatistic',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "contact-batch-add" */ '@/views/contactBatchAdd/dataStatistic'),
-    meta: { title: '数据统计详情' }
-  },
+
   // 无限拉群
   '/roomInfinitePull/index': {
     path: '/roomInfinitePull/index',
