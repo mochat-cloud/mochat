@@ -115,6 +115,7 @@ class IndexLogic
                 $employeeArr[] = [
                     'id' => $employee['id'],
                     'wxUserId' => $employee['wxChatId'],
+                    'wxChatId' => $employee['wxChatId'],
                     'name' => $employee['name'],
                 ];
             }

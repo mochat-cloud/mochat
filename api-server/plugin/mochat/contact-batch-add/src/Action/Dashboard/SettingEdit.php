@@ -65,15 +65,15 @@ class SettingEdit extends AbstractAction
         ]);
         $result = $result ?: [
             'pendingStatus' => 0,
-            'pendingTimeOut' => 0,
+            'pendingTimeOut' => 1,
             'pendingReminderTime' => '00:00:00',
             'pendingLeaderId' => 0,
             'pendingLeader' => [],
             'undoneStatus' => 0,
-            'undoneTimeOut' => 0,
+            'undoneTimeOut' => 1,
             'undoneReminderTime' => '00:00:00',
             'recycleStatus' => 0,
-            'recycleTimeOut' => 0,
+            'recycleTimeOut' => 1,
         ];
         $result['pendingLeader'] = $result['pendingLeaderId'] ? $this->workEmployeeService->getWorkEmployeeById($result['pendingLeaderId'], ['id', 'name']) : [];
         return $result;

@@ -12,6 +12,9 @@ namespace MoChat\App\WorkContact\Logic;
 
 use Hyperf\Di\Annotation\Inject;
 use MoChat\App\Corp\Contract\CorpContract;
+use MoChat\App\Utils\Url;
+use MoChat\App\WorkAgent\QueueService\MessageRemind;
+use MoChat\App\WorkContact\Constants\Employee\Status;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
 use MoChat\App\WorkContact\Contract\WorkContactEmployeeContract;
 use MoChat\App\WorkContact\Contract\WorkContactTagPivotContract;
@@ -78,7 +81,7 @@ class DestroyCallBackLogic
         }
 
         // 查询客户id,查询员工id
-        [$contactId, $employeeId] = $this->employeeAndContactData($wxResponse['ToUserName'], $wxResponse['UserID'], $wxResponse['ExternalUserID']);
+        [$contactId, $employeeId] = $this->employeeAndContactData($wxResponse['ToUserName'], $wxResponse['UserID'], $wxResponse['ExternalUserID'], $status);
         if ($contactId === 0 || $employeeId === 0) {
             return;
         }
@@ -122,13 +125,14 @@ class DestroyCallBackLogic
      * 获取员工与客户ID.
      * @param string $wxUserId ...
      * @param string $wxContactUserId ...
+     * @param mixed $status
      * @return array ...
      */
-    protected function employeeAndContactData(string $wxCorpId, string $wxUserId, string $wxContactUserId): array
+    protected function employeeAndContactData(string $wxCorpId, string $wxUserId, string $wxContactUserId, $status): array
     {
         $contactId = 0;
         $employeeId = 0;
-        $contactInfo = $this->contact->getWorkContactByWxExternalUserId($wxContactUserId, ['id', 'unionid']);
+        $contactInfo = $this->contact->getWorkContactByWxExternalUserId($wxContactUserId, ['id', 'unionid', 'name']);
         if (! empty($contactInfo)) {
             $contactId = $contactInfo['id'];
             ## 任务宝-裂变用户处理
@@ -145,8 +149,42 @@ class DestroyCallBackLogic
         if (! empty($employeeInfo)) {
             $employeeId = $employeeInfo['id'];
         }
+        // 删人提醒
+        if ($contactId > 0 && $employeeId > 0) {
+            $this->sendRemind($corp['id'], $contactInfo['name'], $wxUserId, $contactId, $status);
+        }
 
         return [$contactId, $employeeId];
+    }
+
+    /**
+     * 发送提醒.
+     * @param $corpId
+     * @param $contactName
+     * @param $wxUserId
+     * @param $contactId
+     * @param $status
+     */
+    protected function sendRemind($corpId, $contactName, $wxUserId, $contactId, $status)
+    {
+        $url = Url::getSidebarBaseUrl() . '/contact?agentId={{agentId}}&contactId=' . $contactId;
+        $text = "【删除提醒】您已将客户删除哦！\n" .
+            "客户昵称：{$contactName}\n" .
+            "建议重新添加，或者分享给同事哦\n" .
+            "<a href='{$url}'>点击查看客户详情</a>";
+        if ($status === Status::PASSIVE_REMOVE) {
+            $text = "【流失提醒】有客户将您删除哦！\n" .
+                "客户昵称：{$contactName}\n" .
+                "建议重新添加，或者分享给同事哦\n" .
+                "<a href='{$url}'>点击查看客户详情</a>";
+        }
+        $messageRemind = make(MessageRemind::class);
+        $messageRemind->sendToEmployee(
+            $corpId,
+            $wxUserId,
+            'text',
+            $text
+        );
     }
 
     /**
