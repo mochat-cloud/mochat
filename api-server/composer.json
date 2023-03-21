@@ -44,7 +44,6 @@
         "96qbhy/hyperf-auth": "^2.2",
         "mochat-plugin/auto-tag": "dev-master|dev-main",
         "mochat-plugin/channel-code": "dev-master|dev-main",
-        "mochat-plugin/contact-batch-add": "dev-master|dev-main",
         "mochat-plugin/contact-message-batch-send": "dev-master|dev-main",
         "mochat-plugin/contact-sop": "dev-master|dev-main",
         "mochat-plugin/contact-transfer": "dev-master|dev-main",
