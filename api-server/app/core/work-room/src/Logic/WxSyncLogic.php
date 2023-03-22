@@ -26,9 +26,6 @@ use MoChat\App\WorkRoom\Event\DeleteRoomMemberEvent;
 use MoChat\App\WorkRoom\Event\DismissRoomEvent;
 use MoChat\App\WorkRoom\Event\UpdateRoomEvent;
 use MoChat\App\WorkRoom\Event\UpdateRoomMemberEvent;
-use MoChat\Plugin\AutoTag\Action\Dashboard\Traits\AutoContactTag;
-use MoChat\Plugin\AutoTag\Contract\AutoTagContract;
-use MoChat\Plugin\AutoTag\Contract\AutoTagRecordContract;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -38,8 +35,6 @@ use Psr\EventDispatcher\EventDispatcherInterface;
  */
 class WxSyncLogic
 {
-    use AutoContactTag;
-
     /**
      * @Inject
      * @var WorkRoomContract
@@ -51,18 +46,6 @@ class WxSyncLogic
      * @var WorkContactRoomContract
      */
     protected $workContactRoomService;
-
-    /**
-     * @Inject
-     * @var AutoTagContract
-     */
-    protected $autoTagService;
-
-    /**
-     * @Inject
-     * @var AutoTagRecordContract
-     */
-    protected $autoTagRecordService;
 
     /**
      * @Inject
