@@ -50,7 +50,6 @@
         "mochat-plugin/room-message-batch-send": "dev-master|dev-main",
         "mochat-plugin/room-tag-pull": "dev-master|dev-main",
         "mochat-plugin/room-welcome": "dev-master|dev-main",
-        "mochat-plugin/sensitive-word": "dev-master|dev-main",
         "mochat-plugin/statistic": "dev-master|dev-main",
         "mochat-plugin/work-fission": "dev-master|dev-main",
         "mochat/framework": "^1.1",

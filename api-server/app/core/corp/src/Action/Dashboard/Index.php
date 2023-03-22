@@ -18,7 +18,6 @@ use Hyperf\HttpServer\Annotation\RequestMapping;
 use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
-use MoChat\App\WorkMessage\Contract\WorkMessageConfigContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Request\ValidateSceneTrait;
 
@@ -37,12 +36,6 @@ class Index extends AbstractAction
      * @var CorpContract
      */
     protected $corpService;
-
-    /**
-     * @Inject
-     * @var WorkMessageConfigContract
-     */
-    protected $workMessageConfigService;
 
     /**
      * @Middlewares({
@@ -96,9 +89,6 @@ class Index extends AbstractAction
         if (empty($res['data'])) {
             return $data;
         }
-        ## 获取企业聊天记录申请
-        $messageConfigList = $this->workMessageConfigService->getWorkMessageConfigsByCorpId(array_column($res['data'], 'id'), ['corp_id', 'chat_status', 'chat_apply_status', 'created_at']);
-        empty($messageConfigList) || $messageConfigList = array_column($messageConfigList, null, 'corpId');
         ## 处理分页数据
         $data['page']['total'] = $res['total'];
         $data['page']['totalPage'] = $res['last_page'];
@@ -108,9 +98,9 @@ class Index extends AbstractAction
             $corp['wxCorpId'] = $corp['wxCorpid'];
             $corp['corpId'] = $corp['id'];
             $corp['corpName'] = $corp['name'];
-            $corp['chatStatus'] = isset($messageConfigList[$corp['id']]) ? $messageConfigList[$corp['id']]['chatStatus'] : 0;
-            $corp['chatApplyStatus'] = isset($messageConfigList[$corp['id']]) ? $messageConfigList[$corp['id']]['chatApplyStatus'] : 0;
-            $corp['messageCreatedAt'] = isset($messageConfigList[$corp['id']]) ? $messageConfigList[$corp['id']]['createdAt'] : '';
+            $corp['chatStatus'] = 0;
+            $corp['chatApplyStatus'] = 0;
+            $corp['messageCreatedAt'] = '';
             unset($corp['id'], $corp['name']);
         }
         $data['list'] = $res['data'];
