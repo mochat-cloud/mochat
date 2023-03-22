@@ -38,12 +38,7 @@ export const routeList = {
     component: () => import(/* webpackChunkName: "rbac" */ '@/views/role/permissionShow'),
     meta: { title: '权限设置' }
   },
-  '/chatTool/enhance': {
-    path: '/chatTool/enhance',
-    name: 'chatEnhance',
-    component: () => import(/* webpackChunkName: "chat-tool" */ '@/views/chatTool/enhance'),
-    meta: { title: '聊天增强' }
-  },
+
   '/chatTool/customer': {
     path: '/chatTool/customer',
     name: 'customer',
