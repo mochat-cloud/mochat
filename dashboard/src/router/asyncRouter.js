@@ -160,39 +160,7 @@ export const routeList = {
     component: () => import(/* webpackChunkName: "room-tag-pull" */ '@/views/roomTagPull/contactDetail'),
     meta: { title: '客户详情' }
   },
-  '/roomRemind/index': {
-    path: '/roomRemind/index',
-    name: 'roomRemind',
-    component: () => import(/* webpackChunkName: "room-remind" */ '@/views/roomRemind/index'),
-    meta: { title: '客户群提醒' }
-  },
-  '/roomQuality/index': {
-    path: '/roomQuality/index',
-    name: 'roomQuality',
-    component: () => import(/* webpackChunkName: "room-quality" */ '@/views/roomQuality/index'),
-    meta: { title: '群聊质检' }
-  },
-  '/roomQuality/edit': {
-    path: '/roomQuality/edit',
-    name: 'roomQualityEdit',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "room-quality" */ '@/views/roomQuality/edit'),
-    meta: { title: '规则编辑' }
-  },
-  '/roomQuality/newRule': {
-    path: '/roomQuality/newRule',
-    name: 'roomQualityRule',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "room-quality" */ '@/views/roomQuality/newRule'),
-    meta: { title: '新建质检规则' }
-  },
-  '/roomQuality/detail': {
-    path: '/roomQuality/detail',
-    name: 'roomQualityDetail',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "room-quality" */ '@/views/roomQuality/detail'),
-    meta: { title: '规则详情' }
-  },
+
   '/mediumGroup/index': {
     path: '/mediumGroup/index',
     name: 'mediumGroupIndex',
@@ -357,34 +325,6 @@ export const routeList = {
     meta: { title: '群发详情' }
   },
 
-  // 群SOP
-  '/roomSop/index': {
-    path: '/roomSop/index',
-    name: 'roomSopIndex',
-    component: () => import(/* webpackChunkName: "room-sop" */ '@/views/roomSop/index'),
-    meta: { title: '群SOP' }
-  },
-  '/roomSop/create': {
-    path: '/roomSop/create',
-    name: 'roomSopCreate',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "room-sop" */ '@/views/roomSop/create'),
-    meta: { title: '群SOP创建' }
-  },
-  '/roomSop/edit': {
-    path: '/roomSop/edit',
-    name: 'roomSopEdit',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "room-sop" */ '@/views/roomSop/edit'),
-    meta: { title: '编辑' }
-  },
-  '/roomSop/detail': {
-    path: '/roomSop/detail',
-    name: 'roomSopDetail',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "room-sop" */ '@/views/roomSop/detail'),
-    meta: { title: '详情' }
-  },
   // 客户迁移
   '/contactTransfer/resignIndex': {
     path: '/contactTransfer/resignIndex',
@@ -413,33 +353,6 @@ export const routeList = {
     meta: { title: '分配记录' }
   },
 
-  // 群日历
-  '/roomCalendar/index': {
-    path: '/roomCalendar/index',
-    name: '/roomCalendarIndex',
-    component: () => import(/* webpackChunkName: "room-calendar" */ '@/views/roomCalendar/index'),
-    meta: { title: '列表' }
-  },
-  '/roomCalendar/create': {
-    path: '/roomCalendar/create',
-    name: '/roomCalendarCreate',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "room-calendar" */ '@/views/roomCalendar/create'),
-    meta: { title: '详情' }
-  },
-  '/roomCalendar/show': {
-    path: '/roomCalendar/show',
-    name: '/roomCalendarShow',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "room-calendar" */ '@/views/roomCalendar/show'),
-    meta: { title: '详情' }
-  },
-  // '/autoTag/ruleTagging': {
-  //   path: '/autoTag/ruleTagging',
-  //   name: '/autoTagRuleTagging',
-  //   component: () => import(/* webpackChunkName: "auto-tag" */ '@/views/autoTag/ruleTagging'),
-  //   meta: { title: '规则打标签' }
-  // },
   // 自动打标签
   '/autoTag/keywordIndex': {
     path: '/autoTag/keywordIndex',
@@ -538,28 +451,6 @@ export const routeList = {
     hidden: true,
     component: () => import(/* webpackChunkName: "room-message-batch-send" */ '@/views/roomMessageBatchSend/show'),
     meta: { title: '群发详情' }
-  },
-
-  // 无限拉群
-  '/roomInfinitePull/index': {
-    path: '/roomInfinitePull/index',
-    name: '/roomInfinitePullIndex',
-    component: () => import(/* webpackChunkName: "room-infinite-pull" */ '@/views/roomInfinitePull/index'),
-    meta: { title: '列表' }
-  },
-  '/roomInfinitePull/create': {
-    path: '/roomInfinitePull/create',
-    name: '/roomInfinitePullCreate',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "room-infinite-pull" */ '@/views/roomInfinitePull/create'),
-    meta: { title: '创建' }
-  },
-  '/roomInfinitePull/show': {
-    path: '/roomInfinitePull/show',
-    name: '/roomInfinitePullShow',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "room-infinite-pull" */ '@/views/roomInfinitePull/show'),
-    meta: { title: '详情' }
   }
 
 }
