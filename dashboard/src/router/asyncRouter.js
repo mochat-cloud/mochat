@@ -292,41 +292,7 @@ export const routeList = {
     component: () => import(/* webpackChunkName: "official-account" */ '@/views/officialAccount/create'),
     meta: { title: '添加公众号' }
   },
-  // 群裂变
-  '/roomFission/index': {
-    path: '/roomFission/index',
-    name: 'roomFissionIndex',
-    component: () => import(/* webpackChunkName: "room-fission" */ '@/views/roomFission/index'),
-    meta: { title: '活动列表' }
-  },
-  '/roomFission/dataShow': {
-    path: '/roomFission/dataShow',
-    name: 'roomFissionDataShow',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "room-fission" */ '@/views/roomFission/dataShow'),
-    meta: { title: '数据详情' }
-  },
-  '/roomFission/create': {
-    path: '/roomFission/create',
-    name: 'roomFissionCreate',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "room-fission" */ '@/views/roomFission/create'),
-    meta: { title: '创建' }
-  },
-  '/roomFission/invite': {
-    path: '/roomFission/invite',
-    name: 'roomFissionInvite',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "room-fission" */ '@/views/roomFission/invite'),
-    meta: { title: '邀请' }
-  },
-  '/roomFission/update': {
-    path: '/roomFission/update',
-    name: 'roomFissionUpdate',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "room-fission" */ '@/views/roomFission/update'),
-    meta: { title: '修改' }
-  },
+
   // 企微任务宝
   '/workFission/taskpage': {
     path: '/workFission/taskpage',
@@ -473,57 +439,7 @@ export const routeList = {
     component: () => import(/* webpackChunkName: "contact-transfer" */ '@/views/contactTransfer/workAllotRecord'),
     meta: { title: '分配记录' }
   },
-  // 群打卡
-  '/roomClockIn/index': {
-    path: '/roomClockIn/index',
-    name: '/roomClockInIndex',
-    component: () => import(/* webpackChunkName: "room-clock-in" */ '@/views/roomClockIn/index'),
-    meta: { title: '群打卡' }
-  },
-  '/roomClockIn/create': {
-    path: '/roomClockIn/create',
-    name: '/roomClockInCreate',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "room-clock-in" */ '@/views/roomClockIn/create'),
-    meta: { title: '创建' }
-  },
-  '/roomClockIn/edit': {
-    path: '/roomClockIn/edit',
-    name: '/roomClockInEdit',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "room-clock-in" */ '@/views/roomClockIn/edit'),
-    meta: { title: '修改' }
-  },
-  '/roomClockIn/show': {
-    path: '/roomClockIn/show',
-    name: '/roomClockInShow',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "room-clock-in" */ '@/views/roomClockIn/show'),
-    meta: { title: '详情' }
-  },
 
-  // 抽奖活动
-  '/lottery/index': {
-    path: '/lottery/index',
-    name: '/lotteryIndex',
-    component: () => import(/* webpackChunkName: "lottery" */ '@/views/lottery/index'),
-    meta: { title: '抽奖活动' }
-  },
-  '/lottery/create': {
-    path: '/lottery/create',
-    name: '/lotteryCreate',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "lottery" */ '@/views/lottery/create'),
-    meta: { title: '创建' }
-  },
-
-  '/lottery/modify': {
-    path: '/lottery/modify',
-    name: '/lotteryModify',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "lottery" */ '@/views/lottery/modify'),
-    meta: { title: '修改' }
-  },
   // 群日历
   '/roomCalendar/index': {
     path: '/roomCalendar/index',
