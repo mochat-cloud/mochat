@@ -29,9 +29,6 @@ use MoChat\App\WorkRoom\Event\UpdateRoomMemberEvent;
 use MoChat\Plugin\AutoTag\Action\Dashboard\Traits\AutoContactTag;
 use MoChat\Plugin\AutoTag\Contract\AutoTagContract;
 use MoChat\Plugin\AutoTag\Contract\AutoTagRecordContract;
-use MoChat\Plugin\RoomFission\Contract\RoomFissionContactContract;
-use MoChat\Plugin\RoomFission\Contract\RoomFissionContract;
-use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -54,18 +51,6 @@ class WxSyncLogic
      * @var WorkContactRoomContract
      */
     protected $workContactRoomService;
-
-    /**
-     * @Inject
-     * @var RoomFissionContract
-     */
-    protected $roomFissionService;
-
-    /**
-     * @Inject
-     * @var RoomFissionContactContract
-     */
-    protected $roomFissionContactService;
 
     /**
      * @Inject
@@ -319,8 +304,6 @@ class WxSyncLogic
                     is_numeric($data['room_id']) || $data['room_id'] = isset($newRoomList[$data['room_id']]) ? $newRoomList[$data['room_id']] : 0;
                 });
                 $this->workContactRoomService->createWorkContactRooms($contactRoomCreateData);
-                ## 群裂变数据处理
-                $this->createRoomFission($contactRoomCreateData);
             }
             ## 客户成员-更新数据
             empty($contactRoomUpdateData) || $this->workContactRoomService->batchUpdateByIds($contactRoomUpdateData);
@@ -329,80 +312,10 @@ class WxSyncLogic
                 'status' => WorkContactRoomStatus::QUIT,
                 'out_time' => date('Y-m-d H:i:s'),
             ]);
-            ## 群裂变数据处理
-            empty($deleteContactRoomIdArr) || $this->deleteRoomFission($deleteContactRoomIdArr);
             Db::commit();
         } catch (\Throwable $e) {
             Db::rollBack();
             $this->logger->error(sprintf('%s [%s] %s', '微信请求或回调更新客户群信息失败', date('Y-m-d H:i:s'), $e->getMessage()));
-            $this->logger->error($e->getTraceAsString());
-        }
-    }
-
-    /**
-     * 客户入群处理群裂变数据.
-     * @param $contactRoomCreateData
-     */
-    private function createRoomFission($contactRoomCreateData): void
-    {
-        foreach ($contactRoomCreateData as $item) {
-            if (! empty($item['unionid'])) {
-                $contact_record = $this->roomFissionContactService->getRoomFissionContactByRoomIdUnionIdFissionID((int) $item['room_id'], $item['unionid'], 0, ['id', 'fission_id', 'is_new', 'parent_union_id']);
-                if (! empty($contact_record)) {
-                    $fission = $this->roomFissionService->getRoomFissionById($contact_record['fissionId'], ['target_count', 'new_friend']);
-                    if (! empty($fission)) {
-                        ## 入群
-                        $this->roomFissionContactService->updateRoomFissionContactById($contact_record['id'], ['join_status' => 1]);
-                        ## 有师傅 并且（无用户限制活新用户有效）
-                        if (! empty($contact_record['parentUnionId']) && ($fission['newFriend'] === 0 || ($fission['newFriend'] === 1 && $contact_record['isNew'] === 1))) {
-                            $parent = $this->roomFissionContactService->getRoomFissionContactByRoomIdUnionIdFissionID((int) $item['room_id'], $contact_record['parentUnionId'], $contact_record['fissionId'], ['id', 'invite_count']);
-                            $num = $parent['inviteCount'] + 1;
-                            $status = $fission['targetCount'] > $num ? 0 : 1;
-                            $this->roomFissionContactService->updateRoomFissionContactById($parent['id'], ['invite_count' => $num, 'status' => $status]);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * 客户退群处理群裂变数据.
-     * @param $deleteContactRoomIdArr
-     */
-    private function deleteRoomFission($deleteContactRoomIdArr): void
-    {
-        ## 数据操作
-        Db::beginTransaction();
-        try {
-            foreach ($deleteContactRoomIdArr as $item) {
-                $contact_room = $this->workContactRoomService->getWorkContactRoomById($item, ['unionid', 'room_id']);
-                if (! empty($contact_room['unionid'])) {
-                    $contact_record = $this->roomFissionContactService->getRoomFissionContactByRoomIdUnionIdFissionID($contact_room['roomId'], $contact_room['unionid'], 0, ['id', 'fission_id', 'is_new', 'parent_union_id']);
-                    if (! empty($contact_record)) {
-                        $fission = $this->roomFissionService->getRoomFissionById($contact_record['fissionId'], ['target_count', 'new_friend', 'delete_invalid']);
-                        if (! empty($fission)) {
-                            ## 流失
-                            $this->roomFissionContactService->updateRoomFissionContactById($contact_record['id'], ['loss' => 1]);
-                            ## 有师傅并且流失无效
-                            if (! empty($contact_record['parentUnionId']) && $fission['deleteInvalid'] === 1) {
-                                $parent = $this->roomFissionContactService->getRoomFissionContactByRoomIdUnionIdFissionID($contact_room['roomId'], $contact_record['parentUnionId'], $contact_record['fissionId'], ['id', 'invite_count', 'status', 'receive_status']);
-                                $num = $parent['inviteCount'] - 1;
-                                $status = $parent['status'];
-                                ## 已完成未领取
-                                if ($parent['status'] === 1 && $parent['receiveStatus'] === 0) {
-                                    $status = 0;
-                                }
-                                $this->roomFissionContactService->updateRoomFissionContactById($parent['id'], ['invite_count' => $num, 'status' => $status]);
-                            }
-                        }
-                    }
-                }
-            }
-            Db::commit();
-        } catch (\Throwable $e) {
-            Db::rollBack();
-            $this->logger->error(sprintf('%s [%s] %s', '客户记录失败', date('Y-m-d H:i:s'), $e->getMessage()));
             $this->logger->error($e->getTraceAsString());
         }
     }
