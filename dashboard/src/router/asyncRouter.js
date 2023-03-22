@@ -356,34 +356,7 @@ export const routeList = {
     component: () => import(/* webpackChunkName: "contact-message-batch-send" */ '@/views/contactMessageBatchSend/show'),
     meta: { title: '群发详情' }
   },
-  // 个人SOP
-  '/contactSop/index': {
-    path: '/contactSop/index',
-    name: 'contactSopIndex',
-    component: () => import(/* webpackChunkName: "contact-sop" */ '@/views/contactSop/index'),
-    meta: { title: '个人SOP' }
-  },
-  '/contactSop/create': {
-    path: '/contactSop/create',
-    name: 'contactSopCreate',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "contact-sop" */ '@/views/contactSop/create'),
-    meta: { title: '创建' }
-  },
-  '/contactSop/edit': {
-    path: '/contactSop/edit',
-    name: 'contactSopEdit',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "contact-sop" */ '@/views/contactSop/edit'),
-    meta: { title: '编辑' }
-  },
-  '/contactSop/detail': {
-    path: '/contactSop/detail',
-    name: 'contactSopDetail',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "contact-sop" */ '@/views/contactSop/detail'),
-    meta: { title: '详情' }
-  },
+
   // 群SOP
   '/roomSop/index': {
     path: '/roomSop/index',
@@ -461,12 +434,12 @@ export const routeList = {
     component: () => import(/* webpackChunkName: "room-calendar" */ '@/views/roomCalendar/show'),
     meta: { title: '详情' }
   },
-  '/autoTag/ruleTagging': {
-    path: '/autoTag/ruleTagging',
-    name: '/autoTagRuleTagging',
-    component: () => import(/* webpackChunkName: "auto-tag" */ '@/views/autoTag/ruleTagging'),
-    meta: { title: '规则打标签' }
-  },
+  // '/autoTag/ruleTagging': {
+  //   path: '/autoTag/ruleTagging',
+  //   name: '/autoTagRuleTagging',
+  //   component: () => import(/* webpackChunkName: "auto-tag" */ '@/views/autoTag/ruleTagging'),
+  //   meta: { title: '规则打标签' }
+  // },
   // 自动打标签
   '/autoTag/keywordIndex': {
     path: '/autoTag/keywordIndex',
@@ -587,75 +560,6 @@ export const routeList = {
     hidden: true,
     component: () => import(/* webpackChunkName: "room-infinite-pull" */ '@/views/roomInfinitePull/show'),
     meta: { title: '详情' }
-  },
-  // 互动雷达
-  '/radar/index': {
-    path: '/radar/index',
-    name: '/radarIndex',
-    component: () => import(/* webpackChunkName: "radar" */ '@/views/radar/index'),
-    meta: { title: '互动雷达' }
-  },
-  '/radar/createLink': {
-    path: '/radar/createLink',
-    name: '/radarCreateLink',
-    component: () => import(/* webpackChunkName: "radar" */ '@/views/radar/createLink'),
-    hidden: true,
-    meta: { title: '创建链接' }
-  },
-  '/radar/createPdf': {
-    path: '/radar/createPdf',
-    name: '/radarCreatePdf',
-    component: () => import(/* webpackChunkName: "radar" */ '@/views/radar/createPdf'),
-    hidden: true,
-    meta: { title: '创建PDF' }
-  },
-  '/radar/createArticle': {
-    path: '/radar/createArticle',
-    name: '/radarCreateArticle',
-    component: () => import(/* webpackChunkName: "radar" */ '@/views/radar/createArticle'),
-    hidden: true,
-    meta: { title: '创建文章' }
-  },
-  '/radar/edit': {
-    path: '/radar/edit',
-    name: '/radarEdit',
-    component: () => import(/* webpackChunkName: "radar" */ '@/views/radar/edit'),
-    hidden: true,
-    meta: { title: '修改' }
-  },
-  '/radar/editPdf': {
-    path: '/radar/editPdf',
-    name: '/radarEditpdf',
-    component: () => import(/* webpackChunkName: "radar" */ '@/views/radar/editPdf'),
-    hidden: true,
-    meta: { title: '修改PDF' }
-  },
-  '/radar/editArticle': {
-    path: '/radar/editArticle',
-    name: '/radarEditArticle',
-    component: () => import(/* webpackChunkName: "radar" */ '@/views/radar/editArticle'),
-    hidden: true,
-    meta: { title: '修改文章' }
-  },
-  '/radar/detail': {
-    path: '/radar/detail',
-    name: '/radarDetail',
-    component: () => import(/* webpackChunkName: "radar" */ '@/views/radar/detail'),
-    hidden: true,
-    meta: { title: '详情' }
-  },
-  '/radar/pdfDetail': {
-    path: '/radar/pdfDetail',
-    name: '/radarPdfDetail',
-    component: () => import(/* webpackChunkName: "radar" */ '@/views/radar/pdfDetail'),
-    hidden: true,
-    meta: { title: 'pdf详情' }
-  },
-  '/radar/articleDetail': {
-    path: '/radar/articleDetail',
-    name: '/radarArticleDetail',
-    component: () => import(/* webpackChunkName: "radar" */ '@/views/radar/articleDetail'),
-    hidden: true,
-    meta: { title: '文章详情' }
   }
+
 }
