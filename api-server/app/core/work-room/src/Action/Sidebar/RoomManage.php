@@ -25,7 +25,6 @@ use MoChat\Framework\Exception\CommonException;
 use MoChat\Framework\Request\ValidateSceneTrait;
 use MoChat\Plugin\RoomCalendar\Contract\RoomCalendarContract;
 use MoChat\Plugin\RoomQuality\Contract\RoomQualityContract;
-use MoChat\Plugin\RoomSop\Contract\RoomSopContract;
 use Psr\Container\ContainerInterface;
 
 /**
@@ -47,12 +46,6 @@ class RoomManage extends AbstractAction
      * @var RoomQualityContract
      */
     protected $roomQualityService;
-
-    /**
-     * @Inject
-     * @var RoomSopContract
-     */
-    protected $roomSopService;
 
     /**
      * @Inject
@@ -97,13 +90,11 @@ class RoomManage extends AbstractAction
             throw new CommonException(ErrorCode::INVALID_PARAMS, '群不存在');
         }
 
-        $roomId = $room['id'];
-        $sop = $this->roomSopService->getRoomSopByCorpIdRoomId($params['corpId'], $roomId, ['name']);
         // 群日历
         $calendar = $this->roomCalendarService->getRoomCalendarByCorpIdRoomId($params['corpId'], $params['roomId'], ['name']);
         // 群聊质检
         $quality = $this->roomQualityService->getRoomQualityByCorpIdRoomId($params['corpId'], $params['roomId'], ['name']);
-        return ['sop' => $sop, 'calendar' => $calendar, 'quality' => $quality];
+        return ['calendar' => $calendar, 'quality' => $quality];
     }
 
     /**
