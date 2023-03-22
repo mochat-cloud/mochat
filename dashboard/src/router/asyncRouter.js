@@ -24,12 +24,7 @@ export const routeList = {
     component: () => import(/* webpackChunkName: "work-employee" */ '@/views/workEmployee/index'),
     meta: { title: '企业成员' }
   },
-  '/workMessageConfig/corpShow': {
-    path: '/workMessageConfig/corpShow',
-    name: 'workMessageConfigCorpShow',
-    component: () => import(/* webpackChunkName: "work-message" */ '@/views/workMessageConfig/corpShow'),
-    meta: { title: '聊天记录申请' }
-  },
+
   '/role/index': {
     path: '/role/index',
     name: 'roleIndex',
@@ -167,31 +162,7 @@ export const routeList = {
     component: () => import(/* webpackChunkName: "medium" */ '@/views/mediumGroup/index'),
     meta: { title: '素材库' }
   },
-  '/workMessage/index': {
-    path: '/workMessage/index',
-    name: 'workMessageIndex',
-    component: () => import(/* webpackChunkName: "work-message" */ '@/views/workMessage/index'),
-    meta: { title: '聊天记录' }
-  },
-  '/workMessage/toUsers': {
-    path: '/workMessage/toUsers',
-    name: 'workMessageToUsers',
-    hidden: true,
-    component: () => import(/* webpackChunkName: "work-message" */ '@/views/workMessage/toUsers'),
-    meta: { title: '聊天记录查看' }
-  },
-  '/sensitiveWords/index': {
-    path: '/sensitiveWords/index',
-    name: 'sensitiveWordsIndex',
-    component: () => import(/* webpackChunkName: "sensitive-word" */ '@/views/sensitiveWords/index'),
-    meta: { title: '敏感词词库' }
-  },
-  '/sensitiveWordsMonitor/index': {
-    path: '/sensitiveWordsMonitor/index',
-    name: 'sensitiveWordsMonitorIndex',
-    component: () => import(/* webpackChunkName: "sensitive-word" */ '@/views/sensitiveWordsMonitor/index'),
-    meta: { title: '敏感词监控' }
-  },
+
   '/greeting/index': {
     path: '/greeting/index',
     name: 'greetingIndex',
