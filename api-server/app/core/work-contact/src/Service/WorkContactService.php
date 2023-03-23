@@ -20,7 +20,6 @@ use MoChat\App\WorkContact\Model\WorkContactTagPivot;
 use MoChat\App\WorkContact\QueueService\SendWelcome;
 use MoChat\App\WorkEmployee\Model\WorkEmployee;
 use MoChat\Framework\Service\AbstractService;
-use MoChat\Plugin\ShopCode\Model\ShopCode;
 use Psr\SimpleCache\CacheInterface;
 
 class WorkContactService extends AbstractService implements WorkContactContract
@@ -530,65 +529,6 @@ class WorkContactService extends AbstractService implements WorkContactContract
             })
             ->distinct()
             ->count('work_contact.id');
-    }
-
-    /**
-     * 检索 - 多条
-     */
-    public function getWorkContactsByStateSearch(int $corpId, array $state, array $params): array
-    {
-        $contactName = empty($params['contactName']) ? '' : $params['contactName'];
-        $employeeId = empty($params['employeeId']) ? '' : $params['employeeId'];
-        $starTime = empty($params['start_time']) ? '' : $params['start_time'];
-        $endTime = empty($params['end_time']) ? '' : $params['end_time'];
-        $shopName = empty($params['shopName']) ? '' : $params['shopName'];
-        $status = empty($params['status']) ? '' : $params['status'];
-        $province = empty($params['province']) ? '' : $params['province'];
-        $city = empty($params['city']) ? '' : $params['city'];
-        $res = $this->model::from($this->model::query()->getModel()->getTable() . ' as work_contact')
-            ->join(WorkContactEmployee::query()->getModel()->getTable() . ' as ce', 'work_contact.id', 'ce.contact_id')
-            ->join(WorkEmployee::query()->getModel()->getTable() . ' as e', 'e.id', 'ce.employee_id')
-            ->join(ShopCode::query()->getModel()->getTable() . ' as sc', 'e.id', 'sc.employee->id')
-            ->where('work_contact.corp_id', $corpId)
-            ->whereIn('ce.state', $state)
-            ->when(!empty($contactName), function (Builder $query) use ($contactName) {
-                return $query->where('work_contact.name', 'like', '%' . $contactName . '%');
-            })
-            ->when(is_numeric($employeeId), function (Builder $query) use ($employeeId) {
-                return $query->where('sc.employee->id', '=', $employeeId);
-            })
-            ->when(!empty($starTime), function (Builder $query) use ($starTime, $endTime) {
-                return $query->whereBetween('work_contact.created_at', [$starTime, $endTime]);
-            })
-            ->when(!empty($shopName), function (Builder $query) use ($shopName) {
-                return $query->where('sc.name', 'like', '%' . $shopName . '%');
-            })
-            ->when(is_numeric($status), function (Builder $query) use ($status) {
-                return $query->where('ce.status', '=', $status);
-            })
-            ->when(!empty($province), function (Builder $query) use ($province, $city) {
-                return $query->where([['sc.province', '=', $province], ['sc.city', '=', $city]]);
-            })
-            ->distinct()
-            ->paginate((int)$params['perPage'], [
-                'work_contact.id as contactId',
-                'work_contact.name as contactName',
-                'work_contact.avatar',
-                'work_contact.created_at',
-                'ce.status',
-                'sc.employee',
-                'sc.name as shopName',
-                'sc.province',
-                'sc.address',
-                'sc.city',
-            ], 'page', (int)$params['page']);
-        $res || $res = collect([]);
-
-        if ($res === null) {
-            return [];
-        }
-
-        return $res->toArray();
     }
 
     /**

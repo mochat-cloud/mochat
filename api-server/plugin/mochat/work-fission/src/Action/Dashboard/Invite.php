@@ -130,7 +130,7 @@ class Invite extends AbstractAction
     {
         ##邀请客户
         if (! empty($params['link_pic'])) {
-            $params['link_pic'] = File::uploadBase64Image($params['link_pic'], 'image/roomFission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg');
+            $params['link_pic'] = File::uploadBase64Image($params['link_pic'], 'image/workFission/' . strval(microtime(true) * 10000) . '_' . uniqid() . '.jpg');
         }
 
         $data = [
