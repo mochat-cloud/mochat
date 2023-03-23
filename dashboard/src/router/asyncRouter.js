@@ -45,6 +45,12 @@ export const routeList = {
     component: () => import(/* webpackChunkName: "chat-tool" */ '@/views/chatTool/customer'),
     meta: { title: '用户画像' }
   },
+  '/chatTool/enhance': {
+    path: '/chatTool/enhance',
+    name: 'chatEnhance',
+    component: () => import(/* webpackChunkName: "chat-tool" */ '@/views/chatTool/enhance'),
+    meta: { title: '聊天增强' }
+  },
   '/menu/index': {
     path: '/menu/index',
     name: 'menuIndex',
