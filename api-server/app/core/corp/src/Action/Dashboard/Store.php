@@ -84,6 +84,9 @@ class Store extends AbstractAction
             'employee_secret' => trim($this->request->input('employeeSecret')),
             'contact_secret' => trim($this->request->input('contactSecret')),
         ];
+        if ($this->corpService->countCorps() >= 1) {
+            throw new CommonException(ErrorCode::INVALID_PARAMS, '只能添加一个企业');
+        }
         ## 参数验证
         $this->validated($this->request->all(), 'store');
 

@@ -183,4 +183,13 @@ class CorpService extends AbstractService implements CorpContract
 
         return $res->toArray();
     }
+
+    /**
+     * 获取企业数量
+     * @return int
+     */
+    public function countCorps(): int
+    {
+        return $this->model::query()->count();
+    }
 }
