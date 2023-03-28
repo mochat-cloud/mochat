@@ -16,7 +16,7 @@
                 <a-button style="margin-left: 8px" @click="() => { this.searchName = '' }">清空</a-button>
               </div>
             </div>
-            <span v-permission="'/corp/index@addwx'" class="table-page-search-submitButtons">
+            <span v-if="addVisble" v-permission="'/corp/index@addwx'" class="table-page-search-submitButtons">
               <a-button type="primary" @click="() => {this.visible = true}">+添加企业微信号</a-button>
             </span>
           </div>
@@ -118,6 +118,7 @@ export default {
       btnLoading: false,
       visible: false,
       editVisble: false,
+      addVisble: true,
       columns: [
         {
           title: '企业名称',
@@ -180,6 +181,10 @@ export default {
       wechatAuthList(params).then(res => {
         this.tableData = res.data.list
         this.pagination.total = res.data.page.total
+        console.log(this.tableData.length)
+        console.log(this.tableData)
+        this.addVisble = this.tableData.length < 1
+        console.log(this.addVisble)
       })
     },
     // 保存配置
