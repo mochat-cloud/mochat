@@ -17,7 +17,6 @@ use MoChat\App\WorkContact\Contract\WorkContactEmployeeContract;
 use MoChat\App\WorkContact\Contract\WorkContactTagContract;
 use MoChat\App\WorkContact\Contract\WorkContactTagPivotContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
-use MoChat\App\WorkMessage\Contract\WorkMessageContract;
 use MoChat\Plugin\ContactTransfer\Contract\WorkUnassignedContract;
 
 /**
@@ -68,18 +67,12 @@ class UnassignedListLogic
     protected $workContactTagPivotService;
 
     /**
-     * @var WorkMessageContract
-     */
-    protected $workMessageService;
-
-    /**
      * 获取离职待分配客户列表.
      * @param array $params
      * @return array
      */
     public function getUnassignedList($params)
     {
-        $this->workMessageService = make(WorkMessageContract::class, [$params['corpId']]);
         $unassignedList = $this->workUnassignedService->getWorkUnassignedByCorpId([$params['corpId']]);
 
         $lastTime = '无数据';
@@ -113,8 +106,7 @@ class UnassignedListLogic
                 $tagName[] = $this->workContactTagService->getWorkContactTagById($tag['contactTagId'])['name'];
             }
 
-            $lastMsg = $this->workMessageService->getLastMessageByEmployeeWxIdAndContactWxId($employee['wxUserId'], $contactEmployee['operUserid']);
-            $lastMsg = $lastMsg ? date('Y-m-d H:i', (int) ((int) $lastMsg[0]->msg_time / 1000)) : '';
+            $lastMsg = '';
 
 //            $res[] = [
 //                'unassigned' => $item,

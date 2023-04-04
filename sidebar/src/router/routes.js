@@ -82,12 +82,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "room" */ 'views/roomSop/roomSop'),
     meta: { initConfig: true }
   },
-  {
-    path: '/room',
-    name: 'room',
-    component: () => import(/* webpackChunkName: "room" */ 'views/room/index'),
-    meta: { initConfig: true }
-  },
+
   { path: '/:pathMatch(.*)', redirect: { name: '404' } }
   // {
   //   path: '/pushRule',

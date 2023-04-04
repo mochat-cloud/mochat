@@ -17,8 +17,7 @@ import fissionIndex from "@/views/roomFission/fissionIndex";
 import fissionSpeed from "@/views/roomFission/fissionSpeed";
 //无限拉群
 import roomInfinitePull from "@/views/roomInfinitePull/roomInfinitePull"
-//互动雷达
-import radar from "@/views/radar/radar"
+
 
 
 Vue.use(VueRouter)
@@ -49,12 +48,7 @@ const routes = [
     path: '/explain',
     component: explain
   },
-  //  互动雷达
-  {
-    path: '/radar',
-    name: 'radar',
-    component: radar
-  },
+
   //群打卡
   {
     path: '/roomClockIn',

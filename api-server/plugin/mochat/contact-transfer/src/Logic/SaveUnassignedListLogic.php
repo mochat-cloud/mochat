@@ -18,7 +18,6 @@ use MoChat\App\WorkContact\Contract\WorkContactEmployeeContract;
 use MoChat\App\WorkContact\Contract\WorkContactTagContract;
 use MoChat\App\WorkContact\Contract\WorkContactTagPivotContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
-use MoChat\App\WorkMessage\Contract\WorkMessageContract;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
 use MoChat\Plugin\ContactTransfer\Contract\WorkUnassignedContract;
@@ -71,11 +70,6 @@ class SaveUnassignedListLogic
      * @var WorkContactTagPivotContract
      */
     protected $workContactTagPivotService;
-
-    /**
-     * @var WorkMessageContract
-     */
-    protected $workMessageService;
 
     /**
      * 获取离职待分配客户列表并保存.

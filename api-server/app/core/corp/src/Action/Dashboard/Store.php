@@ -26,7 +26,6 @@ use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\Tenant\Contract\TenantContract;
 use MoChat\App\Utils\Url;
 use MoChat\App\WorkEmployee\QueueService\EmployeeApply;
-use MoChat\App\WorkMessage\Contract\WorkMessageConfigContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
@@ -54,12 +53,6 @@ class Store extends AbstractAction
      * @var TenantContract
      */
     protected $tenantClient;
-
-    /**
-     * @Inject
-     * @var WorkMessageConfigContract
-     */
-    protected $workMessageConfigService;
 
     /**
      * @Inject
@@ -91,6 +84,9 @@ class Store extends AbstractAction
             'employee_secret' => trim($this->request->input('employeeSecret')),
             'contact_secret' => trim($this->request->input('contactSecret')),
         ];
+        if ($this->corpService->countCorps() >= 1) {
+            throw new CommonException(ErrorCode::INVALID_PARAMS, '只能添加一个企业');
+        }
         ## 参数验证
         $this->validated($this->request->all(), 'store');
 
@@ -110,8 +106,6 @@ class Store extends AbstractAction
         try {
             ## 企业授信
             $corpId = $this->corpService->createCorp($params);
-            ## 会话存档-配置
-            $this->workMessageConfigService->createWorkMessageConfig(['corp_id' => $corpId, 'chat_apply_status' => 3, 'created_at' => date('Y-m-d H:i:s')]);
             ## 绑定用户与企业的关系
             $container = ApplicationContext::getContainer();
             $redis = $container->get(\Hyperf\Redis\Redis::class);

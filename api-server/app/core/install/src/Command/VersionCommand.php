@@ -23,7 +23,7 @@ class VersionCommand extends HyperfCommand
      *
      * @var string
      */
-    private const VERSION = '1.1.9';
+    private const VERSION = '1.2.0';
 
     public function __construct()
     {

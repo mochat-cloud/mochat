@@ -208,11 +208,6 @@ interface WorkContactContract
     public function countWorkContactsByCorpIdStateStatus(int $corpId, array $state, int $status, string $day = ''): int;
 
     /**
-     * 检索 - 多条
-     */
-    public function getWorkContactsByStateSearch(int $corpId, array $state, array $params): array;
-
-    /**
      * 发送欢迎语.
      *
      * @param int|string $corpId 企业id

@@ -19,7 +19,6 @@ use MoChat\App\Common\Middleware\DashboardAuthMiddleware;
 use MoChat\App\Corp\Contract\CorpContract;
 use MoChat\App\Rbac\Middleware\PermissionMiddleware;
 use MoChat\App\WorkDepartment\Logic\PageIndexLogic;
-use MoChat\App\WorkMessage\Contract\WorkMessageConfigContract;
 use MoChat\Framework\Action\AbstractAction;
 use MoChat\Framework\Constants\ErrorCode;
 use MoChat\Framework\Exception\CommonException;
@@ -40,12 +39,6 @@ class PageIndex extends AbstractAction
      * @var CorpContract
      */
     protected $corpService;
-
-    /**
-     * @Inject
-     * @var WorkMessageConfigContract
-     */
-    protected $workMessageConfigService;
 
     /**
      * @Inject
