@@ -19,7 +19,6 @@ use MoChat\App\WorkContact\Contract\WorkContactEmployeeContract;
 use MoChat\App\WorkContact\Contract\WorkContactTagContract;
 use MoChat\App\WorkContact\Contract\WorkContactTagPivotContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
-use MoChat\App\WorkMessage\Contract\WorkMessageContract;
 use MoChat\Plugin\ContactTransfer\Contract\WorkTransferLogContract;
 use MoChat\Plugin\ContactTransfer\Contract\WorkUnassignedContract;
 
@@ -77,11 +76,6 @@ class IndexLogic
      * @var WorkContactTagPivotContract
      */
     protected $workContactTagPivotService;
-
-    /**
-     * @var WorkMessageContract
-     */
-    protected $workMessageService;
 
     /**
      * @Inject

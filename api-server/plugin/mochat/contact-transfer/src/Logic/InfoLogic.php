@@ -16,7 +16,6 @@ use MoChat\App\WorkContact\Contract\WorkContactEmployeeContract;
 use MoChat\App\WorkContact\Contract\WorkContactTagContract;
 use MoChat\App\WorkContact\Contract\WorkContactTagPivotContract;
 use MoChat\App\WorkEmployee\Contract\WorkEmployeeContract;
-use MoChat\App\WorkMessage\Contract\WorkMessageContract;
 use MoChat\Plugin\ContactTransfer\Contract\WorkTransferLogContract;
 
 /**
@@ -61,19 +60,11 @@ class InfoLogic
     protected $workContactTagPivotService;
 
     /**
-     * @var WorkMessageContract
-     */
-    protected $workMessageService;
-
-    /**
      * 获取待分配客户列表.
      * @return mixed
      */
     public function getBeAssignedContactList(array $params)
     {
-        //消息
-        $this->workMessageService = make(WorkMessageContract::class, [$params['corpId']]);
-
         $contactEmployees = $this->workContactEmployeeService->getWorkContactEmployeesByRemarkAndTimeLimit($params['addTimeStart'], $params['addTimeEnd'], $params['contactName']);
 
         if (count($params['employeeId'])) {
@@ -120,8 +111,7 @@ class InfoLogic
 //                'contact_employee' => $contactEmployee,
 //            ];
 
-            $lastMsg = $this->workMessageService->getLastMessageByEmployeeWxIdAndContactWxId($employee['wxUserId'], $contactEmployee['operUserid']);
-            $lastMsg = $lastMsg ? date('Y-m-d H:i', (int) ((int) $lastMsg[0]->msg_time / 1000)) : '';
+            $lastMsg = '';
             $res[] = [
                 'contactId' => $contactEmployee['contactId'],
                 'employeeId' => $employee['id'],

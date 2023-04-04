@@ -42,28 +42,14 @@
         "league/flysystem-aws-s3-v3": "^2.0",
         "league/flysystem-memory": "^2.0",
         "96qbhy/hyperf-auth": "^2.2",
-        "mochat-plugin/auto-tag": "dev-master|dev-main",
         "mochat-plugin/channel-code": "dev-master|dev-main",
-        "mochat-plugin/contact-batch-add": "dev-master|dev-main",
         "mochat-plugin/contact-message-batch-send": "dev-master|dev-main",
-        "mochat-plugin/contact-sop": "dev-master|dev-main",
         "mochat-plugin/contact-transfer": "dev-master|dev-main",
         "mochat-plugin/greeting": "dev-master|dev-main",
-        "mochat-plugin/lottery": "dev-master|dev-main",
-        "mochat-plugin/radar": "dev-master|dev-main",
         "mochat-plugin/room-auto-pull": "dev-master|dev-main",
-        "mochat-plugin/room-calendar": "dev-master|dev-main",
-        "mochat-plugin/room-clock-in": "dev-master|dev-main",
-        "mochat-plugin/room-fission": "dev-master|dev-main",
-        "mochat-plugin/room-infinite-pull": "dev-master|dev-main",
         "mochat-plugin/room-message-batch-send": "dev-master|dev-main",
-        "mochat-plugin/room-quality": "dev-master|dev-main",
-        "mochat-plugin/room-remind": "dev-master|dev-main",
-        "mochat-plugin/room-sop": "dev-master|dev-main",
         "mochat-plugin/room-tag-pull": "dev-master|dev-main",
         "mochat-plugin/room-welcome": "dev-master|dev-main",
-        "mochat-plugin/sensitive-word": "dev-master|dev-main",
-        "mochat-plugin/shop-code": "dev-master|dev-main",
         "mochat-plugin/statistic": "dev-master|dev-main",
         "mochat-plugin/work-fission": "dev-master|dev-main",
         "mochat/framework": "^1.1",
@@ -141,7 +127,10 @@
     },
     "config": {
         "optimize-autoloader": true,
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "easywechat-composer/easywechat-composer": true
+        }
     },
     "repositories": {
         "mochat-plugin": {

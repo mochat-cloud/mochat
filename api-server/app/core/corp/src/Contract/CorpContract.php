@@ -112,4 +112,10 @@ interface CorpContract
      * @return array ...
      */
     public function getCorpsByTenantId(int $tenantId, array $columns = ['*']): array;
+
+    /**
+     * 获取企业数量
+     * @return int
+     */
+    public function countCorps(): int;
 }
