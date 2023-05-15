@@ -241,7 +241,7 @@ class McInitCommand extends HyperfCommand
         }
 
         ## 密码
-        $password = $this->secret('输入管理员密码', false);
+        $password = $this->ask('输入管理员密码', '');
         $encrypted = $this->authManager->guard('jwt')->getJwtManager()->getEncrypter()->signature($password);
         return Db::table('user')->insert([
             'phone' => $phone,
