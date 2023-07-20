@@ -46,6 +46,7 @@ class SyncLogic
 
     public function handle(array $corpIds): array
     {
+        dump("开始跑批");
         $this->logger = make(StdoutLoggerInterface::class);
         if (empty($corpIds)) {
             $this->logger->error('WorkDepartmentSynLogic->handle同步部门corpId不能为空');
