@@ -114,7 +114,6 @@ class SyncLogic
             //公司下的所有部门
             $departments = $this->getDepartmentIds($corpId);
 
-            dump($departments);
             if (empty($departments)) {
                 continue;
             }
@@ -129,6 +128,7 @@ class SyncLogic
             foreach ($departments as $key => $value) {
                 //企业微信端用户信息
                 $userList = $this->client->provider('user')->app($cdv)->user->getDetailedDepartmentUsers($value['wxDepartmentId']);
+                dump($userList);
                 if (! empty($userList['errcode']) || empty($userList['userlist'])) {
                     continue;
                 }
