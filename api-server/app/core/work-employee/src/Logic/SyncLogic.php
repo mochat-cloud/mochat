@@ -113,6 +113,8 @@ class SyncLogic
             $employeeData = $departments = $userList = $employeeDepartment = $employee = [];
             //公司下的所有部门
             $departments = $this->getDepartmentIds($corpId);
+
+            dump($departments);
             if (empty($departments)) {
                 continue;
             }

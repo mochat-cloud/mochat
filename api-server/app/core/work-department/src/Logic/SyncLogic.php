@@ -46,7 +46,6 @@ class SyncLogic
 
     public function handle(array $corpIds): array
     {
-        dump("开始跑批");
         $this->logger = make(StdoutLoggerInterface::class);
         if (empty($corpIds)) {
             $this->logger->error('WorkDepartmentSynLogic->handle同步部门corpId不能为空');
@@ -61,7 +60,6 @@ class SyncLogic
         }
         foreach ($corpData as $corpId => $cdv) {
             $wxDepartment = $this->client->provider('user')->app($cdv)->department->list();
-            dump($wxDepartment);
             if (empty($wxDepartment['errcode']) && $wxDepartment['department']) {
                 //获取部门ID
                 $department = $this->getDepartmentIds($corpId);
