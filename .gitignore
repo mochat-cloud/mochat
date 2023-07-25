@@ -7,3 +7,4 @@
 .phpintel/
 .DS_Store
 admin-src/
+.vscode
