@@ -2,7 +2,7 @@
 <p></p>
 
 <p align="center">
-  <img alt="logo" src="https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/logo.png">
+  <img alt="logo" src="https://urthink-mochat-cloud.oss-cn-beijing.aliyuncs.com/github/logo.png">
 </p>
 <h2 align="center">MoChat —— 让企业微信开发更简单</h2>
 
@@ -16,7 +16,7 @@
 <p></p>
 <p></p>
 
-![输入图片说明](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/header.png)
+![输入图片说明](https://urthink-mochat-cloud.oss-cn-beijing.aliyuncs.com/github/header.png)
 
 中文 | [Java](https://github.com/mochat-cloud/mochat-java)
 
@@ -46,7 +46,7 @@ MoChat 是开源的企业微信应用开发框架&引擎，是一套通用的企
 #### 业务架构
 严格的分层来保证架构的灵活性
 
-![架构](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/framework2.png "mochat微信.png")
+![架构](https://urthink-mochat-cloud.oss-cn-beijing.aliyuncs.com/github/framework2.png "mochat微信.png")
 
 #### 核心技术
 * 前端技术栈: `Vue`、`Vuex`、`Vant`、`Ant Design of Vue`
@@ -55,12 +55,12 @@ MoChat 是开源的企业微信应用开发框架&引擎，是一套通用的企
 ### 特此鸣谢
 MoChat 的诞生离不开社区其他优秀的开源项目，在此特别鸣谢：
 
-[![Swoole](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/Swoole-mini.png)](https://www.swoole.com/)
-[![Hyperf](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/Hyperf-mini.png)](https://www.hyperf.io/)
-[![EasyWechat](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/EasyWeChat-mini.png)](https://www.easywechat.com)
-[![Vue](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/Vue-mini.png)](https://cn.vuejs.org)
-[![Vant](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/Vant-mini.png)](https://vant-contrib.gitee.io/vant/#/zh-CN/)
-[![Ant](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/Antdv-mini.png)](https://antdv.com)
+[![Swoole](https://urthink-mochat-cloud.oss-cn-beijing.aliyuncs.com/github/Swoole-mini.png)](https://www.swoole.com/)
+[![Hyperf](https://urthink-mochat-cloud.oss-cn-beijing.aliyuncs.com/github/Hyperf-mini.png)](https://www.hyperf.io/)
+[![EasyWechat](https://urthink-mochat-cloud.oss-cn-beijing.aliyuncs.com/github/EasyWeChat-mini.png)](https://www.easywechat.com)
+[![Vue](https://urthink-mochat-cloud.oss-cn-beijing.aliyuncs.com/github/Vue-mini.png)](https://cn.vuejs.org)
+[![Vant](https://urthink-mochat-cloud.oss-cn-beijing.aliyuncs.com/github/Vant-mini.png)](https://vant-contrib.gitee.io/vant/#/zh-CN/)
+[![Ant](https://urthink-mochat-cloud.oss-cn-beijing.aliyuncs.com/github/Antdv-mini.png)](https://antdv.com)
 
 
 ### 环境部署
@@ -126,7 +126,7 @@ yarn run build
 - Docker：推荐根据`api-server/Dockerfile`使用K8S部署
 - Shell： 使用`linux-install.sh`安装必要依赖
 ```shell script
-cd /usr/local/src && wget https://mochatcloud.oss-cn-beijing.aliyuncs.com/deploy/CentOS-install.sh && ./CentOS-install.sh
+cd /usr/local/src && wget https://urthink-mochat-cloud.oss-cn-beijing.aliyuncs.com/deploy/CentOS-install.sh && ./CentOS-install.sh
 ```
 - Nginx 配置：具体参考开发文档
 
@@ -265,19 +265,19 @@ dashboard 和 sidebar 项目结构类似
 
 ### 联系作者加入群
 
-![输入图片说明](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/contact-qr-git.png "mochat微信.png")
+![输入图片说明](https://urthink-mochat-cloud.oss-cn-beijing.aliyuncs.com/github/contact-qr-git.png "mochat微信.png")
 
 ### 部分演示图，持续更新
 
-![输入图片说明](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/demo-1.png "demo演示.png")
-![输入图片说明](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/demo-2.png "demo演示.png")
-![输入图片说明](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/demo-3.png "demo演示.png")
-![输入图片说明](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/demo-4.png "demo演示.png")
-![输入图片说明](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/demo-5.png "demo演示.png")
-![输入图片说明](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/demo-6.png "demo演示.png")
-![输入图片说明](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/demo-7.png "demo演示.png")
-![输入图片说明](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/demo-8.png "demo演示.png")
-![输入图片说明](https://mochatcloud.oss-cn-beijing.aliyuncs.com/github/demo-9.png "demo演示.png")
+![输入图片说明](https://urthink-mochat-cloud.oss-cn-beijing.aliyuncs.com/github/demo-1.png "demo演示.png")
+![输入图片说明](https://urthink-mochat-cloud.oss-cn-beijing.aliyuncs.com/github/demo-2.png "demo演示.png")
+![输入图片说明](https://urthink-mochat-cloud.oss-cn-beijing.aliyuncs.com/github/demo-3.png "demo演示.png")
+![输入图片说明](https://urthink-mochat-cloud.oss-cn-beijing.aliyuncs.com/github/demo-4.png "demo演示.png")
+![输入图片说明](https://urthink-mochat-cloud.oss-cn-beijing.aliyuncs.com/github/demo-5.png "demo演示.png")
+![输入图片说明](https://urthink-mochat-cloud.oss-cn-beijing.aliyuncs.com/github/demo-6.png "demo演示.png")
+![输入图片说明](https://urthink-mochat-cloud.oss-cn-beijing.aliyuncs.com/github/demo-7.png "demo演示.png")
+![输入图片说明](https://urthink-mochat-cloud.oss-cn-beijing.aliyuncs.com/github/demo-8.png "demo演示.png")
+![输入图片说明](https://urthink-mochat-cloud.oss-cn-beijing.aliyuncs.com/github/demo-9.png "demo演示.png")
 
 
 ### 版权声明
