@@ -59,7 +59,7 @@
                 </a-radio-group>
               </a-col>
               <a-col :lg="5">
-                <a-button @click="() =>{this.choosePeopleShow = true}">选择成员</a-button>
+                <a-button @click="memberSelectShow">选择成员</a-button>
               </a-col>
               <a-col :lg="7">
                 <div v-if="employeeNum != 0">
@@ -96,7 +96,7 @@
             <a-icon type="link" /> <span @click="showMedium">{{ mediumTitle }}</span> <a-icon type="close" @click="closeMedium"/>
           </a-form-model-item>
           <template>
-            <a-button v-permission="'/greeting/store@add'" style="marginLeft: 50px" type="primary" :loading="btnLoading" @click="addWelcomeMesage">创建欢迎语</a-button>
+            <a-button v-permission="'/greeting/store@add'" style="marginLeft: 50px" type="primary" :loading="btnLoading" @click="addWelcomeMesage">{{ greetingId != undefined ? '修改欢迎语' : '创建欢迎语' }}</a-button>
           </template>
         </a-form-model>
       </a-card>
@@ -367,6 +367,9 @@
         <a-button type="primary" @click="importDefined">确定</a-button>
       </template>
     </a-modal>
+
+    <!--    选择员工-->
+    <selectMember ref="selectMember" @change="peopleChange" />
   </div>
 </template>
 
@@ -377,11 +380,13 @@ import vpload from './components/vpload'
 import department from './components/department'
 import { greetingStore, greetingDetail, upDateGreeting } from '@/api/greeting'
 import { materialLibraryList, mediumGroup, addMaterialLibrary } from '@/api/mediumGroup'
+import selectMember from '@/components/Select/member'
 export default {
   components: {
     upload,
     department,
-    vpload
+    vpload,
+    selectMember
   },
   data () {
     return {
@@ -823,12 +828,18 @@ export default {
       this.imgUrl = ''
       this.isImport = 0
     },
+    // 成员选择显示
+    memberSelectShow () {
+      console.log(this.employees)
+      this.$refs.selectMember.setSelect(this.employees)
+    },
     // 成员选择
     peopleChange (data) {
       const arr = []
       data.map(item => {
         arr.push(item.employeeId)
       })
+      this.employees = data
       this.employeeNum = arr.length
       this.employeeIdList = arr.join(',')
     },
