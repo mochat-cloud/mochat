@@ -122,7 +122,7 @@ class InfoLogic
                 'corpName' => $contact['corpName'],
                 'employeeName' => $employee['name'] ?? '',
                 'tags' => $tagName,
-                'transferState' => $this->workTransferLogService->getLogStateByCorpId($params['corpId'], $contact['wxExternalUserid'], $employee['wxUserId']),
+                'transferState' => $this->workTransferLogService->getLogStateByCorpId($params['corpId'], $contact['wxExternalUserid'], $employee['wxUserId'] ?? ''),
                 'addTime' => date('Y-m-d H:i', strtotime($contactEmployee['createTime'])),
                 'lastMsgTime' => $lastMsg,
                 'addWay' => $wayTexts[$contactEmployee['addWay']],
