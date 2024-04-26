@@ -58,15 +58,19 @@
                   </a-radio>
                 </a-radio-group>
               </a-col>
-              <a-col :lg="5">
-                <a-button @click="() =>{this.choosePeopleShow = true}">选择成员</a-button>
+            </a-row>
+            <a-row v-if="addWelcomeData.rangeType === 2" >
+              <a-col style="display: inline-block">
+                <a-button @click="memberSelectShow">选择成员</a-button>
               </a-col>
-              <a-col :lg="7">
-                <div v-if="employeeNum != 0">
-                  <span>已选择{{ employeeNum }}名成员</span>
-                  <a-button type="link" @click="() => {this.employeeIdList = ''; this.employees = [];this.employeeNum = 0}">重置</a-button>
-                </div>
+              <a-col :offset="1">
+                <a-button type="primary" @click="() => {this.employeeIdList = ''; this.employees = [];this.employeeNum = 0}">重置</a-button>
               </a-col>
+            </a-row>
+            <a-row v-if="employeeNum != 0 && addWelcomeData.rangeType === 2">
+              <a-tag v-for="v in employees" :key="v.id">
+                {{ v.name }}
+              </a-tag>
             </a-row>
           </a-form-model-item>
           <a-form-model-item label="文本内容：">
@@ -96,30 +100,11 @@
             <a-icon type="link" /> <span @click="showMedium">{{ mediumTitle }}</span> <a-icon type="close" @click="closeMedium"/>
           </a-form-model-item>
           <template>
-            <a-button v-permission="'/greeting/store@add'" style="marginLeft: 50px" type="primary" :loading="btnLoading" @click="addWelcomeMesage">创建欢迎语</a-button>
+            <a-button v-permission="'/greeting/store@add'" style="marginLeft: 50px" type="primary" :loading="btnLoading" @click="addWelcomeMesage">{{ greetingId != undefined ? '修改欢迎语' : '创建欢迎语' }}</a-button>
           </template>
         </a-form-model>
       </a-card>
     </div>
-    <a-modal
-      title="选择企业成员"
-      :maskClosable="false"
-      :width="700"
-      :visible="choosePeopleShow"
-      @cancel="() => {this.choosePeopleShow = false; this.employeeIdList = ''; this.employees = []}"
-    >
-      <department
-        v-if="choosePeopleShow"
-        :isSelected="selectList"
-        :isChecked="employees"
-        :memberKey="employees"
-        @change="peopleChange"
-        @search="searchEmp"></department>
-      <template slot="footer">
-        <a-button @click="() => { this.choosePeopleShow = false; this.employeeIdList = ''; this.employees = [] }">取消</a-button>
-        <a-button type="primary" @click="() => { this.choosePeopleShow = false }">确定</a-button>
-      </template>
-    </a-modal>
     <div class="pbox" ref="pbox">
       <a-modal
         :getContainer="() => $refs.pbox"
@@ -367,6 +352,9 @@
         <a-button type="primary" @click="importDefined">确定</a-button>
       </template>
     </a-modal>
+
+    <!--    选择员工-->
+    <selectMember ref="selectMember" @change="peopleChange" />
   </div>
 </template>
 
@@ -377,11 +365,13 @@ import vpload from './components/vpload'
 import department from './components/department'
 import { greetingStore, greetingDetail, upDateGreeting } from '@/api/greeting'
 import { materialLibraryList, mediumGroup, addMaterialLibrary } from '@/api/mediumGroup'
+import selectMember from '@/components/Select/member'
 export default {
   components: {
     upload,
     department,
-    vpload
+    vpload,
+    selectMember
   },
   data () {
     return {
@@ -424,8 +414,6 @@ export default {
       imageTextData: {},
       appletsData: {},
       upLoadRes: {},
-      // 成员显示
-      choosePeopleShow: false,
       // 成员列表
       employeeIdList: '',
       // 已选成员
@@ -823,12 +811,17 @@ export default {
       this.imgUrl = ''
       this.isImport = 0
     },
+    // 成员选择显示
+    memberSelectShow () {
+      this.$refs.selectMember.setSelect(this.employees)
+    },
     // 成员选择
     peopleChange (data) {
       const arr = []
       data.map(item => {
         arr.push(item.employeeId)
       })
+      this.employees = data
       this.employeeNum = arr.length
       this.employeeIdList = arr.join(',')
     },
