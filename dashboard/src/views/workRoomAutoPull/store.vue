@@ -49,7 +49,7 @@
             </a-form-item>
             <a-form-item label="使用成员" class="form-item">
               <div class="employee" v-if="employees.length">
-                <a-tag class="tag" v-for="(inner, i) in employees" :key="i">{{ inner.employeeName }}</a-tag>
+                <a-tag class="tag" v-for="(inner, i) in employees" :key="i">{{ inner.name }}</a-tag>
               </div>
               <a-button @click="addNewPeople">+添加成员</a-button>
             </a-form-item>
@@ -182,19 +182,9 @@
         </li>
       </ul>
     </a-modal>
-    <a-modal
-      title="选择企业成员"
-      :maskClosable="false"
-      :width="700"
-      :bodyStyle="{'max-height':'500px',overflow: 'auto'}"
-      :visible="choosePeopleShow"
-      okText="确认"
-      cancelText="取消"
-      @ok="choosePeople"
-      @cancel="choosePeopleShow = false"
-    >
-      <Department :memberKey="employees" @change="peopleChange"></Department>
-    </a-modal>
+
+    <!--    选择员工-->
+    <selectMember ref="selectMember" @change="peopleChange" />
   </div>
 </template>
 
@@ -203,6 +193,7 @@ import { workRoomGroupList, autoPullShow, workContactTagGroup, addWorkContactTag
 import upload from './components/upload'
 import Department from '@/components/department'
 import { mapGetters } from 'vuex'
+import selectMember from '@/components/Select/member'
 const columns = [
   {
     title: '群名称(人数)',
@@ -229,7 +220,8 @@ const columns = [
 export default {
   components: {
     upload,
-    Department
+    Department,
+    selectMember
   },
   data () {
     return {
@@ -276,8 +268,6 @@ export default {
       groupChatList: [],
       // 上传群二维码所在索引
       uploadIndex: 0,
-      // 企业成员
-      choosePeopleShow: false,
       // 所选成员
       choosePeopleKey: [],
       tagShowMore: false,
@@ -366,20 +356,11 @@ export default {
     },
     // 添加成员
     addNewPeople () {
-      this.choosePeopleShow = true
+      this.$refs.selectMember.setSelect(this.employees)
     },
     // 成员更改
     peopleChange (data) {
-      this.choosePeopleKey = data
-    },
-    // 选择成员 确定
-    choosePeople () {
-      if (this.choosePeopleKey.length == 0) {
-        this.$message.warn('请选择企业成员')
-        return
-      }
-      this.employees = [...this.choosePeopleKey]
-      this.choosePeopleShow = false
+      this.employees = data
     },
     // 获取所在分组标签
     async chooseTagGroup (groupId) {

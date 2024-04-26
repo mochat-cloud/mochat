@@ -101,25 +101,6 @@
         </a-form-model>
       </a-card>
     </div>
-    <a-modal
-      title="选择企业成员"
-      :maskClosable="false"
-      :width="700"
-      :visible="choosePeopleShow"
-      @cancel="() => {this.choosePeopleShow = false; this.employeeIdList = ''; this.employees = []}"
-    >
-      <department
-        v-if="choosePeopleShow"
-        :isSelected="selectList"
-        :isChecked="employees"
-        :memberKey="employees"
-        @change="peopleChange"
-        @search="searchEmp"></department>
-      <template slot="footer">
-        <a-button @click="() => { this.choosePeopleShow = false; this.employeeIdList = ''; this.employees = [] }">取消</a-button>
-        <a-button type="primary" @click="() => { this.choosePeopleShow = false }">确定</a-button>
-      </template>
-    </a-modal>
     <div class="pbox" ref="pbox">
       <a-modal
         :getContainer="() => $refs.pbox"
@@ -429,8 +410,6 @@ export default {
       imageTextData: {},
       appletsData: {},
       upLoadRes: {},
-      // 成员显示
-      choosePeopleShow: false,
       // 成员列表
       employeeIdList: '',
       // 已选成员
@@ -830,7 +809,6 @@ export default {
     },
     // 成员选择显示
     memberSelectShow () {
-      console.log(this.employees)
       this.$refs.selectMember.setSelect(this.employees)
     },
     // 成员选择
