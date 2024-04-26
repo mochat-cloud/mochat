@@ -116,18 +116,12 @@ class ShowLogic
      */
     private function getWorkEmployeeList(array $workEmployeeIds): array
     {
-        $employeeList = $this->workEmployeeService->getWorkEmployeesById($workEmployeeIds, ['id', 'name']);
-
-        $data = [];
-        if (! empty($employeeList)) {
-            foreach ($employeeList as $v) {
-                $data[] = [
-                    'employeeId' => $v['id'],
-                    'employeeName' => $v['name'],
-                ];
-            }
-        }
-        return $data;
+        $employeeList = $this->workEmployeeService->getWorkEmployeesById($workEmployeeIds, ['id', 'name', 'avatar', 'wx_user_id']);
+        return empty($employeeList) ? [] : array_map(function ($employee) {
+            $employee['select'] = true;
+            $employee['employeeId'] = $employee['id'];
+            return $employee;
+        }, $employeeList);
     }
 
     /**
