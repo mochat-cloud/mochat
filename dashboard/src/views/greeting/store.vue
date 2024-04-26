@@ -58,15 +58,19 @@
                   </a-radio>
                 </a-radio-group>
               </a-col>
-              <a-col :lg="5">
+            </a-row>
+            <a-row v-if="addWelcomeData.rangeType === 2" >
+              <a-col style="display: inline-block">
                 <a-button @click="memberSelectShow">选择成员</a-button>
               </a-col>
-              <a-col :lg="7">
-                <div v-if="employeeNum != 0">
-                  <span>已选择{{ employeeNum }}名成员</span>
-                  <a-button type="link" @click="() => {this.employeeIdList = ''; this.employees = [];this.employeeNum = 0}">重置</a-button>
-                </div>
+              <a-col :offset="1">
+                <a-button type="primary" @click="() => {this.employeeIdList = ''; this.employees = [];this.employeeNum = 0}">重置</a-button>
               </a-col>
+            </a-row>
+            <a-row v-if="employeeNum != 0 && addWelcomeData.rangeType === 2">
+              <a-tag v-for="v in employees" :key="v.id">
+                {{ v.name }}
+              </a-tag>
             </a-row>
           </a-form-model-item>
           <a-form-model-item label="文本内容：">
