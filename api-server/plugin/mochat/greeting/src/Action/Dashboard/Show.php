@@ -74,11 +74,13 @@ class Show extends AbstractAction
         if (empty($greeting)) {
             throw new CommonException(ErrorCode::INVALID_PARAMS, '此欢迎语不存在');
         }
+        $employeeIds = json_decode($greeting['employees'], true);
+        $employees = empty($employeeIds) ? [] : $this->getEmployees($employeeIds);
         ## 处理数据
         return [
             'greetingId' => $greeting['id'],
             'rangeType' => $greeting['rangeType'],
-            'employees' => empty(json_decode($greeting['employees'], true)) ? [] : $this->getEmployees(json_decode($greeting['employees'], true)),
+            'employees' => $employees,
             'words' => $greeting['words'],
             'mediumId' => $greeting['mediumId'],
             'mediumContent' => empty($greeting['mediumId']) ? [] : $this->getMediumContent((int) $greeting['mediumId']),
@@ -116,12 +118,11 @@ class Show extends AbstractAction
      */
     private function getEmployees(array $employeeIdArr): array
     {
-        $employeeList = $this->workEmployeeService->getWorkEmployeesById($employeeIdArr, ['id', 'name']);
+        $employeeList = $this->workEmployeeService->getWorkEmployeesById($employeeIdArr, ['id', 'name', 'avatar', 'wx_user_id']);
         return empty($employeeList) ? [] : array_map(function ($employee) {
-            return [
-                'employeeId' => $employee['id'],
-                'employeeName' => $employee['name'],
-            ];
+            $employee['select'] = true;
+            $employee['employeeId'] = $employee['id'];
+            return $employee;
         }, $employeeList);
     }
 

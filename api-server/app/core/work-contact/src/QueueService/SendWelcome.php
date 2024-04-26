@@ -16,6 +16,7 @@ use MoChat\App\Corp\Utils\WeWorkFactory;
 use MoChat\App\Medium\Constants\Type as MediumType;
 use MoChat\App\Utils\Media;
 use MoChat\App\WorkContact\Contract\WorkContactContract;
+use MoChat\App\WorkContact\Logic\SendWelcomeLogic;
 
 /**
  * 发送欢迎语.
@@ -36,13 +37,12 @@ class SendWelcome
             return;
         }
 
-        $weWorkContactApp = make(WeWorkFactory::class)->getContactApp($corpId);
         $logger = make(StdoutLoggerInterface::class);
 
         // 微信消息体
         $sendWelcomeData = $this->getSendWelcomeData($corpId, $contact, $content);
 
-        $sendWelcomeRes = $weWorkContactApp->external_contact_message->sendWelcome($welcomeCode, $sendWelcomeData);
+        $sendWelcomeRes = make(SendWelcomeLogic::class)->handle($corpId, $contact['welcomeCode'], $sendWelcomeData);
         if ($sendWelcomeRes['errcode'] != 0) {
             // 记录错误日志
             $logger->error(sprintf('%s 请求数据：%s 响应结果：%s', '请求微信发送欢迎语失败', json_encode(['welcomeCode' => $welcomeCode, 'sendWelcomeData' => $sendWelcomeData]), $sendWelcomeRes['errmsg']));
@@ -75,32 +75,35 @@ class SendWelcome
             switch ($content['medium']['mediumType']) {
                 case MediumType::PICTURE:
                     // 上传临时素材
-                    $sendWelcomeData['image']['media_id'] = $mediaUtil->uploadImage($corpId, $content['medium']['mediumContent']['imagePath']);
+                    $image['msgtype'] = 'image';
+                    $image['image']['media_id'] = $mediaUtil->uploadImage($corpId, $content['medium']['mediumContent']['imagePath']);
+                    $sendWelcomeData['attachments'][] = $image;
                     break;
                 case MediumType::PICTURE_TEXT:
-                    $sendWelcomeData['link'] = [
+                    $link['msgtype'] = 'link';
+                    $link['link'] = [
                         'title' => $content['medium']['mediumContent']['title'],
                         'url' => $content['medium']['mediumContent']['imageLink'],
                     ];
-
                     if (isset($content['medium']['mediumContent']['imagePath'])) {
-                        $sendWelcomeData['link']['picurl'] = file_full_url($content['medium']['mediumContent']['imagePath']);
+                        $link['link']['picurl'] = file_full_url($content['medium']['mediumContent']['imagePath']);
                     }
-
                     if (isset($content['medium']['mediumContent']['description'])) {
-                        $sendWelcomeData['link']['desc'] = $content['medium']['mediumContent']['description'];
+                        $link['link']['desc'] = $content['medium']['mediumContent']['description'];
                     }
-
+                    $sendWelcomeData['attachments'][] = $link;
                     break;
                 case MediumType::MINI_PROGRAM:
                     // 上传临时素材
                     $mediaId = $mediaUtil->uploadImage($corpId, $content['medium']['mediumContent']['imagePath']);
-                    $sendWelcomeData['miniprogram'] = [
+                    $miniprogram['msgtype'] = 'miniprogram';
+                    $miniprogram['miniprogram'] = [
                         'title' => $content['medium']['mediumContent']['title'],
                         'pic_media_id' => $mediaId,
                         'appid' => $content['medium']['mediumContent']['appid'],
                         'page' => $content['medium']['mediumContent']['page'],
                     ];
+                    $sendWelcomeData['attachments'][] = $miniprogram;
                     break;
             }
         }
